@@ -1,5 +1,5 @@
 from django.contrib import admin
-from provider.models import Provider
+from order_manager.provider.models import Provider
 
 class ProviderAdmin(admin.ModelAdmin):
   list_display = ('name', 'user_in_charge')

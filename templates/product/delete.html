@@ -1,0 +1,23 @@
+{% extends "base_wide.html" %}
+{% block body_class %}product{% endblock %}
+
+{% block content_header %}
+<h1>Gestion des substances</h1>
+<h2>Confirmation de suppression de substance</h2>
+{% endblock %}
+
+{% block main_content %}
+    <p class="info">La suppression d'une substance est définitive et l'ensemble
+    des commandes lui étant rattachées seront également supprimées.</p>
+    <p>Êtes-vous sûr de vouloir supprimer cette substance ?</p>
+    <ul>
+        <li>Substance : {{ product }}</li>
+        <li>CAS : {{ product.cas_number }}</li>
+        <li>Quantité sur site : {{ product.site_quantity }}</li>
+    </ul>
+    <form action="{{ product.get_absolute_url }}" method="post">{% csrf_token %}
+      <input type="hidden" name="verb" value="DELETE" id="id_verb" />
+      <button type="submit" class="button">Supprimer</button>
+      <a href="{% url product_index %}" title="Annuler la suppression">Abandonner la suppression</a>
+    </form>
+{% endblock %}

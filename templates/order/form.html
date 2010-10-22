@@ -1,0 +1,32 @@
+{% extends "base_wide.html" %}
+{% load ordertags %}
+{% block body_class %}product{% endblock %}
+
+{% block content_header %}
+<div class="btn_wrapper">
+    <a href="{% url product_index %}" class="btn_big">
+        <img src="{{ MEDIA_URL }}img/icons/folder_go.png" />Liste des substances
+    </a>
+</div>
+<h1>Gestion des substances</h1>
+<h2>Ajout d'une substance</h2>
+{% endblock %}
+
+{% block main_content %}
+<form action="{% url product_index %}" method="post">{% csrf_token %}
+    <h3>Informations générales</h3>
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    <fieldset>
+        {% for field in form %}
+            {% include "misc/form_snippet.html"%}
+        {% endfor %}
+    </fieldset>
+    <h3>Validation</h3>
+    <fieldset>
+        <button type="submit" class="button">Valider</button>
+        <button type="reset" class="button">Réinitialiser</button>
+    </fieldset>
+</form>
+{% endblock %}

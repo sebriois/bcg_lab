@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block menu_provider %}selected{% endblock %}
+
+{% block sidebar %}
+    <h3>Gestion des fournisseurs</h3>
+    <a href="{% url provider_new %}">Ajouter un fournisseur</a>
+{% endblock %}
+
+{% block content_header %}Fournisseurs{% endblock %}
+
+{% block main_content %}
+
+{% if provider_list %}
+<table class="list">
+  <thead>
+      <th>Nom du fournisseur</th>
+      <th>Responsable</th>
+  </thead>
+  
+  <tbody>
+      {% for provider in provider_list %}
+        <tr>
+            <td>{{ provider.name }}</td>
+            <td>{{ provider.user_in_charge }}</td>
+        </tr>
+      {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

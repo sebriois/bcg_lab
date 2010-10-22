@@ -1,0 +1,43 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Gestion des commandes - Identification</title>
+    <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/login.css" />
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/shadow.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/login.js"></script>
+</head>
+
+<body>
+<div id="header">
+    <h1>LBCMCP - Gestion des commandes</h1>
+</div>
+
+<div id="wrapper">
+    <div id="login">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {{ form.non_field_errors }}
+        <form method="post" action="{% url django.contrib.auth.views.login %}" name="login">{% csrf_token %}
+
+            <label for="username">Identifiant</label><br />
+            {{ form.username }}<br />
+            <label for="password">Mot de passe</label><br />
+            {{ form.password }}<br />
+            <br/>
+            <input type="submit" value="Connexion">
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </div>
+</div>
+</body>
+</html>

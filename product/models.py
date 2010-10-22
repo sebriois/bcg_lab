@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from provider.models import Provider
+from order_manager.provider.models import Provider
 
 class Product(models.Model):
   name          = models.CharField( 'Nom', blank = False, null = False, max_length = 500 )

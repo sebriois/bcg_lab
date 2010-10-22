@@ -1,5 +1,5 @@
 from django.contrib import admin
-from product.models import Product
+from order_manager.product.models import Product
 
 class ProductAdmin(admin.ModelAdmin):
   date_hierarchy = 'last_change'

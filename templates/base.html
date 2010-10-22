@@ -1,0 +1,76 @@
+{# coding: utf-8 #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>LBCMCP - Gestion des commandes{% block title %}{% endblock %}</title>
+    <link href="{{ MEDIA_URL }}img/favicon.gif" rel="icon" type="image/gif" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/basecamp.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/base.css" type="text/css" />
+
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
+
+    <!-- Autocomplete widget -->
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/autocomplete.css" type="text/css" />
+    <script type="text/javascript" src="{{ MEDIA_URL }}javascript/lib/autocomplete.js"></script>
+
+    <script type="text/javascript" src="{{ MEDIA_URL }}javascript/base.js"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body {% block extra_body %}{% endblock %}>
+    <div id="top-menu">
+        <div id="account">
+            <ul>
+                <li><a href="{% url logout %}" class="login">Déconnexion</a></li>
+            </ul>
+        </div>
+        <ul>
+            <li>Utilisateurs</li>
+            <li><a href="{% url admin:index %}">Administration</a></li>
+        </ul>
+    </div>
+    
+    <div id="header">
+        <h1>LBCMCP - Gestion des commandes</h1>
+        
+        <div id="main-menu">
+          <ul>
+            <li><a href="{% url home %}" class="{% block menu_home %}{% endblock %}">Accueil</a></li>
+            <li><a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">Fournisseurs</a></li>
+            <li><a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">Produits</a></li>
+            <li><a href="{% url order_index %}" class="{% block menu_order %}{% endblock %}">Commandes</a></li>
+            <li><a href="{% url cart_index %}" class="{% block menu_cart %}{% endblock %}">Panier</a></li>
+          </ul>
+        </div>
+        
+    </div>
+    
+    <div id="main">
+        <div id="sidebar">
+            {% block sidebar %}{% endblock %}
+        </div>
+        
+        <div id="content">
+            <div id="content_header">
+              <h2>{% block content_header %}{% endblock %}</h2>
+            </div>
+            
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                            {{ message|escape|safe }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+            {% block main_content %}{% endblock %}
+        </div>
+        <div class="cleaner"></div>
+    </div>
+</body>
+</html>

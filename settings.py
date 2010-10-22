@@ -1,4 +1,5 @@
-# Django settings for order_manager project.
+# coding: utf-8
+import os.path
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -44,19 +45,20 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+ROOT_URL = 'order_manager/'
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '%s/media'%os.path.dirname(os.path.abspath(__file__))
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+# URL that handles the media served from MEDIA_ROOT.
+# Example: "http://media.lawrence.com"
+MEDIA_URL = '/%smedia/'%ROOT_URL
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/media_admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '8abal8=r%ss9zno^@zh&i_n7+k5em5m5$)t40eco-t*-m0l9cw'
@@ -76,12 +78,15 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'order_manager.urls'
+
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.join(PROJECT_PATH, 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -91,7 +96,31 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    'provider',
-    'product',
-    'order'
+    'order_manager.provider',
+    'order_manager.product',
+    'order_manager.order'
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'django.core.context_processors.i18n',
+    'django.contrib.messages.context_processors.messages',
+)
+
+##
+##    Custom settings
+##
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = "no-reply@lbcmcp.com"
+
+LOGIN_URL = '/%slogin/' % ROOT_URL
+LOGIN_REDIRECT_URL = '/' + ROOT_URL
+
+DATE_FORMAT = "d/m/Y - H:i"

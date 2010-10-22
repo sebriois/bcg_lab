@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block menu_cart %}selected{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block content_header %}Panier{% endblock %}
+
+{% block main_content %}
+
+{% for provider, products in cart_by_provider.items %}
+    <h3>{{ provider }}</h3>
+    
+    <table class="list">
+      <thead>
+          <th>Nom du produit</th>
+          <th>Conditionnement</th>
+          <th>Référence</th>
+          <th>Prix (en €)</th>
+          <th>N° Offre</th>
+          <th>Nomenclature</th>
+          <th>Action</th>
+      </thead>
+      
+      <tbody>
+          {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.packaging }}</td>
+                <td>{{ product.reference }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.offer_nb }}</td>
+                <td>{{ product.nomenclature }}</td>
+                <td>
+                    <a href="#" class="cart_remove">Retirer du panier</a>
+                </td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+    <br /><br />
+{% empty %}
+<p>Votre panier est vide.</p>
+{% endfor %}
+
+{% endblock %}

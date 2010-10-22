@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block menu_product %}selected{% endblock %}
+
+{% block sidebar %}
+    <h3>Filtrer par produit</h3>
+    <input type="text" name="product" />
+    <input type="submit" value="Filtrer" />
+    
+    <h3>Filtrer par fournisseur</h3>
+    {% for p in providers %}
+        <a href="?provider={{ p.id }}">{{ p.name }}</a><br />
+    {% endfor %}
+{% endblock %}
+
+{% block content_header %}Liste des produits{% endblock %}
+
+{% block main_content %}
+
+<div class="btn_wrapper">
+  <a href="{% url product_new %}" class="btn_big">
+    <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un produit
+  </a>
+</div>
+<div class="btn_wrapper">
+  <a href="{% url cart_index %}" class="btn_big">
+    <img src="{{ MEDIA_URL }}img/icons/cart.png" />Voir mon panier
+  </a>
+</div>
+<div class="cleaner"></div>
+
+{% if products %}
+<table class="list">
+  <thead>
+      <th>Nom du produit</th>
+      <th>Conditionnement</th>
+      <th>Référence</th>
+      <th>Prix (en €)</th>
+      <th>N° Offre</th>
+      <th>Nomenclature</th>
+      <th>Action</th>
+  </thead>
+  
+  <tbody>
+      {% for product in products.object_list %}
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.packaging }}</td>
+            <td>{{ product.reference }}</td>
+            <td>{{ product.price }}</td>
+            <td>{{ product.offer_nb }}</td>
+            <td>{{ product.nomenclature }}</td>
+            <td>
+                <a href="{% url product_add_cart product.id %}" class="cart_put">Ajouter au panier</a> 
+                <a href="#" class="edit">Editer</a>
+            </td>
+        </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if products.has_previous %}
+            <a href="?page={{ products.previous_page_number }}&provider={{provider}}">previous</a>
+        {% endif %}
+        
+        <span class="current">
+            Page {{ products.number }} of {{ products.paginator.num_pages }}.
+        </span>
+        
+        {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}&provider={{provider}}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% else %}
+    <p>Aucun produit référencé</p>
+{% endif %}
+
+{% endblock %}

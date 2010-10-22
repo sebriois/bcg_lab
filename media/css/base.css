@@ -1,0 +1,84 @@
+a:hover {
+    cursor: pointer;
+}
+
+a.cart_add {
+    background: url('../img/icons/cart_add.png');
+}
+
+a.cart_put {
+    background: url('../img/icons/cart_put.png');
+}
+
+a.cart_remove {
+    background: url('../img/icons/cart_remove.png');
+}
+
+a.cart_delete {
+    background: url('../img/icons/cart_delete.png');
+}
+
+a.edit{
+    background: url('../img/icons/pencil.png');
+}
+
+a.add{
+    background: url('../img/icons/add.png');
+}
+
+a.cart_add, a.cart_put, a.cart_remove, a.cart_delete, a.edit, a.add {
+    display:inline-block;
+    padding: 2px 0px 2px;
+    padding-left: 20px;
+    line-height: 18px;
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+
+/* Buttons */
+.btn_wrapper {
+    float: right;
+}
+
+.btn_wrapper_left {
+    float: left;
+}
+
+a.btn_big, a.btn_small, a.btn_medium {
+    color: #3d5051;
+    display: block;
+    line-height: 36px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    height: 40px;
+    padding-left: 20px;
+}
+a.btn_big {
+    width: 265px;
+    background: url('../img/layout/btn-big.gif') no-repeat;
+}
+a.btn_small {
+    width: 130px;
+    background: url('../img/layout/btn-small.gif') no-repeat;
+}
+a.btn_medium {
+    width: 200px;
+    background: url('../img/layout/btn-medium.gif') no-repeat;
+}
+a.btn_big:hover, a.btn_small:hover, a.btn_medium:hover  {
+    text-decoration: none;
+    color: #507AAA;
+}
+a.btn_big img, a.btn_small img, a.btn_medium img {
+    border: 0px;
+    margin-left: 20px;
+    padding-top: 10px;
+    margin-right: 10px;
+    position: relative;
+    float: left;
+}
+
+div.cleaner {
+    clear:both;
+}

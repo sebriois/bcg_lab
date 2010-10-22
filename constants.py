@@ -1,3 +1,5 @@
+# -*- encoding: utf8 -*-
+
 STATE_CHOICES = (
   (1, "Envoyée à l'administration"),
   (2, "En cours de traitement"),
