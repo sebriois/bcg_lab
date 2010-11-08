@@ -1,16 +1,84 @@
-{% extends "base.html" %}
+{% extends "base_custom_content.html" %}
 
 {% block title %} - Accueil{% endblock %}
 {% block menu_home %}selected{% endblock %}
 
-{% block content_header %}Accueil{% endblock %}
+{% block content %}
+  <div id="content" style="min-height:0">
+    <div id="content_header"><h2>Vos commandes</h2></div>
+    {% if user_orders %}
+      <table class="list">
+        <thead>
+            <th>Fournisseur</th>
+            <th>Produits</th>
+            <th>Commande passée le</th>
+            <th>dernière modification</th>
+            <th>Statut</th>
+        </thead>
 
-{% block main_content %}
-<h1>TODO</h1>
-<ul>
-    <li>1-</li>
-    <li>2-</li>
-    <li>3-</li>
-    <li>4-</li>
-</ul>
+        <tbody>
+            {% for order in user_orders %}
+              <tr>
+                  <td>{{ order.provider.name }}</td>
+                  <td>{{ order.products.all|join:", " }}</td>
+                  <td>{{ order.date_created }}</td>
+                  <td>{{ order.last_change }}</td>
+                  <td>{{ order.get_state_display }}</td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Aucune commande en cours</p>
+    {% endif %}
+  </div>
+  
+  <div id="content" style="min-height:0">
+    <div id="content_header"><h2>Autres commandes en cours</h2></div>
+    {% if other_orders %}
+      <table class="list">
+        <thead>
+            <th>Fournisseur</th>
+            <th>Produits</th>
+            <th>Commande passée par</th>
+            <th>Commande passée le</th>
+            <th>dernière modification</th>
+            <th>Statut</th>
+        </thead>
+
+        <tbody>
+            {% for order in other_orders %}
+              <tr>
+                  <td>{{ order.provider.name }}</td>
+                  <td>{{ order.products.all|join:", " }}</td>
+                  <td>{{ order.user }}</td>
+                  <td>{{ order.date_created }}</td>
+                  <td>{{ order.last_change }}</td>
+                  <td>{{ order.get_state_display }}</td>
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Aucune autre commande en cours</p>
+    {% endif %}
+  </div>
+  
+  <div id="content" style="min-height:0">
+    <div id="content_header"><h2>Dernières connexions</h2></div>
+    <table class="list">
+      <thead>
+        <th>Utilisateur</th>
+        <th>Dernière connexion</th>
+      </thead>
+      <tbody>
+        {% for user_item in user_list %}
+        <tr class="{% cycle 'even' 'odd' %}">
+          <td>{{ user_item.username }}</td>
+          <td>{{ user_item.last_login }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

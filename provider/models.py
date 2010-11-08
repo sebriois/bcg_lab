@@ -4,9 +4,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Provider(models.Model):
-  name            = models.CharField( 'Nom', max_length = 100, unique = True)
-  user_in_charge  = models.ForeignKey( User, verbose_name = "Personne en charge", blank = True, null = True )
-  notes           = models.TextField( 'Notes', blank = True, null = True )
+  name             = models.CharField( 'Nom', max_length = 100, unique = True)
+  users_in_charge  = models.ManyToManyField( User, verbose_name = "Personnes en charge", blank = True, null = True )
+  notes            = models.TextField( 'Notes', blank = True, null = True )
   
   class Meta:
     verbose_name = "Fournisseur"

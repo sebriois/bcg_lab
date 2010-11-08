@@ -5,8 +5,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
+    ('Sébastien Briois', 'sbriois@cict.fr'),
     # ('Your Name', 'your_email@domain.com'),
-    ('Sebastien Briois', 'sebastien.briois@cict.fr'),
 )
 
 MANAGERS = ADMINS
@@ -76,6 +76,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'order_manager.middleware.HttpMethodsMiddleware',
+    'order_manager.middleware.ExceptionMiddleware'
 )
 
 ROOT_URLCONF = 'order_manager.urls'
@@ -98,7 +100,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'order_manager.provider',
     'order_manager.product',
-    'order_manager.order'
+    'order_manager.order',
+    'order_manager.utils'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

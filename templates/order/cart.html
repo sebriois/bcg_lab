@@ -1,17 +1,20 @@
-{% extends "base.html" %}
+{% extends "base_custom_content.html" %}
 
 {% block menu_cart %}selected{% endblock %}
 
-{% block sidebar %}
+{% block buttons %}
+  <div class="btn_wrapper">
+    <a href="{% url cart_empty cart.id %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/basket_delete.png" />Vider le panier
+    </a>
+  </div>
 {% endblock %}
 
-{% block content_header %}Panier{% endblock %}
-
-{% block main_content %}
+{% block content %}
 
 {% for provider, products in cart_by_provider.items %}
-    <h3>{{ provider }}</h3>
-    
+  <div id="content" style="min-height:0">
+    <div id="content_header"><h2>{{ provider }}</h2></div>
     <table class="list">
       <thead>
           <th>Nom du produit</th>
@@ -22,10 +25,9 @@
           <th>Nomenclature</th>
           <th>Action</th>
       </thead>
-      
       <tbody>
-          {% for product in products %}
-            <tr>
+        {% for product in products %}
+            <tr class="{% cycle 'even' 'odd' %}">
                 <td>{{ product.name }}</td>
                 <td>{{ product.packaging }}</td>
                 <td>{{ product.reference }}</td>
@@ -33,15 +35,23 @@
                 <td>{{ product.offer_nb }}</td>
                 <td>{{ product.nomenclature }}</td>
                 <td>
-                    <a href="#" class="cart_remove">Retirer du panier</a>
+                    <a href="{% url cart_remove cart.id,product.id %}" class="cart_delete">Retirer du panier</a>
                 </td>
             </tr>
-          {% endfor %}
+        {% endfor %}
       </tbody>
     </table>
-    <br /><br />
+    
+    <div class="cleaner"></div>
+    
+    <a href="{% url cart_validate cart.id,provider.id %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/basket_go.png" />Commander
+    </a>
+  </div>
 {% empty %}
-<p>Votre panier est vide.</p>
+<div id="content">
+  <div id="content_header"><h2>Panier</h2></div>
+  <p>Votre panier est vide</p>
+</div>
 {% endfor %}
-
 {% endblock %}

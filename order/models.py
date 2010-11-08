@@ -10,7 +10,7 @@ class Order(models.Model):
   user          = models.ForeignKey(User)
   provider      = models.ForeignKey(Provider)
   products      = models.ManyToManyField(Product)
-  state         = models.IntegerField("Etat de la commande", choices = STATE_CHOICES)
+  state         = models.IntegerField("Etat de la commande", choices = STATE_CHOICES, default = 1)
   date_created  = models.DateTimeField("Date de création", auto_now_add = True)
   date_delivered = models.DateTimeField("Date de livraison", null = True, blank = True)
   last_change   = models.DateTimeField("Dernière modification", auto_now = True)
@@ -32,5 +32,13 @@ class Cart(models.Model):
     verbose_name = "Panier"
     verbose_name_plural = "Paniers"
   
-  def turn_into_orders(self):
-    pass
+  def turn_into_order(self, provider):
+    order = Order.objects.create(user = self.user, provider = provider)
+    
+    for product in self.products.filter( provider = provider ):
+      order.products.add( product )
+      self.products.remove( product )
+    
+    order.save()
+    self.save()
+  

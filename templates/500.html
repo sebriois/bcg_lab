@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content_header %}
+  Une erreur interne est survenue sur cette page
+{% endblock %}
+
+{% block sidebar %}
+    <h3>Transférer le message</h3>
+    <p>Merci de copier/coller l'ensemble du message et le transmettre à sbriois@cict.fr</p>
+{% endblock %}
+
+{% block main_content %}
+<h3>Traceback</h3>
+{{ traceback|linebreaks }}
+
+<h3>Request</h3>
+{{ request|linebreaks }}
+{% endblock %}

@@ -3,7 +3,10 @@
     padding: 0;
 }
 body {
-    background-color:#e5e5e5;
+    margin: 0;
+    padding: 0;
+    background: #edf3fe;
+/*    background-color:#e5e5e5;*/
     color:#575757;
     font-family:"Trebuchet MS", verdana, arial, helvetica, sans-serif;
     text-align: center; /* IE6 hack */
@@ -53,14 +56,22 @@ input[type="password"] {
 }
 
 /* @group Messages */
+div#login-messages {
+  position:absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align:left;
+}
+
 ul.errorlist li {
     list-style-type: none;
     background-position: 5px 1px;
     min-height: 28px;
     padding: 9px 0px 0px 50px;
-    margin: 10px 0px 10px 0px;
+/*    margin: 10px 0px 10px 0px;*/
     background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
-    border: 1px solid #fa7050;
+    border-bottom: 1px solid #fa7050;
     color: #e2350d;
 }
 
@@ -73,17 +84,17 @@ ul.errorlist li {
 }
 .messages .info {
     background: #ecf7fe url('../img/icons/msg-info.gif') no-repeat;
-    border: 1px solid #caeaff;
+    border-bottom: 1px solid #caeaff;
     color: #2288c7;
 }
 .messages .warning {
     background: #fff6e0 url('../img/icons/msg-warn.gif') no-repeat;
-    border: 1px solid #fbdf9c;
+    border-bottom: 1px solid #fbdf9c;
     color: #f9a900;
 }
 .messages .error {
     background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
-    border: 1px solid #fa7050;
+    border-bottom: 1px solid #fa7050;
     color: #e2350d;
 }
 /* @end */

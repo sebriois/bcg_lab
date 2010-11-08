@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from order_manager.provider.models import Provider
 
 class Product(models.Model):
-  name          = models.CharField( 'Nom', blank = False, null = False, max_length = 500 )
   provider      = models.ForeignKey( Provider, verbose_name = 'Fournisseur' )
+  name          = models.CharField( 'Nom', blank = False, null = False, max_length = 500 )
   packaging     = models.CharField('Conditionnement', blank = True, null = True, max_length = 100)
   reference     = models.CharField('Référence', max_length = 100)
   price         = models.FloatField('Prix')

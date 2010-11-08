@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
-{% block content_header %}Nouveau produit{% endblock %}
+{% block content_header %}Modification d'un produit{% endblock %}
 
 {% block main_content %}
-<form action="{% url product_index %}" method="post">{% csrf_token %}
+<form action="{% url provider_item provider.id %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="method" value="PUT" />
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>

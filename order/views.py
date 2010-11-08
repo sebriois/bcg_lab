@@ -18,14 +18,12 @@ from order_manager.utils import superuser_required
 from order_manager.utils import paginate
 
 @login_required
-@superuser_required
 @transaction.commit_on_success
 def index(request):
     if request.method == 'GET':   return _order_list(request)
     if request.method == 'POST':  return _order_creation(request)
 
 @login_required
-@superuser_required
 @transaction.commit_on_success
 def item(request, order_id):
     order = get_object_or_404(Order, id = order_id)
@@ -34,7 +32,6 @@ def item(request, order_id):
     if request.method == 'DELETE':  return _order_delete(request, order)
 
 @login_required
-@superuser_required
 def new(request):
     return direct_to_template(request, 'order/creation_form.html', { 'form': ProductForm() })
 

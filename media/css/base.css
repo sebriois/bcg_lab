@@ -1,32 +1,27 @@
-a:hover {
-    cursor: pointer;
+a:hover { cursor: pointer; }
+a.arrow_left    { background: url('../img/icons/arrow_left.png');    }
+a.arrow_right   { background: url('../img/icons/arrow_right.png');   }
+a.cart          { background: url('../img/icons/basket.png');        }
+a.cart_add      { background: url('../img/icons/basket_add.png');    }
+a.cart_delete   { background: url('../img/icons/basket_delete.png'); }
+a.cart_go       { background: url('../img/icons/basket_go.png');     }
+a.edit          { background: url('../img/icons/pencil.png');        }
+a.add           { background: url('../img/icons/add.png');           }
+a.delete        { background: url('../img/icons/cross.png');         }
+a.table_go      { background: url('../img/icons/table_go.png');      }
+a.table_filter  { background: url('../img/icons/table_gear.png');    }
+a.table_refresh { background: url('../img/icons/table_refresh.png'); }
+
+a.cart_add, a.cart_go, a.cart, a.cart_delete, a.edit, a.add,
+a.delete, a.table_refresh, a.table_filter, a.table_go, 
+a.arrow_right, a.arrow_left {
+    padding-left: 20px;
+    background-repeat: no-repeat;
+    background-position: center left;
 }
 
-a.cart_add {
-    background: url('../img/icons/cart_add.png');
-}
-
-a.cart_put {
-    background: url('../img/icons/cart_put.png');
-}
-
-a.cart_remove {
-    background: url('../img/icons/cart_remove.png');
-}
-
-a.cart_delete {
-    background: url('../img/icons/cart_delete.png');
-}
-
-a.edit{
-    background: url('../img/icons/pencil.png');
-}
-
-a.add{
-    background: url('../img/icons/add.png');
-}
-
-a.cart_add, a.cart_put, a.cart_remove, a.cart_delete, a.edit, a.add {
+p.info {
+    background: url('../img/icons/information.png');
     display:inline-block;
     padding: 2px 0px 2px;
     padding-left: 20px;
@@ -35,14 +30,9 @@ a.cart_add, a.cart_put, a.cart_remove, a.cart_delete, a.edit, a.add {
     background-position: center left;
 }
 
-/* Buttons */
-.btn_wrapper {
-    float: right;
-}
-
-.btn_wrapper_left {
-    float: left;
-}
+/* @group BUTTONS */
+.btn_wrapper { float: right; }
+.btn_wrapper_left { float: left; }
 
 a.btn_big, a.btn_small, a.btn_medium {
     color: #3d5051;
@@ -70,6 +60,12 @@ a.btn_big:hover, a.btn_small:hover, a.btn_medium:hover  {
     text-decoration: none;
     color: #507AAA;
 }
+
+#sidebar a.btn_big:hover, #sidebar a.btn_small:hover, #sidebar a.btn_medium:hover  {
+    text-decoration: none;
+    color: #507AAA;
+    background-color:transparent;
+}
 a.btn_big img, a.btn_small img, a.btn_medium img {
     border: 0px;
     margin-left: 20px;
@@ -79,6 +75,193 @@ a.btn_big img, a.btn_small img, a.btn_medium img {
     float: left;
 }
 
+/* @end */
+
 div.cleaner {
     clear:both;
+    padding-bottom:5px;
 }
+
+/* @group FORMS */
+form label {
+    width: 220px;
+    display: block;
+    float: left;
+    clear: both;
+    display: -moz-inline-box;
+    display: inline-block;
+    background: #edf3fe;
+    border-bottom: 2px solid #d7e1f2;
+    height: 15px;
+    line-height: 16px;
+    padding: 7px 5px 7px 10px;
+    margin: 0px 20px 3px 0px;
+    font-weight: bold;
+}
+
+form.filter_form label {
+    background: #ddd;
+    border-bottom: 2px solid #ccc;
+    color: #484848;
+}
+
+form.change_password label {
+    width:280px;
+}
+
+form input[type="text"] {
+    border: 1px solid #E1DDDA;
+    height: 19px;
+    padding: 5px;
+    color: #3d4e51;
+    float: left;
+    width: 200px;
+}
+
+form textarea {
+    border: 1px solid #E1DDDA;
+    float: left;
+    padding: 10px;
+    width: 650px;
+}
+
+form select {
+    padding: 5px;
+    float: left;
+    border: 1px solid #E1DDDA;
+    height: 28px;
+    width: 212px;
+    color: #3d4e51;
+}
+
+form select[multiple] {
+    height: auto;
+}
+
+form input[type="checkbox"], form input[type="radio"] {
+    width:auto;
+    height:auto;
+    margin-right: 10px;
+}
+
+form input[type="radio"]{
+    margin:0;
+    padding:0;
+    float:none;
+}
+
+form input[type="file"]{
+    border: none;
+    width: 300px;
+}
+
+fieldset {
+    background: #f6f7f8;
+}
+
+fieldset legend {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div.error {
+    background: #fff2ec;
+    border:1px solid #FA7050;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    padding-top: 8px;
+}
+
+
+#content ul.errorlist{
+    float: left;
+    margin:0;
+    padding-left:10px;
+    list-style-type:none;
+}
+
+#content ul.errorlist li {
+    background: url('../img/layout/brown-arrow.gif') no-repeat;
+    background-position: 2px 6px;
+    color:#E2350D;
+    font-size:12px;
+    font-style:italic;
+    font-weight:500;
+    padding-left: 10px;
+    margin-top:7px;
+}
+
+/* @end */
+
+
+/* @group MESSAGES */
+#main ul.messages { padding-left: 0; }
+
+#main ul.messages li {
+    list-style-type: none;
+    background-position: 5px 1px;
+    min-height: 28px;
+    padding: 9px 0px 0px 50px;
+    margin: 10px 0px 10px 0px;
+}
+#main ul.messages .info {
+    background: #ecf7fe url('../img/icons/msg-info.gif') no-repeat;
+    border: 1px solid #caeaff;
+    color: #2288c7;
+}
+#main ul.messages .warning {
+    background: #fff6e0 url('../img/icons/msg-warn.gif') no-repeat;
+    border: 1px solid #fbdf9c;
+    color: #f9a900;
+}
+#main ul.messages .error {
+    background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
+    border: 1px solid #fa7050;
+    color: #e2350d;
+}
+/* @end */
+
+/* @group PAGINATOR */
+.paginator {
+    font-size:11px;
+    line-height:22px;
+    margin:0;
+    margin-top: 5px;
+}
+.paginator a:link, .paginator a:visited {
+    padding:2px 6px;
+    margin:1px;
+    border:solid 1px #ccc;
+    background:white;
+    text-decoration:none;
+}
+.paginator .end {
+    border-width:2px !important;
+    margin-right:6px;
+}
+.paginator .this-page {
+    padding:2px 6px;
+    font-weight:bold;
+    font-size:13px;
+    vertical-align:top;
+    color:#507aaa;
+    /*border:dashed 1px #ccc;*/
+}
+.paginator a:hover {
+    color: #FFF;
+    background:#507aaa;
+}
+/* @end */
+
+/* @group MISC */
+#main p.help {
+    clear:both;
+    color:#51473d;
+    font-size:10px !important;
+    margin:0 0 5px 254px;
+}
+
+#main .margin-left{
+    margin-left:254px;
+}
+/* @end */

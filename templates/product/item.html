@@ -1,44 +1,16 @@
-{% extends "base_wide.html" %}
-{% load ordertags %}
-{% block title %} - {{ product.title }}{% endblock %}
+{% extends "base.html" %}
 
-{% block content_header %}
-<div class="btn_wrapper">
-  <a href="{% url product_delete product.id %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer cette substance
-  </a>
-</div>
-<div class="btn_wrapper">
-  <a href="{% url history_index %}?product={{product.cas_number}}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/book_open.png" />Historique des entrées/sorties
-  </a>
-</div>
-<h1>Gestion des substances</h1>
-<h2>Modification de la substance "{{ product.title }}"</h2>
-{% endblock %}
+{% block content_header %}Modification d'un produit{% endblock %}
 
 {% block main_content %}
-<h3>Valeurs actuelles</h3>
-<table class="grey" width="25%">
-  <tr><th>Rubrique référente</th><td>{{ product.referent_family }}</td></tr>
-  <tr><th>Quantité sur site</th><td>{{ product.site_quantity|floatformat:"-5" }} T</td></tr>
-  <tr><th>Quantité commandée</th><td>{{ product.ordered_quantity|floatformat:"-5" }} T</td></tr>
-  <tr><th>Seuil atteint</th><td>{{ product.classification_reached|default:"" }}</td></tr>
-  </tr>
-</table>
-<br />
-<form action="{{ product.get_absolute_url }}" method="POST">{% csrf_token %}
-  <h3>Modifier la substance</h3>
-  <fieldset>
+<form action="{% url product_item product.id %}" method="post">{% csrf_token %}
+    <input type="hidden" name="method" value="PUT" />
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
     {% for field in form %}
-      {% include "misc/form_snippet.html"%}
+        {% include "form_snippet.html"%}
     {% endfor %}
-  </fieldset>
-  <h3>Validation</h3>
-  <fieldset>
-      <button type="submit" class="button">Modifier</button>
-      <button type="reset" class="button">Réinitialiser</button>
-  </fieldset>
-  <input type="hidden" name="verb" value="PUT" id="id_verb" />
+    <button type="submit" class="button">Valider</button>
 </form>
 {% endblock %}

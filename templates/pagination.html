@@ -1,0 +1,9 @@
+{% load paginator %}
+{% load i18n %}
+<p class="paginator">
+{% if pagination_required %}
+{% for i in page_range %}
+    {% paginator_number request page i %}
+{% endfor %}
+{% endif %}
+</p>

@@ -47,26 +47,20 @@
         
     </div>
     
-    <div id="main">
-        <div id="sidebar">{% block sidebar %}{% endblock %}</div>
-        
-        <div id="content">
-            <div id="content_header">
-              <h2>{% block content_header %}{% endblock %}</h2>
-            </div>
-            
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                            {{ message|escape|safe }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
-            {% block main_content %}{% endblock %}
-        </div>
+    <div id="main" class="nosidebar">
+      {% block buttons %}{% endblock %}
+      <div class="cleaner"></div>
+      
+      {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                      {{ message|escape|safe }}
+                  </li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
     </div>
 </body>
 </html>

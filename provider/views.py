@@ -15,14 +15,12 @@ from order_manager.utils import info_msg, error_msg, warn_msg, superuser_require
 
 
 @login_required
-@superuser_required
 @transaction.commit_on_success
 def index(request):
     if request.method == 'GET':   return _provider_list(request)
     if request.method == 'POST':  return _provider_creation(request)
 
 @login_required
-@superuser_required
 @transaction.commit_on_success
 def item(request, provider_id):
     provider = get_object_or_404(Provider, id = provider_id)

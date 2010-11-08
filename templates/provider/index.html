@@ -4,10 +4,13 @@
 
 {% block sidebar %}
     <h3>Gestion des fournisseurs</h3>
-    <a href="{% url provider_new %}">Ajouter un fournisseur</a>
+    
+    <a href="{% url provider_new %}" class="btn_big">
+      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
+    </a>
 {% endblock %}
 
-{% block content_header %}Fournisseurs{% endblock %}
+{% block content_header %}Liste des fournisseurs{% endblock %}
 
 {% block main_content %}
 
@@ -15,14 +18,31 @@
 <table class="list">
   <thead>
       <th>Nom du fournisseur</th>
-      <th>Responsable</th>
+      <th>Responsables</th>
+      <th>Notes</th>
+      <th>Produits</th>
+      <th>Action</th>
   </thead>
   
   <tbody>
       {% for provider in provider_list %}
-        <tr>
+        <tr class="{% cycle 'even' 'odd' %}">
             <td>{{ provider.name }}</td>
-            <td>{{ provider.user_in_charge }}</td>
+            <td>
+              {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
+            </td>
+            <td>
+              <a href="#" class="">Voir</a>
+            </td>
+            <td>
+              <a href="{% url product_index %}?providers={{provider.id}}" class="table_go">Voir</a>
+              ({{ provider.product_set.all.count }})
+            </td>
+            <td>
+              {% if user in provider.user_in_charge.all or user.is_superuser %}
+                <a href="{% url provider_item provider.id %}" class="edit">Editer</a>
+              {% endif %}
+            </td>
         </tr>
       {% endfor %}
   </tbody>

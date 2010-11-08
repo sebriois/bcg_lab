@@ -1,82 +1,98 @@
-{% extends "base.html" %}
+{% extends "base_custom_content.html" %}
+{% load paginator product_tags %}
 
 {% block menu_product %}selected{% endblock %}
 
-{% block sidebar %}
-    <h3>Filtrer par produit</h3>
-    <input type="text" name="product" />
-    <input type="submit" value="Filtrer" />
-    
-    <h3>Filtrer par fournisseur</h3>
-    {% for p in providers %}
-        <a href="?provider={{ p.id }}">{{ p.name }}</a><br />
-    {% endfor %}
-{% endblock %}
-
-{% block content_header %}Liste des produits{% endblock %}
-
-{% block main_content %}
-
+{% block buttons %}
 <div class="btn_wrapper">
   <a href="{% url product_new %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un produit
+    <img src="{{ MEDIA_URL }}img/icons/add.png" />Créer un produit
   </a>
 </div>
+
 <div class="btn_wrapper">
   <a href="{% url cart_index %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/cart.png" />Voir mon panier
+    <img src="{{ MEDIA_URL }}img/icons/basket.png" />Voir mon panier
   </a>
 </div>
-<div class="cleaner"></div>
+{% endblock %}
+
+{% block content %}
 
 {% if products %}
-<table class="list">
-  <thead>
-      <th>Nom du produit</th>
-      <th>Conditionnement</th>
-      <th>Référence</th>
-      <th>Prix (en €)</th>
-      <th>N° Offre</th>
-      <th>Nomenclature</th>
-      <th>Action</th>
-  </thead>
+
+{# START: Filter box #}
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Filtrer la liste des produits</h2></div>
+  <form action="{% url product_index %}" method="get" accept-charset="utf-8" id="product_filter">
+    {% for field in filter_form %}
+      {% include "form_snippet.html"%}
+    {% endfor %}
+    
+    <div class="btn_wrapper_left">
+      <a href="#" id="submit_filter" class="btn_medium">
+        <img src="{{ MEDIA_URL }}img/icons/table_gear.png" />Filtrer
+      </a>
+    </div>
+    
+    <div class="btn_wrapper_left">
+      <a href="{% url product_index %}" class="btn_medium">
+        <img src="{{ MEDIA_URL }}img/icons/table_refresh.png" />Réinitialiser
+      </a>
+    </div>
+  </form>
+</div>
+{# END: Filter box #}
+
+
+{# START: Product list #}
+<div id="content" style="min-height:0">
+  <div id="content_header">
+    <h2>Liste des produits - Page {{ products.number }} sur {{ products.paginator.num_pages }}.</h2>
+  </div>
+  {% pagination products %}
+  <table class="list">
+    <thead>
+        <th>Fournisseur</th>
+        <th>Nom du produit</th>
+        <th>Conditionnement</th>
+        <th>Référence</th>
+        <th>Prix (en €)</th>
+        <th>N° Offre</th>
+        <th>Nomenclature</th>
+        <th>Dernière modification</th>
+        <th>Action</th>
+    </thead>
   
-  <tbody>
+    <tbody>
       {% for product in products.object_list %}
-        <tr>
+        <tr class="{% cycle 'even' 'odd' %}">
+            <td>{{ product.provider.name }}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.packaging }}</td>
             <td>{{ product.reference }}</td>
             <td>{{ product.price }}</td>
             <td>{{ product.offer_nb }}</td>
             <td>{{ product.nomenclature }}</td>
+            <td>{{ product.last_change }}</td>
             <td>
-                <a href="{% url product_add_cart product.id %}" class="cart_put">Ajouter au panier</a> 
-                <a href="#" class="edit">Editer</a>
+                <a href="{% url product_add_cart product.id %}" class="cart_add">Ajouter au panier</a> - 
+                <a href="{% url product_item product.id %}" class="edit">Editer</a>
+                {% if product|is_in_charge:user %}
+                 - <a href="{% url product_delete product.id %}" class="delete">Supprimer</a>                  
+                {% endif %}
             </td>
         </tr>
       {% endfor %}
-  </tbody>
-</table>
-
-<div class="pagination">
-    <span class="step-links">
-        {% if products.has_previous %}
-            <a href="?page={{ products.previous_page_number }}&provider={{provider}}">previous</a>
-        {% endif %}
-        
-        <span class="current">
-            Page {{ products.number }} of {{ products.paginator.num_pages }}.
-        </span>
-        
-        {% if products.has_next %}
-            <a href="?page={{ products.next_page_number }}&provider={{provider}}">next</a>
-        {% endif %}
-    </span>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>{% pagination products %}</td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
-
-{% else %}
-    <p>Aucun produit référencé</p>
+{# END: Product list #}
 {% endif %}
 
 {% endblock %}
