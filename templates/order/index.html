@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "main_classic.html" %}
 
 {% block menu_order %}selected{% endblock %}
 
@@ -11,9 +11,9 @@
     {% endfor %}
 {% endblock %}
 
-{% block content_header %}Commandes{% endblock %}
+{% block header %}Commandes{% endblock %}
 
-{% block main_content %}
+{% block content %}
 
 {% if orders %}
 <table class="list">

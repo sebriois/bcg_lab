@@ -2,7 +2,7 @@
 {% load ordertags %}
 {% block body_class %}product{% endblock %}
 
-{% block content_header %}
+{% block header %}
 <div class="btn_wrapper">
     <a href="{% url product_index %}" class="btn_big">
         <img src="{{ MEDIA_URL }}img/icons/folder_go.png" />Liste des substances
@@ -12,7 +12,7 @@
 <h2>Ajout d'une substance</h2>
 {% endblock %}
 
-{% block main_content %}
+{% block content %}
 <form action="{% url product_index %}" method="post">{% csrf_token %}
     <h3>Informations générales</h3>
     <p class="instructions">

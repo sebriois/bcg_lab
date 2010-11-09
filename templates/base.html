@@ -3,27 +3,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>LBCMCP - Gestion des commandes{% block title %}{% endblock %}</title>
+    <title>LBCMCP - Gestion des commandes</title>
     <link href="{{ MEDIA_URL }}img/favicon.gif" rel="icon" type="image/gif" />
     <link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/basecamp.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/base.css" type="text/css" />
-
+    
     <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-
+    
     <!-- Autocomplete widget -->
     <link rel="stylesheet" href="{{ MEDIA_URL }}css/autocomplete.css" type="text/css" />
     <script type="text/javascript" src="{{ MEDIA_URL }}js/autocomplete.js"></script>
     
     <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
-    {% block extra_head %}{% endblock %}
 </head>
 
-<body {% block extra_body %}{% endblock %}>
+<body>
     <div id="top-menu">
         <div id="account">
             <ul>
-                <li><a href="{% url logout %}" class="login">Déconnexion</a></li>
+                <li><a href="{% url logout %}" class="login">Déconnexion ({{user}})</a></li>
             </ul>
         </div>
         <ul>
@@ -47,26 +44,6 @@
         
     </div>
     
-    <div id="main">
-        <div id="sidebar">{% block sidebar %}{% endblock %}</div>
-        
-        <div id="content">
-            <div id="content_header">
-              <h2>{% block content_header %}{% endblock %}</h2>
-            </div>
-            
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                            {{ message|escape|safe }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
-            {% block main_content %}{% endblock %}
-        </div>
-    </div>
+    {% block main %}{% endblock %}
 </body>
 </html>

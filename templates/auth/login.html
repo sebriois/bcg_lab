@@ -6,26 +6,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Gestion des commandes - Identification</title>
     <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/login.css" />
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/shadow.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/login.js"></script>
 </head>
 
 <body>
 
 <div id="login-messages">
-  {% if messages %}
-  <ul class="messages">
-      {% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
+  {% include "block_messages.html" %}
   {{ form.non_field_errors }}
 </div>
 
 <div id="header">
-    <h1>LBCMCP - Gestion des commandes</h1>
+    <h1>Gestion des commandes<br />LBCMCP</h1>
 </div>
 
 <div id="wrapper">

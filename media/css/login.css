@@ -5,15 +5,14 @@
 body {
     margin: 0;
     padding: 0;
-    background: #edf3fe;
-/*    background-color:#e5e5e5;*/
+    background: #e5e5e5;
     color:#575757;
-    font-family:"Trebuchet MS", verdana, arial, helvetica, sans-serif;
+    font-family:eurostile, "Trebuchet MS", verdana, arial, helvetica, sans-serif;
     text-align: center; /* IE6 hack */
 }
 
 #header {
-    color: #507aaa;
+    color: #575757;
     margin-top: 50px;
     text-align: center;
     margin-bottom: 10px;
@@ -32,23 +31,15 @@ body {
     height: 240px;
     display: block;
     background-color: #fff;
-/*    background: url('../img/layout/bg-login.png') repeat-x;*/
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
+    -moz-box-shadow: 0px 0px 10px #999;
+    -webkit-box-shadow: 0px 0px 10px #999;
     border-radius: 10px;
 }
-form {
-    padding: 30px;
-}
+form { padding: 30px; }
 
-input[type="text"] {
-    margin-top:10px;
-    margin-bottom:10px;
-    width: 280px;
-    height: 25px;
-}
-
-input[type="password"] {
+input[type="text"], input[type="password"] {
     margin-top:10px;
     margin-bottom:10px;
     width: 280px;

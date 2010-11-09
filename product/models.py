@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from order_manager.provider.models import Provider
+from provider.models import Provider
 
 class Product(models.Model):
   provider      = models.ForeignKey( Provider, verbose_name = 'Fournisseur' )

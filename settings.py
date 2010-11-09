@@ -45,15 +45,16 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-ROOT_URL = 'order_manager/'
+PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+ROOT_URL = 'lbcmcp-orders/'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '%s/media'%os.path.dirname(os.path.abspath(__file__))
+MEDIA_ROOT = '%s/media' % PROJECT_PATH
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
-MEDIA_URL = '/%smedia/'%ROOT_URL
+MEDIA_URL = '/%smedia/' % ROOT_URL
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -76,13 +77,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'order_manager.middleware.HttpMethodsMiddleware',
-    'order_manager.middleware.ExceptionMiddleware'
+    'middleware.HttpMethodsMiddleware',
+    'middleware.ExceptionMiddleware'
 )
 
-ROOT_URLCONF = 'order_manager.urls'
-
-PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -98,10 +97,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    'order_manager.provider',
-    'order_manager.product',
-    'order_manager.order',
-    'order_manager.utils'
+    'provider',
+    'product',
+    'order',
+    'utils'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

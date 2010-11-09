@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from order_manager.provider.views import index, item, delete, new
+from provider.views import index, item, delete, new
 
 urlpatterns = patterns('',
   url(r'^new/$', new, name="provider_new"),

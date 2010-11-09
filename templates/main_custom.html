@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <div id="main" class="nosidebar">
+    {% block buttons %}{% endblock %}
+    <div class="cleaner"></div>
+    {% include "block_messages.html" %}
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}

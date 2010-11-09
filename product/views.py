@@ -7,15 +7,15 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 
-from order_manager.provider.models import Provider
-from order_manager.product.models import Product
-from order_manager.product.forms import ProductForm, ProductFilterForm
-from order_manager.order.models import Cart
+from provider.models import Provider
+from product.models import Product
+from product.forms import ProductForm, ProductFilterForm
+from order.models import Cart
 
-from order_manager.constants import *
-from order_manager.utils import info_msg, error_msg, warn_msg
-from order_manager.utils import superuser_required
-from order_manager.utils import paginate
+from constants import *
+from utils import info_msg, error_msg, warn_msg
+from utils import superuser_required
+from utils import paginate
 
 @login_required
 @transaction.commit_on_success

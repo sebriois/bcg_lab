@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from order_manager.product.views import index, item, delete, new, add_to_cart
+from product.views import index, item, delete, new, add_to_cart
 
 urlpatterns = patterns('',
   url(r'^new/$', new, name="product_new"),

@@ -14,9 +14,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/',        include(admin.site.urls)),
-    (r'^products/',     include('order_manager.product.urls')),
-    (r'^providers/',    include('order_manager.provider.urls')),
-    (r'^orders/',       include('order_manager.order.urls')),
+    (r'^products/',     include('product.urls')),
+    (r'^providers/',    include('provider.urls')),
+    (r'^orders/',       include('order.urls')),
     # (r'^users/',        include('user.urls')),
     (r'^login/$',       login, {'template_name': 'auth/login.html'}),
     url(r'^logout/$',   logout_then_login, name = "logout"),

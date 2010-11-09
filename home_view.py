@@ -2,7 +2,7 @@ from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from order_manager.order.models import Order
+from order.models import Order
 
 @login_required
 def home(request):

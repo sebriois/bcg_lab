@@ -2,7 +2,7 @@
 {% load ordertags %}
 {% block title %} - {{ product.title }}{% endblock %}
 
-{% block content_header %}
+{% block header %}
 <div class="btn_wrapper">
   <a href="{% url product_delete product.id %}" class="btn_big">
     <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer cette substance
@@ -17,7 +17,7 @@
 <h2>Modification de la substance "{{ product.title }}"</h2>
 {% endblock %}
 
-{% block main_content %}
+{% block content %}
 <h3>Valeurs actuelles</h3>
 <table class="grey" width="25%">
   <tr><th>Rubrique référente</th><td>{{ product.referent_family }}</td></tr>

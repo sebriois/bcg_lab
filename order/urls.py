@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import *
 
-from order_manager.order.views import index, item, delete, new
-from order_manager.order.cart_views import cart_index, cart_empty
-from order_manager.order.cart_views import cart_validate, cart_remove
+from order.views import index, item, delete, new
+from order.cart_views import cart_index, cart_empty
+from order.cart_views import cart_validate, cart_remove
 
 urlpatterns = patterns('',
   # Order

@@ -1,8 +1,8 @@
 # coding: utf-8
 from django import forms
 
-from order_manager.product.models import Product
-from order_manager.provider.models import Provider
+from product.models import Product
+from provider.models import Provider
 
 class ProductForm(forms.ModelForm):
     class Meta:

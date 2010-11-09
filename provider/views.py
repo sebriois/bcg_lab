@@ -7,11 +7,11 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 
-from order_manager.provider.models import Provider
-from order_manager.provider.forms import ProviderForm
+from provider.models import Provider
+from provider.forms import ProviderForm
 
-from order_manager.constants import *
-from order_manager.utils import info_msg, error_msg, warn_msg, superuser_required
+from constants import *
+from utils import info_msg, error_msg, warn_msg, superuser_required
 
 
 @login_required

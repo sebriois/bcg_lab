@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <div id="main">
+    <div id="sidebar">{% block sidebar %}{% endblock %}</div>
+    
+    <div id="content">
+      <div id="content_header">
+        <h2>{% block header %}{% endblock %}</h2>
+      </div>
+      
+      {% include "block_messages.html" %}
+      
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+{% endblock %}

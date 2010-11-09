@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "main_classic.html" %}
 
 {% block menu_provider %}selected{% endblock %}
 
@@ -10,9 +10,9 @@
     </a>
 {% endblock %}
 
-{% block content_header %}Liste des fournisseurs{% endblock %}
+{% block header %}Liste des fournisseurs{% endblock %}
 
-{% block main_content %}
+{% block content %}
 
 {% if provider_list %}
 <table class="list">

@@ -2,9 +2,9 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from order_manager.product.models import Product
-from order_manager.provider.models import Provider
-from order_manager.constants import STATE_CHOICES
+from product.models import Product
+from provider.models import Provider
+from constants import STATE_CHOICES
 
 class Order(models.Model):
   user          = models.ForeignKey(User)
