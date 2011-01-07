@@ -61,10 +61,10 @@ def _product_list(request):
     data = form.cleaned_data
     
     if data['product']:
-      product_list = product_list.filter( name__contains = data['product'] )
+      product_list = product_list.filter( name__icontains = data['product'] )
     
     if data['providers']:
-      product_list = product_list.filter( provider__in = data['providers'] )
+      product_list = product_list.filter( provider = data['providers'] )
   
   return direct_to_template(request, 'product/index.html',{
       'filter_form': form,

@@ -37,8 +37,9 @@
             <li><a href="{% url home %}" class="{% block menu_home %}{% endblock %}">Accueil</a></li>
             <li><a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">Fournisseurs</a></li>
             <li><a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">Produits</a></li>
-            <li><a href="{% url order_index %}" class="{% block menu_order %}{% endblock %}">Commandes</a></li>
             <li><a href="{% url cart_index %}" class="{% block menu_cart %}{% endblock %}">Panier</a></li>
+            <li><a href="{% url order_index %}" class="{% block menu_order %}{% endblock %}">Commandes en cours</a></li>
+            <li><a href="{% url order_index %}" class="{% block menu_history %}{% endblock %}">Historique des commandes</a></li>
           </ul>
         </div>
         

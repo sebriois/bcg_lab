@@ -3,81 +3,39 @@
 {% block menu_home %}selected{% endblock %}
 
 {% block content %}
-  <div id="content" style="min-height:0">
-    <div id="content_header"><h2>Vos commandes</h2></div>
-    {% if user_orders %}
-      <table class="list">
-        <thead>
-            <th>Fournisseur</th>
-            <th>Produits</th>
-            <th>Commande passée le</th>
-            <th>dernière modification</th>
-            <th>Statut</th>
-        </thead>
-
-        <tbody>
-            {% for order in user_orders %}
-              <tr>
-                  <td>{{ order.provider.name }}</td>
-                  <td>{{ order.products.all|join:", " }}</td>
-                  <td>{{ order.date_created }}</td>
-                  <td>{{ order.last_change }}</td>
-                  <td>{{ order.get_state_display }}</td>
-              </tr>
-            {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>Aucune commande en cours</p>
-    {% endif %}
+  <div id="content" style="min-height:0;width:75%;float:left;">
+    <div id="content_header"><h2>Commandes de l'équipe ...</h2></div>
+    <ul>
+      <li>
+        <a href="{% url cart_index %}">Consulter le panier</a>
+      </li>
+      <li>
+        <a href="{% url order_index %}">Consulter les commandes en cours</a>
+      </li>
+      <li>Consulter l'historique des commandes</li>
+    </ul>
   </div>
   
-  <div id="content" style="min-height:0">
-    <div id="content_header"><h2>Autres commandes en cours</h2></div>
+  <div id="content" style="min-height:0;width:20%;float:right;">
+    <div id="content_header"><h2>Autres commandes LBCMCP</h2></div>
     {% if other_orders %}
       <table class="list">
         <thead>
-            <th>Fournisseur</th>
-            <th>Produits</th>
-            <th>Commande passée par</th>
-            <th>Commande passée le</th>
-            <th>dernière modification</th>
-            <th>Statut</th>
+          <th>Fournisseur</th>
+          <th>Equipe</th>
         </thead>
-
+        
         <tbody>
-            {% for order in other_orders %}
-              <tr>
-                  <td>{{ order.provider.name }}</td>
-                  <td>{{ order.products.all|join:", " }}</td>
-                  <td>{{ order.user }}</td>
-                  <td>{{ order.date_created }}</td>
-                  <td>{{ order.last_change }}</td>
-                  <td>{{ order.get_state_display }}</td>
-              </tr>
-            {% endfor %}
+          {% for order in other_orders %}
+            <tr>
+              <td>{{ order.provider.name }}</td>
+              <td>{{ order.user }}</td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
     {% else %}
       <p>Aucune autre commande en cours</p>
     {% endif %}
-  </div>
-  
-  <div id="content" style="min-height:0">
-    <div id="content_header"><h2>Dernières connexions</h2></div>
-    <table class="list">
-      <thead>
-        <th>Utilisateur</th>
-        <th>Dernière connexion</th>
-      </thead>
-      <tbody>
-        {% for user_item in user_list %}
-        <tr class="{% cycle 'even' 'odd' %}">
-          <td>{{ user_item.username }}</td>
-          <td>{{ user_item.last_login }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
   </div>
 {% endblock %}

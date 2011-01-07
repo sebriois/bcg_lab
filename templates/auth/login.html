@@ -16,7 +16,7 @@
 </div>
 
 <div id="header">
-    <h1>Gestion des commandes<br />LBCMCP</h1>
+    <h2>Gestion des commandes<br />LBCMCP</h2>
 </div>
 
 <div id="wrapper">
@@ -27,7 +27,7 @@
             <label for="password">Mot de passe</label><br />
             {{ form.password }}<br />
             <br/>
-            <input type="submit" value="Connexion">
+            <input type="image" src="{{ MEDIA_URL }}img/layout/btn-login.png" value="Connexion" />
             <input type="hidden" name="next" value="{{ next }}" />
         </form>
     </div>

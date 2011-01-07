@@ -1,11 +1,10 @@
 {% extends "main_classic.html" %}
+{% load paginator %}
 
 {% block menu_order %}selected{% endblock %}
 
 {% block sidebar %}
-    <h3>Panier</h3>
-    
-    <h3>Filtrer par fournisseur</h3>
+    <h3>Fournisseur</h3>
     {% for p in providers %}
         <a href="?provider={{ p.id }}">{{ p.name }}</a><br />
     {% endfor %}
@@ -18,46 +17,31 @@
 {% if orders %}
 <table class="list">
   <thead>
-      <th>Fournisseur</th>
-      <th>Produits</th>
-      <th>Commande passée par</th>
-      <th>Commande passée le</th>
-      <th>dernière modification</th>
-      <th>Statut</th>
+    <th>Date</th>
+    <th>Fournisseur</th>
+    <th>Produits</th>
+    <th>Utilisateur</th>
+    <th>Statut</th>
   </thead>
   
   <tbody>
-      {% for order in orders.object_list %}
-        <tr>
-            <td>{{ order.provider.name }}</td>
-            <td>{{ order.products.all|join:", " }}</td>
-            <td>{{ order.user.username }}</td>
-            <td>{{ order.date_created }}</td>
-            <td>{{ order.last_change }}</td>
-            <td>{{ order.get_state_display }}</td>
-        </tr>
-      {% endfor %}
+    {% for order in orders.object_list %}
+      <tr class="{% cycle 'odd' 'even' %}">
+        <td>{{ order.date_created|date }}</td>
+        <td>{{ order.provider.name }}</td>
+        <td>{{ order.products.all|join:", " }}</td>
+        <td>{{ order.user.username }}</td>
+        <td>{{ order.get_state_display }} (le {{ order.last_change|date }})</td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if orders.has_previous %}
-            <a href="?page={{ orders.previous_page_number }}&provider={{provider}}">previous</a>
-        {% endif %}
-        
-        <span class="current">
-            Page {{ orders.number }} of {{ orders.paginator.num_pages }}.
-        </span>
-        
-        {% if orders.has_next %}
-            <a href="?page={{ orders.next_page_number }}&provider={{provider}}">next</a>
-        {% endif %}
-    </span>
-</div>
+{% pagination orders %}
 
 {% else %}
-    <p>Aucun produit référencé</p>
+    <p>Aucune commande en cours</p>
 {% endif %}
 
+<div class="cleaner"></div>
 {% endblock %}

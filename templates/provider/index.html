@@ -1,33 +1,36 @@
-{% extends "main_classic.html" %}
+{% extends "main_custom.html" %}
 
 {% block menu_provider %}selected{% endblock %}
 
-{% block sidebar %}
-    <h3>Gestion des fournisseurs</h3>
-    
-    <a href="{% url provider_new %}" class="btn_big">
-      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
-    </a>
+{% block buttons %}
+<div class="btn_wrapper">
+  <a href="{% url provider_new %}" class="btn_big">
+    <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
+  </a>
+</div>
 {% endblock %}
-
-{% block header %}Liste des fournisseurs{% endblock %}
 
 {% block content %}
 
-{% if provider_list %}
-<table class="list">
-  <thead>
+<div id="content">
+  <div id="content_header"><h2>Liste des fournisseurs</h2></div>
+  
+  {% if provider_list %}
+  <table class="list">
+    <thead>
       <th>Nom du fournisseur</th>
       <th>Responsables</th>
       <th>Notes</th>
-      <th>Produits</th>
       <th>Action</th>
-  </thead>
-  
-  <tbody>
-      {% for provider in provider_list %}
-        <tr class="{% cycle 'even' 'odd' %}">
-            <td>{{ provider.name }}</td>
+    </thead>
+    
+    <tbody>
+        {% for provider in provider_list %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            <td>
+              <a href="{% url product_index %}?providers={{provider.id}}" class="table_go">{{ provider.name }}</a>
+              ({{ provider.product_set.all.count }} produits)
+            </td>
             <td>
               {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
             </td>
@@ -35,18 +38,16 @@
               <a href="#" class="">Voir</a>
             </td>
             <td>
-              <a href="{% url product_index %}?providers={{provider.id}}" class="table_go">Voir</a>
-              ({{ provider.product_set.all.count }})
-            </td>
-            <td>
               {% if user in provider.user_in_charge.all or user.is_superuser %}
                 <a href="{% url provider_item provider.id %}" class="edit">Editer</a>
               {% endif %}
             </td>
-        </tr>
-      {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-
+          </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p>Aucun fournisseur</p>
+  {% endif %}
+</div>
 {% endblock %}

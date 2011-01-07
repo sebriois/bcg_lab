@@ -125,4 +125,4 @@ DEFAULT_FROM_EMAIL = "no-reply@lbcmcp.com"
 LOGIN_URL = '/%slogin/' % ROOT_URL
 LOGIN_REDIRECT_URL = '/' + ROOT_URL
 
-DATE_FORMAT = "d/m/Y - H:i"
+DATE_FORMAT = "d/m/Y"

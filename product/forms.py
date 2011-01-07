@@ -11,7 +11,7 @@ class ProductForm(forms.ModelForm):
 class ProductFilterForm(forms.Form):
   PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
   
-  providers  = forms.ModelMultipleChoiceField(
+  providers  = forms.ModelChoiceField(
                   label = u"Fournisseur",
                   queryset = Provider.objects.all(),
                   required = False
@@ -22,6 +22,7 @@ class ProductFilterForm(forms.Form):
                     'class' : 'autocomplete',
                     'choices': PRODUCT_CHOICES
                   }),
+                  help_text = "Appuyez sur 'Esc' pour fermer la liste de choix.",
                   required = False
                )
 

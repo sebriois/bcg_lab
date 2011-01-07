@@ -5,9 +5,9 @@
 body {
     margin: 0;
     padding: 0;
-    background: #e5e5e5;
-    color:#575757;
-    font-family:eurostile, "Trebuchet MS", verdana, arial, helvetica, sans-serif;
+    background: #f7f7f7;
+    color: #313131;
+    font-family:"Lucida Grande", "Trebuchet MS", verdana, arial, helvetica, sans-serif;
     text-align: center; /* IE6 hack */
 }
 
@@ -20,25 +20,23 @@ body {
 
 #wrapper {
     margin: 0 auto;
-    margin-top: 70px;
-    width: 410px;
-    height: 240px;
+    margin-top: 65px;
+    width: 466px;
     display: block;
     text-align: left;
 }
 #login {
-    width: 410px;
-    height: 240px;
+/*    height: 270px;*/
     display: block;
     background-color: #fff;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    -moz-box-shadow: 0px 0px 10px #999;
-    -webkit-box-shadow: 0px 0px 10px #999;
+    -moz-box-shadow: 0px 0px 6px #999;
+    -webkit-box-shadow: 0px 0px 6px #999;
     border-radius: 10px;
 }
-form { padding: 30px; }
-
+form { padding: 25px; }
+label { font-weight: bold; font-size: 14px; }
 input[type="text"], input[type="password"] {
     margin-top:10px;
     margin-bottom:10px;
