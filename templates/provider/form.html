@@ -1,9 +1,9 @@
 {% extends "main_classic.html" %}
 
-{% block header %}Nouveau produit{% endblock %}
+{% block header %}Nouveau fournisseur{% endblock %}
 
 {% block content %}
-<form action="{% url product_index %}" method="post">{% csrf_token %}
+<form action="{% url provider_index %}" method="post">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>

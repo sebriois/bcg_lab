@@ -1,0 +1,14 @@
+Une nouvelle commande est en attente de validation:
+
+* Commande passée par {{ order.get_full_name }} le {{ order.date_created|date }}
+* Contenu:
+{% for order_item in order.items.all %}
+  - Produit: {{ order_item.product.name}}
+  - Conditionnement: {{ order_item.product.packaging }}
+  - Référence: {{ order_item.product.reference }}
+  - N° offre: {{ order_item.product.offer_nb }}
+  - Prix {{ order_item.product.price }} €
+{% endfor %}
+* Total commande: {{ order.price }} €
+
+Pour consulter le détail de cette commande et la valider, cliquez-ici: http://st189-lbcmcp.ups-tlse.fr{{ order.get_absolute_url }}

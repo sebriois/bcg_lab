@@ -1,0 +1,50 @@
+{% load i18n %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Gestion des commandes - Nouvel utilisateur</title>
+    <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/login.css" />
+    <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/form.css" />
+</head>
+
+<body>
+
+<div id="login-messages">
+  {% include "block_messages.html" %}
+  {{ form.non_field_errors }}
+</div>
+
+<div id="header">
+    <h2>Gestion des commandes LBCMCP<br />Nouvel utilisateur</h2>
+</div>
+
+<div id="new_account">
+    <div id="login">
+        <form action="{% url new_member %}" method="POST" accept-charset="utf-8">{% csrf_token %}
+          <input type="hidden" name="user" value="{{user_id}}" />
+          {% with form.team as field %}
+            {% include "form_snippet.html" %}
+          {% endwith %}
+          
+          {% with form.first_name as field %}
+            {% include "form_snippet.html" %}
+          {% endwith %}
+          
+          {% with form.last_name as field %}
+            {% include "form_snippet.html" %}
+          {% endwith %}
+          
+          {% with form.email as field %}
+            {% include "form_snippet.html" %}
+          {% endwith %}
+          <button type="submit" class="button">Valider l'enregistrement</button>
+        </form>
+        <div id="register">
+          <a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

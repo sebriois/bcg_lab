@@ -1,47 +1,95 @@
-{% extends "main_classic.html" %}
-{% load paginator %}
+{% extends "main_custom.html" %}
+{% load paginator filters %}
 
 {% block menu_order %}selected{% endblock %}
-
-{% block sidebar %}
-    <h3>Fournisseur</h3>
-    {% for p in providers %}
-        <a href="?provider={{ p.id }}">{{ p.name }}</a><br />
-    {% endfor %}
-{% endblock %}
-
-{% block header %}Commandes{% endblock %}
-
 {% block content %}
 
-{% if orders %}
-<table class="list">
-  <thead>
-    <th>Date</th>
-    <th>Fournisseur</th>
-    <th>Produits</th>
-    <th>Utilisateur</th>
-    <th>Statut</th>
-  </thead>
+<div id="content" style="min-height:0">
+  {% if team.is_secretary %}
+    <div id="content_header"><h2>Commandes à traiter</h2></div>
+  {% else %}
+    <div id="content_header"><h2>Commandes équipe {{ user.teammember_set.get.team }}</h2></div>
+  {% endif %}
   
-  <tbody>
-    {% for order in orders.object_list %}
-      <tr class="{% cycle 'odd' 'even' %}">
-        <td>{{ order.date_created|date }}</td>
-        <td>{{ order.provider.name }}</td>
-        <td>{{ order.products.all|join:", " }}</td>
-        <td>{{ order.user.username }}</td>
-        <td>{{ order.get_state_display }} (le {{ order.last_change|date }})</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  {% if orders.object_list %}
+    <table class="list">
+      <thead>
+        {% if team.is_secretary %}<th>Equipe</th>{% endif %}
+        <th>Date</th>
+        <th>Fournisseur</th>
+        <th>Prix</th>
+        <th>Statut</th>
+        <th>Dernière MAJ</th>
+        <th>Action</th>
+      </thead>
+      
+      <tbody>
+        {% for order in orders.object_list %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            {% if team.is_secretary %}<td>{{ order.team.name }}</td>{% endif %}
+            <td>{{ order.date_created|date }}</td>
+            <td>{{ order.provider.name }}</td>
+            <td>{{ order.price }} €</td>
+            <td>
+              <b>{{ order.get_status_display }}</b>
+              {% if order.date_delivered %}
+                <b>le {{ order.date_delivered|date }}</b>
+              {% endif %}
+            </td>
+            <td>{{ order.last_change|date }}</td>
+            <td>
+              {% if order.status == 1 and order.team|is_chief:user %}
+                <a href="{% url set_next_status order.id %}" class="check button">
+                  Valider
+                </a>
+                <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">
+                  Supprimer
+                </a>
+              {% else %}{% if order.status == 2 and user|is_secretary %}
+                <a href="{% url set_next_status order.id %}" class="check button">
+                  En cours de traitement
+                </a>
+              {% else %}{% if order.status == 2 or order.status == 3 %}
+                <a href="{% url order_delivered order.id %}" class="notice button dateDialog">
+                  Commande réceptionnée
+                </a>
+              {% endif %}{% endif %}{% endif %}
+              <a href="{{ order.get_absolute_url }}" class="zoomin button">
+                Voir détail
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% pagination orders %}
+    <div class="cleaner"></div>
+  {% else %}
+    <p>Aucune commande en cours.</p>
+  {% endif %}
+</div>
 
-{% pagination orders %}
+<div id="dialog-date" title="Date de livraison">
+  <div class="form-row">
+    <p>Veuillez indiquer la date à laquelle la commande a été livrée.</p>
+    <label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
+    <div class="cleaner"></div>
+    <input type="text" name="delivery_date" class="datepicker" />
+    <div class="cleaner"></div>
+  </div>
+</div>
 
-{% else %}
-    <p>Aucune commande en cours</p>
-{% endif %}
+<div id="dialog-confirm-del" title="Confirmer la suppression">
+  Êtes-vous sûr de vouloir supprimer cette commande ?
+</div>
 
-<div class="cleaner"></div>
+<div id="dialog-qty" title="Modifier la quantité">
+  <div class="form-row">
+    <label for="quantity">Quantité</label>
+    <div class="cleaner"></div>
+    <input type="text" name="quantity" value="0" />
+  </div>
+</div>
+
 {% endblock %}

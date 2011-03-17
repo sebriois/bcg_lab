@@ -1,13 +1,17 @@
+{# PAGE FOURNISSEUR #}
+
 {% extends "main_custom.html" %}
 
 {% block menu_provider %}selected{% endblock %}
 
 {% block buttons %}
-<div class="btn_wrapper">
-  <a href="{% url provider_new %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
-  </a>
-</div>
+{% if user.is_superuser %}
+  <div class="btn_wrapper">
+    <a href="{% url provider_new %}" class="btn_big">
+      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
+    </a>
+  </div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -20,7 +24,6 @@
     <thead>
       <th>Nom du fournisseur</th>
       <th>Responsables</th>
-      <th>Notes</th>
       <th>Action</th>
     </thead>
     
@@ -28,18 +31,30 @@
         {% for provider in provider_list %}
           <tr class="{% cycle 'even' 'odd' %}">
             <td>
-              <a href="{% url product_index %}?providers={{provider.id}}" class="table_go">{{ provider.name }}</a>
-              ({{ provider.product_set.all.count }} produits)
+              {% if provider.reseller %}
+                {{ provider.name }} ({{ provider.product_set.all.count }} produits)
+                - Revendeur: 
+                <a href="{% url product_index %}?providers={{provider.reseller.id}}" class="table_go">
+                  {{ provider.reseller.name }}
+                </a>
+              {% else %}
+                <a href="{% url product_index %}?providers={{provider.id}}" class="table_go">
+                  {{ provider.name }}
+                </a>({{ provider.product_set.all.count }} produits)
+              {% endif %}
             </td>
             <td>
               {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
             </td>
             <td>
-              <a href="#" class="">Voir</a>
-            </td>
-            <td>
-              {% if user in provider.user_in_charge.all or user.is_superuser %}
-                <a href="{% url provider_item provider.id %}" class="edit">Editer</a>
+              {% if user in provider.users_in_charge.all or user.is_superuser %}
+                <a href="{% url provider_item provider.id %}" class="pencil button">Editer</a>
+                <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus button">
+                  Ajouter&nbsp;un&nbsp;produit
+                </a>
+              {% endif %}
+              {% if provider.notes %}
+                <button class="comment button notesDialog" content="{{ provider.notes }}">Voir les notes</button>
               {% endif %}
             </td>
           </tr>
@@ -50,4 +65,9 @@
     <p>Aucun fournisseur</p>
   {% endif %}
 </div>
+
+<div id="dialog" title="Notes">
+  <p id="dialog_content">{# text set with js #}</p>
+</div>
+
 {% endblock %}

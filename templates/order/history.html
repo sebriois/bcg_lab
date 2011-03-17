@@ -1,0 +1,87 @@
+{% extends "main_custom.html" %}
+{% load paginator %}
+
+{% block menu_history %}selected{% endblock %}
+
+{% block content %}
+{# Start: FILTER FORM #}
+<div id="content" style="min-height:0" class="collapsable">
+  <h2>
+    <div class="ui-icon ui-icon-arrowthickstop-1-n" style="float:left;margin-right:10px"></div>
+    Filtres
+  </h2>
+  <div class="content">
+    <form action="{% url order_history %}" method="POST" id="history_filter">{% csrf_token %}
+      <strong>Filtrer les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+      <table>
+        <tr>
+          <td>Equipe:</td>
+          <td>{{ filter_form.team }}</td>
+          <td width="10%"></td>
+          <td>Date&nbsp;d'enregistrement&nbsp;(min/max):</td>
+          <td>{{ filter_form.date_created__gte }}</td>
+          <td>{{ filter_form.date_created__lte }}</td>
+        </tr>
+        <tr>
+          <td>Fournisseur:</td>
+          <td>{{filter_form.provider}}</td>
+          <td width="10%"></td>
+          <td>Date&nbsp;de&nbsp;livraison&nbsp;(min/max):</td>
+          <td>{{ filter_form.date_delivered__gte }}</td>
+          <td>{{ filter_form.date_delivered__lte }}</td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td width="10%"></td>
+          <td>Prix (min/max):</td>
+          <td>{{ filter_form.price__gte }}</td>
+          <td>{{ filter_form.price__lte }}</td>
+        </tr>
+      </table>
+      <button type="submit" class="all button">Filtrer</button>
+      <a href="{% url order_history %}" class="refresh button">Réinitialiser</a>
+    </form>
+  </div>
+</div>
+{# End: FILTER FORM #}
+
+
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Historique des commandes</h2></div>
+  
+  {% if orders.object_list %}
+    <table class="list">
+      <thead>
+        <th>Date d'enregistrement</th>
+        <th>Date de livraison</th>
+        <th>Equipe</th>
+        <th>Fournisseur</th>
+        <th>Prix</th>
+        <th>Action</th>
+      </thead>
+    
+      <tbody>
+        {% for order in orders.object_list %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            <td>{{ order.date_created|date }}</td>
+            <td>{{ order.date_delivered|date }}</td>
+            <td>{{ order.team }} ({{order.username}})</td>
+            <td>{{ order.provider.name }}</td>
+            <td>{{ order.price }}</td>
+            <td>
+              <a href="{{ order.get_absolute_url }}" class="zoomin button">
+                Voir détail
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  
+    {% pagination orders %}
+  {% else %}
+    <p>Aucun résultat.</p>
+  {% endif %}
+  <div class="cleaner"></div>
+</div>
+{% endblock %}

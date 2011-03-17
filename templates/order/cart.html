@@ -1,57 +1,49 @@
 {% extends "main_custom.html" %}
+{% load filters %}
 
 {% block menu_cart %}selected{% endblock %}
 
 {% block buttons %}
   <div class="btn_wrapper">
-    <a href="{% url cart_empty cart.id %}" class="btn_medium">
+    <a href="{% url cart_empty %}" class="btn_medium">
       <img src="{{ MEDIA_URL }}img/icons/basket_delete.png" />Vider le panier
     </a>
   </div>
 {% endblock %}
 
 {% block content %}
-
-{% for provider, products in cart_by_provider.items %}
+{% for order in order_list %}
   <div id="content" style="min-height:0">
-    <div id="content_header"><h2>{{ provider }}</h2></div>
-    <table class="list">
-      <thead>
-          <th>Nom du produit</th>
-          <th>Conditionnement</th>
-          <th>Référence</th>
-          <th>Prix (en €)</th>
-          <th>N° Offre</th>
-          <th>Nomenclature</th>
-          <th>Action</th>
-      </thead>
-      <tbody>
-        {% for product in products %}
-            <tr class="{% cycle 'even' 'odd' %}">
-                <td>{{ product.name }}</td>
-                <td>{{ product.packaging }}</td>
-                <td>{{ product.reference }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.offer_nb }}</td>
-                <td>{{ product.nomenclature }}</td>
-                <td>
-                    <a href="{% url cart_remove cart.id,product.id %}" class="cart_delete">Retirer du panier</a>
-                </td>
-            </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% if order.status == 1 %}
+      <div id="content_header"><h2>{{ order.provider }} - Commande en attente de validation</h2></div>
+    {% else %}
+      <div id="content_header"><h2>{{ order.provider }}</h2></div>
+    {% endif %}
     
-    <div class="cleaner"></div>
-    
-    <a href="{% url cart_validate cart.id,provider.id %}" class="btn_medium">
-      <img src="{{ MEDIA_URL }}img/icons/basket_go.png" />Commander
-    </a>
+    {% include "order/_order_detail.html" %}
   </div>
 {% empty %}
-<div id="content">
-  <div id="content_header"><h2>Panier</h2></div>
-  <p>Votre panier est vide</p>
-</div>
+  <div id="content">
+    <div id="content_header"><h2>Panier</h2></div>
+    <p>Votre panier est vide</p>
+  </div>
 {% endfor %}
+
+<div id="dialog-qty" title="Modifier la quantité">
+  <div class="form-row">
+    <label for="quantity">Quantité</label>
+    <div class="cleaner"></div>
+    <input type="text" name="quantity" value="0" />
+  </div>
+</div>
+
+<div id="dialog-confirm-del" title="Confirmer la suppression">
+  Êtes-vous sûr de vouloir supprimer cette commande ?
+</div>
+
+{# START: Confirmation dialog for ordering #}
+<div id="dialog-confirm" title="Confirmation requise">
+  Un email va être envoyé à {{ user.teammember_set.get.team.chief.get_full_name }} pour validation.
+</div>
+{# END #}
 {% endblock %}

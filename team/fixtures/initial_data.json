@@ -1,0 +1,20 @@
+[
+    {
+        "pk": 1, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "briois", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": true, 
+            "is_staff": true, 
+            "last_login": "2011-01-18 09:59:43", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$780dc$6be91c39966f918b97baa431800efc7839b81880", 
+            "email": "", 
+            "date_joined": "2011-01-18 09:59:43"
+        }
+    }
+]

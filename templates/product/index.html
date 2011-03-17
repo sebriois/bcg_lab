@@ -1,64 +1,50 @@
+{# PAGE PRODUITS #}
+
 {% extends "main_custom.html" %}
-{% load paginator product_tags %}
+{% load paginator filters %}
 
 {% block menu_product %}selected{% endblock %}
-
-{% block buttons %}
-<div class="btn_wrapper">
-  <a href="{% url product_new %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/add.png" />Créer un produit
-  </a>
-</div>
-
-<div class="btn_wrapper">
-  <a href="{% url cart_index %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/basket.png" />Voir mon panier
-  </a>
-</div>
-{% endblock %}
 
 {% block content %}
 
 {% if products %}
 
 {# START: Filter box #}
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Filtrer la liste des produits</h2></div>
-  <form action="{% url product_index %}" method="get" accept-charset="utf-8" id="product_filter">
+<div id="content" style="float:left;min-height:0;margin-right:10px">
+  <h2>Filtrer par fournisseur</h2>
+  <form action="{% url product_index %}" method="get">
     <table>
       <tr>
+        <td>{{ filter_form.provider }}</td>
         <td>
-          Fournisseur:<br />
-          {{ filter_form.providers }}
-          <div class="cleaner"></div>
+          <button type="submit" class="all button">Filtrer</button>
         </td>
         <td>
-          Produit <strong>('<code>esc</code>' pour fermer la liste)</strong>:<br />
-          {{ filter_form.product }}
-          <div class="cleaner"></div>
-        </td>
-        <td>
-          <input type="submit" value="Filtrer" />
+          <a href="{% url product_index %}" class="refresh button">Liste globale</a>
         </td>
       </tr>
     </table>
-    
-        {#  #}
-        {# <div class="btn_wrapper_left"> #}
-        {#   <a href="#" id="submit_filter" class="btn_medium"> #}
-        {#     <img src="{{ MEDIA_URL }}img/icons/table_gear.png" />Filtrer #}
-        {#   </a> #}
-        {# </div> #}
-        {#  #}
-        {# <div class="btn_wrapper_left"> #}
-        {#   <a href="{% url product_index %}" class="btn_medium"> #}
-        {#     <img src="{{ MEDIA_URL }}img/icons/table_refresh.png" />Réinitialiser #}
-        {#   </a> #}
-        {# </div> #}
+  </form>
+</div>
+<div id="content" style="float:left;min-height:0">
+  <h2>Filtrer par produit</h2>
+  <form action="{% url product_index %}" method="get">
+    <table>
+      <tr>
+        <td>{{ filter_form.product }}</td>
+        <td>
+          <button type="submit" class="all button">Filtrer</button>
+        </td>
+        <td>
+          <a href="{% url product_index %}" class="refresh button">Liste globale</a>
+        </td>
+      </tr>
+    </table>
   </form>
 </div>
 {# END: Filter box #}
 
+<div class="cleaner"></div>
 
 {# START: Product list #}
 <div id="content" style="min-height:0">
@@ -73,7 +59,7 @@
         <th>Nom du produit</th>
         <th>Conditionnement</th>
         <th>Référence</th>
-        <th>Prix (en €)</th>
+        <th>Prix</th>
         <th>N° Offre</th>
         <th>Nomenclature</th>
         <th>MAJ</th>
@@ -84,17 +70,20 @@
       {% for product in products.object_list %}
         <tr class="{% cycle 'even' 'odd' %}">
             <td>{{ product.provider.name }}</td>
-            <td>
-              <a href="{% url product_item product.id %}" class="edit" title="Editer">{{ product.name }}</a>
-            </td>
+            <td>{{ product.name }}</td>
             <td>{{ product.packaging }}</td>
             <td>{{ product.reference }}</td>
-            <td>{{ product.price }}</td>
+            <td>{{ product.price }} €</td>
             <td>{{ product.offer_nb }}</td>
             <td>{{ product.nomenclature }}</td>
             <td>{{ product.last_change|date }}</td>
             <td>
-              <a href="{% url product_add_cart product.id %}" class="cart_add">Ajouter&nbsp;au&nbsp;panier</a>
+              <a href="{% url cart_add product.id,1 %}?{{url_params}}" class="quantityDialog plus button">
+                Ajouter&nbsp;au&nbsp;panier
+              </a>
+              {% if product|is_in_charge:user %}
+                <a href="{% url product_item product.id %}" class="pencil button">Editer</a>                
+              {% endif %}
             </td>
         </tr>
       {% endfor %}
@@ -109,17 +98,16 @@
 {# END: Product list #}
 
 {# START: Quantity Dialog #}
-<div id="dialog-form" title="Quantité">
-
-1
-form>
-  <fieldset>
+<div id="dialog-qty" title="Saisissez la quantité à commander">
+  <div class="form-row">
     <label for="quantity">Quantité</label>
-    <input type="text" name="quantity" class="text ui-widget-content ui-corner-all" />
-  </fieldset>
-</form>
+    <div class="cleaner"></div>
+    <input type="text" name="quantity" value="1" />
+    <div class="cleaner"></div>
+  </div>
 </div>
 {# END: Quantity Dialog #}
+
 {% endif %}
 
 {% endblock %}

@@ -3,39 +3,22 @@
 {% block menu_home %}selected{% endblock %}
 
 {% block content %}
-  <div id="content" style="min-height:0;width:75%;float:left;">
-    <div id="content_header"><h2>Commandes de l'équipe ...</h2></div>
-    <ul>
-      <li>
-        <a href="{% url cart_index %}">Consulter le panier</a>
-      </li>
-      <li>
-        <a href="{% url order_index %}">Consulter les commandes en cours</a>
-      </li>
-      <li>Consulter l'historique des commandes</li>
-    </ul>
+<div id="content" style="min-height:0;">
+  <div id="content_header"><h2>TODO</h2></div>
+  <ul>
+    <li>Equipe gestion:
+      <ul>
+        <li>Créer des permissions/accès spécifiques</li>
+        <li>Communication avec XLab/SIFAC ?</li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<div id="content" style="min-height:0;">
+  <div id="content_header"><h2>Statistiques</h2></div>
+  <div>
+    <h4>Répartition des commandes par mois :</h4>
+    <img src="https://chart.googleapis.com/chart?{{url_args}}" />
   </div>
-  
-  <div id="content" style="min-height:0;width:20%;float:right;">
-    <div id="content_header"><h2>Autres commandes LBCMCP</h2></div>
-    {% if other_orders %}
-      <table class="list">
-        <thead>
-          <th>Fournisseur</th>
-          <th>Equipe</th>
-        </thead>
-        
-        <tbody>
-          {% for order in other_orders %}
-            <tr>
-              <td>{{ order.provider.name }}</td>
-              <td>{{ order.user }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>Aucune autre commande en cours</p>
-    {% endif %}
-  </div>
+</div>
 {% endblock %}

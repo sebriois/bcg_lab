@@ -1,0 +1,104 @@
+form { 
+  padding: 25px;
+  padding-bottom: 20px;
+}
+
+form label {
+    float: left;
+    width: 220px;
+    height:  25px;
+    display: block;
+    line-height: 25px;
+    color: #333;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+textarea, select, input[type="text"], input[type="password"] {
+    float: left;
+    padding: 5px;
+    width: 200px;
+    height: 15px;
+    margin-top: 5px;
+}
+
+input[type="image"] {
+    margin-top: 10px;
+}
+
+.cleaner {
+  clear: both;
+}
+
+form textarea               { width: 650px; height: auto; padding: 10px; }
+form select                 { width: 213px; height: 30px; }
+form select[multiple]       { height: auto; }
+form input[type="checkbox"] { width: auto; height: auto; margin-right: 10px; }
+form input[type="radio"]    { width: auto; height: auto; float: none; padding: 0; }
+form input[type="file"]     { width: 300px; border: none; }
+
+fieldset { background: #f6f7f8; }
+fieldset legend { font-size: 14px; font-weight: bold; }
+
+
+div.form-row {
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+div.form-row.error {
+    background: #fff6e0;
+    border: 1px solid #fbdf9c;
+    color: #f9a900;
+    
+    margin-bottom: 5px;
+    padding: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-box-shadow: 0px 0px 6px #999;
+    -webkit-box-shadow: 0px 0px 6px #999;
+    border-radius: 10px;
+}
+
+div.form-row.error ul.errorlist {
+    float: right;
+    margin: 0;
+    padding: 0;
+}
+
+div.form-row.error ul.errorlist li {
+    border: 0;
+    list-style-type: none;
+    min-height: 28px;
+    padding: 9px 0px 0px 40px;
+    background: #fff6e0 url('../img/icons/msg-warn.gif') no-repeat;
+    color: #f9a900;
+/*    background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
+    color: #c23c00;
+*/    font-size:14px;
+}
+
+div.form-row.error label {
+  width: 210px;
+}
+
+div.form-row p.help {
+    clear:both;
+    color:#51473d;
+    font-size:10px !important;
+}
+
+form.change_password div.form-row label  { 
+    width:290px;
+}
+
+/*
+ *
+ * SPECIFIC FORMS
+ *
+ */
+
+form#history_filter select {
+  width: auto;
+  float: none;
+}

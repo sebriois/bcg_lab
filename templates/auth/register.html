@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Gestion des commandes - Identification</title>
+    <title>Gestion des commandes - Enregistrement</title>
     <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/login.css" />
     <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/form.css" />
     <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.8.custom.css" />
@@ -21,20 +21,19 @@
 </div>
 
 <div id="header">
-    <h2>Gestion des commandes LBCMCP<br />Identification</h2>
+    <h2>Gestion des commandes LBCMCP<br />Enregistrement</h2>
 </div>
 
-<div id="wrapper">
+<div id="new_account">
     <div id="login">
-        <form method="post" action="{% url django.contrib.auth.views.login %}" name="login">{% csrf_token %}
+        <form method="POST" action="{% url new_user %}" name="login" class="change_password">{% csrf_token %}
             {% for field in form %}
               {% include "form_snippet.html" %}
             {% endfor %}
-            <button type="submit" class="locked button">Connexion</button>
-            <input type="hidden" name="next" value="{{ next }}" />
+            <button type="submit" class="button">Continuer &rarr;</button>
         </form>
         <div id="register">
-          <a href="{% url new_user %}">>> Créer un compte</a>
+          <a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
         </div>
     </div>
 </div>

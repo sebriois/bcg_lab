@@ -7,7 +7,7 @@ body {
     padding: 0;
     background: #f7f7f7;
     color: #313131;
-    font-family:"Lucida Grande", "Trebuchet MS", verdana, arial, helvetica, sans-serif;
+    font-family:"Trebuchet MS", verdana, arial, helvetica, sans-serif;
     text-align: center; /* IE6 hack */
 }
 
@@ -18,15 +18,17 @@ body {
     margin-bottom: 10px;
 }
 
-#wrapper {
+#wrapper, #new_account {
     margin: 0 auto;
     margin-top: 65px;
-    width: 466px;
+    width: 400px;
     display: block;
     text-align: left;
 }
+#new_account {
+  width: 600px;
+}
 #login {
-/*    height: 270px;*/
     display: block;
     background-color: #fff;
     -moz-border-radius: 10px;
@@ -35,14 +37,24 @@ body {
     -webkit-box-shadow: 0px 0px 6px #999;
     border-radius: 10px;
 }
-form { padding: 25px; }
-label { font-weight: bold; font-size: 14px; }
-input[type="text"], input[type="password"] {
-    margin-top:10px;
-    margin-bottom:10px;
-    width: 280px;
-    height: 25px;
+#register {
+    padding: 15px;
+    padding-left: 25px;
+    border-top: 1px solid #ccc;
 }
+#register a {
+    text-decoration: none;
+    font-size: 11px;
+    color: #313131;
+}
+#register a:hover {
+    font-weight: bold;
+}
+
+#login button {
+  font-size:12px;
+}
+
 
 /* @group Messages */
 div#login-messages {
@@ -53,23 +65,12 @@ div#login-messages {
   text-align:left;
 }
 
-ul.errorlist li {
-    list-style-type: none;
-    background-position: 5px 1px;
-    min-height: 28px;
-    padding: 9px 0px 0px 50px;
-/*    margin: 10px 0px 10px 0px;*/
-    background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
-    border-bottom: 1px solid #fa7050;
-    color: #e2350d;
-}
-
 .messages li {
     list-style-type: none;
     background-position: 5px 1px;
     min-height: 28px;
     padding: 9px 0px 0px 50px;
-    margin: 10px 0px 10px 0px;
+    margin: 0px 0px 10px 0px;
 }
 .messages .info {
     background: #ecf7fe url('../img/icons/msg-info.gif') no-repeat;
@@ -87,4 +88,3 @@ ul.errorlist li {
     color: #e2350d;
 }
 /* @end */
-

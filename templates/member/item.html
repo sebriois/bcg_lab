@@ -1,9 +1,11 @@
 {% extends "main_classic.html" %}
 
-{% block header %}Modification d'un fournisseur{% endblock %}
+{% block menu_team %}selected{% endblock %}
+
+{% block header %}Modification d'un utilisateur{% endblock %}
 
 {% block content %}
-<form action="{% url provider_item provider.id %}" method="POST">{% csrf_token %}
+<form action="{% url user_item member.id %}" method="post">{% csrf_token %}
     <input type="hidden" name="method" value="PUT" />
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
@@ -11,6 +13,6 @@
     {% for field in form %}
         {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+    <button type="submit" class="button">Valider</button>
 </form>
 {% endblock %}

@@ -1,15 +1,15 @@
 {% extends "main_classic.html" %}
 
-{% block header %}Nouveau produit{% endblock %}
+{% block header %}Nouvelle équipe{% endblock %}
 
 {% block content %}
-<form action="{% url product_index %}" method="post">{% csrf_token %}
+<form action="{% url team_index %}" method="post">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>
     {% for field in form %}
         {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+    <button type="submit" class="button">Valider</button>
 </form>
 {% endblock %}

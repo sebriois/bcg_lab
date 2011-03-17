@@ -1,17 +1,19 @@
 {# coding: utf-8 #}
+{% load filters %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>LBCMCP - Gestion des commandes</title>
     <link href="{{ MEDIA_URL }}img/favicon.gif" rel="icon" type="image/gif" />
     <link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/form.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.10.custom.css" type="text/css" />
     
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.js"></script>
-    
-    <!-- Autocomplete widget -->
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/autocomplete.css" type="text/css" />
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/autocomplete.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.10.custom.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
     
     <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
 </head>
@@ -24,7 +26,7 @@
             </ul>
         </div>
         <ul>
-            <li>Changer de mot de passe</li>
+            <li><a href="{% url change_password request.user.id %}">Changer de mot de passe</a></li>
             <li><a href="{% url admin:index %}">Administration</a></li>
         </ul>
     </div>
@@ -35,11 +37,14 @@
         <div id="main-menu">
           <ul>
             <li><a href="{% url home %}" class="{% block menu_home %}{% endblock %}">Accueil</a></li>
-            <li><a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">Fournisseurs</a></li>
-            <li><a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">Produits</a></li>
-            <li><a href="{% url cart_index %}" class="{% block menu_cart %}{% endblock %}">Panier</a></li>
+            {% if not user.teammember_set.get.team.is_secretary %}
+              <li><a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">Fournisseurs</a></li>
+              <li><a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">Produits</a></li>
+              <li><a href="{% url cart_index %}" class="{% block menu_cart %}{% endblock %}">Panier</a></li>
+            {% endif %}
             <li><a href="{% url order_index %}" class="{% block menu_order %}{% endblock %}">Commandes en cours</a></li>
-            <li><a href="{% url order_index %}" class="{% block menu_history %}{% endblock %}">Historique des commandes</a></li>
+            <li><a href="{% url order_history %}" class="{% block menu_history %}{% endblock %}">Historique des commandes</a></li>
+            <li><a href="{% url team_index %}" class="{% block menu_team %}{% endblock %}">Equipes</a></li>
           </ul>
         </div>
         
