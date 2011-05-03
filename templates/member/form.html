@@ -5,8 +5,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Gestion des commandes - Nouvel utilisateur</title>
-    <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/login.css" />
-    <link type="text/css" rel="stylesheet" media="screen" href="{{ MEDIA_URL }}css/form.css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/login.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/form.css" type="text/css" />
+    <link rel="stylesheet" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.10.custom.css" type="text/css" />
+    
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.10.custom.min.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
+    
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
 </head>
 
 <body>
@@ -23,6 +30,7 @@
 <div id="new_account">
     <div id="login">
         <form action="{% url new_member %}" method="POST" accept-charset="utf-8">{% csrf_token %}
+          {{ form.errors }}
           <input type="hidden" name="user" value="{{user_id}}" />
           {% with form.team as field %}
             {% include "form_snippet.html" %}
@@ -39,7 +47,7 @@
           {% with form.email as field %}
             {% include "form_snippet.html" %}
           {% endwith %}
-          <button type="submit" class="button">Valider l'enregistrement</button>
+          <button type="submit" class="check button">Valider l'enregistrement</button>
         </form>
         <div id="register">
           <a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>

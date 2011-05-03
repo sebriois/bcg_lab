@@ -33,7 +33,7 @@ $(document).ready(function(){
       }, 1000 );
     };
     
-    $('li.info, li.warn, li.error').effect( 
+    $('li.info, li.warning, li.error').effect( 
       'pulsate', {}, 'slow', effectCallback
     );
     
@@ -83,17 +83,15 @@ $(document).ready(function(){
     $(".notice").button({
       icons: { primary: "ui-icon-notice" }
     });
+    $(".next-status").button({
+      icons: { primary: "ui-icon-arrowreturnthick-1-e" }
+    });
     
     // 
     // DIALOGS
     // 
     
     $('#dialog').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    $('#dialog-date').dialog({
       autoOpen: false,
       resizable: false,
       modal: true
@@ -111,6 +109,12 @@ $(document).ready(function(){
     });
         
     $('#dialog-confirm-del').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true
+    });
+    
+    $( "#teamDialog" ).dialog({
       autoOpen: false,
       resizable: false,
       modal: true
@@ -163,19 +167,25 @@ $(document).ready(function(){
     });
     
     // 
-    // DATE DIALOG
+    // DELIVERY DIALOG
     // 
-    $( '.dateDialog' ).click(function(e){
+    $('#dialog-delivery').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true
+    });
+    $( '.deliveryDialog' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#dialog-date" ).dialog({
+      $( "#dialog-delivery" ).dialog({
         width: 430,
         buttons: {
           Valider: function() {
             var delivery_date = $(".datepicker").val();
+            var order_nb = $('input[name="order_nb"]').val();
             $(this).dialog('close');
-            window.location.href = targetUrl + "?delivery_date=" + delivery_date;
+            window.location.href = targetUrl + "?delivery_date=" + delivery_date + "&order_nb=" + order_nb;
           },
           Annuler: function() {
             $(this).dialog('close');
@@ -183,7 +193,7 @@ $(document).ready(function(){
         }
       });
       
-      $( "#dialog-date" ).dialog("open");
+      $( "#dialog-delivery" ).dialog("open");
     });
     
     // 
@@ -195,21 +205,23 @@ $(document).ready(function(){
       var targetUrl = $(this).attr('href');
       
       $( "#dialog-qty" ).dialog({
+        width: 400,
         buttons: {
           Valider: function() {
-            var url = targetUrl.split("1?"); // 1 being the default qty
+            var url = targetUrl.split("1?"); // 1 being the default qty when no JS
             var args = "";
-            var qty = $('input[name="quantity"]').val();
+            var qty = +( $('input[name="quantity"]').val() );
+            var intRegex = /^\d+$/;
             
-            if ( parseInt(qty) > 0 ) {
+            if ( intRegex.test(qty) && qty > 0 ) {
               if ( url.length > 1 ) {
                 args = url[1];
               }
               $( this ).dialog( "close" );
               window.location.href = url[0] + qty + "?" + args;
-            }
-            else {
-              alert( "Merci de saisir une quantité > 0" );
+            } else {
+              $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
+              $("#qty-error-msg").addClass("warning");
             }
           },
           Annuler: function() {
@@ -228,20 +240,23 @@ $(document).ready(function(){
     $( '.setQtyDialog' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
-      $('input[name="quantity"]').val( parseInt($(this).text()) );
+      $('input[name="quantity"]').val( parseInt( $(this).text() ) );
       
       $( "#dialog-qty" ).dialog({
+        width: 400,
         buttons: {
           Valider: function() {
-            var url = targetUrl.split("/0"); // 0 being the default qty
-            var qty = $('input[name="quantity"]').val();
+            var url = targetUrl.split("set-quantity/1"); // 1 being the default qty
+            var qty = +( $('input[name="quantity"]').val() );
+            var intRegex = /^\d+$/;
             
-            if ( parseInt(qty) > 0 ) {
+            if ( intRegex.test(qty) && qty > 0 ) {
+              var new_location = url[0] + "set-quantity/" + qty;
+              window.location.href = new_location;
               $( this ).dialog( "close" );
-              window.location.href = url[0] + "/" + qty;
-            }
-            else {
-              alert( "Merci de saisir une quantité > 0" );
+            } else {
+              $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
+              $("#qty-error-msg").addClass("warning");
             }
           },
           Annuler: function() {
@@ -253,6 +268,33 @@ $(document).ready(function(){
       $( "#dialog-qty" ).dialog('open');
     });
     
+    $( "#dialog-budget-line" ).dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true
+    });
+    $('.budgetLineDialog').click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      
+      $( "#dialog-budget-line" ).dialog({
+        width: 400,
+        buttons: {
+          Valider: function() {
+            var choice = $('select[name="budget_line"] option:selected').val();
+            
+            $( this ).dialog( "close" );
+            window.location.href = targetUrl + "?budget_line=" + parseInt(choice);
+          },
+          Annuler: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      
+      $( "#dialog-budget-line" ).dialog('open');
+    });
+
     // 
     // PROVIDER PAGE - Dialog that displays notes
     // 
@@ -260,5 +302,29 @@ $(document).ready(function(){
       e.preventDefault();
       $('#dialog_content').text( $(this).attr("content") );
       $('#dialog').dialog('open');
+    });
+
+    // 
+    // TEAM PAGE - For changing user's team membership
+    // 
+    $('.teamDialog').click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      
+      $( "#teamDialog" ).dialog({
+        width: 400,
+        buttons: {
+          Valider: function() {
+            var team = $('select[name="team_id"]').val();
+            $( this ).dialog( "close" );
+            window.location.href = targetUrl + "?team_id=" + team;
+          },
+          Annuler: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      
+      $( "#teamDialog" ).dialog('open');
     });
 });

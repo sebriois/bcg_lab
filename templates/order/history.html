@@ -11,8 +11,8 @@
     Filtres
   </h2>
   <div class="content">
-    <form action="{% url order_history %}" method="POST" id="history_filter">{% csrf_token %}
-      <strong>Filtrer les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+    <form action="{% url history %}" method="POST" id="history_filter">{% csrf_token %}
+      <strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
       <table>
         <tr>
           <td>Equipe:</td>
@@ -38,8 +38,8 @@
           <td>{{ filter_form.price__lte }}</td>
         </tr>
       </table>
-      <button type="submit" class="all button">Filtrer</button>
-      <a href="{% url order_history %}" class="refresh button">Réinitialiser</a>
+      <button type="submit" class="all button">Chercher</button>
+      <a href="{% url history %}" class="refresh button">Réinitialiser</a>
     </form>
   </div>
 </div>

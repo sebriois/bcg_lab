@@ -287,7 +287,7 @@ a.btn_big, a.btn_small, a.btn_medium {
     font-weight: bold;
     text-align: left;
     height: 40px;
-    padding-left: 20px;
+    padding-left: 10px;
 }
 a.btn_big {
     width: 265px;
@@ -315,37 +315,42 @@ a.btn_big:hover, a.btn_small:hover, a.btn_medium:hover  {
 }
 a.btn_big img, a.btn_small img, a.btn_medium img {
     border: 0px;
-    margin-left: 20px;
+    margin-left: 14px;
     padding-top: 10px;
-    margin-right: 10px;
+    margin-right: 8px;
     position: relative;
     float: left;
 }
-
 /* @end Buttons */
 
 
 /* @group MESSAGES */
-#main ul.messages { padding-left: 0; }
+#main ul.messages {
+  padding-left: 0;
+}
 
 #main ul.messages li {
     list-style-type: none;
-    background-position: 5px 1px;
-    min-height: 28px;
-    padding: 9px 0px 0px 50px;
-    margin: 10px 0px 10px 0px;
 }
-#main ul.messages .info {
+
+.info, .warning, .error {
+  background-position: 5px 1px;
+  min-height: 28px;
+  padding: 9px 0px 0px 50px;
+  margin: 10px 0px 10px 0px;
+}
+
+.info {
     background: #ecf7fe url('../img/icons/msg-info.gif') no-repeat;
     border: 1px solid #caeaff;
     color: #2288c7;
 }
-#main ul.messages .warning {
+.warning {
     background: #fff6e0 url('../img/icons/msg-warn.gif') no-repeat;
     border: 1px solid #fbdf9c;
     color: #f9a900;
 }
-#main ul.messages .error {
+.error {
     background: #ffe7dc url('../img/icons/msg-error.gif') no-repeat;
     border: 1px solid #fa7050;
     color: #e2350d;

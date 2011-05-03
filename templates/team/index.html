@@ -8,8 +8,8 @@
 {% block buttons %}
 {% if user.is_superuser %}
   <div class="btn_wrapper">
-    <a href="{% url team_new %}" class="btn_big">
-      <img src="{{ MEDIA_URL }}img/icons/add.png" />Nouvelle équipe
+    <a href="{% url team_new %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe
     </a>
   </div>
 {% endif %}
@@ -28,42 +28,39 @@
           <th>Action</th>
       </thead>
       <tbody>
-        {% for member in team.members %}
-            <tr class="{% cycle 'even' 'odd' %}">
-                <td>
-                  {{ member.user.username }}
-                  {% if member.is_chief %}(chef d'équipe){% endif %}
-                </td>
-                <td>{{ member.user.get_full_name }}</td>
-                <td>{{ member.user.email }}</td>
-                <td>{{ member.user.last_login }}</td>
-                <td>
-                  {% if member.user == user or team|is_chief:user %}
-                    <a href="{% url user_item member.id %}" class="pencil button">Editer</a>
-                  {% endif %}
-                  
-                  {% if member.user == user %}
-                    <a href="{% url change_password user.id %}" class="key button">
-                      Changer de mot de passe
-                    </a>
-                  {% endif %}
-                  
-                  {% if team|is_chief:user %}
-                    <a href="{% url user_delete member.user.id %}" class="trash button confirmDialog">
-                      Supprimer
-                    </a>
-                    {% if member.user.is_active %}
-                      <a href="{% url user_toggle_active member.user.id %}" class="locked button">
-                        Inactiver
-                      </a>
-                    {% else %}
-                      <a href="{% url user_toggle_active member.user.id %}" class="unlocked button">
-                        Activer
-                      </a>
-                    {% endif %}
-                  {% endif %}
-                </td>
-            </tr>
+        {% for member in team.members.all %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            <td>{{ member.user.username }}</td>
+            <td>{{ member.user.get_full_name }}</td>
+            <td>{{ member.user.email }}</td>
+            <td>{{ member.user.last_login }}</td>
+            <td>
+              {% if member.user == user or user|is_admin or user.is_superuser %}
+                <a href="{% url user_item member.id %}" class="pencil button">Editer</a>
+              {% endif %}
+              
+              {% if member.user == user %}
+                <a href="{% url change_password user.id %}" class="key button">
+                  Changer de mot de passe
+                </a>
+              {% endif %}
+              
+              {% if user|is_admin or user.is_superuser %}
+                <a href="{% url user_delete member.user.id %}" class="trash button confirmDialog">
+                  Supprimer
+                </a>
+                {% if member.user.is_active %}
+                  <a href="{% url user_toggle_active member.user.id %}" class="locked button">
+                    Inactiver
+                  </a>
+                {% else %}
+                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked button">
+                    Activer
+                  </a>
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
@@ -82,18 +79,22 @@
         <th>Action</th>
       </thead>
       <tbody>
-        {% for user in noteam %}
+        {% for lonely_user in noteam %}
           <tr class="{% cycle 'even' 'odd' %}">
-              <td>{{ user.username }}</td>
-              <td>{{ user.last_login }}</td>
-              <td>
-                <a href="{% url add_user_to_team user.id %}" class="plusButton teamDialog">
+            <td>{{ user.username }}</td>
+            <td>{{ user.last_login }}</td>
+            <td>
+              {% if user.is_superuser or user|is_admin %}
+                <a href="{% url add_user_to_team lonely_user.id %}" class="plus button teamDialog">
                   Affilier à une équipe
                 </a>
-                <a href="{% url user_delete user.id %}" class="minusButton confirmDialog">
+              {% endif %}
+              {% if user.is_superuser  %}
+                <a href="{% url user_delete lonely_user.id %}" class="trash button confirmDialog">
                   Supprimer
                 </a>
-              </td>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
@@ -103,7 +104,7 @@
 {% endif %}
 
 {# START: Add to team Dialog #}
-<div id="dialog" title="Changement d'équipe">
+<div id="teamDialog" title="Affiliation à une équipe">
   <div class="form-row">
     <label for="team">Equipe</label>
     <div class="cleaner"></div>

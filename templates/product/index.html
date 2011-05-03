@@ -11,13 +11,13 @@
 
 {# START: Filter box #}
 <div id="content" style="float:left;min-height:0;margin-right:10px">
-  <h2>Filtrer par fournisseur</h2>
+  <h2>Chercher par fournisseur</h2>
   <form action="{% url product_index %}" method="get">
     <table>
       <tr>
         <td>{{ filter_form.provider }}</td>
         <td>
-          <button type="submit" class="all button">Filtrer</button>
+          <button type="submit" class="all button">Chercher</button>
         </td>
         <td>
           <a href="{% url product_index %}" class="refresh button">Liste globale</a>
@@ -27,13 +27,13 @@
   </form>
 </div>
 <div id="content" style="float:left;min-height:0">
-  <h2>Filtrer par produit</h2>
+  <h2>Chercher par produit</h2>
   <form action="{% url product_index %}" method="get">
     <table>
       <tr>
         <td>{{ filter_form.product }}</td>
         <td>
-          <button type="submit" class="all button">Filtrer</button>
+          <button type="submit" class="all button">Chercher</button>
         </td>
         <td>
           <a href="{% url product_index %}" class="refresh button">Liste globale</a>
@@ -100,9 +100,10 @@
 {# START: Quantity Dialog #}
 <div id="dialog-qty" title="Saisissez la quantité à commander">
   <div class="form-row">
+    <div id="qty-error-msg"></div>
     <label for="quantity">Quantité</label>
     <div class="cleaner"></div>
-    <input type="text" name="quantity" value="1" />
+    <input type="text" name="quantity" value="" />
     <div class="cleaner"></div>
   </div>
 </div>

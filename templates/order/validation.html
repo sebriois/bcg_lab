@@ -1,0 +1,40 @@
+{% extends "main_custom.html" %}
+{% load paginator filters %}
+
+{% block menu_validation %}selected{% endblock %}
+{% block content %}
+
+{% for order in orders.object_list %}
+  <div id="content" style="min-height:0">
+    <div id="content_header"><h2>{{ order.provider }}</h2></div>
+    {% include "order/_order_detail.html" %}
+  </div>
+{% empty %}
+  <div id="content">
+    <div id="content_header"><h2>Commandes à valider</h2></div>
+    <p>Aucune commande à valider.</p>
+  </div>
+{% endfor %}
+
+<div id="dialog-qty" title="Modifier la quantité">
+  <div class="form-row">
+    <div id="qty-error-msg"></div>
+    <label for="quantity">Quantité</label>
+    <div class="cleaner"></div>
+    <input type="text" name="quantity" value="0" />
+  </div>
+</div>
+
+<div id="dialog-confirm-del" title="Confirmer la suppression">
+  Êtes-vous sûr de vouloir supprimer cette commande ?
+</div>
+
+<div id="dialog-budget-line" title="Choisir une ligne budgétaire">
+  <div class="form-row">
+    <label for="budget_line">Ligne budgétaire</label>
+    <div class="cleaner"></div>
+    <input type="text" name="budget_line" value="0" />
+  </div>
+</div>
+
+{% endblock %}

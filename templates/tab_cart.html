@@ -14,12 +14,7 @@
 {% block content %}
 {% for order in order_list %}
   <div id="content" style="min-height:0">
-    {% if order.status == 1 %}
-      <div id="content_header"><h2>{{ order.provider }} - Commande en attente de validation</h2></div>
-    {% else %}
-      <div id="content_header"><h2>{{ order.provider }}</h2></div>
-    {% endif %}
-    
+    <div id="content_header"><h2>{{ order.provider }}</h2></div>
     {% include "order/_order_detail.html" %}
   </div>
 {% empty %}
@@ -28,6 +23,14 @@
     <p>Votre panier est vide</p>
   </div>
 {% endfor %}
+
+
+
+{# ################## #}
+{#                    #}
+{#      DIALOGS       #}
+{#                    #}
+{# ################## #}
 
 <div id="dialog-qty" title="Modifier la quantité">
   <div class="form-row">
@@ -42,10 +45,8 @@
   Êtes-vous sûr de vouloir supprimer cette commande ?
 </div>
 
-{# START: Confirmation dialog for ordering #}
 <div id="dialog-confirm" title="Confirmation requise">
   Après confirmation, un email va être envoyé au(x) validateur(s), 
   puis la commande sera transmise au secrétariat.
 </div>
-{# END #}
 {% endblock %}

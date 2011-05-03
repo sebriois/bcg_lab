@@ -1,0 +1,15 @@
+{% extends "main_classic.html" %}
+
+{% block header %}Débit sur le budget {{ budget.name }} (équipe {{ budget.team.name}}){% endblock %}
+
+{% block content %}
+<form action="{% url debit_budget budget.id %}" method="post">{% csrf_token %}
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    {% for field in form %}
+        {% include "form_snippet.html"%}
+    {% endfor %}
+    <button type="submit" class="check button">Valider</button>
+</form>
+{% endblock %}

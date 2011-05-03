@@ -26,8 +26,9 @@
             </ul>
         </div>
         <ul>
-            <li><a href="{% url change_password request.user.id %}">Changer de mot de passe</a></li>
-            <li><a href="{% url admin:index %}">Administration</a></li>
+            {% if user.is_staff %}
+              <li><a href="{% url admin:index %}">Administration</a></li>
+            {% endif %}
         </ul>
     </div>
     
@@ -36,18 +37,63 @@
         
         <div id="main-menu">
           <ul>
-            <li><a href="{% url home %}" class="{% block menu_home %}{% endblock %}">Accueil</a></li>
-            {% if not user.teammember_set.get.team.is_secretary %}
-              <li><a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">Fournisseurs</a></li>
-              <li><a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">Produits</a></li>
-              <li><a href="{% url cart_index %}" class="{% block menu_cart %}{% endblock %}">Panier</a></li>
-            {% endif %}
-            <li><a href="{% url order_index %}" class="{% block menu_order %}{% endblock %}">Commandes en cours</a></li>
-            <li><a href="{% url order_history %}" class="{% block menu_history %}{% endblock %}">Historique des commandes</a></li>
-            <li><a href="{% url team_index %}" class="{% block menu_team %}{% endblock %}">Equipes</a></li>
+            <li>
+              <a href="{% url home %}" class="{% block menu_home %}{% endblock %}">
+                Accueil
+              </a>
+            </li>
+            <li>
+              <a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">
+                Fournisseurs
+              </a>
+            </li>
+            <li>
+              <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
+                Produits
+              </a>
+            </li>
+            {% if user|is_normal %}
+              <li>
+                <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
+                  Panier
+                </a>
+              </li>
+              {% if user|is_validator %}
+                <li>
+                  <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
+                    Commandes à valider
+                  </a>
+                </li>
+              {% endif %}
+              <li>
+                <a href="{% url tab_orders %}" class="{% block menu_order %}{% endblock %}">
+                  Commandes en cours
+                </a>
+              </li>
+            {% else %}{% if user|is_secretary %}
+              <li>
+                <a href="{% url secretary_orders %}" class="{% block menu_secretary_orders %}{% endblock %}">
+                  Gestion des commandes
+                </a>
+              </li>
+              <li>
+                <a href="{% url secretary_budgets %}" class="{% block menu_secretary_budgets %}{% endblock %}">
+                  Gestion des budgets
+                </a>
+              </li>
+            {% endif %}{% endif %}
+            <li>
+              <a href="{% url history %}" class="{% block menu_history %}{% endblock %}">
+                Historique
+              </a>
+            </li>
+            <li>
+              <a href="{% url team_index %}" class="{% block menu_team %}{% endblock %}">
+                Equipes
+              </a>
+            </li>
           </ul>
         </div>
-        
     </div>
     
     {% block main %}{% endblock %}

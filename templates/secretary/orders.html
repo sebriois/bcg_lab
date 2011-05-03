@@ -1,17 +1,19 @@
 {% extends "main_custom.html" %}
 {% load paginator filters %}
 
-{% block menu_order %}selected{% endblock %}
+{% block menu_secretary_orders %}selected{% endblock %}
 {% block content %}
 
 <div id="content" style="min-height:0">
-  <div id="content_header"><h2>Commandes équipe {{ user.teammember_set.get.team }}</h2></div>
+  <div id="content_header"><h2>Gestion des commandes</h2></div>
   
   {% if orders.object_list %}
     <table class="list">
       <thead>
         <th>Date</th>
         <th>Fournisseur</th>
+        <th>Equipe</th>
+        <th>Budget</th>
         <th>Prix</th>
         <th>Statut</th>
         <th>Dernière MAJ</th>
@@ -23,6 +25,12 @@
           <tr class="{% cycle 'even' 'odd' %}">
             <td>{{ order.date_created|date }}</td>
             <td>{{ order.provider.name }}</td>
+            <td>{{ order.team.name }}</td>
+            <td>
+              {# <a href="{% url change_budget order.id %}" class="button budgetLineDialog"> #}
+              {#   {{ order.budget.name }} #}
+              {# </a> #}
+            </td>
             <td>{{ order.price }} €</td>
             <td>
               <b>{{ order.get_status_display }}</b>
@@ -34,35 +42,16 @@
             
             {# ACTION LINKS - MODIFYING ORDER STATUS #}
             <td>
-              {% if order.status == 1 and user|is_validator %}
-                <a href="{% url set_next_status order.id %}" class="check button budgetLineDialog">
-                  Valider
-                </a>
-                <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">
-                  Supprimer
-                </a>
-              {% else %}
-                {% if user|is_secretary %}
-                  <a href="{% url set_next_status order.id %}" class="next-status button">
-                    {% if order.status == 2 %}
-                      Secrétariat 2/2
-                    {% else %}{% if order.status == 3 %}
-                      Transmise au fournisseur
-                    {% endif %}{% endif %}
-                  </a>
-                {% else %}
-                  {% if order.status == 2 or order.status == 3 %}
-                    <a href="{% url order_delivered order.id %}" class="notice button dateDialog">
-                      Commande réceptionnée
-                    </a>
-                  {% endif %}
-                {% endif %}
-                
-                {% if order.status == 4 %}
-                  <a href="{% url order_delivered order.id %}" class="notice button dateDialog">
+              {% if user|is_secretary %}
+                <a href="{% url set_next_status order.id %}" class="next-status button {% if order.status == 4 %}deliveryDialog{% endif %}">
+                  {% if order.status == 2 %}
+                    Vu par la gestionnaire
+                  {% else %}{% if order.status == 3 %}
+                    Envoyée au fournisseur
+                  {% else %}{% if order.status == 4 %}
                     Commande réceptionnée
-                  </a>
-                {% endif %}
+                  {% endif %}{% endif %}{% endif %}
+                </a>
               {% endif %}
               <a href="{{ order.get_absolute_url }}" class="zoomin button">
                 Voir détail
@@ -81,32 +70,35 @@
 </div>
 
 
-
 {# ################## #}
 {#                    #}
 {#      DIALOGS       #}
 {#                    #}
 {# ################## #}
 
-<div id="dialog-date" title="Date de livraison">
+<div id="dialog-delivery" title="Détails livraison">
   <div class="form-row">
-    <p>Veuillez indiquer la date à laquelle la commande a été livrée.</p>
     <label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
     <div class="cleaner"></div>
     <input type="text" name="delivery_date" class="datepicker" />
     <div class="cleaner"></div>
+    <label for="order_nb">N° de commande:</label>
+    <div class="cleaner"></div>
+    <input type="text" name="order_nb" />
+    <div class="cleaner"></div>
   </div>
 </div>
 
-<div id="dialog-confirm-del" title="Confirmer la suppression">
-  Êtes-vous sûr de vouloir supprimer cette commande ?
-</div>
-
-<div id="dialog-qty" title="Modifier la quantité">
+<div id="dialog-order-nb" title="Détails livraison">
   <div class="form-row">
-    <label for="quantity">Quantité</label>
+    <label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
     <div class="cleaner"></div>
-    <input type="text" name="quantity" value="0" />
+    <input type="text" name="delivery_date" class="datepicker" />
+    <div class="cleaner"></div>
+    <label for="order_nb">N° de commande:</label>
+    <div class="cleaner"></div>
+    <input type="text" name="order_nb" />
+    <div class="cleaner"></div>
   </div>
 </div>
 

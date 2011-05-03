@@ -1,6 +1,6 @@
 {% load filters %}
 <ul>
-  <li>Commande passée par {{ order.get_full_name }} (Equipe {{ order.team }}) le {{ order.date_created|date }}</li>
+  <li>Commande créée le {{ order.date_created|date }}</li>
   {% if order.data_delivered %}
     <li>Commande livrée le {{ order.date_delivered|date }}</li>
   {% else %}
@@ -31,8 +31,8 @@
         <td>{{ order_item.product.offer_nb }}</td>
         <td>{{ order_item.product.price }} €</td>
         <td>
-        {% if order.status == 0 or order.status == 1 and order.team|is_chief:user %}
-          <a href="{% url set_cart_quantity order_item.id,0 %}" class="pencil button setQtyDialog">
+        {% if order.status == 0 or order.status == 1 and user|is_validator %}
+          <a href="{% url set_cart_quantity order_item.id,1 %}" class="pencil button setQtyDialog">
             {{ order_item.quantity }}
           </a>
         {% else %}
@@ -42,11 +42,10 @@
         <td>{{ order_item.total_price }} €</td>
         {% if order.status < 2 %}
           <td>
-            {% if order.status == 0 or order.team|is_chief:user %}
+            {% if order.status == 0 or user|is_validator %}
               <a href="{% url set_cart_quantity order_item.id,0 %}" class="trash button">
                 Retirer du panier
               </a>
-            {% else %}-
             {% endif %}
           </td>
         {% endif %}
@@ -60,7 +59,7 @@
 <div class="cleaner"></div>
 
 {% if order.status == 0 %}
-  {% if order.team|is_chief:user %}
+  {% if user|is_validator %}
     <a href="{% url set_next_status order.id %}" class="cart button">
       Commander
     </a>
@@ -72,7 +71,7 @@
   <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">
     Supprimer
   </a>
-{% else %}{% if order.status == 1 and order.team|is_chief:user %}
-  <a href="{% url set_next_status order.id %}" class="check button">Valider</a>
+{% else %}{% if order.status == 1 and user|is_validator %}
+  <a href="{% url set_next_status order.id %}" class="check button budgetLineDialog">Valider</a>
   <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">Supprimer</a>
 {% endif %}{% endif %}
