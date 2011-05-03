@@ -3,18 +3,291 @@
         "pk": 1, 
         "model": "auth.user", 
         "fields": {
-            "username": "briois", 
+            "username": "super-user", 
             "first_name": "", 
             "last_name": "", 
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2011-01-18 09:59:43", 
+            "last_login": "2011-05-03 17:59:39", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "sha1$780dc$6be91c39966f918b97baa431800efc7839b81880", 
+            "password": "sha1$8f187$4bb9e5875ea78ca831f9453695d3f44035c34236", 
             "email": "", 
-            "date_joined": "2011-01-18 09:59:43"
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "admin", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$0bf2a$d5911e3ed42db40f4a0a62507b99fe8fed9fa1a3", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "validateur1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$4e565$230ea2c81ffb1362aced954b51309be14f1e71ec", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "utilisateur1", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$e946c$63529f17acf3b672bcb4f59d4cebf6b473c048bd", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "utilisateur2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$86a7e$b733d07f718b1002e65d8b29e4686d8f7cbe1297", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "validateur2", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:39", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a6a6a$1f16c0cbf39edebe50d3c95173fd7bb648e4b249", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "utilisateur3", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:40", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$a44a8$91a4d543a90e27d1997cd6c7d975d06b3b708e96", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:40"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "utilisateur4", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:40", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$9929c$647551183899f4898613a1df5b87753048673205", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:40"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "gestionnaire", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:40", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$b4649$eb9e440fdb3428a7e0fb091c30818312a2e846ea", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:40"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "secretaire", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-05-03 17:59:40", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$7c765$4c52af023d09f1d127110e85a5d7caa586ad945d", 
+            "email": "", 
+            "date_joined": "2011-05-03 17:59:40"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "team.team", 
+        "fields": {
+            "name": "EquipeA"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "team.team", 
+        "fields": {
+            "name": "EquipeB"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "team.team", 
+        "fields": {
+            "name": "Secr\u00e9tariat"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 1, 
+            "member_type": 0, 
+            "team": 1
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 2, 
+            "member_type": 3, 
+            "team": 1
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 3, 
+            "member_type": 1, 
+            "team": 1
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 4, 
+            "member_type": 0, 
+            "team": 1
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 5, 
+            "member_type": 0, 
+            "team": 1
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 6, 
+            "member_type": 1, 
+            "team": 2
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 7, 
+            "member_type": 0, 
+            "team": 2
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 8, 
+            "member_type": 0, 
+            "team": 2
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 9, 
+            "member_type": 2, 
+            "team": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 10, 
+            "member_type": 2, 
+            "team": 3
         }
     }
 ]

@@ -1,391 +1,432 @@
 [
     {
-        "pk": 2, 
+        "pk": 45, 
         "model": "provider.provider", 
         "fields": {
-            "notes": "", 
+            "notes": null, 
+            "users_in_charge": [], 
             "name": "ATMS", 
-            "users_in_charge": [
-                1
-            ]
+            "reseller": null
         }
     }, 
     {
-        "pk": 8, 
+        "pk": 51, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Abcam", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 5, 
+        "pk": 48, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Addgene", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 7, 
+        "pk": 50, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Affymetrix", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 14, 
+        "pk": 57, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Air liquide", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 16, 
+        "pk": 59, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Amaxa", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 18, 
+        "pk": 61, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Amersham", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 20, 
+        "pk": 63, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Applied Biosystem", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 22, 
+        "pk": 65, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Archives Dutscher", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 24, 
+        "pk": 67, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "BD Biosciences", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 26, 
+        "pk": 69, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Beckman Coulter", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 28, 
+        "pk": 71, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "BioCat", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 30, 
+        "pk": 73, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "BioRad", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 32, 
+        "pk": 75, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Bruneau", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 34, 
+        "pk": 77, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Buroservices", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 12, 
+        "pk": 55, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "CICT", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 37, 
+        "pk": 80, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "CliniSciences", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 38, 
+        "pk": 81, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Dell", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 40, 
+        "pk": 83, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Dutscher", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 41, 
+        "pk": 84, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Eurogentec", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 43, 
+        "pk": 86, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Euromedex", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 9, 
+        "pk": 52, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Fischer", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 10, 
+        "pk": 53, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "GE Healthcare", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 11, 
+        "pk": 54, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "In Vivogen", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 1, 
+        "pk": 44, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Inmac", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 3, 
+        "pk": 46, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Interchim", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 4, 
+        "pk": 47, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Invitrogen", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 6, 
+        "pk": 49, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "LCG promochem", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 13, 
+        "pk": 56, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Lonza", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 15, 
+        "pk": 58, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "MP Biomedicals", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 17, 
+        "pk": 60, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Millipore", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 19, 
+        "pk": 62, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Ozyme", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 21, 
+        "pk": 64, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Perbio", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 23, 
+        "pk": 66, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Pierce", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 25, 
+        "pk": 68, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Promega", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 27, 
+        "pk": 70, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Qiagen", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 29, 
+        "pk": 72, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Roche", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 31, 
+        "pk": 74, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Santa Cruz", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 33, 
+        "pk": 76, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Sigma", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 35, 
+        "pk": 78, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "StarLab", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 36, 
+        "pk": 79, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Stratagene", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 42, 
+        "pk": 85, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "Tebu Bio", 
-            "users_in_charge": []
+            "reseller": null
         }
     }, 
     {
-        "pk": 39, 
+        "pk": 82, 
         "model": "provider.provider", 
         "fields": {
             "notes": null, 
+            "users_in_charge": [], 
             "name": "VWR", 
-            "users_in_charge": []
+            "reseller": null
         }
     }
 ]
