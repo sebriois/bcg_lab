@@ -12,26 +12,42 @@ from team.forms import TeamForm
 
 from constants import *
 from utils import info_msg, error_msg, warn_msg
-from utils import superuser_required, teamchief_required
+from utils import superuser_required
 
 
 @login_required
 @transaction.commit_on_success
 def index(request):
-    if request.method == 'GET':   return _team_list(request)
-    if request.method == 'POST':  return _team_creation(request)
+    if request.method == 'GET':  return _team_list(request)
+    if request.method == 'POST': return _team_creation(request)
 
 @login_required
 @transaction.commit_on_success
 def item(request, team_id):
     team = get_object_or_404(Team, id = team_id)
-    if request.method == 'GET':     return _team_detail(request, team)
-    if request.method == 'PUT':     return _team_update(request, team)
+    if request.method == 'GET': return _team_detail(request, team)
+    if request.method == 'PUT': return _team_update(request, team)
 
 @login_required
 @superuser_required
 def new(request):
-    return direct_to_template(request, 'team/form.html', { 'form': TeamForm() })
+    return direct_to_template(request, 'team/form.html', {
+      'form': TeamForm()
+    })
+
+@login_required
+def add_user_to_team(request, user_id):
+  user = get_object_or_404( User, id = user_id )
+  
+  team_id = request.GET.get( 'team_id', None )
+  if team_id:
+    team = get_object_or_404( Team, id = team_id )
+    member = TeamMember.objects.create(
+      user = user,
+      team = team
+    )
+  return redirect( 'team_index' )
+
 
 #--- Private views
 def _team_list(request):
@@ -50,7 +66,7 @@ def _team_list(request):
         'noteam': noteam
     })
 
-@teamchief_required
+
 def _team_detail(request, team):
     form = TeamForm(instance = team)
     return direct_to_template(request, 'team/item.html',{

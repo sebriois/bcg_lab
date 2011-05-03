@@ -31,7 +31,7 @@ def item(request, provider_id):
 @login_required
 @superuser_required
 def new(request):
-    return direct_to_template(request, 'provider/creation_form.html', { 'form': ProviderForm() })
+    return direct_to_template(request, 'provider/form.html', { 'form': ProviderForm() })
 
 @login_required
 @superuser_required
@@ -58,11 +58,10 @@ def _provider_creation(request):
   if form.is_valid():
     provider = form.save()
     
-    info_msg( request, u"Produit ajouté avec succès." )
+    info_msg( request, u"Fournisseur ajouté avec succès." )
     return redirect( 'provider_index' )
   else:
-    error_msg( request, u"Le formulaire n'a pas pu être validé." )
-    return direct_to_template(request, 'provider/creation_form.html',{
+    return direct_to_template(request, 'provider/form.html',{
         'form': form
     })
 
@@ -71,10 +70,9 @@ def _provider_update(request, provider):
     if form.is_valid():
         provider = form.save()
         
-        info_msg( request, u"Produit modifié avec succès." )
+        info_msg( request, u"Fournisseur modifié avec succès." )
         return redirect( 'provider_index' )
     else:
-        error_msg( request, u"Le formulaire n'a pas pu être validé." )
         return direct_to_template(request, 'provider/item.html',{
             'provider': provider,
             'form': form
@@ -82,5 +80,5 @@ def _provider_update(request, provider):
 
 def _provider_delete(request, provider):
     provider.delete()
-    info_msg( request, u"Produit supprimé avec succès." )
+    info_msg( request, u"Fournisseur supprimé avec succès." )
     return redirect( 'provider_index' )

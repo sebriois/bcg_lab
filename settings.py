@@ -46,7 +46,8 @@ USE_I18N = True
 USE_L10N = True
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-ROOT_URL = 'lbcmcp-orders/'
+# ROOT_URL = '' # DEV SERVER
+ROOT_URL = 'lbcmcp-orders/' # APACHE
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -97,9 +98,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
+    'team',
     'provider',
     'product',
+    'history',
     'order',
+    'secretary',
     'utils'
 )
 
@@ -118,9 +122,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-EMAIL_HOST = "localhost"
+EMAIL_HOST = "smtp.cict.fr"
 EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = "no-reply@lbcmcp.com"
+DEFAULT_FROM_EMAIL = "no-reply-lbcmcp@cict.fr"
 
 LOGIN_URL = '/%slogin/' % ROOT_URL
 LOGIN_REDIRECT_URL = '/' + ROOT_URL

@@ -3,6 +3,9 @@
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 from django.shortcuts import redirect
+from team.models import TeamMember
+from constants import SECRETARY
+from utils.templatetags.filters import is_validator, is_secretary
 
 def info_msg( request, message ):
   return messages.add_message( request, messages.INFO, message )
@@ -13,10 +16,33 @@ def error_msg( request, message ):
 def warn_msg( request, message ):
   return messages.add_message( request, messages.WARNING, message )
 
+def GET_method(view):
+  """
+  Decorator that checks whether the view is called using the GET method
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not request.method == 'GET':
+      error_msg( "This request method (%s) is not handled on this page" % request.method )
+      return redirect( 'home' )
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+
+def POST_method(view):
+  """
+  Decorator that checks whether the view is called using the GET method
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not request.method == 'POST':
+      error_msg( "This request method (%s) is not handled on this page" % request.method )
+      return redirect( 'home' )
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+  
+
 def superuser_required( view ):
   """
-  Decorator for views that checks the user is a superuser, redirecting
-  to the home page if necessary.
+  Decorator that checks whether the user is a superuser, redirecting
+  to the home page if not.
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not request.user.is_superuser:
@@ -24,6 +50,43 @@ def superuser_required( view ):
       return redirect('home')
     return view(request, *args, **kwargs)
   return _wrapped_view
+
+def team_required( view ):
+  """
+  Decorator that checks whether the user belongs to a team, redirecting
+  to the home page if not.
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not TeamMember.objects.filter( user = request.user ).count() > 0:
+      warn_msg( request, u"Vous devez appartenir à une équipe pour accéder à cette page." )
+      return redirect('home')
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+
+def validator_required( view ):
+  """
+  Decorator that checks whether the user is a validator, redirecting
+  to the home page if not.
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not is_validator(request.user):
+      warn_msg( request, u"Vous devez être validateur pour accéder à cette page." )
+      return redirect('home')
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+  
+def secretary_required( view ):
+  """
+  Decorator that checks whether the user belongs to a team, redirecting
+  to the home page if not.
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not is_secretary(request.user):
+      warn_msg( request, u"Vous devez être gestionnaire pour accéder à cette page." )
+      return redirect('home')
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+  
 
 def paginate( request, object_list, nb_items = 40 ):
   paginator = Paginator(object_list, nb_items ) # Show nb_items per page
@@ -39,3 +102,6 @@ def paginate( request, object_list, nb_items = 40 ):
     return paginator.page(page)
   except (EmptyPage, InvalidPage):
     return paginator.page(paginator.num_pages)
+
+def get_team_member( request ):
+  return request.user.teammember_set.get()

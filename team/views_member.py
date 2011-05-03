@@ -49,6 +49,7 @@ def new_member(request):
     return redirect('new_user')
   
   user = request.session.get('member_user')
+  
   if TeamMember.objects.filter( user = user ).count() > 0:
     try:
       del request.session['member_user']
@@ -58,11 +59,14 @@ def new_member(request):
   
   if request.method == 'POST':
     user = request.session.get('member_user')
-    form = TeamMemberForm( data = request.POST )
+    data = request.POST.copy()
+    data.update({ 'username': user.username })
+    
+    form = TeamMemberForm( data = data )
     if form.is_valid():
       data = form.cleaned_data
-      member = TeamMember.objects.create( 
-        team = data['team'], 
+      member = TeamMember.objects.create(
+        team = data['team'],
         user = user
       )
       user.first_name = data['first_name']
@@ -74,11 +78,13 @@ def new_member(request):
       
       info_msg( request, u"Votre demande de création de compte a bien été envoyée. Vous serez informé(e) par email dès qu'elle aura été validée.")
       return redirect( 'home' )
-    else:
-      return direct_to_template(request, 'member/form.html',{
-          'form': form,
-          'user_id': user.id
-      })
+  else:
+    form = TeamMemberForm()
+  
+  return direct_to_template(request, 'member/form.html',{
+      'form': form,
+      'user_id': user.id
+  })
 
 @login_required
 def toggle_active( request, user_id ):
@@ -132,6 +138,8 @@ def _member_update(request, member):
         member.user.last_name = data['last_name']
         member.user.email = data['email']
         member.user.save()
+        
+        member.is_validator = data['is_validator']
         member.save()
         
         info_msg( request, u"Utilisateur modifié avec succès." )

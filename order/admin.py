@@ -1,10 +1,10 @@
 from django.contrib import admin
-from order.models import Order
+from order.models import Order, OrderItem
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ( 'date_created', 'user', 'joined_products', 'state', 'last_change' )
-    
-    def joined_products(self, obj):
-      return ", ".join( [p.name for p in obj.products.all()] )
-    joined_products.short_description = 'Products'
+    list_display = ( 'id', 'team', 'username', 'date_created', 'provider', 'status', 'last_change' )
 admin.site.register(Order, OrderAdmin)
+
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ( 'id', 'product', 'quantity' )
+admin.site.register(OrderItem, OrderItemAdmin)

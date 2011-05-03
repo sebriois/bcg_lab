@@ -6,5 +6,5 @@ class TeamAdmin(admin.ModelAdmin):
 admin.site.register(Team, TeamAdmin)
 
 class TeamMemberAdmin(admin.ModelAdmin):
-  list_display = ('user', 'team', 'is_chief')
+  list_display = ('user', 'team')
 admin.site.register(TeamMember, TeamMemberAdmin)

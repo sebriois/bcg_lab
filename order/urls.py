@@ -1,19 +1,25 @@
 from django.conf.urls.defaults import *
 
-from order.views import index, item, delete, new
-from order.cart_views import cart_index, cart_empty
-from order.cart_views import cart_validate, cart_remove
+from order.views import order_detail, order_delete
+from order.views import set_delivered, set_next_status
+from order.views import cart_add, cart_empty, set_item_quantity
+
+from order.views import tab_cart, tab_orders, tab_validation
 
 urlpatterns = patterns('',
   # Order
-  url(r'^new/$', new, name="order_new"),
-  url(r'^(?P<order_id>\d+)/delete/$', delete, name="order_delete"),
-  url(r'^(?P<order_id>\d+)/$', item, name="order_item"),
-  url(r'^$', index, name="order_index"),
+  url(r'^(?P<order_id>\d+)/delete/$', order_delete, name="order_delete"),
+  url(r'^(?P<order_id>\d+)/set-as-delivered/$', set_delivered, name="order_delivered"),
+  url(r'^(?P<order_id>\d+)/set-next-status/$', set_next_status, name="set_next_status"),
+  url(r'^(?P<order_id>\d+)/$', order_detail, name="order_item"),
   
   # Cart
-  url(r'^cart/(?P<cart_id>\d+)/empty/$', cart_empty, name="cart_empty"),
-  url(r'^cart/(?P<cart_id>\d+)/provider/(?P<provider_id>\d+)/validate/$', cart_validate, name="cart_validate"),
-  url(r'^cart/(?P<cart_id>\d+)/product/(?P<product_id>\d+)/remove/$', cart_remove, name="cart_remove"),
-  url(r'^cart/$', cart_index, name="cart_index")
+  url(r'^cart/add/(?P<product_id>\d+)/(?P<quantity>\d+)$', cart_add, name="cart_add"),
+  url(r'^cart/(?P<item_id>\d+)/set-quantity/(?P<quantity>\d+)$', set_item_quantity, name="set_cart_quantity"),
+  url(r'^cart/empty/$', cart_empty, name="cart_empty"),
+  
+  # Tabs
+  url(r'^validation/$', tab_validation, name="tab_validation"),
+  url(r'^cart/$', tab_cart, name="tab_cart"),
+  url(r'^$', tab_orders, name="tab_orders")
 )
