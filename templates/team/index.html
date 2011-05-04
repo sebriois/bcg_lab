@@ -40,15 +40,23 @@
               {% endif %}
               
               {% if member.user == user %}
-                <a href="{% url change_password user.id %}" class="key button">
+                <a href="{% url change_password member.user.id %}" class="key button">
                   Changer de mot de passe
                 </a>
               {% endif %}
               
               {% if user|is_admin or user.is_superuser %}
+                {% if member.user != user %}
+                  <a href="{% url change_password member.user.id %}" class="key button">
+                    Nouveau mot de passe
+                  </a>
+                {% endif %}
                 <a href="{% url user_delete member.user.id %}" class="trash button confirmDialog">
                   Supprimer
                 </a>
+              {% endif %}
+              
+              {% if user|is_validator %}
                 {% if member.user.is_active %}
                   <a href="{% url user_toggle_active member.user.id %}" class="locked button">
                     Inactiver

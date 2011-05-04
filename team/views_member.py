@@ -139,7 +139,7 @@ def _member_update(request, member):
         member.user.email = data['email']
         member.user.save()
         
-        member.is_validator = data['is_validator']
+        member.member_type = data['member_type']
         member.save()
         
         info_msg( request, u"Utilisateur modifié avec succès." )

@@ -13,6 +13,7 @@ from team.forms import TeamForm
 from constants import *
 from utils import info_msg, error_msg, warn_msg
 from utils import superuser_required
+from utils.templatetags.filters import is_admin
 
 
 @login_required
@@ -56,7 +57,7 @@ def _team_list(request):
       if user.teammember_set.all().count() == 0:
         noteam.append( user )
     
-    if user.is_superuser:
+    if user.is_superuser or is_admin(user):
       teams = Team.objects.all()
     else:
       teams = [m.team for m in user.teammember_set.all()]

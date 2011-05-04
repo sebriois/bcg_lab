@@ -35,3 +35,4 @@ class CreditBudgetForm(forms.ModelForm):
     self.fields['nature'].initial = budget.default_nature
     self.fields['budget_type'].initial = budget.budget_type
     self.fields['credit_type'].initial = budget.default_credit_type
+    # self.fields['credit'].required = True ????

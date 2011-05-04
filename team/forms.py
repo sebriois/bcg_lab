@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from team.models import Team, TeamMember
+from constants import MEMBERTYPE_CHOICES
 
 class TeamForm(forms.ModelForm):
     class Meta:
@@ -12,6 +13,7 @@ class TeamForm(forms.ModelForm):
 class TeamMemberForm(forms.Form):
   username = forms.CharField( label = "Identifiant" )
   team = forms.ModelChoiceField( label = "Equipe", queryset = Team.objects.all() )
+  member_type = forms.ChoiceField( label = "Type d'utilisateur", choices = MEMBERTYPE_CHOICES, required = False )
   first_name = forms.CharField( label = "Prénom", required = False )
   last_name = forms.CharField( label = "Nom", required = False )
   email = forms.EmailField( label = "Email" )
@@ -25,3 +27,4 @@ class TeamMemberForm(forms.Form):
       self.fields['first_name'].initial = instance.user.first_name
       self.fields['last_name'].initial = instance.user.last_name
       self.fields['email'].initial = instance.user.email
+      self.fields['member_type'].initial = instance.member_type

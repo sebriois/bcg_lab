@@ -9,7 +9,7 @@ MEMBERTYPE_CHOICES = (
   (0, "Normal"),
   (1, "Validateur"),
   (2, "Gestionnaire"),
-  (3, "Administrateur")
+  (3, "Admin")
 )
 
 STATE_CHOICES = (
