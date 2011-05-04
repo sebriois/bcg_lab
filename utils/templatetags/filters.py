@@ -28,3 +28,16 @@ def is_admin(user):
 @register.filter
 def is_in_charge(product, user):
   return user in product.provider.users_in_charge.all()
+
+@register.filter
+def dialogClass(order):
+  if order.status == 2 and order.budget.budget_type == 0: #ie. CNRS
+    return "orderNbDialog"
+  
+  if order.status == 3 and order.budget.budget_type != 0: #ie. pas CNRS
+    return "orderNbDialog"
+  
+  if order.status == 4:
+    return "deliveryDateDialog"
+  
+

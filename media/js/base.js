@@ -166,15 +166,16 @@ $(document).ready(function(){
       $( "#dialog-confirm-del" ).dialog('open');
     });
     
+    
     // 
-    // DELIVERY DIALOG
+    // SECRETARY DIALOGS - delivery date + order nb
     // 
     $('#dialog-delivery').dialog({
       autoOpen: false,
       resizable: false,
       modal: true
     });
-    $( '.deliveryDialog' ).click(function(e){
+    $( '.deliveryDateDialog' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
@@ -183,9 +184,8 @@ $(document).ready(function(){
         buttons: {
           Valider: function() {
             var delivery_date = $(".datepicker").val();
-            var order_nb = $('input[name="order_nb"]').val();
             $(this).dialog('close');
-            window.location.href = targetUrl + "?delivery_date=" + delivery_date + "&order_nb=" + order_nb;
+            window.location.href = targetUrl + "?delivery_date=" + delivery_date;
           },
           Annuler: function() {
             $(this).dialog('close');
@@ -196,8 +196,34 @@ $(document).ready(function(){
       $( "#dialog-delivery" ).dialog("open");
     });
     
+    $('#dialog-order-nb').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true
+    });
+    $( '.orderNbDialog' ).click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      
+      $( "#dialog-order-nb" ).dialog({
+        width: 430,
+        buttons: {
+          Valider: function() {
+            var order_nb = $('input[name="order_nb"]').val();
+            $(this).dialog('close');
+            window.location.href = targetUrl + "?order_nb=" + order_nb;
+          },
+          Annuler: function() {
+            $(this).dialog('close');
+          }
+        }
+      });
+      
+      $( "#dialog-order-nb" ).dialog("open");
+    });
+    
     // 
-    // PRODUCT PAGE - Select quantity form
+    // PRODUCT PAGE - Select quantity when adding to cart
     // 
     
     $( '.quantityDialog' ).click(function(e){

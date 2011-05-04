@@ -132,6 +132,9 @@ def set_next_status(request, order_id):
   order = get_object_or_404( Order, id = order_id )
   member = get_team_member(request)
   
+  #              #
+  #   STATUS 0   #
+  #              #
   if order.status == 0:
     order.status = 1
     order.save()
@@ -150,7 +153,10 @@ def set_next_status(request, order_id):
     else:
       warn_msg(request, "Aucun email de validation n'a pu être \
       envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
-    
+  
+  #              #
+  #   STATUS 1   #
+  #              #
   elif order.status == 1 and (member.is_validator or member.is_admin) and member.team == order.team:
     budget_line = request.GET.get("budget_line", None)
     if not budget_line or Budget.objects.filter( id = budget_line, team = member.team ).count() == 0:
@@ -161,11 +167,14 @@ def set_next_status(request, order_id):
       order.save()
       info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
   
+  #              #
+  #   STATUS 2   #
+  #              #
   elif order.status == 2 and member.is_secretary:
     if order.budget.budget_type == 0: # ie. CNRS
       order_nb = request.GET.get('order_nb', None)
       if not order_nb:
-        error_msg(request, "Veuillez saisir un numéro de commande.")
+        error_msg(request, "Commande budget CNRS, veuillez saisir un numéro de commande.")
         return redirect( 'tab_orders' )
       order.order_nb = order_nb
       order.save()
@@ -174,7 +183,10 @@ def set_next_status(request, order_id):
     order.status += 1
     order.save()
     info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-    
+  
+  #              #
+  #   STATUS 3   #
+  #              #
   elif order.status == 3 and member.is_secretary:
     if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
       order_nb = request.GET.get('order_nb', None)
@@ -188,7 +200,10 @@ def set_next_status(request, order_id):
     order.status += 1
     order.save()
     info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-    
+  
+  #              #
+  #   STATUS 4   #
+  #              #
   elif order.status == 4:
     try:
       delivery_date = request.GET.get('delivery_date', None)
@@ -198,6 +213,7 @@ def set_next_status(request, order_id):
       return redirect( 'tab_orders' )
     
     order.date_delivered = delivery_date
+    order.status += 1
     order.save()
   else:
     error_msg(request, "Vous n'avez pas les permissions nécessaires \

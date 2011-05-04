@@ -43,7 +43,7 @@
             {# ACTION LINKS - MODIFYING ORDER STATUS #}
             <td>
               {% if user|is_secretary %}
-                <a href="{% url set_next_status order.id %}" class="next-status button {% if order.status == 4 %}deliveryDialog{% endif %}">
+                <a href="{% url set_next_status order.id %}" class="next-status button {{ order|dialogClass|default:"" }}">
                   {% if order.status == 2 %}
                     Vu par la gestionnaire
                   {% else %}{% if order.status == 3 %}
@@ -53,9 +53,7 @@
                   {% endif %}{% endif %}{% endif %}
                 </a>
               {% endif %}
-              <a href="{{ order.get_absolute_url }}" class="zoomin button">
-                Voir détail
-              </a>
+              <a href="{{ order.get_absolute_url }}" class="zoomin button">Voir détail</a>
             </td>
           </tr>
         {% endfor %}
@@ -76,25 +74,17 @@
 {#                    #}
 {# ################## #}
 
-<div id="dialog-delivery" title="Détails livraison">
+<div id="dialog-delivery" title="Date de livraison">
   <div class="form-row">
     <label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
     <div class="cleaner"></div>
     <input type="text" name="delivery_date" class="datepicker" />
-    <div class="cleaner"></div>
-    <label for="order_nb">N° de commande:</label>
-    <div class="cleaner"></div>
-    <input type="text" name="order_nb" />
     <div class="cleaner"></div>
   </div>
 </div>
 
-<div id="dialog-order-nb" title="Détails livraison">
+<div id="dialog-order-nb" title="N° de commande CNRS">
   <div class="form-row">
-    <label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
-    <div class="cleaner"></div>
-    <input type="text" name="delivery_date" class="datepicker" />
-    <div class="cleaner"></div>
     <label for="order_nb">N° de commande:</label>
     <div class="cleaner"></div>
     <input type="text" name="order_nb" />
