@@ -64,7 +64,7 @@ def _product_list(request):
   
   return direct_to_template(request, 'product/index.html',{
       'filter_form': form,
-      'products': paginate( request, product_list ),
+      'products': paginate( request, product_list, 100 ),
       'url_params': urlencode(request.GET)
   })
 

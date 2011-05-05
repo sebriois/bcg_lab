@@ -1,6 +1,7 @@
 {# PAGE FOURNISSEUR #}
 
 {% extends "main_custom.html" %}
+{% load filters %}
 
 {% block menu_provider %}selected{% endblock %}
 
@@ -47,7 +48,7 @@
               {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
             </td>
             <td>
-              {% if user in provider.users_in_charge.all or user.is_superuser %}
+              {% if user in provider.users_in_charge.all or user|is_admin %}
                 <a href="{% url provider_item provider.id %}" class="pencil button">Editer</a>
                 <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus button">
                   Ajouter&nbsp;un&nbsp;produit

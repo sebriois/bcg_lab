@@ -77,7 +77,7 @@ def new_member(request):
       del request.session['member_user']
       
       info_msg( request, u"Votre demande de création de compte a bien été envoyée. Vous serez informé(e) par email dès qu'elle aura été validée.")
-      return redirect( 'home' )
+      return redirect( 'product_index' )
   else:
     form = TeamMemberForm()
   
@@ -110,7 +110,7 @@ def change_password(request, user_id):
         'form': form
       })
   
-  return redirect('home')
+  return redirect('team_index')
 
 @login_required
 @superuser_required

@@ -38,18 +38,13 @@
         <div id="main-menu">
           <ul>
             <li>
-              <a href="{% url home %}" class="{% block menu_home %}{% endblock %}">
-                Accueil
+              <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
+                Produits
               </a>
             </li>
             <li>
               <a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">
                 Fournisseurs
-              </a>
-            </li>
-            <li>
-              <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
-                Produits
               </a>
             </li>
             {% if user|is_normal %}

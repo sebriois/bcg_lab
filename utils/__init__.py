@@ -34,7 +34,7 @@ def GET_method(view):
   def _wrapped_view( request, *args, **kwargs ):
     if not request.method == 'GET':
       error_msg( request, "This request method (%s) is not handled on this page" % request.method )
-      return redirect( 'home' )
+      return redirect( 'error' )
     return view(request, *args, **kwargs)
   return _wrapped_view
 
@@ -45,7 +45,7 @@ def POST_method(view):
   def _wrapped_view( request, *args, **kwargs ):
     if not request.method == 'POST':
       error_msg( request, "This request method (%s) is not handled on this page" % request.method )
-      return redirect( 'home' )
+      return redirect( 'error' )
     return view(request, *args, **kwargs)
   return _wrapped_view
   
@@ -53,48 +53,48 @@ def POST_method(view):
 def superuser_required( view ):
   """
   Decorator that checks whether the user is a superuser, redirecting
-  to the home page if not.
+  to the error page if not.
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not request.user.is_superuser:
       error_msg( request, u"Vous ne pouvez pas accéder à cette page." )
-      return redirect('home')
+      return redirect('error')
     return view(request, *args, **kwargs)
   return _wrapped_view
 
 def team_required( view ):
   """
   Decorator that checks whether the user belongs to a team, redirecting
-  to the home page if not.
+  to the error page if not.
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not TeamMember.objects.filter( user = request.user ).count() > 0:
       warn_msg( request, u"Vous devez appartenir à une équipe pour accéder à cette page." )
-      return redirect('home')
+      return redirect('error')
     return view(request, *args, **kwargs)
   return _wrapped_view
 
 def validator_required( view ):
   """
   Decorator that checks whether the user is a validator, redirecting
-  to the home page if not.
+  to the error page if not.
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not is_validator(request.user):
       warn_msg( request, u"Vous devez être validateur pour accéder à cette page." )
-      return redirect('home')
+      return redirect('error')
     return view(request, *args, **kwargs)
   return _wrapped_view
   
 def secretary_required( view ):
   """
   Decorator that checks whether the user belongs to a team, redirecting
-  to the home page if not.
+  to the error page if not.
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not is_secretary(request.user):
       warn_msg( request, u"Vous devez être gestionnaire pour accéder à cette page." )
-      return redirect('home')
+      return redirect('error')
     return view(request, *args, **kwargs)
   return _wrapped_view
   

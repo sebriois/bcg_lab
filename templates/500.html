@@ -1,21 +1,27 @@
-{% extends "main_classic.html" %}
-
-{% block header %}
-  Une erreur interne est survenue sur cette page
-{% endblock %}
+{% extends "main_custom.html" %}
 
 {% block sidebar %}
-  <h3>Transférer le message</h3>
-  <p>
-    Merci de copier/coller l'ensemble du message suivant et de le 
-    transmettre à sbriois@cict.fr
-  </p>
 {% endblock %}
 
 {% block content %}
-<h3>Traceback</h3>
-{{ traceback|linebreaks }}
+<div id="content">
+  <h2>Une erreur a été détectée</h2>
+  <br />
+  <h3>Raisons possibles d'apparition de cette erreur:</h3>
+  <ul>
+    <li>Accès non-autorisé à la page demandée</li>
+    <li>La page demandée est introuvable</li>
+    <li>
+      Bug de l'application sur la page demandée. Dans ce cas, merci de
+      copier/coller le texte suivant et de l'envoyer à 
+      <strong>sbriois@cict.fr</strong>
+    </li>
+  </ul>
 
-<h3>Request</h3>
-{{ request|linebreaks }}
+  <h3>Traceback</h3>
+  {{ traceback|linebreaks }}
+
+  <h3>Request</h3>
+  {{ request|linebreaks }}
+</div>
 {% endblock %}

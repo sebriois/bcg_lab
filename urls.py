@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
 
 from home_view import home
+from home_view import error
 
 admin.autodiscover()
 
@@ -23,5 +24,6 @@ urlpatterns = patterns('',
     (r'^members/',      include('team.urls_member')),
     (r'^login/$',       login, {'template_name': 'auth/login.html'}),
     url(r'^logout/$',   logout_then_login, name = "logout"),
+    url(r'^error/$',    error, name="error"),
     url(r'^$',          home, name="home"),
 )

@@ -1,9 +1,7 @@
-import os
-import sys
+import os, sys
 
-path = '/home/briois/srv/www'
-if path not in sys.path:
-    sys.path.append(path)
+sys.path.append('/var/www')
+sys.path.append('/var/www/lbcmcp-orders')
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'order_manager.settings'
 
