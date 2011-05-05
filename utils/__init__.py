@@ -4,8 +4,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 from django.shortcuts import redirect
 from team.models import TeamMember
-from constants import SECRETARY
-from utils.templatetags.filters import is_validator, is_secretary
+from constants import NORMAL, VALIDATOR, SECRETARY, ADMIN
 
 def info_msg( request, message ):
   return messages.add_message( request, messages.INFO, message )
@@ -15,6 +14,18 @@ def error_msg( request, message ):
 
 def warn_msg( request, message ):
   return messages.add_message( request, messages.WARNING, message )
+
+def is_normal(user):
+  return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
+
+def is_validator(user):
+  return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
+
+def is_secretary(user):
+  return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
+
+def is_admin(user):
+  return user.teammember_set.filter(member_type = ADMIN).count() > 0
 
 def GET_method(view):
   """
@@ -105,3 +116,4 @@ def paginate( request, object_list, nb_items = 40 ):
 
 def get_team_member( request ):
   return request.user.teammember_set.get()
+

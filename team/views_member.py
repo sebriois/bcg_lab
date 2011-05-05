@@ -87,6 +87,7 @@ def new_member(request):
   })
 
 @login_required
+@transaction.commit_on_success
 def toggle_active( request, user_id ):
   user = get_object_or_404( User, id = user_id )
   user.is_active = not user.is_active

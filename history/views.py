@@ -44,9 +44,9 @@ def index(request):
       
       order_list = order_list.filter( Q_obj )
     else:
-      error_msg(request, "Le formulaire n'a pas pu être validé.")
+      error_msg( request, "Le formulaire n'a pas pu être validé.")
   else:
-    error_msg( "This request method (%s) is not handled on this page" % request.method )
+    error_msg( request, "This request method (%s) is not handled on this page" % request.method )
     return redirect( 'history' )
   
   order_list.order_by( 'date_delivered' )
