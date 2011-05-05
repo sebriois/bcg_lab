@@ -26,7 +26,7 @@ class History(models.Model):
   
   @models.permalink
   def get_absolute_url(self):
-    return ( 'history_item', [self.id] )
+    return ( 'history_detail', [self.id] )
   
   def items(self):
     return self.historyitem_set

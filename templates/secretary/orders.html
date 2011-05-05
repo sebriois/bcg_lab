@@ -27,9 +27,9 @@
             <td>{{ order.provider.name }}</td>
             <td>{{ order.team.name }}</td>
             <td>
-              {# <a href="{% url change_budget order.id %}" class="button budgetLineDialog"> #}
-              {#   {{ order.budget.name }} #}
-              {# </a> #}
+              <a href="{% url order_budget order.id %}" class="pencil button budgetLineDialog">
+                {{ order.budget.name }}
+              </a>
             </td>
             <td>{{ order.price }} €</td>
             <td>
@@ -96,7 +96,11 @@
   <div class="form-row">
     <label for="budget_line">Ligne budgétaire</label>
     <div class="cleaner"></div>
-    <input type="text" name="budget_line" value="0" />
+    <select name="budget_line" width="200px">
+      {% for budget_line in budget_lines %}
+        <option value="{{budget_line.id}}">{{budget_line.team.name}} - {{budget_line}}</option>
+      {% endfor %}
+    </select>
   </div>
 </div>
 

@@ -16,10 +16,12 @@ form label {
 
 textarea, select, input[type="text"], input[type="password"] {
     float: left;
-    padding: 5px;
-    width: 200px;
-    height: 15px;
+    height: auto;
     margin-top: 5px;
+    min-height: 15px;
+    min-width: 50px;
+    padding: 5px;
+    width: auto;
 }
 
 input[type="image"] {

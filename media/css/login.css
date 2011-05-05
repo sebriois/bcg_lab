@@ -55,6 +55,12 @@ body {
   font-size:12px;
 }
 
+/* @group Form */
+/* override input width */
+#login input {
+  width: 200px;
+}
+
 
 /* @group Messages */
 div#login-messages {

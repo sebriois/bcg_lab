@@ -123,7 +123,22 @@ def set_delivered(request, order_id):
   return redirect( 'tab_orders' )
 
 
-
+@login_required
+@GET_method
+@secretary_required
+@transaction.commit_on_success
+def set_budget(request, order_id):
+  order = get_object_or_404( Order, id = order_id )
+  
+  budget_line = request.GET.get("budget_line", None)
+  if not budget_line or Budget.objects.filter( id = budget_line ).count() == 0:
+    error_msg(request, "Veuillez sélectionner une ligne budgétaire valide.")
+  else:
+    order.budget = Budget.objects.get( id = budget_line )
+    order.save()
+  
+  return redirect(request.META['HTTP_REFERER'])
+    
 @login_required
 @GET_method
 @team_required
@@ -193,7 +208,7 @@ def set_next_status(request, order_id):
       if not order_nb:
         error_msg(request, "Veuillez saisir un numéro de commande.")
         return redirect( 'tab_orders' )
-      order.order_nb = order_nb
+      order.number = order_nb
       order.save()
       order.create_budget_line()
     
@@ -215,6 +230,7 @@ def set_next_status(request, order_id):
     order.date_delivered = delivery_date
     order.status += 1
     order.save()
+    order.create_history_line()
   else:
     error_msg(request, "Vous n'avez pas les permissions nécessaires \
     pour modifier le statut de cette commande")
@@ -285,9 +301,9 @@ def set_item_quantity(request, item_id, quantity):
     order_item.quantity = quantity
     order_item.save()
     order.update_price()
-    info_msg( request, u"Panier modifié avec succès.")
+    info_msg( request, u"Quantité modifiée avec succès.")
   else:
     error_msg( request, u"Veuillez saisir une quantité positive." )
   
-  return redirect('tab_cart')
+  return redirect(request.META['HTTP_REFERER'])
 

@@ -1,0 +1,39 @@
+{% extends "main_custom.html" %}
+
+{% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header">
+    <h2>Détail commande {{ history.provider }} du {{ history.date_created|date }}</h2>
+  </div>
+  
+  <table class="list">
+    <thead>
+      <th>Produit</th>
+      <th>Conditionnement</th>
+      <th>Référence</th>
+      <th>N° Offre</th>
+      <th>Prix unitaire</th>
+      <th>Quantité</th>
+      <th>Prix total</th>
+    </thead>
+    
+    <tbody>
+      {% for item in history.items.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+          <td>{{ item.product }}</td>
+          <td>{{ item.packaging }}</td>
+          <td>{{ item.reference }}</td>
+          <td>{{ item.offer_nb }}</td>
+          <td>{{ item.price }} €</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ order_item.total_price }} €</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <p><strong>PRIX TOTAL COMMANDE: {{ history.price }} € </strong></p>
+  
+  <div class="cleaner"></div>
+</div>
+{% endblock %}

@@ -14,15 +14,15 @@ class HistoryFilterForm(forms.Form):
     required = True
   )
   
-  team = forms.ModelChoiceField(
+  team = forms.ChoiceField(
     label     = "Equipe",
-    queryset  = Team.objects.all(),
+    choices   = [("","---------")] + [(team.name,team.name) for team in Team.objects.all()],
     required  = False
   )
   
-  provider = forms.ModelChoiceField(
+  provider = forms.ChoiceField(
     label     = "Fournisseur",
-    queryset  = Provider.objects.all(),
+    choices   = [("","---------")] + [(p.name, p.name) for p in Provider.objects.all()],
     required  = False
   )
   
@@ -40,28 +40,18 @@ class HistoryFilterForm(forms.Form):
     required      = False
   )
   
-  date_delivered__gte = forms.DateField( 
-    label         = "Date de livraison min",
-    input_formats = ["%d/%m/%Y"],
-    widget        = forms.TextInput( attrs = { 'class' : 'datepicker' }),
-    required      = False
-  )
-  
-  date_delivered__lte = forms.DateField( 
-    label         = "Date de livraison max",
-    input_formats = ["%d/%m/%Y"],
-    widget        = forms.TextInput( attrs = { 'class' : 'datepicker' }),
-    required      = False
-  )
-  
-  price__gte = forms.FloatField(
+  price__gte = forms.DecimalField(
     label = "Prix min",
     min_value = 0,
+    max_digits = 12,
+    decimal_places = 2,
     required = False
   )
   
-  price__lte = forms.FloatField(
+  price__lte = forms.DecimalField(
     label = "Prix max",
     min_value = 0,
+    max_digits = 12,
+    decimal_places = 2,
     required = False
   )

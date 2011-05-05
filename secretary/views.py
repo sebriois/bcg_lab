@@ -34,7 +34,8 @@ def orders(request):
   order_list = Order.objects.filter( status__in = [2,3,4] )
   
   return direct_to_template(request, 'secretary/orders.html',{
-      'orders': paginate( request, order_list )
+      'orders': paginate( request, order_list ),
+      'budget_lines': Budget.objects.filter( amount__gt = 0 ).order_by('team')
   })
 
 @login_required

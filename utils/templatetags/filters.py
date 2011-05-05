@@ -30,6 +30,10 @@ def is_in_charge(product, user):
   return user in product.provider.users_in_charge.all()
 
 @register.filter
+def team(user):
+  return user.teammember_set.get().team
+
+@register.filter
 def dialogClass(order):
   if order.status == 2 and order.budget.budget_type == 0: #ie. CNRS
     return "orderNbDialog"

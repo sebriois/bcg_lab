@@ -14,7 +14,7 @@ from django.views.generic.simple import direct_to_template
 
 from provider.models import Provider
 from product.models import Product
-from order.models import Order, OrderItem
+from history.models import History
 from order.forms import HistoryFilterForm
 
 from constants import *
@@ -22,7 +22,12 @@ from utils import *
 
 @login_required
 def index(request):
-  order_list = Order.objects.filter( date_delivered__isnull = False )
+  team = get_team_member(request).team
+  
+  if is_admin(request.user):
+    history_list = History.objects.all()
+  else:
+    history_list = History.objects.filter( team = team.name )
   
   if request.method == 'GET':
     form = HistoryFilterForm()
@@ -41,15 +46,23 @@ def index(request):
       Q_obj.connector = data.pop("connector")
       Q_obj.children  = data.items()
       
-      order_list = order_list.filter( Q_obj )
+      history_list = history_list.filter( Q_obj )
     else:
       error_msg( request, "Le formulaire n'a pas pu être validé.")
   else:
     error_msg( request, "This request method (%s) is not handled on this page" % request.method )
     return redirect( 'history' )
   
-  order_list.order_by( 'date_delivered' )
-  return direct_to_template( request, "order/history.html", {
+  history_list.order_by( 'date_created' )
+  return direct_to_template( request, "tab_history.html", {
     'filter_form': form,
-    'orders': paginate( request, order_list )
+    'history': paginate( request, history_list )
+  })
+
+@login_required
+def item(request, item_id):
+  item = get_object_or_404( History, id = item_id )
+  
+  return direct_to_template( request, 'history/item.html', {
+    'history': item
   })

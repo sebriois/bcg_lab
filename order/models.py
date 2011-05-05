@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from product.models import Product
 from provider.models import Provider
+from history.models import History, HistoryItem
 from secretary.models import Budget, BudgetLine
 from team.models import Team, TeamMember
 from constants import STATE_CHOICES, BUDGET_CHOICES
@@ -47,24 +48,24 @@ class Order(models.Model):
       self.save()
   
   def create_history_line(self):
-    History.objects.create(
-      team          = self.team.name,
-      user          = self.username,
-      provider      = self.provider.name,
-      provider_ref  = self.provider_ref,
-      price         = self.price,
-      budget        = self.budget.name,
-      date_created  = self.date_delivered
-    )
+    history = History.objects.create(
+                team          = self.team.name,
+                user          = self.username,
+                provider      = self.provider.name,
+                order_nb      = self.number,
+                price         = self.price,
+                budget        = self.budget.name,
+                date_created  = self.date_delivered
+              )
     for item in self.items.all():
       HistoryItem.objects.create(
+        history       = history,
         product       = item.product.name,
         quantity      = item.quantity,
         packaging     = item.product.packaging,
         reference     = item.product.reference,
         price         = item.product.price,
-        offer_nb      = item.product.offer_nb,
-        nomenclature  = item.product.nomenclature
+        offer_nb      = item.product.offer_nb
       )
   
   def create_budget_line(self):
