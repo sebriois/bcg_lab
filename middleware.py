@@ -34,6 +34,6 @@ class ExceptionMiddleware(object):
   """
   def process_exception(self, request, exception):
     if request.user.is_authenticated():
-      return direct_to_template(request, 'error.html', {
+      return direct_to_template(request, '500.html', {
           'traceback': traceback.format_exc()
       })

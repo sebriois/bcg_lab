@@ -1,16 +1,18 @@
-{% extends "main_classic.html" %}
+{% extends "main_custom.html" %}
 
 {% block header %}Suppression d'un produit{% endblock %}
 
 {% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Suppression d'un produit</h2></div>
 
-<p class="info">La suppression d'un produit est définitive et l'ensemble
-des commandes lui étant rattachées seront également supprimées.</p>
+<p>La suppression d'un produit est définitive et l'ensemble
+des commandes en cours lui étant rattachées seront également supprimées.</p>
 <p>Êtes-vous sûr de vouloir supprimer ce produit ?</p>
 
 <form action="{% url product_item product.id %}" method="post">{% csrf_token %}
   <input type="hidden" name="method" value="DELETE" />
-  <button type="submit" class="button">Supprimer</button>
-  <a href="{% url product_index %}" title="Annuler la suppression">Abandonner la suppression</a>
+  <button type="submit" class="trash button">Supprimer</button>
+  <a href="{% url product_index %}" class="button">Abandonner la suppression</a>
 </form>
 {% endblock %}

@@ -8,12 +8,11 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
     
-    def __init__( self, provider, *args, **kwargs ):
+    def __init__( self, provider = None, *args, **kwargs ):
       super( ProductForm, self ).__init__( *args, **kwargs )
       
-      self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
-      
       if provider:
+        self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
         self.fields['provider'].initial = provider
 
 class ProductFilterForm(forms.Form):

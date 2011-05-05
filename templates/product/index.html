@@ -56,12 +56,12 @@
   <table class="list">
     <thead>
         <th>Fournisseur</th>
-        <th>Nom du produit</th>
-        <th>Conditionnement</th>
-        <th>Référence</th>
+        <th {% if user|is_admin %}width="210px"{% endif %}>Nom du produit</th>
+        <th>Cond.</th>
+        <th>Réf.</th>
         <th>Prix</th>
         <th>N° Offre</th>
-        <th>Nomenclature</th>
+        <th>Nomen.</th>
         <th>MAJ</th>
         <th>Action</th>
     </thead>
@@ -81,7 +81,7 @@
               <a href="{% url cart_add product.id,1 %}?{{url_params}}" class="quantityDialog plus button">
                 Ajouter&nbsp;au&nbsp;panier
               </a>
-              {% if product|is_in_charge:user %}
+              {% if product|is_in_charge:user or user|is_admin %}
                 <a href="{% url product_item product.id %}" class="pencil button">Editer</a>                
               {% endif %}
             </td>

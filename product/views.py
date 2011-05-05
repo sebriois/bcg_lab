@@ -69,7 +69,7 @@ def _product_list(request):
   })
 
 def _product_detail(request, product):
-    form = ProductForm(instance = product)
+    form = ProductForm(instance = product, provider = product.provider)
     return direct_to_template(request, 'product/item.html',{
         'product': product,
         'form': form
