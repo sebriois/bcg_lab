@@ -21,7 +21,6 @@ from constants import *
 from utils import *
 
 @login_required
-@GET_method
 def index(request):
   order_list = Order.objects.filter( date_delivered__isnull = False )
   

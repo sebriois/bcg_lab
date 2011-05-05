@@ -33,7 +33,7 @@ def GET_method(view):
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not request.method == 'GET':
-      error_msg( "This request method (%s) is not handled on this page" % request.method )
+      error_msg( request, "This request method (%s) is not handled on this page" % request.method )
       return redirect( 'home' )
     return view(request, *args, **kwargs)
   return _wrapped_view
@@ -44,7 +44,7 @@ def POST_method(view):
   """
   def _wrapped_view( request, *args, **kwargs ):
     if not request.method == 'POST':
-      error_msg( "This request method (%s) is not handled on this page" % request.method )
+      error_msg( request, "This request method (%s) is not handled on this page" % request.method )
       return redirect( 'home' )
     return view(request, *args, **kwargs)
   return _wrapped_view
