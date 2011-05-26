@@ -18,37 +18,4 @@
 
 {% pagination orders %}
 
-
-{# ################## #}
-{#                    #}
-{#      DIALOGS       #}
-{#                    #}
-{# ################## #}
-
-
-<div id="dialog-qty" title="Modifier la quantité">
-  <div class="form-row">
-    <div id="qty-error-msg"></div>
-    <label for="quantity">Quantité</label>
-    <div class="cleaner"></div>
-    <input type="text" name="quantity" value="0" />
-  </div>
-</div>
-
-<div id="dialog-confirm-del" title="Confirmer la suppression">
-  Êtes-vous sûr de vouloir supprimer cette commande ?
-</div>
-
-<div id="dialog-budget-line" title="Choisir une ligne budgétaire">
-  <div class="form-row">
-    <label for="budget_line">Ligne budgétaire</label>
-    <div class="cleaner"></div>
-    <select name="budget_line">
-      {% for budget_line in budget_lines %}
-        <option value="{{budget_line.id}}">{{budget_line}}</option>
-      {% endfor %}
-    </select>
-  </div>
-</div>
-
 {% endblock %}

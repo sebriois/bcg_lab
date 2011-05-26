@@ -36,6 +36,7 @@ def GET_method(view):
       error_msg( request, "This request method (%s) is not handled on this page" % request.method )
       return redirect( 'error' )
     return view(request, *args, **kwargs)
+  
   return _wrapped_view
 
 def POST_method(view):
@@ -47,6 +48,20 @@ def POST_method(view):
       error_msg( request, "This request method (%s) is not handled on this page" % request.method )
       return redirect( 'error' )
     return view(request, *args, **kwargs)
+  
+  return _wrapped_view
+  
+
+def PUT_method(view):
+  """
+  Decorator that checks whether the view is called using the PUT method
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not request.method == 'PUT':
+      error_msg( request, "This request method (%s) is not handled on this page" % request.method )
+      return redirect( 'error' )
+    return view(request, *args, **kwargs)
+  
   return _wrapped_view
   
 
@@ -94,6 +109,19 @@ def secretary_required( view ):
   def _wrapped_view( request, *args, **kwargs ):
     if not is_secretary(request.user):
       warn_msg( request, u"Vous devez être gestionnaire pour accéder à cette page." )
+      return redirect('error')
+    return view(request, *args, **kwargs)
+  return _wrapped_view
+  
+
+def admin_required( view ):
+  """
+  Decorator that checks whether the user belongs to a team, redirecting
+  to the error page if not.
+  """
+  def _wrapped_view( request, *args, **kwargs ):
+    if not is_admin(request.user):
+      warn_msg( request, u"Vous devez être administrateur pour accéder à cette page." )
       return redirect('error')
     return view(request, *args, **kwargs)
   return _wrapped_view

@@ -35,10 +35,10 @@
             {# ACTION LINKS - MODIFYING ORDER STATUS #}
             <td>
               {% if order.status == 1 and user|is_validator %}
-                <a href="{% url set_next_status order.id %}" class="check button budgetLineDialog">
+                <a href="{% url set_next_status order.id %}" class="check budgetLineDialog">
                   Valider
                 </a>
-                <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">
+                <a href="{% url order_delete order.id %}" class="trash confirmDel">
                   Supprimer
                 </a>
               {% else %}
@@ -52,19 +52,19 @@
                   </a>
                 {% else %}
                   {% if order.status == 2 or order.status == 3 %}
-                    <a href="{% url order_delivered order.id %}" class="notice button dateDialog">
+                    <a href="{% url order_delivered order.id %}" class="notice dateDialog">
                       Commande réceptionnée
                     </a>
                   {% endif %}
                 {% endif %}
                 
                 {% if order.status == 4 %}
-                  <a href="{% url order_delivered order.id %}" class="notice button dateDialog">
+                  <a href="{% url order_delivered order.id %}" class="notice dateDialog">
                     Commande réceptionnée
                   </a>
                 {% endif %}
               {% endif %}
-              <a href="{{ order.get_absolute_url }}" class="zoomin button">
+              <a href="{{ order.get_absolute_url }}" class="zoomin">
                 Voir détail
               </a>
             </td>
@@ -98,7 +98,7 @@
   </div>
 </div>
 
-<div id="dialog-confirm-del" title="Confirmer la suppression">
+<div id="confirmDel" title="Confirmer la suppression">
   Êtes-vous sûr de vouloir supprimer cette commande ?
 </div>
 

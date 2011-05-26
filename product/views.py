@@ -14,10 +14,7 @@ from product.forms import ProductForm, ProductFilterForm
 from order.models import Order, OrderItem
 
 from constants import *
-from utils import info_msg, error_msg, warn_msg
-from utils import superuser_required, team_required
-from utils import paginate
-from utils import get_team_member
+from utils import *
 
 @login_required
 @team_required

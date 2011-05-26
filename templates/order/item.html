@@ -1,8 +1,15 @@
 {% extends "main_custom.html" %}
 {% load paginator %}
 
-{% block content %}
+{% block buttons %}
+<div class="btn_wrapper">
+  <a href="{% url tab_orders %}" class="btn_small">
+    <img src="{{ MEDIA_URL }}img/icons/arrow_left.png" />Retour
+  </a>
+</div>
+{% endblock %}
 
+{% block content %}
 <div id="content" style="min-height:0">
   <div id="content_header">
     <h2>Détail commande {{ order.provider }} du {{ order.date_created|date }}</h2>

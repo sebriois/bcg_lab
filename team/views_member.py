@@ -12,7 +12,7 @@ from team.models import Team, TeamMember
 from team.forms import TeamForm, TeamMemberForm
 
 from constants import *
-from utils import info_msg, error_msg, warn_msg, superuser_required
+from utils import *
 
 @login_required
 @transaction.commit_on_success
@@ -26,7 +26,7 @@ def new_user(request):
     
     if 'member_user' in request.session:
       return direct_to_template( request, 'member/form.html', {
-        'form': TeamMemberForm()
+        'form': TeamMemberForm( is_admin = is_admin(request.user) )
       })
     
     if request.method == 'POST':
@@ -39,7 +39,7 @@ def new_user(request):
         request.session['member_user'] = user
         request.session.save()
         return direct_to_template( request, 'member/form.html', {
-          'form': TeamMemberForm()
+          'form': TeamMemberForm( is_admin = is_admin(request.user) )
         })
     
     return direct_to_template( request, 'auth/register.html', { 'form': form })
@@ -79,7 +79,7 @@ def new_member(request):
       info_msg( request, u"Votre demande de création de compte a bien été envoyée. Vous serez informé(e) par email dès qu'elle aura été validée.")
       return redirect( 'product_index' )
   else:
-    form = TeamMemberForm()
+    form = TeamMemberForm(is_admin = is_admin(request.user))
   
   return direct_to_template(request, 'member/form.html',{
       'form': form,
@@ -122,31 +122,42 @@ def delete(request, user_id):
 
 #--- Private views
 def _member_detail(request, member):
-    form = TeamMemberForm(instance = member)
+    form = TeamMemberForm(instance = member,is_admin = is_admin(request.user))
     return direct_to_template(request, 'member/item.html',{
         'member': member,
         'form': form
     })
 
 def _member_update(request, member):
-    form = TeamMemberForm(instance = member, data = request.REQUEST)
+  data = request.POST.copy()
+  
+  # Need to do that cause field are disabled in HTML, values are not
+  # sent over.
+  if not is_admin( request.user ):
+    data.update({
+      'team': member.team.id,
+      'username': member.user.username,
+      'member_type': member.member_type
+    })
+  
+  form = TeamMemberForm(instance = member, is_admin = is_admin(request.user), data = data)
+  
+  if form.is_valid():
+    data = form.cleaned_data
+    member.team = data['team']
+    member.user.username = data['username']
+    member.user.first_name = data['first_name']
+    member.user.last_name = data['last_name']
+    member.user.email = data['email']
+    member.user.save()
     
-    if form.is_valid():
-        data = form.cleaned_data
-        member.team = data['team']
-        member.user.username = data['username']
-        member.user.first_name = data['first_name']
-        member.user.last_name = data['last_name']
-        member.user.email = data['email']
-        member.user.save()
-        
-        member.member_type = data['member_type']
-        member.save()
-        
-        info_msg( request, u"Utilisateur modifié avec succès." )
-        return redirect( 'team_index' )
-    else:
-        return direct_to_template(request, 'member/item.html',{
-            'member': member,
-            'form': form
-        })
+    member.member_type = data['member_type']
+    member.save()
+    
+    info_msg( request, u"Utilisateur modifié avec succès." )
+    return redirect( 'team_index' )
+  else:
+    return direct_to_template(request, 'member/item.html',{
+        'member': member,
+        'form': form
+    })

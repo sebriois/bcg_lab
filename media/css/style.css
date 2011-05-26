@@ -379,6 +379,11 @@ a.btn_big img, a.btn_small img, a.btn_medium img {
 
 
 /* @group MISC */
+#loadingDialog {
+  background: url('../img/layout/wait.gif') no-repeat center;
+  min-height: 30px;
+}
+
 p.info {
     background: url('../img/icons/information.png');
     display:inline-block;

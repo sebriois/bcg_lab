@@ -1,7 +1,7 @@
 {% extends "main_custom.html" %}
 {% load paginator filters %}
 
-{% block menu_secretary_budgets %}selected{% endblock %}
+{% block menu_budgets %}selected{% endblock %}
 
 {% block buttons %}
 {% if budget %}
@@ -16,13 +16,13 @@
     </a>
   </div>
   <div class="btn_wrapper">
-    <a href="{% url secretary_reports %}" class="btn_big">
+    <a href="{% url budgetlines %}" class="btn_big">
       <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
     </a>
   </div>
 {% endif %}
 <div class="btn_wrapper">
-  <a href="{% url secretary_budgets %}" class="btn_big">
+  <a href="{% url budgets %}" class="btn_big">
     <img src="{{ MEDIA_URL }}img/icons/coins.png" />Retour liste des budgets
   </a>
 </div>
@@ -56,7 +56,7 @@
           <tr class="{% cycle 'even' 'odd' %}">
              <td>{{ budget_line.name }}</td>
              <td>{{ budget_line.credit|default:"" }}</td>
-             <td>{{ budget_line.order_nb|default:"" }}</td>
+             <td>{{ budget_line.number|default:"" }}</td>
              <td>{{ budget_line.date|date }}</td>
              <td>{{ budget_line.nature }}</td>
              <td>{{ budget_line.get_budget_type_display|default:"" }}</td>

@@ -1,7 +1,7 @@
 [
     {
         "pk": 1, 
-        "model": "secretary.budget", 
+        "model": "budget.budget", 
         "fields": {
             "default_nature": "FO", 
             "default_credit_type": "SB", 
@@ -13,7 +13,7 @@
     }, 
     {
         "pk": 2, 
-        "model": "secretary.budget", 
+        "model": "budget.budget", 
         "fields": {
             "default_nature": "FO", 
             "default_credit_type": "AFM MV", 
@@ -25,13 +25,13 @@
     }, 
     {
         "pk": 2, 
-        "model": "secretary.budgetline", 
+        "model": "budget.budgetline", 
         "fields": {
             "product": null, 
             "name": "A1INSB", 
             "nature": "FO", 
             "amount_left": "18000.00", 
-            "order_nb": null, 
+            "number": null, 
             "product_price": null, 
             "credit_type": "AFM MV", 
             "credit": "18000.00", 
@@ -46,13 +46,13 @@
     }, 
     {
         "pk": 1, 
-        "model": "secretary.budgetline", 
+        "model": "budget.budgetline", 
         "fields": {
             "product": null, 
             "name": "OB1INSB", 
             "nature": "FO", 
             "amount_left": "10875.28", 
-            "order_nb": null, 
+            "number": null, 
             "product_price": null, 
             "credit_type": "SB", 
             "credit": "10875.28", 

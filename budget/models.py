@@ -22,7 +22,7 @@ class Budget(models.Model):
 class BudgetLine(models.Model):
   name        = models.CharField(u"Nom", max_length = 100)
   credit      = models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
-  order_nb    = models.CharField(u"N° de cde", max_length = 30, null = True, blank = True)
+  number    = models.CharField(u"N° de cde", max_length = 30, null = True, blank = True)
   date        = models.DateField(u"Date de l'acte")
   nature      = models.CharField(u"Nature", max_length = 20)
   budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)

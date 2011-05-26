@@ -1,7 +1,7 @@
 # coding: utf-8
 from django import forms
 
-from secretary.models import Budget, BudgetLine
+from budget.models import Budget, BudgetLine
 
 class BudgetForm(forms.ModelForm):
   class Meta:
@@ -25,7 +25,7 @@ class DebitBudgetForm(forms.ModelForm):
 class CreditBudgetForm(forms.ModelForm):
   class Meta:
     model = BudgetLine
-    exclude = ('debit', 'amount_left', 'order_nb', 'offer', 'ref', 'quantity', 'product_price')
+    exclude = ('debit', 'amount_left', 'number', 'offer', 'ref', 'quantity', 'product_price')
     
   def __init__( self, budget, *args, **kwargs ):
     super( CreditBudgetForm, self ).__init__( *args, **kwargs )

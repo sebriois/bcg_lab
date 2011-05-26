@@ -20,13 +20,13 @@
     <tbody>
       {% for item in history.items.all %}
         <tr class="{% cycle 'odd' 'even' %}">
-          <td>{{ item.product }}</td>
-          <td>{{ item.packaging }}</td>
-          <td>{{ item.reference }}</td>
-          <td>{{ item.offer_nb }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.packaging|default:"" }}</td>
+          <td>{{ item.reference|default:"" }}</td>
+          <td>{{ item.offer_nb|default:"" }}</td>
           <td>{{ item.price }} €</td>
           <td>{{ item.quantity }}</td>
-          <td>{{ order_item.total_price }} €</td>
+          <td>{{ item.total_price }} €</td>
         </tr>
       {% endfor %}
     </tbody>

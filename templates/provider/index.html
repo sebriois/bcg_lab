@@ -6,7 +6,7 @@
 {% block menu_provider %}selected{% endblock %}
 
 {% block buttons %}
-{% if user.is_superuser %}
+{% if user|is_admin %}
   <div class="btn_wrapper">
     <a href="{% url provider_new %}" class="btn_big">
       <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un fournisseur
@@ -46,16 +46,23 @@
             </td>
             <td>
               {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
+              {% if provider.users_in_charge.all.count > 0 %}
+                <button class="mail" to="{{provider.users_in_charge.all|asId|join:","}}">Envoyer un message</button>
+              {% endif %}
             </td>
             <td>
-              {% if user in provider.users_in_charge.all or user|is_admin %}
+              {% if user|is_admin %}
                 <a href="{% url provider_item provider.id %}" class="pencil button">Editer</a>
+              {% endif %}
+              {% if user in provider.users_in_charge.all or user|is_admin %}
                 <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus button">
                   Ajouter&nbsp;un&nbsp;produit
                 </a>
+                <a href="{% url import_products provider.id %}" class="import noloading">Import produits</a>
+                <a href="{% url export_products provider.id %}" class="export noloading">Export produits</a>
               {% endif %}
               {% if provider.notes %}
-                <button class="comment button notesDialog" content="{{ provider.notes }}">Voir les notes</button>
+                <button class="comment notesDialog" content="{{ provider.notes }}">Voir les notes</button>
               {% endif %}
             </td>
           </tr>
@@ -69,6 +76,22 @@
 
 <div id="dialog" title="Notes">
   <p id="dialog_content">{# text set with js #}</p>
+</div>
+
+<div id="mail" class="dialog" title="Envoyer un message au(x) responsable(s)">
+  <form action="{% url send_message %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="to" value="" />
+    <input type="hidden" name="next" value="{% url provider_index %}">
+    <div class="form-row">
+      <label for="subject">Sujet</label>
+      <div class="cleaner"></div>
+      <input type="text" name="subject" />
+      <div class="cleaner"></div>
+      <label for="message">Message</label>
+      <textarea name="message"></textarea>
+      <div class="cleaner"></div>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

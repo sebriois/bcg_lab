@@ -65,7 +65,7 @@
           <tr class="{% cycle 'even' 'odd' %}">
             <td>{{ order.date_created|date }}</td>
             <td>{{ order.date_delivered|date }}</td>
-            <td>{{ order.team }} ({{order.username}})</td>
+            <td>{{ order.team }} ({{order.user}})</td>
             <td>{{ order.provider.name }}</td>
             <td>{{ order.price }}</td>
             <td>

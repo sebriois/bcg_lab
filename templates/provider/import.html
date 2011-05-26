@@ -1,0 +1,84 @@
+{# PAGE FOURNISSEUR #}
+
+{% extends "main_custom.html" %}
+{% load filters %}
+
+{% block menu_provider %}selected{% endblock %}
+
+{% block content %}
+
+<div id="content" style="min-height:0">
+  <div id="content_header">
+    <h2>Mise à jour des produits du fournisseur {{ provider.name }}</h2>
+  </div>
+  <br />
+  
+  <h3>Informations</h3>
+  <ul>
+    <li>Les produits actuels seront remplacés par les données du fichier importé.</li>
+    <li>Un tableau résumant les données importées s'affichera avant la validation finale.</li>
+  </ul>
+  
+  <h3>Consignes d'utilisation</h3>
+  <ul>
+    <li>
+      Le fichier importé doit être au format csv. Dans le fichier, 
+      le seul délimiteur de colonnes accepté est le point-virgule.
+    </li>
+    <li>
+      Le fichier doit contenir une première ligne d'entête (l'ordre 
+      des colonnes n'est pas important):
+      <ul>
+        <li>Désignation <strong>(requis)</strong></li>
+        <li>Référence <strong>(requis)</strong></li>
+        <li>Prix <strong>(requis)</strong></li>
+        <li>Offre</li>
+        <li>Nomenclature</li>
+      </ul>
+    </li>
+  </ul>
+  
+  <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% with form.csv_file as field %}
+      <div class="form-row{% if field.errors %} error {% endif %}">
+        {% if field.errors %}{{ field.errors }}{% endif %}
+        <label for="{{ field.html_name }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+        <div class="cleaner"></div>
+        {{ field }}
+        {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
+        <div class="cleaner"></div>
+      </div>
+    {% endwith %}
+    
+    <button type="submit" class="check">Valider</button>
+    <a href="{% url provider_index %}" class="back">Annuler</a>
+  </form>
+</div>
+
+{% if data %}
+<div id="content" style="min-height:0">
+  <div id="content_header">
+    <h2>Résultat de l'importation et confirmation</h2>
+  </div>
+  <table class="list">
+    {% for line in data %}
+      {% if forloop.counter == 1 %}
+        <thead>
+          {% for head in line %}
+            <th>{{head}}</th>
+          {% endfor %}
+        </thead>
+      {% else %}
+        <tr>
+          {% for item in line %}
+            <td>{{ item }}</td>
+          {% endfor %}
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+  <a href="{% url perform_import_products provider.id %}" class="check">Valider l'import</a>
+</div>
+{% endif %}
+
+{% endblock %}

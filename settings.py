@@ -101,9 +101,9 @@ INSTALLED_APPS = (
     'team',
     'provider',
     'product',
-    'history',
     'order',
-    'secretary',
+    'history',
+    'budget',
     'utils'
 )
 

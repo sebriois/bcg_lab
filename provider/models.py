@@ -4,10 +4,11 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Provider(models.Model):
-  name             = models.CharField( 'Nom', max_length = 100, unique = True)
-  users_in_charge  = models.ManyToManyField( User, verbose_name = "Responsables", blank = True, null = True )
-  reseller         = models.ForeignKey( "Provider", verbose_name = "Revendeur", blank = True, null = True )
-  notes            = models.TextField( 'Notes', blank = True, null = True )
+  name            = models.CharField( 'Nom', max_length = 100, unique = True)
+  users_in_charge = models.ManyToManyField( User, verbose_name = "Responsables", blank = True, null = True )
+  reseller        = models.ForeignKey( "Provider", verbose_name = "Revendeur", blank = True, null = True )
+  notes           = models.TextField( 'Notes', blank = True, null = True )
+  is_local        = models.BooleanField( u'Magasin ?', default = False )
   
   class Meta:
     verbose_name = "Fournisseur"

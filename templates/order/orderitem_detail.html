@@ -1,0 +1,50 @@
+{% extends "main_custom.html" %}
+{% load filters %}
+
+{% block menu_order %}selected{% endblock %}
+
+{% block header %}Modification d'un produit{% endblock %}
+
+{% block buttons %}
+<div class="btn_wrapper">
+  <a href="{% url order_item order.id %}" class="btn_small">
+    <img src="{{ MEDIA_URL }}img/icons/arrow_left.png" />Retour
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Modification d'un produit</h2></div>
+  <form id="productUpdateForm" action="{% url orderitem_detail orderitem.id %}" method="POST">{% csrf_token %}
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    {% for field in form %}
+      {% include "form_snippet.html"%}
+    {% endfor %}
+    <input type="hidden" name="send_changes" value="False" />
+    {% if orderitem.product_id %}
+      <button type="submit" class="check sendChanges">Valider</button>
+    {% else %}
+      <button type="submit" class="check">Valider</button>
+    {% endif %}
+    <a href="{% url order_item order.id %}" class="back">Annuler</a>
+  </form>
+</div>
+
+<div id="sendChanges" class="dialog" title="Avertir les responsables de ce produit">
+  Vous apportez des changements à un produit de cette commande.
+  <br /><br />
+  
+  Si ces changements sont permanents (ex: nouveau prix), un email 
+  d'information peut être envoyé automatiquement aux responsables de 
+  ce produit pour qu'ils répercutent ces changements dans la base de 
+  données. Dans ce cas, veuillez cliquer sur "Envoyer".
+  <br /><br />
+  
+  Autrement, si ces changements sont spécifiques à cette commande, 
+  cliquez sur "Ne pas envoyer".
+</div>
+
+{% endblock %}

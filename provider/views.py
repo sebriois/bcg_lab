@@ -11,7 +11,7 @@ from provider.models import Provider
 from provider.forms import ProviderForm
 
 from constants import *
-from utils import info_msg, error_msg, warn_msg, superuser_required
+from utils import *
 
 
 @login_required
@@ -29,12 +29,12 @@ def item(request, provider_id):
     if request.method == 'DELETE':  return _provider_delete(request, provider)
 
 @login_required
-@superuser_required
+@admin_required
 def new(request):
     return direct_to_template(request, 'provider/form.html', { 'form': ProviderForm() })
 
 @login_required
-@superuser_required
+@admin_required
 def delete(request, provider_id):
     """ Confirmation page for deletion. """
     provider = get_object_or_404(Provider, id = provider_id)

@@ -16,12 +16,8 @@
     <table>
       <tr>
         <td>{{ filter_form.provider }}</td>
-        <td>
-          <button type="submit" class="all button">Chercher</button>
-        </td>
-        <td>
-          <a href="{% url product_index %}" class="refresh button">Liste globale</a>
-        </td>
+        <td><button type="submit" class="all">Chercher</button></td>
+        <td><a href="{% url product_index %}" class="refresh">Liste globale</a></td>
       </tr>
     </table>
   </form>
@@ -32,12 +28,8 @@
     <table>
       <tr>
         <td>{{ filter_form.product }}</td>
-        <td>
-          <button type="submit" class="all button">Chercher</button>
-        </td>
-        <td>
-          <a href="{% url product_index %}" class="refresh button">Liste globale</a>
-        </td>
+        <td><button type="submit" class="all">Chercher</button></td>
+        <td><a href="{% url product_index %}" class="refresh">Liste globale</a></td>
       </tr>
     </table>
   </form>
@@ -69,46 +61,48 @@
     <tbody>
       {% for product in products.object_list %}
         <tr class="{% cycle 'even' 'odd' %}">
-            <td>{{ product.provider.name }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.packaging }}</td>
-            <td>{{ product.reference }}</td>
-            <td>{{ product.price }}&nbsp;€</td>
-            <td>{{ product.offer_nb }}</td>
-            <td>{{ product.nomenclature }}</td>
-            <td>{{ product.last_change|date }}</td>
-            <td>
-              <a href="{% url cart_add product.id,1 %}?{{url_params}}" class="quantityDialog plus button">
-                Ajouter&nbsp;au&nbsp;panier
-              </a>
-              {% if product|is_in_charge:user or user|is_admin %}
-                <a href="{% url product_item product.id %}" class="pencil button">Editer</a>                
-              {% endif %}
-            </td>
+          <td>{{ product.provider.name }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.packaging }}</td>
+          <td>{{ product.reference }}</td>
+          <td>{{ product.price }}&nbsp;€</td>
+          <td>{{ product.offer_nb }}</td>
+          <td>{{ product.nomenclature }}</td>
+          <td>{{ product.last_change|date }}</td>
+          <td>
+            <button id="{{product.id}}" class="plus addToCart noloading">
+              Ajouter&nbsp;au&nbsp;panier
+            </button>
+            {% if product|is_in_charge:user or user|is_admin %}
+              <a href="{% url product_item product.id %}" class="pencil">Editer</a>
+            {% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>
+    
     <tfoot>
-      <tr>
-        <td colspan="9">{% pagination products %}</td>
-      </tr>
+      <tr><td colspan="9">{% pagination products %}</td></tr>
     </tfoot>
   </table>
 </div>
 {# END: Product list #}
 
-{# START: Quantity Dialog #}
-<div id="dialog-qty" title="Saisissez la quantité à commander">
-  <div class="form-row">
-    <div id="qty-error-msg"></div>
-    <label for="quantity">Quantité</label>
-    <div class="cleaner"></div>
-    <input type="text" name="quantity" value="" />
-    <div class="cleaner"></div>
-  </div>
-</div>
-{# END: Quantity Dialog #}
-
 {% endif %}
+
+
+<div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
+  <form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
+    <input type="hidden" name="url_params" value="{{url_params}}" />
+    <input type="hidden" name="product_id" value="" />
+    <div class="form-row">
+      <div id="qty-error-msg"></div>
+      <label for="quantity">Quantité</label>
+      <div class="cleaner"></div>
+      <input type="text" name="quantity" value="" />
+      <div class="cleaner"></div>
+    </div>
+  </form>
+</div>
 
 {% endblock %}

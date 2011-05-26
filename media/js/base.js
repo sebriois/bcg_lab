@@ -40,7 +40,7 @@ $(document).ready(function(){
     // 
     // BUTTONS STYLE
     // 
-    $(".button").button();
+    $("button, .button").button();
     $(".plus").button({
       icons: { primary: "ui-icon-plusthick" }
     });
@@ -71,6 +71,9 @@ $(document).ready(function(){
     $(".comment").button({
       icons: { primary: "ui-icon-comment" }
     });
+    $(".mail").button({
+      icons: { primary: "ui-icon-mail-closed" }
+    });
     $(".trash").button({
       icons: { primary: "ui-icon-trash" }
     });
@@ -86,100 +89,136 @@ $(document).ready(function(){
     $(".next-status").button({
       icons: { primary: "ui-icon-arrowreturnthick-1-e" }
     });
+    $(".back").button({
+      icons: { primary: "ui-icon-arrowreturnthick-1-w" }
+    });
+    $(".import").button({
+      icons: { primary: "ui-icon-arrowthickstop-1-s" }
+    });
+    $(".export").button({
+      icons: { primary: "ui-icon-arrowthickstop-1-n" }
+    });
     
     // 
     // DIALOGS
     // 
-    
-    $('#dialog').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    $('#dialog-qty').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    
-    $('#dialog-confirm').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-        
-    $('#dialog-confirm-del').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
+    $('.dialog').dialog({
+      autoOpen:       false,
+      resizable:      false,
+      modal:          true,
+      closeOnEscape:  false,
+      open: function() {
+        $("#loadingDialog").dialog('close');
+        $(".ui-dialog-titlebar-close").hide();
+      },
+      close: function() {
+        $("#loadingDialog").dialog('close');
+      }
     });
     
-    $( "#teamDialog" ).dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
+    $('.dialog form input').keydown(function (e) {
+      if (e.which == 13) {
+        $(this).parent('form').submit();
+      }
     });
+    
+    $('a, button').not('.noloading').click(function(e){
+      $('#loadingDialog').dialog('open');
+    });
+    
+    $("#loadingDialog").dialog({
+      autoOpen:   false,
+      resizable:  false,
+      modal:      true,
+      width:      156,
+      open: function(event, ui) {
+        $('#loadingDialog').prev('.ui-dialog-titlebar').hide();
+        $('#loadingDialog').css({
+          'min-height': '30px',
+          width: '130px'
+        });
+        $('#loadingDialog').parent('.ui-dialog').css({
+          border: 'none'
+        });
+      }
+    });
+    
     
     // 
     // CONFIRMATION DIALOG - create the appropriate content in HTML code
     // 
-    
-    $( '.confirmDialog' ).click(function(e){
+    $( '.confirm' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#dialog-confirm" ).dialog({
+      $( "#confirm.dialog" ).dialog({
         buttons: {
           Confirmer: function() {
             $( this ).dialog( "close" );
             window.location.href = targetUrl;
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
       });
       
-      $( "#dialog-confirm" ).dialog('open');
+      $( "#confirm.dialog" ).dialog('open');
     });
     
     // 
     // CONFIRMATION DIALOG for deletion
     // 
-    
-    $( '.confirmDialogDel' ).click(function(e){
+    $( '.confirmDel' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#dialog-confirm-del" ).dialog({
+      $( "#confirmDel" ).dialog({
         buttons: {
           Confirmer: function() {
             $( this ).dialog( "close" );
             window.location.href = targetUrl;
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
       });
       
-      $( "#dialog-confirm-del" ).dialog('open');
+      $( "#confirmDel" ).dialog('open');
+    });
+
+    $( '.confirmDelCart' ).click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      
+      $( "#confirmDelCart" ).dialog({
+        buttons: {
+          Confirmer: function() {
+            $( this ).dialog( "close" );
+            window.location.href = targetUrl;
+          },
+          Annuler: function() {
+            $('#loadingDialog').dialog('close');
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      
+      $( "#confirmDelCart" ).dialog('open');
     });
     
     
     // 
     // SECRETARY DIALOGS - delivery date + order nb
     // 
-    $('#dialog-delivery').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    $( '.deliveryDateDialog' ).click(function(e){
+    $( '.setDeliveryDate' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#dialog-delivery" ).dialog({
+      $( "#setDeliveryDate" ).dialog({
         width: 430,
         buttons: {
           Valider: function() {
@@ -188,137 +227,188 @@ $(document).ready(function(){
             window.location.href = targetUrl + "?delivery_date=" + delivery_date;
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $(this).dialog('close');
           }
         }
       });
       
-      $( "#dialog-delivery" ).dialog("open");
+      $( "#setDeliveryDate" ).dialog("open");
     });
     
-    $('#dialog-order-nb').dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    $( '.orderNbDialog' ).click(function(e){
+    $( '.setOrderRef' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#dialog-order-nb" ).dialog({
+      $( "#setOrderRef" ).dialog({
         width: 430,
         buttons: {
           Valider: function() {
-            var order_nb = $('input[name="order_nb"]').val();
+            var number = $('input[name="number"]').val();
             $(this).dialog('close');
-            window.location.href = targetUrl + "?order_nb=" + order_nb;
+            window.location.href = targetUrl + "?number=" + number;
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $(this).dialog('close');
           }
         }
       });
       
-      $( "#dialog-order-nb" ).dialog("open");
+      $( "#setOrderRef" ).dialog("open");
     });
     
+    $("#addDebit").dialog({
+      width: 400,
+      buttons: {
+        Valider: function() {
+          $( this ).dialog( "close" );
+          $('#loadingDialog').dialog('open');
+          $('#addDebit form').submit();
+        },
+        Annuler: function() {
+          $('#loadingDialog').dialog('close');
+          $(this).dialog('close');
+        }
+      }
+    });
+    $( '.addDebit' ).click(function(e){
+      $("#addDebit").dialog('open');
+    });
+    
+    $("#addCredit").dialog({
+      width: 400,
+      buttons: {
+        Valider: function() {
+          $( this ).dialog( "close" );
+          $('#loadingDialog').dialog('open');
+          $('#addCredit form').submit();
+        },
+        Annuler: function() {
+          $('#loadingDialog').dialog('close');
+          $(this).dialog('close');
+        }
+      }
+    });
+    $( '.addCredit' ).click(function(e){
+      $("#addCredit").dialog('open');
+    });
     // 
     // PRODUCT PAGE - Select quantity when adding to cart
     // 
     
-    $( '.quantityDialog' ).click(function(e){
-      e.preventDefault();
-      var targetUrl = $(this).attr('href');
-      
-      $( "#dialog-qty" ).dialog({
-        width: 400,
-        buttons: {
-          Valider: function() {
-            var url = targetUrl.split("1?"); // 1 being the default qty when no JS
-            var args = "";
-            var qty = +( $('input[name="quantity"]').val() );
-            var intRegex = /^\d+$/;
-            
-            if ( intRegex.test(qty) && qty > 0 ) {
-              if ( url.length > 1 ) {
-                args = url[1];
-              }
-              $( this ).dialog( "close" );
-              window.location.href = url[0] + qty + "?" + args;
-            } else {
-              $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
-              $("#qty-error-msg").addClass("warning");
-            }
-          },
-          Annuler: function() {
-            $( this ).dialog( "close" );
-          }
-        }
-      });
-      
-      $( "#dialog-qty" ).dialog('open');
+    $('.addToCart').click(function(e){
+      $('#addToCart.dialog input[name="product_id"]').val($(this).attr('id'));
+      $("#addToCart.dialog").dialog('open');
     });
+    $('#addToCart.dialog').dialog({
+      width: 400,
+      buttons: {
+        Valider: function() {
+          var qty = +( $('input[name="quantity"]').val() );
+          var intRegex = /^\d+$/;
+          
+          if ( intRegex.test(qty) && qty > 0 ) {
+            $("#qty-error-msg").text('');
+            $( this ).dialog( "close" );
+            $('#loadingDialog').dialog('open');
+            $('#addToCart.dialog form').submit();
+          }
+          else {
+            $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
+            $("#qty-error-msg").addClass("warning");
+          }
+        },
+        Annuler: function() {
+          $('#loadingDialog').dialog('close');
+          $(this).dialog('close');
+        }
+      }
+    });
+    
     
     // 
     // CART PAGE - Set quantity dialog
     // 
+    $(".setQty").click(function(e){
+      $('#setQty.dialog input[name="orderitem_id"]').val($(this).attr('id'));
+      $('#setQty.dialog input[name="quantity"]').val( $.trim($(this).text()) );
+      $("#setQty.dialog").dialog('open');
+    });
+    $("#setQty.dialog").dialog({
+      width: 400,
+      buttons: {
+        Valider: function() {
+          var qty = +( $('#setQty.dialog input[name="quantity"]').val() );
+          var intRegex = /^\d+$/;
+          
+          if ( intRegex.test(qty) && qty > 0 ) {
+            $("#qty-error-msg").text('');
+            $( this ).dialog( "close" );
+            $('#loadingDialog').dialog('open');
+            $('#setQty.dialog form').submit();
+          }
+          else {
+            $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
+            $("#qty-error-msg").addClass("warning");
+          }
+        },
+        Annuler: function() {
+          $('#loadingDialog').dialog('close');
+          $(this).dialog('close');
+        }
+      }
+    });
     
-    $( '.setQtyDialog' ).click(function(e){
+    $('.setBudget').click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
-      $('input[name="quantity"]').val( parseInt( $(this).text() ) );
       
-      $( "#dialog-qty" ).dialog({
+      $( "#setBudget.dialog" ).dialog({
         width: 400,
         buttons: {
           Valider: function() {
-            var url = targetUrl.split("set-quantity/1"); // 1 being the default qty
-            var qty = +( $('input[name="quantity"]').val() );
-            var intRegex = /^\d+$/;
+            var choice = $('select[name="budget"] option:selected').val();
             
-            if ( intRegex.test(qty) && qty > 0 ) {
-              var new_location = url[0] + "set-quantity/" + qty;
-              window.location.href = new_location;
-              $( this ).dialog( "close" );
-            } else {
-              $("#qty-error-msg").text("Veuillez saisir une quantité entière positive.");
-              $("#qty-error-msg").addClass("warning");
-            }
+            $( this ).dialog( "close" );
+            window.location.href = targetUrl + "?budget=" + parseInt(choice);
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
       });
       
-      $( "#dialog-qty" ).dialog('open');
+      $( "#setBudget.dialog" ).dialog('open');
     });
     
-    $( "#dialog-budget-line" ).dialog({
-      autoOpen: false,
-      resizable: false,
-      modal: true
-    });
-    $('.budgetLineDialog').click(function(e){
+    $('.sendChanges').click(function(e){
       e.preventDefault();
-      var targetUrl = $(this).attr('href');
       
-      $( "#dialog-budget-line" ).dialog({
-        width: 400,
+      $("#sendChanges.dialog").dialog({
+        width: 800,
         buttons: {
-          Valider: function() {
-            var choice = $('select[name="budget_line"] option:selected').val();
-            
+          "Envoyer (Modification permanente)": function() {
+            $('input[name="sendChanges"]').val("True");
             $( this ).dialog( "close" );
-            window.location.href = targetUrl + "?budget_line=" + parseInt(choice);
+            $('#loadingDialog').dialog('open');
+            $('#productUpdateForm').submit();
           },
-          Annuler: function() {
+          "Ne pas envoyer (Modification exceptionnelle)": function() {
+            $('input[name="sendChanges"]').val("False");
+            $( this ).dialog( "close" );
+            $('#loadingDialog').dialog('open');
+            $('#productUpdateForm').submit();
+          },
+          "Annuler": function() {
+            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
       });
       
-      $( "#dialog-budget-line" ).dialog('open');
+      $('#sendChanges').dialog("open");
     });
 
     // 
@@ -330,14 +420,33 @@ $(document).ready(function(){
       $('#dialog').dialog('open');
     });
 
+    $('.mail').click(function(e){
+      $('#mail.dialog input[name="to"]').val($(this).attr('to'));
+      $("#mail.dialog").dialog('open');
+    });
+    $('#mail.dialog').dialog({
+      width: 600,
+      buttons: {
+        Valider: function() {
+          $( this ).dialog( "close" );
+          $('#loadingDialog').dialog('open');
+          $('#mail.dialog form').submit();
+        },
+        Annuler: function() {
+          $('#loadingDialog').dialog('close');
+          $(this).dialog('close');
+        }
+      }
+    });
+
     // 
     // TEAM PAGE - For changing user's team membership
     // 
-    $('.teamDialog').click(function(e){
+    $('.setTeam').click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#teamDialog" ).dialog({
+      $( "#setTeamDialog" ).dialog({
         width: 400,
         buttons: {
           Valider: function() {
@@ -346,11 +455,12 @@ $(document).ready(function(){
             window.location.href = targetUrl + "?team_id=" + team;
           },
           Annuler: function() {
+            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
       });
       
-      $( "#teamDialog" ).dialog('open');
+      $( "#setTeamDialog" ).dialog('open');
     });
 });

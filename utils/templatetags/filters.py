@@ -36,12 +36,15 @@ def team(user):
 @register.filter
 def dialogClass(order):
   if order.status == 2 and order.budget.budget_type == 0: #ie. CNRS
-    return "orderNbDialog"
+    return "setOrderRef"
   
   if order.status == 3 and order.budget.budget_type != 0: #ie. pas CNRS
-    return "orderNbDialog"
+    return "setOrderRef"
   
   if order.status == 4:
-    return "deliveryDateDialog"
+    return "setDeliveryDate"
   
 
+@register.filter
+def asId(objects):
+  return [o.id for o in objects]

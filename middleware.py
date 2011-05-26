@@ -18,7 +18,7 @@ class HttpMethodsMiddleware(object):
     if request.POST and METHOD_KEY in request.POST:
       if request.POST[METHOD_KEY].upper() in ['PUT', 'DELETE']:
         try:
-          request.method = request.POST['verb'].upper()
+          request.method = request.POST['method'].upper()
         except:
           request.META['REQUEST_METHOD'] = request.REQUEST[METHOD_KEY].upper()
         if request.method == 'PUT' or request.META['REQUEST_METHOD'] == 'PUT':
@@ -35,5 +35,5 @@ class ExceptionMiddleware(object):
   def process_exception(self, request, exception):
     if request.user.is_authenticated():
       return direct_to_template(request, '500.html', {
-          'traceback': traceback.format_exc()
+        'traceback': traceback.format_exc()
       })

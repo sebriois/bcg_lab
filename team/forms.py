@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 from team.models import Team, TeamMember
-from constants import MEMBERTYPE_CHOICES
+from constants import MEMBERTYPE_CHOICES, ADMIN
 
 class TeamForm(forms.ModelForm):
     class Meta:
@@ -18,7 +18,7 @@ class TeamMemberForm(forms.Form):
   last_name = forms.CharField( label = "Nom", required = False )
   email = forms.EmailField( label = "Email" )
   
-  def __init__( self, instance = None, *args, **kwargs ):
+  def __init__( self, instance = None, is_admin = False, *args, **kwargs ):
     super( TeamMemberForm, self ).__init__( *args, **kwargs )
     
     if instance:
@@ -28,3 +28,10 @@ class TeamMemberForm(forms.Form):
       self.fields['last_name'].initial = instance.user.last_name
       self.fields['email'].initial = instance.user.email
       self.fields['member_type'].initial = instance.member_type
+      
+      if not is_admin:
+        self.fields['team'].widget.attrs.update({'disabled':'disabled'})
+        self.fields['member_type'].widget.attrs.update({'disabled':'disabled'})
+        self.fields['username'].widget.attrs.update({'disabled':'disabled'})
+    
+  

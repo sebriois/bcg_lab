@@ -21,11 +21,11 @@
     <div id="content_header"><h2>Equipe {{ team }}</h2></div>
     <table class="list">
       <thead>
-          <th>Utilisateur</th>
-          <th>Nom</th>
-          <th>Email</th>
-          <th>Dernière connexion</th>
-          <th>Action</th>
+        <th>Utilisateur</th>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Dernière connexion</th>
+        <th>Action</th>
       </thead>
       <tbody>
         {% for member in team.members.all %}
@@ -36,33 +36,33 @@
             <td>{{ member.user.last_login }}</td>
             <td>
               {% if member.user == user or user|is_admin or user.is_superuser %}
-                <a href="{% url user_item member.id %}" class="pencil button">Editer</a>
+                <a href="{% url user_item member.id %}" class="pencil">Editer</a>
               {% endif %}
               
               {% if member.user == user %}
-                <a href="{% url change_password member.user.id %}" class="key button">
+                <a href="{% url change_password member.user.id %}" class="key">
                   Changer de mot de passe
                 </a>
               {% endif %}
               
               {% if user|is_admin or user.is_superuser %}
                 {% if member.user != user %}
-                  <a href="{% url change_password member.user.id %}" class="key button">
+                  <a href="{% url change_password member.user.id %}" class="key">
                     Nouveau mot de passe
                   </a>
                 {% endif %}
-                <a href="{% url user_delete member.user.id %}" class="trash button confirmDialog">
+                <a href="{% url user_delete member.user.id %}" class="trash confirm">
                   Supprimer
                 </a>
               {% endif %}
               
               {% if user|is_validator %}
                 {% if member.user.is_active %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="locked button">
+                  <a href="{% url user_toggle_active member.user.id %}" class="locked">
                     Inactiver
                   </a>
                 {% else %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked button">
+                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked">
                     Activer
                   </a>
                 {% endif %}
@@ -93,12 +93,12 @@
             <td>{{ user.last_login }}</td>
             <td>
               {% if user.is_superuser or user|is_admin %}
-                <a href="{% url add_user_to_team lonely_user.id %}" class="plus button teamDialog">
+                <a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">
                   Affilier à une équipe
                 </a>
               {% endif %}
               {% if user.is_superuser  %}
-                <a href="{% url user_delete lonely_user.id %}" class="trash button confirmDialog">
+                <a href="{% url user_delete lonely_user.id %}" class="trash confirm">
                   Supprimer
                 </a>
               {% endif %}
@@ -112,7 +112,7 @@
 {% endif %}
 
 {# START: Add to team Dialog #}
-<div id="teamDialog" title="Affiliation à une équipe">
+<div id="setTeamDialog" class="dialog" title="Affiliation à une équipe">
   <div class="form-row">
     <label for="team">Equipe</label>
     <div class="cleaner"></div>
@@ -127,7 +127,7 @@
 {# END #}
 
 {# START: Confirmation dialog for deleting a user #}
-<div id="dialog-confirm" title="Confirmation requise">
+<div id="confirm" class="dialog" title="Confirmation requise">
   Êtes-vous sûr de vouloir supprimer cet utilisateur ?
 </div>
 {# END #}

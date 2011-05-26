@@ -23,6 +23,9 @@ textarea, select, input[type="text"], input[type="password"] {
     padding: 5px;
     width: auto;
 }
+textarea {
+	width: 300px;
+}
 
 input[type="image"] {
     margin-top: 10px;
@@ -32,7 +35,7 @@ input[type="image"] {
   clear: both;
 }
 
-form textarea               { width: 650px; height: auto; padding: 10px; }
+form textarea               { height: auto; padding: 10px; }
 form select                 { width: 213px; height: 30px; }
 form select[multiple]       { height: auto; }
 form input[type="checkbox"] { width: auto; height: auto; margin-right: 10px; }

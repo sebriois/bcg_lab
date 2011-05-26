@@ -23,30 +23,4 @@
     <p>Votre panier est vide</p>
   </div>
 {% endfor %}
-
-
-
-{# ################## #}
-{#                    #}
-{#      DIALOGS       #}
-{#                    #}
-{# ################## #}
-
-<div id="dialog-qty" title="Modifier la quantité">
-  <div class="form-row">
-    <div id="qty-error-msg"></div>
-    <label for="quantity">Quantité</label>
-    <div class="cleaner"></div>
-    <input type="text" name="quantity" value="0" />
-  </div>
-</div>
-
-<div id="dialog-confirm-del" title="Confirmer la suppression">
-  Êtes-vous sûr de vouloir supprimer cette commande ?
-</div>
-
-<div id="dialog-confirm" title="Confirmation requise">
-  Après confirmation, un email va être envoyé au(x) validateur(s), 
-  puis la commande sera transmise au secrétariat.
-</div>
 {% endblock %}

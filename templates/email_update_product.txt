@@ -1,0 +1,9 @@
+Le produit suivant a été modifié par la gestionnaire:
+- Désignation: {{ product.name }}
+
+Changements apportés:{% for lbl,val in changed_data %}
+- {{ lbl }}: {{ val }}
+{% endfor %}
+
+Pour le mettre à jour, cliquez ici:
+{{ url }}

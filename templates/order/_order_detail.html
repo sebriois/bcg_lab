@@ -6,6 +6,14 @@
   {% else %}
     <li>Statut: {{ order.get_status_display }}</li>
   {% endif %}
+  
+  {% if user|is_secretary %}
+    <li>Budget à imputer:
+      <a href="{% url order_budget order.id %}" class="pencil setBudget">
+        {{ order.budget }}
+      </a>
+    </li>
+  {% endif %}
 </ul>
 
 <table class="list">
@@ -17,7 +25,7 @@
     <th>Prix unitaire</th>
     <th>Quantité</th>
     <th>Prix total</th>
-    {% if order.status < 2 %}
+    {% if order.status < 2 or user|is_secretary %}
       <th>Action</th>
     {% endif %}
   </thead>
@@ -25,16 +33,14 @@
   <tbody>
     {% for order_item in order.items.all %}
       <tr class="{% cycle 'odd' 'even' %}">
-        <td>{{ order_item.product.name }}</td>
-        <td>{{ order_item.product.packaging }}</td>
-        <td>{{ order_item.product.reference }}</td>
-        <td>{{ order_item.product.offer_nb }}</td>
-        <td>{{ order_item.product.price }} €</td>
+        <td>{{ order_item.name }}</td>
+        <td>{{ order_item.packaging|default:"" }}</td>
+        <td>{{ order_item.reference|default:"" }}</td>
+        <td>{{ order_item.offer_nb|default:"" }}</td>
+        <td>{{ order_item.price }} €</td>
         <td>
         {% if order.status == 0 or order.status == 1 and user|is_validator %}
-          <a href="{% url set_cart_quantity order_item.id,1 %}" class="pencil button setQtyDialog">
-            {{ order_item.quantity }}
-          </a>
+          <button id="{{order_item.id}}" class="pencil setQty">{{ order_item.quantity }}</button>
         {% else %}
           {{ order_item.quantity }}
         {% endif %}
@@ -43,35 +49,135 @@
         {% if order.status < 2 %}
           <td>
             {% if order.status == 0 or user|is_validator %}
-              <a href="{% url set_cart_quantity order_item.id,0 %}" class="trash button">
-                Retirer du panier
-              </a>
+              <button id="{{order_item.id}}" href="{% url del_orderitem order_item.id %}" class="trash confirmDelCart">Retirer du panier</button>
             {% endif %}
           </td>
-        {% endif %}
+        {% else %}{% if user|is_secretary %}
+          <td>
+            <a href="{% url orderitem_detail order_item.id %}" class="pencil">Modifier</a>
+          </td>
+        {% endif %}{% endif %}
       </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<p><strong>PRIX TOTAL COMMANDE: {{ order.price }} € </strong></p>
+<p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
+
+{% if user|is_secretary %}
+  <div style="float:right">
+    <button class="plus addDebit">Frais annexes</button>
+    <button class="minus addCredit">Remises</button>
+  </div>
+{% endif %}
 
 <div class="cleaner"></div>
 
 {% if order.status == 0 %}
   {% if user|is_validator %}
-    <a href="{% url set_next_status order.id %}" class="cart button">
-      Commander
-    </a>
+    <a href="{% url set_next_status order.id %}" class="cart">Commander</a>
   {% else %}
-    <a href="{% url set_next_status order.id %}" class="cart button confirmDialog">
-      Commander
-    </a>
+    <a href="{% url set_next_status order.id %}" class="cart confirm">Commander</a>
   {% endif %}
-  <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">
-    Supprimer
-  </a>
+  <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
 {% else %}{% if order.status == 1 and user|is_validator %}
-  <a href="{% url set_next_status order.id %}" class="check button budgetLineDialog">Valider</a>
-  <a href="{% url order_delete order.id %}" class="trash button confirmDialogDel">Supprimer</a>
+  <a href="{% url set_next_status order.id %}" class="check setBudget">Valider</a>
+  <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
 {% endif %}{% endif %}
+
+
+
+{# ################## #}
+{#                    #}
+{#      DIALOGS       #}
+{#                    #}
+{# ################## #}
+
+<div id="setBudget" class="dialog" title="Choisir le budget à imputer">
+  <div class="form-row">
+    <label for="budget">Budget à imputer</label>
+    <div class="cleaner"></div>
+    <select name="budget" width="200px">
+      {% for budget in budgets %}
+        {% if order.budget == budget %}
+          <option selected="selected" value="{{budget.id}}">{{budget.team.name}} - {{budget}}</option>
+        {% else %}
+          <option value="{{budget.id}}">{{budget.team.name}} - {{budget}}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<div id="addDebit" class="dialog" title="Frais annexes">
+  <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="cost_type" value="1" />
+    <div class="form-row">
+      <label for="name">Désignation</label>
+      <input type="text" name="name" id="autocomplete" choices="Frais de port;Frais de conditionnement"/>
+      <div class="cleaner"></div>
+      <label for="provider">Fournisseur</label>
+      <input type="text" name="provider" />
+      <div class="cleaner"></div>
+      <label for="offer_nb">Offre</label>
+      <input type="text" name="offer_nb" />
+      <div class="cleaner"></div>
+      <label for="price">Montant</label>
+      <input type="text" name="price" />
+      <div class="cleaner"></div>
+      <label for="quantity">Quantité</label>
+      <input type="text" name="quantity" />
+      <div class="cleaner"></div>
+    </div>
+  </form>
+</div>
+
+<div id="addCredit" class="dialog" title="Remise">
+  <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="cost_type" value="0" />
+    <div class="form-row">
+      <label for="name">Désignation</label>
+      <input type="text" name="name" id="autocomplete" choices="Remise;Promotion"/>
+      <div class="cleaner"></div>
+      <label for="provider">Fournisseur</label>
+      <input type="text" name="provider" />
+      <div class="cleaner"></div>
+      <label for="offer_nb">Offre</label>
+      <input type="text" name="offer_nb" />
+      <div class="cleaner"></div>
+      <label for="price">Montant</label>
+      <input type="text" name="price" />
+      <div class="cleaner"></div>
+      <label for="quantity">Quantité</label>
+      <input type="text" name="quantity" />
+      <div class="cleaner"></div>
+    </div>
+  </form>
+</div>
+
+<div id="setQty" class="dialog" title="Modifier la quantité à commander">
+  <form action="{% url set_item_quantity %}" method="POST" style="padding:0">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    <input type="hidden" name="orderitem_id" value="" />
+    <div class="form-row">
+      <div id="qty-error-msg"></div>
+      <label for="quantity">Quantité</label>
+      <div class="cleaner"></div>
+      <input type="text" name="quantity" value="" />
+      <div class="cleaner"></div>
+    </div>
+  </form>
+</div>
+
+<div id="confirmDel" class="dialog" title="Confirmer la suppression">
+  Êtes-vous sûr de vouloir supprimer cette commande ?
+</div>
+
+<div id="confirm" class="dialog" title="Confirmation requise">
+  Après confirmation, un email va être envoyé au(x) validateur(s), 
+  puis la commande sera transmise au secrétariat.
+</div>
+
+<div id="confirmDelCart" class="dialog" title="Confirmation requise">
+  Êtes-vous sûr de vouloir supprimer cet article ?
+</div>

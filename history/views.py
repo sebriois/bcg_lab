@@ -1,21 +1,12 @@
 # encoding: utf-8
-from datetime import datetime, date
-
 from django.db.models.query import Q
 from django.db import transaction
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404, redirect
-from django.template import Context, loader
-from django.utils.http import urlencode
+from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
 
-from provider.models import Provider
-from product.models import Product
 from history.models import History
-from order.forms import HistoryFilterForm
+from history.forms import HistoryFilterForm
 
 from constants import *
 from utils import *
@@ -58,6 +49,7 @@ def index(request):
     'filter_form': form,
     'history': paginate( request, history_list )
   })
+
 
 @login_required
 def item(request, item_id):

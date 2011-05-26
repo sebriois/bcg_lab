@@ -1,7 +1,7 @@
 {% extends "main_custom.html" %}
 {% load paginator filters %}
 
-{% block menu_secretary_budgets %}selected{% endblock %}
+{% block menu_budgets %}selected{% endblock %}
 
 {% block buttons %}
   <div class="btn_wrapper">
@@ -10,7 +10,7 @@
     </a>
   </div>
   <div class="btn_wrapper">
-    <a href="{% url secretary_reports %}" class="btn_big">
+    <a href="{% url budgetlines %}" class="btn_big">
       <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
     </a>
   </div>
@@ -42,8 +42,11 @@
             <td>{{ budget.default_credit_type }}</td>
             <td>{{ budget.amount }}</td>
             <td>
-              <a href="{% url secretary_reports %}?budget_name={{budget.name}}" class="zoomin button">
+              <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin button">
                 Voir détail
+              </a>
+              <a href="{% url budget_edit budget.id %}" class="pencil button">
+                Editer
               </a>
               <a href="{% url credit_budget budget.id %}" class="plus button">
                 Créditer

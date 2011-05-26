@@ -12,4 +12,4 @@ Une nouvelle commande est en attente de validation:
 {% endfor %}
 * Total commande: {{ order.price }} €
 
-Pour consulter le détail de cette commande et la valider, cliquez-ici: http://st189-lbcmcp.ups-tlse.fr{{ order.get_absolute_url }}
+Pour valider cette commande, cliquez-ici: http://st189-lbcmcp.ups-tlse.fr/{{ url }}
