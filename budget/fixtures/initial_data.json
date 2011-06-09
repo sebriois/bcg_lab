@@ -5,7 +5,6 @@
         "fields": {
             "default_nature": "FO", 
             "default_credit_type": "SB", 
-            "amount": "10875.28", 
             "budget_type": 0, 
             "team": 1, 
             "name": "OB1INSB"
@@ -17,7 +16,6 @@
         "fields": {
             "default_nature": "FO", 
             "default_credit_type": "AFM MV", 
-            "amount": "18000.00", 
             "budget_type": 0, 
             "team": 1, 
             "name": "A1INSB"
@@ -27,10 +25,10 @@
         "pk": 2, 
         "model": "budget.budgetline", 
         "fields": {
+            "team": "EquipeA",
             "product": null, 
             "name": "A1INSB", 
             "nature": "FO", 
-            "amount_left": "18000.00", 
             "number": null, 
             "product_price": null, 
             "credit_type": "AFM MV", 
@@ -48,10 +46,10 @@
         "pk": 1, 
         "model": "budget.budgetline", 
         "fields": {
+            "team": "EquipeA",
             "product": null, 
             "name": "OB1INSB", 
-            "nature": "FO", 
-            "amount_left": "10875.28", 
+            "nature": "FO",
             "number": null, 
             "product_price": null, 
             "credit_type": "SB", 

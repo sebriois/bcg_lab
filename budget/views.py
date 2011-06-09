@@ -64,11 +64,7 @@ def credit_budget(request, budget_id):
     form = CreditBudgetForm( budget, data = data )
     
     if form.is_valid():
-      budget_line = form.save( commit = False)
-      budget.amount += budget_line.credit
-      budget.save()
-      budget_line.amount_left = budget.amount
-      budget_line.save()
+      budget_line = form.save()
       
       info_msg(request, "Ligne de crédit ajoutée avec succès!")
       return redirect('budgetlines')
@@ -97,9 +93,6 @@ def debit_budget(request, budget_id):
   if form.is_valid():
     budget_line = form.save( commit = False )
     budget_line.debit = budget_line.quantity * budget_line.product_price
-    budget.amount -= budget_line.debit
-    budget.save()
-    budget_line.amount_left = budget.amount
     budget_line.save()
     info_msg(request, "Ligne de débit ajoutée avec succès!")
     return redirect('budgetlines')

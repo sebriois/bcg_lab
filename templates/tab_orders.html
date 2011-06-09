@@ -50,7 +50,7 @@
                   {% if order.status == 2 and order.budget.budget_type == 1 %}
                     En attente d'envoi
                   {% else %}{% if order.status == 2 or order.status == 3 %}
-                    Envoyée au fournisseur
+                    Saisie n° commande
                   {% else %}{% if order.status == 4 %}
                     Commande réceptionnée
                   {% endif %}{% endif %}{% endif %}

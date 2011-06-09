@@ -79,14 +79,23 @@ def tab_validation(request):
 @login_required
 @GET_method
 def order_detail(request, order_id):
-  # TODO: check validator + order's team owner
-  if Order.objects.filter( id = order_id ).count() > 0:
-    return direct_to_template(request, 'order/item.html',{
-        'order': Order.objects.get( id = order_id ),
-        'budgets': Budget.objects.filter( amount__gt = 0 ).order_by('team')
-    })
-  else:
-    return direct_to_template( request, 'order/404.html',{} )
+  order = get_object_or_404( Order, id = order_id )
+  member = get_team_member( request )
+  
+  budgets = []
+  if member.is_validator():
+    for budget in Budget.objects.filter( team = member.team ):
+      if budget.get_amount_left() > 0:
+        budgets.append( budget )
+  elif member.is_secretary():
+    for budget in Budget.objects.all():
+      if budget.get_amount_left() > 0:
+        budgets.append( budget )
+    
+  return direct_to_template(request, 'order/item.html',{
+    'order': order,
+    'budgets': budgets
+  })
 
 
 @login_required
@@ -144,18 +153,16 @@ def orderitem_detail(request, orderitem_id):
 @transaction.commit_on_success
 def add_orderitem(request, order_id):
   order = get_object_or_404( Order, id = order_id )
-  item = order.items.create(
-    cost_type = request.POST.get('cost_type'),
-    name      = request.POST.get('name'),
-    provider  = request.POST.get('provider'),
-    price     = request.POST.get('price'),
-    offer_nb  = request.POST.get('offer_nb'),
-    quantity  = request.POST.get('quantity')
-  )
   
-  if item.cost_type == CREDIT:
-    item.price = Decimal("-1") * Decimal(item.price)
+  form = OrderItemForm( data = request.POST )
+  if form.is_valid():
+    item = form.save( commit = False )
+    item.cost_type = request.POST['cost_type']
     item.save()
+    order.items.add(item)
+    info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
+  else:
+    error_msg( request, "Le formulaire n'est pas valide, veuillez remplir les champs obligatoires." )
   
   return redirect(order)
 
@@ -260,6 +267,9 @@ def set_next_status(request, order_id):
     else:
       warn_msg(request, "Aucun email de validation n'a pu être \
       envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
+    
+    if member.is_validator or member.is_admin:
+      return redirect( 'tab_validation' )
   
   #              #
   #   STATUS 1   #
@@ -377,11 +387,11 @@ def cart_add(request):
   )
   order.add( product, quantity )
   
-  info_msg( request, u"Produit ajouté au panier avec succès." )
+  url_arg = request.POST.get('url_params', '')
+  url = reverse('product_index', current_app="product") + "?" + url_arg
   
-  return redirect(
-    reverse('product_index', current_app="product") + "?" + urlencode( request.POST.get('url_params', '') )
-  )
+  info_msg( request, u"Produit ajouté au panier avec succès." )
+  return redirect( url )
 
 @login_required
 @POST_method

@@ -67,14 +67,11 @@ class Order(models.Model):
   
   def create_budget_line(self):
     for item in self.items.all():
-      # Leave the following calculation here, 
-      # see BudgetLine.amount_left below
-      self.budget.amount -= item.total_price()
-      
       BudgetLine.objects.create(
+        team        = self.budget.team.name,
         name        = self.budget.name,
         credit      = 0,
-        number    = self.number,
+        number      = self.number,
         date        = self.date_created,
         nature      = self.budget.default_nature,
         budget_type = self.budget.budget_type,
@@ -84,10 +81,8 @@ class Order(models.Model):
         product     = item.name,
         ref         = item.reference,
         quantity    = item.quantity,
-        debit       = item.price,
-        amount_left = self.budget.amount
+        debit       = item.price
       )
-    self.budget.save()
   
   def save_to_history(self):
     from history.models import History
@@ -125,5 +120,9 @@ class OrderItem(models.Model):
     ordering = ('id',)
   
   def total_price(self):
-    return self.price * self.quantity
+    if self.cost_type == DEBIT:
+      return self.price * self.quantity
+    
+    if self.cost_type == CREDIT:
+      return self.price * self.quantity * -1
   

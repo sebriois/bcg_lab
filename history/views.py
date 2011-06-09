@@ -15,7 +15,7 @@ from utils import *
 def index(request):
   team = get_team_member(request).team
   
-  if is_admin(request.user):
+  if is_secretary(request.user): # admin is also a 'secretary'
     history_list = History.objects.all()
   else:
     history_list = History.objects.filter( team = team.name )

@@ -262,13 +262,20 @@ table.list thead th {
   text-align: left;
 }
 
+table.list tbody tr {
+	border-bottom: solid 1px #ddd;
+}
+
 table.list tbody td, table.list tbody tr td {
-  border-bottom: solid 1px #ddd;
   padding: 3px;
   vertical-align: center;
 }
 
 table.list tbody tr:hover { background-color:#ffc; }
+
+table.list tbody tr.empty_row {
+	height: 35px;
+}
 
 .odd  { background-color: #f6f7f8; }
 .even { background-color: #ffffff; }

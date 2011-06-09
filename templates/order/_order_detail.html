@@ -100,9 +100,15 @@
     <select name="budget" width="200px">
       {% for budget in budgets %}
         {% if order.budget == budget %}
-          <option selected="selected" value="{{budget.id}}">{{budget.team.name}} - {{budget}}</option>
+          <option selected="selected" value="{{budget.id}}">
+            {% if user|is_secretary %}{{budget.team.name}} - {% endif %}
+            {{budget}}
+          </option>
         {% else %}
-          <option value="{{budget.id}}">{{budget.team.name}} - {{budget}}</option>
+          <option value="{{budget.id}}">
+            {% if user|is_secretary %}{{budget.team.name}} - {% endif %}
+            {{budget}}
+          </option>
         {% endif %}
       {% endfor %}
     </select>
@@ -113,7 +119,7 @@
   <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
     <input type="hidden" name="cost_type" value="1" />
     <div class="form-row">
-      <label for="name">Désignation</label>
+      <label for="name">Désignation *</label>
       <input type="text" name="name" id="autocomplete" choices="Frais de port;Frais de conditionnement"/>
       <div class="cleaner"></div>
       <label for="provider">Fournisseur</label>
@@ -122,11 +128,11 @@
       <label for="offer_nb">Offre</label>
       <input type="text" name="offer_nb" />
       <div class="cleaner"></div>
-      <label for="price">Montant</label>
+      <label for="price">Montant *</label>
       <input type="text" name="price" />
       <div class="cleaner"></div>
-      <label for="quantity">Quantité</label>
-      <input type="text" name="quantity" />
+      <label for="quantity">Quantité *</label>
+      <input type="text" name="quantity" value="1" />
       <div class="cleaner"></div>
     </div>
   </form>
@@ -136,7 +142,7 @@
   <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
     <input type="hidden" name="cost_type" value="0" />
     <div class="form-row">
-      <label for="name">Désignation</label>
+      <label for="name">Désignation *</label>
       <input type="text" name="name" id="autocomplete" choices="Remise;Promotion"/>
       <div class="cleaner"></div>
       <label for="provider">Fournisseur</label>
@@ -145,11 +151,11 @@
       <label for="offer_nb">Offre</label>
       <input type="text" name="offer_nb" />
       <div class="cleaner"></div>
-      <label for="price">Montant</label>
+      <label for="price">Montant *</label>
       <input type="text" name="price" />
       <div class="cleaner"></div>
-      <label for="quantity">Quantité</label>
-      <input type="text" name="quantity" />
+      <label for="quantity">Quantité *</label>
+      <input type="text" name="quantity" value="1" />
       <div class="cleaner"></div>
     </div>
   </form>

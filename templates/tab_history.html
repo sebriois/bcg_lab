@@ -16,7 +16,7 @@
       <table>
         <tr>
           <td>Equipe:</td>
-          {% if user|is_admin %}
+          {% if user|is_secretary %}
             <td>{{ filter_form.team }}</td>
           {% else %}
             <td>{{ user|team }}</td>

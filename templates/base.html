@@ -47,24 +47,22 @@
                 Fournisseurs
               </a>
             </li>
-            {% if user|is_normal %}
+            <li>
+              <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
+                Panier
+              </a>
+            </li>
+            {% if user|is_validator %}
               <li>
-                <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
-                  Panier
+                <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
+                  Commandes à valider
                 </a>
               </li>
-              {% if user|is_validator %}
-                <li>
-                  <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
-                    Commandes à valider
-                  </a>
-                </li>
-              {% endif %}
             {% endif %}
             <li>
               <a href="{% url tab_orders %}" class="{% block menu_order %}{% endblock %}">
                 {% if user|is_secretary %}
-                  Gestion des commandes
+                  Commandes à saisir
                 {% else %}
                   Commandes en cours
                 {% endif %}

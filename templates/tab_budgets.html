@@ -40,7 +40,7 @@
             <td>{{ budget.get_budget_type_display }}</td>
             <td>{{ budget.default_nature }}</td>
             <td>{{ budget.default_credit_type }}</td>
-            <td>{{ budget.amount }}</td>
+            <td>{{ budget.get_amount_left }}</td>
             <td>
               <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin button">
                 Voir détail
