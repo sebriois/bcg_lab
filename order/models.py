@@ -98,8 +98,8 @@ class Order(models.Model):
     
     for item in self.items.all():
       history.items.add( item )
-    
     self.items.clear()
+  
 
 
 class OrderItem(models.Model):

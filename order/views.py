@@ -268,6 +268,9 @@ def set_next_status(request, order_id):
       warn_msg(request, "Aucun email de validation n'a pu être \
       envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
     
+    if member.is_normal:
+      return redirect( 'tab_cart' )
+    
     if member.is_validator or member.is_admin:
       return redirect( 'tab_validation' )
   
