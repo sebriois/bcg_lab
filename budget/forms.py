@@ -39,6 +39,8 @@ class CreditBudgetForm(forms.ModelForm):
   def __init__( self, budget, *args, **kwargs ):
     super( CreditBudgetForm, self ).__init__( *args, **kwargs )
     
+    self.fields['team'].initial = budget.team.name
+    self.fields['team'].widget.attrs.update({'disabled':'disabled'})
     self.fields['name'].initial = budget.name
     self.fields['name'].widget.attrs.update({'disabled':'disabled'})
     self.fields['nature'].initial = budget.default_nature

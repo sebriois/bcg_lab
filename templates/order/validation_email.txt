@@ -9,6 +9,7 @@ Une nouvelle commande est en attente de validation:
   - Référence: {{ order_item.reference }}
   - N° offre: {{ order_item.offer_nb }}
   - PU: {{ order_item.price }}€
+  - Quantité: {{ order_item.quantity }}
   - Prix total: {{ order_item.total_price }}€
 {% endfor %}
 * Total commande: {{ order.price }} €
