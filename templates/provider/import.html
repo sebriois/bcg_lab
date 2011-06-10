@@ -26,8 +26,7 @@
       le seul délimiteur de colonnes accepté est le point-virgule.
     </li>
     <li>
-      Le fichier doit contenir une première ligne d'entête (l'ordre 
-      des colonnes n'est pas important):
+      Le fichier doit contenir une première ligne d'entête:
       <ul>
         <li>Désignation <strong>(requis)</strong></li>
         <li>Référence <strong>(requis)</strong></li>
@@ -37,6 +36,14 @@
       </ul>
     </li>
   </ul>
+  
+  <h3>Exemple de fichier</h3>
+  <code>
+    Désignation;Référence;Prix;Offre;Nomenclature<br />
+    carotte;car001;10;;nomenclature1<br />
+    banane;ban001;12;offre1;nomenclature2<br />
+    poirreau;poi001;8;;<br />
+  </code>
   
   <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
     {% with form.csv_file as field %}
