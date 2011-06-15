@@ -35,8 +35,12 @@ def item(request, product_id):
 @login_required
 @team_required
 def new(request):
-  form = ProductForm( provider = request.GET.get("provider_id", None) )
-  return direct_to_template(request, 'product/form.html', { 'form': form })
+  provider = get_object_or_404( Provider, id = request.GET.get("provider_id", None) )
+  form = ProductForm( provider = provider )
+  return direct_to_template(request, 'product/form.html', {
+    'provider': provider,
+    'form': form
+  })
 
 @login_required
 @team_required
@@ -73,14 +77,16 @@ def _product_detail(request, product):
     })
 
 def _product_creation(request):
-  form = ProductForm(request.POST)
+  provider = get_object_or_404( Provider, id = request.POST.get('provider', None) )
+  form = ProductForm( provider = provider, data = request.POST )
+  
   if form.is_valid():
-    product = form.save()
-    
+    form.save()
     info_msg( request, u"Produit ajouté avec succès." )
     return redirect( 'product_index' )
   else:
     return direct_to_template(request, 'product/form.html',{
+        'provider': provider,
         'form': form
     })
 

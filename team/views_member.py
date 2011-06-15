@@ -6,7 +6,9 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import SetPasswordForm
 
 from team.models import Team, TeamMember
 from team.forms import TeamForm, TeamMemberForm
@@ -21,6 +23,7 @@ def item(request, member_id):
     if request.method == 'GET': return _member_detail(request, member)
     if request.method == 'PUT': return _member_update(request, member)
 
+@transaction.commit_on_success
 def new_user(request):
     form = UserCreationForm()
     
@@ -44,6 +47,7 @@ def new_user(request):
     
     return direct_to_template( request, 'auth/register.html', { 'form': form })
 
+@transaction.commit_on_success
 def new_member(request):
   if not 'member_user' in request.session:
     return redirect('new_user')
@@ -95,16 +99,28 @@ def toggle_active( request, user_id ):
   return redirect('team_index')
 
 @login_required
+@transaction.commit_on_success
 def change_password(request, user_id):
+  user = get_object_or_404( User, id = user_id )
+  
   if request.method == 'GET':
+    if is_admin(request.user):
+      form = SetPasswordForm( user = user )
+    else:
+      form = PasswordChangeForm( user = user )
+    
     return direct_to_template(request, 'auth/change_password.html', {
-      'form': PasswordChangeForm( user = user_id )
+      'form': form
     })
   elif request.method == 'POST':
-    form = PasswordChangeForm( user = user_id, data = request.POST )
+    if is_admin(request.user):
+      form = SetPasswordForm( user = user, data = request.POST )
+    else:
+      form = PasswordChangeForm( user = user, data = request.POST )
+    
     if form.is_valid():
       form.save()
-      info_msg( request, 'Votre nouveau mot de passe a été enregistré.')
+      info_msg( request, 'Nouveau mot de passe enregistré.')
     else:
       return direct_to_template(request, 'auth/change_password.html', {
         'form': form
@@ -113,11 +129,17 @@ def change_password(request, user_id):
   return redirect('team_index')
 
 @login_required
-@superuser_required
+@transaction.commit_on_success
 def delete(request, user_id):
+  user = get_object_or_404( User, id = user_id )
+  
+  if user.order_set.filter( status__gt = 1 ):
+    error_msg( request, u"Cet utilisateur ne peut pas être supprimé car des commandes validées lui sont associées.")
+  else:
     User.objects.get(id = user_id).delete()
     info_msg( request, u"Utilisateur supprimé avec succès." )
-    return redirect( 'team_index' )
+  
+  return redirect( 'team_index' )
 
 
 #--- Private views
@@ -131,7 +153,7 @@ def _member_detail(request, member):
 def _member_update(request, member):
   data = request.POST.copy()
   
-  # Need to do that cause field are disabled in HTML, values are not
+  # Need to do that cause field are disabled in HTML, so values are not
   # sent over.
   if not is_admin( request.user ):
     data.update({

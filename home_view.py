@@ -41,8 +41,10 @@ def send_message(request):
     error_msg(request, "Veuillez saisir le texte du message.")
     return redirect('.')
   
+  default_from = request.user.email and request.user.email or settings.DEFAULT_FROM_EMAIL
+  
   template = loader.get_template('email_empty.txt')
   message = template.render( Context({ 'message': message }) )
-  send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+  send_mail( subject, message, default_from, emails )
   info_msg(request, "Message envoyé avec succès.")
   return redirect(request.POST.get('next','home'))

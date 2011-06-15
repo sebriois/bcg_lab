@@ -67,22 +67,27 @@ class Order(models.Model):
   
   def create_budget_line(self):
     for item in self.items.all():
-      BudgetLine.objects.create(
-        team        = self.budget.team.name,
-        name        = self.budget.name,
-        credit      = 0,
-        number      = self.number,
-        date        = self.date_created,
-        nature      = self.budget.default_nature,
-        budget_type = self.budget.budget_type,
-        credit_type = self.budget.default_credit_type,
-        provider    = self.provider.name,
-        offer       = item.offer_nb,
-        product     = item.name,
-        ref         = item.reference,
-        quantity    = item.quantity,
-        debit       = item.price
+      bl = BudgetLine.objects.create(
+        team          = self.budget.team.name,
+        name          = self.budget.name,
+        number        = self.number,
+        date          = self.date_created,
+        nature        = self.budget.default_nature,
+        budget_type   = self.budget.budget_type,
+        credit_type   = self.budget.default_credit_type,
+        provider      = self.provider.name,
+        offer         = item.offer_nb,
+        product       = item.name,
+        product_price = item.total_price(),
+        ref           = item.reference,
+        quantity      = item.quantity
       )
+      
+      if item.cost_type == DEBIT:
+        bl.debit = item.price
+      elif item.cost_type == CREDIT:
+        bl.credit = item.price
+      bl.save()
   
   def save_to_history(self):
     from history.models import History

@@ -42,7 +42,6 @@
   <table class="list">
     <thead>
       <th widht="50px">budget</th>
-      <th width="100px">crédit</th>
       <th width="80px">n° de cmde</th>
       <th width="100px">date de l'acte</th>
       <th width="50px">nature</th>
@@ -52,9 +51,10 @@
       <th width="80px">offre</th>
       <th>désignation</th>
       <th width="50px">ref</th>
+      <th width="90px">crédit</th>
+      <th width="90px">débit</th>
       <th width="50px">qté</th>
-      <th width="50px">PU</th>
-      <th width="80px">Prix HT total</th>
+      <th width="80px">Montant total</th>
       <th width="80px">Montant dispo</th>
     </thead>
       
@@ -73,7 +73,6 @@
           {% else %}
             <td>{{ budget.grouper }}</td>
           {% endif %}
-          <td>{{ budget_line.credit|default:"" }}</td>
           <td>{{ budget_line.number|default:"" }}</td>
           <td>{{ budget_line.date|date }}</td>
           <td>{{ budget_line.nature }}</td>
@@ -83,9 +82,10 @@
           <td>{{ budget_line.offer|default:"" }}</td>
           <td>{{ budget_line.product|default:"" }}</td>
           <td>{{ budget_line.ref|default:"" }}</td>
-          <td>{{ budget_line.quantity|default:"" }}</td>
+          <td style="color:green">{{ budget_line.credit|default:"" }}</td>
+          <td style="color:red">{{ budget_line.debit|default:"" }}</td>
+          <td>{{ budget_line.quantity|default:1 }}</td>
           <td>{{ budget_line.product_price|default:"" }}</td>
-          <td>{{ budget_line.debit|default:"" }}</td>
           <td>{{ budget_line.get_amount_left }}</td>
         </tr>
         {% endfor %}

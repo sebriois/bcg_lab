@@ -87,7 +87,7 @@ def order_detail(request, order_id):
     for budget in Budget.objects.filter( team = member.team ):
       if budget.get_amount_left() > 0:
         budgets.append( budget )
-  elif member.is_secretary():
+  elif member.is_secretary() or member.is_admin():
     for budget in Budget.objects.all():
       if budget.get_amount_left() > 0:
         budgets.append( budget )

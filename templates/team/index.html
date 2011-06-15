@@ -16,6 +16,17 @@
 {% endblock %}
 
 {% block content %}
+
+<h3>Types d'utilisateur</h3>
+<table>
+  <tr><td class="user_gray">Admin</td></tr>
+  <tr><td class="user_suit">Validateur</td></tr>
+  <tr><td class="user_green">Utilisateur normal - activé</td></tr>
+  <tr><td class="user_red">Utilisateur normal - inactivé</td></tr>
+</table>
+<br />
+<br />
+
 {% for team in team_list %}
   <div id="content" style="min-height:0">
     <div id="content_header"><h2>Equipe {{ team }}</h2></div>
@@ -30,41 +41,34 @@
       <tbody>
         {% for member in team.members.all %}
           <tr class="{% cycle 'even' 'odd' %}">
-            <td>{{ member.user.username }}</td>
+            {% if not member.user.is_active %}
+              <td class="user_red">{{ member.user.username }}</td>
+            {% else %}{% if member.user|is_admin %}
+              <td class="user_gray">{{ member.user.username }}</td>
+            {% else %}{% if member.user|is_validator %}
+              <td class="user_suit">{{ member.user.username }}</td>
+            {% else %}
+              <td class="user_green">{{ member.user.username }}</td>
+            {% endif %}{% endif %}{% endif %}
             <td>{{ member.user.get_full_name }}</td>
             <td>{{ member.user.email }}</td>
             <td>{{ member.user.last_login }}</td>
             <td>
-              {% if member.user == user or user|is_admin or user.is_superuser %}
-                <a href="{% url user_item member.id %}" class="pencil">Editer</a>
-              {% endif %}
-              
               {% if member.user == user %}
-                <a href="{% url change_password member.user.id %}" class="key">
-                  Changer de mot de passe
-                </a>
-              {% endif %}
-              
-              {% if user|is_admin or user.is_superuser %}
-                {% if member.user != user %}
-                  <a href="{% url change_password member.user.id %}" class="key">
-                    Nouveau mot de passe
-                  </a>
-                {% endif %}
-                <a href="{% url user_delete member.user.id %}" class="trash confirm">
-                  Supprimer
-                </a>
-              {% endif %}
-              
-              {% if user|is_validator %}
-                {% if member.user.is_active %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="locked">
-                    Inactiver
-                  </a>
-                {% else %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked">
-                    Activer
-                  </a>
+                <a href="{% url user_item member.id %}" class="pencil">Editer</a>
+                <a href="{% url change_password member.user.id %}" class="key">Changer de mot de passe</a>
+              {% else %}
+                {% if user|is_validator or user.is_superuser %}
+                  {% if not member.user|is_admin and not member.user.is_superuser %}
+                    <a href="{% url user_item member.id %}" class="pencil">Editer</a>
+                    <a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
+                    <a href="{% url change_password member.user.id %}" class="key">Nouveau mot de passe</a>
+                    {% if member.user.is_active %}
+                      <a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
+                    {% else %}
+                      <a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
+                    {% endif %}
+                  {% endif %}
                 {% endif %}
               {% endif %}
             </td>
@@ -89,8 +93,8 @@
       <tbody>
         {% for lonely_user in noteam %}
           <tr class="{% cycle 'even' 'odd' %}">
-            <td>{{ user.username }}</td>
-            <td>{{ user.last_login }}</td>
+            <td>{{ lonely_user.username }}</td>
+            <td>{{ lonely_user.last_login }}</td>
             <td>
               {% if user.is_superuser or user|is_admin %}
                 <a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">

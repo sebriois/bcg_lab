@@ -16,15 +16,20 @@ def warn_msg( request, message ):
   return messages.add_message( request, messages.WARNING, message )
 
 def is_normal(user):
+  if user.is_anonymous(): return False
+  
   return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
 
 def is_validator(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
 
 def is_secretary(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
 
 def is_admin(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type = ADMIN).count() > 0
 
 def GET_method(view):

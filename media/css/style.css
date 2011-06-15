@@ -217,21 +217,28 @@ a img{ border: 0; }
   color:#FFFFFF;
 }
 
-a.arrow_left    { background: url('../img/icons/arrow_left.png');    }
-a.arrow_right   { background: url('../img/icons/arrow_right.png');   }
-a.cart_add      { background: url('../img/icons/basket_add.png');    }
-a.cart_delete   { background: url('../img/icons/basket_delete.png'); }
-a.cart_go       { background: url('../img/icons/basket_go.png');     }
-a.edit          { background: url('../img/icons/pencil.png');        }
-a.add           { background: url('../img/icons/add.png');           }
-a.delete        { background: url('../img/icons/cross.png');         }
-a.table_go      { background: url('../img/icons/table_go.png');      }
-a.table_filter  { background: url('../img/icons/table_gear.png');    }
-a.table_refresh { background: url('../img/icons/table_refresh.png'); }
+.arrow_left    { background: url('../img/icons/arrow_left.png');    }
+.arrow_right   { background: url('../img/icons/arrow_right.png');   }
+.cart_add      { background: url('../img/icons/basket_add.png');    }
+.cart_delete   { background: url('../img/icons/basket_delete.png'); }
+.cart_go       { background: url('../img/icons/basket_go.png');     }
+.edit          { background: url('../img/icons/pencil.png');        }
+.add           { background: url('../img/icons/add.png');           }
+.delete        { background: url('../img/icons/cross.png');         }
+.table_go      { background: url('../img/icons/table_go.png');      }
+.table_filter  { background: url('../img/icons/table_gear.png');    }
+.table_refresh { background: url('../img/icons/table_refresh.png'); }
+.user_suit     { background: url('../img/icons/user_suit.png');     }
+.user_gray     { background: url('../img/icons/user_gray.png');     }
+.user_green    { background: url('../img/icons/user_green.png');    }
+.user_red      { background: url('../img/icons/user_red.png');      }
+.user_orange   { background: url('../img/icons/user_orange.png');   }
 
-a.cart_add, a.cart_go, a.cart_delete, a.edit, a.add, a.delete, 
-a.table_refresh, a.table_filter, a.table_go, 
-a.arrow_right, a.arrow_left {
+.cart_add, .cart_go, .cart_delete, .edit, .add, .delete, 
+.table_refresh, .table_filter, .table_go, 
+.arrow_right, .arrow_left, 
+.user_suit, .user_gray, .user_green, .user_orange, .user_red {
+    text-indent: 20px;
     padding-left: 20px;
     background-repeat: no-repeat;
     background-position: center left;

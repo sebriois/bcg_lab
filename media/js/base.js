@@ -412,7 +412,7 @@ $(document).ready(function(){
     });
 
     // 
-    // PROVIDER PAGE - Dialog that displays notes
+    // PROVIDER PAGE
     // 
     $('.notesDialog').click(function(e){
       e.preventDefault();
