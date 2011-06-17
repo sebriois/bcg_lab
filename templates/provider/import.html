@@ -28,21 +28,22 @@
     <li>
       Le fichier doit contenir une première ligne d'entête:
       <ul>
-        <li>Désignation <strong>(requis)</strong></li>
-        <li>Référence <strong>(requis)</strong></li>
-        <li>Prix <strong>(requis)</strong></li>
-        <li>Offre</li>
-        <li>Nomenclature</li>
+        <li>designation <strong>(requis)</strong></li>
+        <li>reference <strong>(requis)</strong></li>
+        <li>conditionnement</li>
+        <li>prix <strong>(requis)</strong></li>
+        <li>offre</li>
+        <li>nomenclature</li>
       </ul>
     </li>
   </ul>
   
   <h3>Exemple de fichier</h3>
   <code>
-    Désignation;Référence;Prix;Offre;Nomenclature<br />
-    carotte;car001;10;;nomenclature1<br />
-    banane;ban001;12;offre1;nomenclature2<br />
-    poirreau;poi001;8;;<br />
+    designation;reference;conditionnement;prix;offre;nomenclature<br />
+    carotte;car001;30mL;10;;nomenclature1<br />
+    banane;ban001;10kg;12;offre1;nomenclature2<br />
+    poirreau;poi001;;8;;<br />
   </code>
   
   <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
