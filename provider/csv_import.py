@@ -95,10 +95,10 @@ def check_uploaded_file( file ):
       result_table.append( line )
       continue
     
-    if not line[header['désignation']]:
+    if not line[header['designation']]:
       errors.append( base_error + "une désignation est requise."  )
     
-    if not line[header['référence']]:
+    if not line[header['reference']]:
       errors.append( base_error + "une référence est requise."  )
     
     price = Decimal(line[header['prix']].replace(" ","").replace(",","."))
@@ -142,8 +142,8 @@ votre navigateur)." )
     
     Product.objects.create(
       provider      = provider,
-      name          = line[header[u'désignation']],
-      reference     = line[header[u'référence']],
+      name          = line[header[u'designation']],
+      reference     = line[header[u'reference']],
       packaging     = line[header[u'conditionnement']],
       price         = price,
       offer_nb      = line[header[u'offre']],
