@@ -87,7 +87,7 @@ def check_uploaded_file( file ):
     
     if num_line == 0:
       for i, head in enumerate(line):
-        if not head.lower().strip() in ['désignation', 'référence', 'conditionnement', 'prix', 'offre', 'nomenclature']:
+        if not head.lower().strip() in ['designation', 'reference', 'prix', 'conditionnement', 'offre', 'nomenclature']:
           error = "cette entête (%s) ne fait pas partie des entêtes acceptées." % head
           errors.append( base_error + error )
           raise ImportCSVException( "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors) )

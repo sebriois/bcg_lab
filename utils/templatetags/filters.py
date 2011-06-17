@@ -11,18 +11,22 @@ def total_price(cart, provider):
 
 @register.filter
 def is_normal(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
 
 @register.filter
 def is_validator(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
 
 @register.filter
 def is_secretary(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
 
 @register.filter
 def is_admin(user):
+  if user.is_anonymous(): return False
   return user.teammember_set.filter(member_type = ADMIN).count() > 0
 
 @register.filter

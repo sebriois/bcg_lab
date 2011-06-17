@@ -17,7 +17,6 @@ def warn_msg( request, message ):
 
 def is_normal(user):
   if user.is_anonymous(): return False
-  
   return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
 
 def is_validator(user):
