@@ -51,7 +51,7 @@ def import_csv( request, provider_id ):
     if form.is_valid():
       try:
         data = check_uploaded_file( request.FILES['csv_file'] )
-        request.session['import_csv_data'] = json.dumps({ 'data': data })
+        request.session['import_csv_data'] = json.dumps({ 'data': data }).encode('utf8')
         info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
       except ImportCSVException, e:
         error_msg( request, str(e) )
@@ -78,7 +78,7 @@ def check_uploaded_file( file ):
   
   for num_line, line in enumerate( file ):
     base_error = "Ligne %s - " % (num_line + 1)
-    line = line.rstrip('\n').split(";")
+    line = line.decode('latin').encode('utf8').rstrip('\n').split(";")
     
     if len(line) != 6:
       error = "nombre de colonnes trouvées %s sur 6 attendues." % len(line)
