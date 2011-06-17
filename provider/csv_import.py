@@ -103,11 +103,10 @@ def check_uploaded_file( file ):
     
     try:
       price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace("€",""))
+      if not price or price <= 0:
+        errors.append( base_error + "un prix strictement positif est requis."  )
     except:
       errors.append( base_error + "le prix doit être un nombre décimal strictement positif et ne contenant pas de sigle '€'.")
-      
-    if not price or price <= 0:
-      errors.append( base_error + "un prix strictement positif est requis."  )
     
     if not errors:
       result_table.append( line )
