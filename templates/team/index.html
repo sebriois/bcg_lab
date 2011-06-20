@@ -81,7 +81,7 @@
   </div>
 {% endfor %}
 
-{% if noteam %}
+{% if noteam and user|is_validator %}
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Utilisateurs non-affiliés</h2>
     <table class="list">

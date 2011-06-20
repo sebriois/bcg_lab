@@ -21,7 +21,7 @@ def is_normal(user):
 
 def is_validator(user):
   if not user or user.is_anonymous(): return False
-  return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
+  return user.teammember_set.filter(member_type__in = [VALIDATOR, SECRETARY, ADMIN]).count() > 0
 
 def is_secretary(user):
   if not user or user.is_anonymous(): return False

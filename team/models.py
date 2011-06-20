@@ -38,7 +38,7 @@ class TeamMember(models.Model):
     return self.member_type in NORMAL
   
   def is_validator(self):
-    return self.member_type == VALIDATOR
+    return self.member_type == VALIDATOR or self.member_type == SECRETARY
   
   def is_secretary(self):
     return self.member_type == SECRETARY
