@@ -28,10 +28,10 @@ class ImportCSVException(Exception):
 def export_csv( request, provider_id ):
   provider = get_object_or_404( Provider, id = provider_id )
   
-  response = render_to_response("spreadsheet.html", {
+  response = render_to_response("provider/export.csv", {
       'products': provider.product_set.all()
   })
-  filename = "%s.xls" % (provider.name)
+  filename = "%s.csv" % (provider.name)
   response['Content-Disposition'] = 'attachment; filename='+filename
   response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
   
@@ -75,25 +75,39 @@ def check_uploaded_file( file ):
   result_table = []
   errors = []
   header = {}
+  expected_headers = [
+    'designation',
+    'reference',
+    'prix',
+    'conditionnement',
+    'offre',
+    'nomenclature'
+  ]
   
   for num_line, line in enumerate( file ):
     base_error = "Ligne %s - " % (num_line + 1)
-    line = line.decode('latin').encode('utf8').rstrip('\n').split(";")
+    line = line.decode('utf8').encode('utf8').rstrip('\n').split(";")
+    # line = line.decode('latin').encode('utf8').rstrip('\n').split(";")
     
     if len(line) != 6:
-      error = "nombre de colonnes trouvées %s sur 6 attendues." % len(line)
+      error = "%s colonnes trouvées sur 6 attendues." % len(line)
       errors.append( base_error + error )
       break
     
     if num_line == 0:
       for i, head in enumerate(line):
-        if not head.lower().strip() in ['designation', 'reference', 'prix', 'conditionnement', 'offre', 'nomenclature']:
-          error = "cette entête (%s) ne fait pas partie des entêtes acceptées." % head
+        kept_head = head.lower().strip().replace('é', 'e')
+        
+        if kept_head in expected_headers:
+          header[kept_head] = i
+        else:
+          error = "cette entête (%s) ne fait pas partie des entêtes acceptées. %s" % (head, kept_head)
           errors.append( base_error + error )
           raise ImportCSVException( "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors) )
-        header[head.lower().strip()] = i
+        
       result_table.append( line )
       continue
+    
     
     if not line[header['designation']]:
       errors.append( base_error + "une désignation est requise."  )
@@ -102,11 +116,11 @@ def check_uploaded_file( file ):
       errors.append( base_error + "une référence est requise."  )
     
     try:
-      price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace("€",""))
+      price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace('€',''))
       if not price or price <= 0:
         errors.append( base_error + "un prix strictement positif est requis."  )
     except:
-      errors.append( base_error + "le prix doit être un nombre décimal strictement positif et ne contenant pas de sigle '€'.")
+      errors.append( base_error + "le prix doit être un nombre décimal strictement positif et ne doit pas contenir de sigle '€'.")
     
     if not errors:
       result_table.append( line )
@@ -138,19 +152,20 @@ votre navigateur)." )
   for num_line, line in enumerate(csv_data['data']):
     if num_line == 0:
       for i, head in enumerate(line):
-        header[head.lower().strip()] = i
+        head = head.lower().strip().replace(u'é', u'e')
+        header[head] = i
       continue
     
-    price = Decimal(line[header[u'prix']].replace(" ","").replace(",","."))
+    price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace(u'€',u''))
     
     Product.objects.create(
       provider      = provider,
-      name          = line[header[u'designation']],
-      reference     = line[header[u'reference']],
-      packaging     = line[header[u'conditionnement']],
+      name          = line[header['designation']],
+      reference     = line[header['reference']],
+      packaging     = line[header['conditionnement']],
       price         = price,
-      offer_nb      = line[header[u'offre']],
-      nomenclature  = line[header[u'nomenclature']]
+      offer_nb      = line[header['offre']],
+      nomenclature  = line[header['nomenclature']]
     )
   
   del request.session['import_csv_data']
