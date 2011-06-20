@@ -14,8 +14,10 @@ urlpatterns = patterns('',
   url(r'^(?P<order_id>\d+)/set-budget/$', set_budget, name="order_budget"),
   url(r'^(?P<order_id>\d+)/set-next-status/$', set_next_status, name="set_next_status"),
   url(r'^(?P<order_id>\d+)/add-item/$', add_orderitem, name="add_orderitem"),
-  url(r'^(?P<orderitem_id>\d+)/del-item/$', del_orderitem, name="del_orderitem"),
   url(r'^(?P<order_id>\d+)/$', order_detail, name="order_item"),
+  
+  # Order Items
+  url(r'^(?P<orderitem_id>\d+)/del-item/$', del_orderitem, name="orderitem_delete"),
   url(r'^(?P<orderitem_id>\d+)/edit/$', orderitem_detail, name="orderitem_detail"),
   
   # Cart

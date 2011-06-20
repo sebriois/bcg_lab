@@ -50,12 +50,13 @@
         {% if order.status < 2 %}
           <td>
             {% if order.status == 0 or user|is_validator %}
-              <button id="{{order_item.id}}" href="{% url del_orderitem order_item.id %}" class="trash confirmDelCart">Retirer du panier</button>
+              <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next=tab_cart" class="trash confirmDelCart">Retirer du panier</button>
             {% endif %}
           </td>
         {% else %}{% if user|is_secretary %}
           <td>
             <a href="{% url orderitem_detail order_item.id %}" class="pencil">Modifier</a>
+            <a href="{% url orderitem_delete order_item.id %}?next={% url order_item order.id %}" class="trash confirmDel">Supprimer</a>
           </td>
         {% endif %}{% endif %}
       </tr>
@@ -74,19 +75,7 @@
     </div>
   {% endif %}
   
-  {% if order.status == 2 and order.budget.budget_type == 1 %}
-    <a href="{% url set_next_status order.id %}" class="next-status {{ order|dialogClass|default:"" }}">
-      Transmettre pour envoi
-    </a>
-  {% else %}{% if order.status == 2 or order.status == 3 %}
-    <a href="{% url set_next_status order.id %}" class="next-status {{ order|dialogClass|default:"" }}">
-      Envoi au fournisseur
-    </a>
-  {% else %}{% if order.status == 4 %}
-    <a href="{% url set_next_status order.id %}" class="next-status {{ order|dialogClass|default:"" }}">
-      Commande réceptionnée
-    </a>
-  {% endif %}{% endif %}{% endif %}
+  <a href="{% url tab_orders %}" class="check">Valider</a>
 {% endif %}
 
 <div class="cleaner"></div>
@@ -194,7 +183,7 @@
 </div>
 
 <div id="confirmDel" class="dialog" title="Confirmer la suppression">
-  Êtes-vous sûr de vouloir supprimer cette commande ?
+  Merci de confirmer la suppression.
 </div>
 
 <div id="confirm" class="dialog" title="Confirmation requise">

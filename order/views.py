@@ -173,12 +173,14 @@ def add_orderitem(request, order_id):
 def del_orderitem(request, orderitem_id):
   item = get_object_or_404( OrderItem, id = orderitem_id )
   order = item.order_set.get()
+  info_msg( request, u"'%s' supprimé avec succès." % item.name )
   item.delete()
   
   if order.items.all().count() == 0:
+    warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
     order.delete()
   
-  return redirect('tab_cart')
+  return redirect( request.GET.get('next', 'tab_orders') )
 
 
 @login_required
@@ -304,7 +306,7 @@ def set_next_status(request, order_id):
     if order.budget.budget_type == 0: # ie. CNRS
       number = request.GET.get('number', None)
       if not number:
-        error_msg(request, "Commande budget CNRS, veuillez saisir un numéro de commande.")
+        error_msg(request, "Commande budget CNRS, veuillez saisir un numéro XLAB.")
         return redirect( 'tab_orders' )
       order.number = number
       order.status = 4 # Skip status 3 when CNRS budget

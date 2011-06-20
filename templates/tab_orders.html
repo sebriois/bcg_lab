@@ -47,10 +47,14 @@
               <a href="{{ order.get_absolute_url }}" class="pencil">Voir détail</a>
               {% if user|is_secretary %}
                 <a href="{% url set_next_status order.id %}" class="next-status {{ order|dialogClass|default:"" }}">
-                  {% if order.status == 2 and order.budget.budget_type == 1 %}
-                    Pour saisie SIFAC
-                  {% else %}{% if order.status == 2 or order.status == 3 %}  
-                    Saisie n° XLAB
+                  {% if order.status == 2 %}
+                    {% if order.budget.budget_type == 0 %}
+                      Saisie n° XLAB
+                    {% else %}
+                      Pour saisie SIFAC
+                    {% endif %}
+                  {% else %}{% if order.status == 3 %}
+                    Saisie n° SIFAC
                   {% else %}{% if order.status == 4 %}
                     Commande réceptionnée
                   {% endif %}{% endif %}{% endif %}
