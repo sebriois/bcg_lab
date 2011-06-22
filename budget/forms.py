@@ -6,6 +6,7 @@ from budget.models import Budget, BudgetLine
 class BudgetForm(forms.ModelForm):
   class Meta:
     model = Budget
+    exclude = ('is_active',)
   
 
 
@@ -17,8 +18,8 @@ class DebitBudgetForm(forms.ModelForm):
   def __init__( self, budget, *args, **kwargs ):
     super( DebitBudgetForm, self ).__init__( *args, **kwargs )
     
-    self.fields['name'].initial = budget.name
-    self.fields['name'].widget.attrs.update({'disabled':'disabled'})
+    self.fields['budget'].initial = budget.name
+    self.fields['budget'].widget.attrs.update({'disabled':'disabled'})
     self.fields['nature'].initial = budget.default_nature
     self.fields['budget_type'].initial = budget.budget_type
     self.fields['credit_type'].initial = budget.default_credit_type
@@ -41,8 +42,8 @@ class CreditBudgetForm(forms.ModelForm):
     
     self.fields['team'].initial = budget.team.name
     self.fields['team'].widget.attrs.update({'disabled':'disabled'})
-    self.fields['name'].initial = budget.name
-    self.fields['name'].widget.attrs.update({'disabled':'disabled'})
+    self.fields['budget'].initial = budget.name
+    self.fields['budget'].widget.attrs.update({'disabled':'disabled'})
     self.fields['nature'].initial = budget.default_nature
     self.fields['budget_type'].initial = budget.budget_type
     self.fields['credit_type'].initial = budget.default_credit_type

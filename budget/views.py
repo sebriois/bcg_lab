@@ -163,7 +163,7 @@ def _budgetline_list(request):
   
   budget_name = request.GET.get("budget_name", None)
   if budget_name:
-    budget_lines = budget_lines.filter( name = budget_name )
+    budget_lines = budget_lines.filter( budget = budget_name )
     try:
       budget = Budget.objects.get( name = budget_name )
     except:

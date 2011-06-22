@@ -28,13 +28,11 @@ def tab_cart(request):
   """
   Panier
   """
-  orders = Order.objects.filter(
-    user = request.user,
-    status = 0
-  ).order_by('provider__name')
+  team = get_team_member( request ).team
+  orders = Order.objects.filter( team = team, status = 0 )
   
   return direct_to_template(request, "tab_cart.html", { 
-    'order_list': orders,
+    'order_list': orders.order_by('provider__name'),
     'next': 'tab_cart'
   })
 
@@ -135,6 +133,9 @@ def orderitem_detail(request, orderitem_id):
           'url': request.build_absolute_uri(product.get_absolute_url())
         }) )
         send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+      
+      if order.number:
+        orderitem.update_budget_line()
         
       info_msg(request, "Produit modifié avec succès.")
       return redirect(order)
@@ -157,9 +158,14 @@ def add_orderitem(request, order_id):
   form = OrderItemForm( data = request.POST )
   if form.is_valid():
     item = form.save( commit = False )
+    item.username = request.user.username
     item.cost_type = request.POST['cost_type']
     item.save()
     order.items.add(item)
+    
+    if order.number:
+      item.create_budget_line()
+    
     info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
   else:
     error_msg( request, "Le formulaire n'est pas valide, veuillez remplir les champs obligatoires." )
@@ -310,9 +316,11 @@ def set_next_status(request, order_id):
         return redirect( 'tab_orders' )
       order.number = number
       order.status = 4 # Skip status 3 when CNRS budget
+      order.save()
+      order.create_budget_line()
     else:
       order.status = 3
-    order.save()
+      order.save()
     
     info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
   
@@ -326,6 +334,8 @@ def set_next_status(request, order_id):
         error_msg(request, "Veuillez saisir un numéro de commande.")
         return redirect( 'tab_orders' )
       order.number = number
+      order.save()
+      order.create_budget_line()
     
     order.status = 4
     order.save()
@@ -346,7 +356,6 @@ def set_next_status(request, order_id):
     order.date_delivered = delivery_date
     order.status = 5
     order.save()
-    order.create_budget_line()
     order.save_to_history()
     # TODO: make a CRON job to weekly remove received orders
   else:
@@ -361,21 +370,6 @@ def set_next_status(request, order_id):
           ################
 
 @login_required
-@GET_method
-@transaction.commit_on_success
-def cart_empty(request):
-  orders = Order.objects.filter(
-    status = 0,
-    user = request.user,
-    date_delivered__isnull = True
-  )
-  orders.delete()
-  
-  info_msg( request, u"Panier vidé avec succès." )
-  return redirect('tab_cart')
-
-
-@login_required
 @POST_method
 @team_required
 @transaction.commit_on_success
@@ -385,12 +379,13 @@ def cart_add(request):
   quantity = request.POST.get('quantity')
   
   order, created = Order.objects.get_or_create(
-    team      = member.team,
-    user      = request.user,
-    provider  = product.provider,
-    status    = 0
+    team     = member.team,
+    provider = product.provider,
+    status   = 0
   )
-  order.add( product, quantity )
+  item  = order.add( product, quantity )
+  item.username = request.user.username
+  item.save()
   
   url_arg = request.POST.get('url_params', '')
   url = reverse('product_index', current_app="product") + "?" + url_arg

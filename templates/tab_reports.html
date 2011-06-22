@@ -37,7 +37,7 @@
   <div id="content" style="min-height:0">
   <div id="content_header"><h2>Equipe {{ team.grouper }}</h2></div>
   
-  {% regroup team.list by name as budget_list %}
+  {% regroup team.list by budget as budget_list %}
   
   <table class="list">
     <thead>

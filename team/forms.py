@@ -8,6 +8,7 @@ from constants import MEMBERTYPE_CHOICES, ADMIN
 class TeamForm(forms.ModelForm):
     class Meta:
         model = Team
+        exclude = ('is_active',)
     
 
 class TeamMemberForm(forms.Form):

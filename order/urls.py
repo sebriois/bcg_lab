@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from order.views import order_detail, orderitem_detail, order_delete
 from order.views import set_delivered, set_budget, set_next_status
 from order.views import add_orderitem, del_orderitem
-from order.views import cart_add, cart_empty, set_item_quantity
+from order.views import cart_add, set_item_quantity
 
 from order.views import tab_cart, tab_orders, tab_validation
 
@@ -23,7 +23,6 @@ urlpatterns = patterns('',
   # Cart
   url(r'^add-to-cart/$', cart_add, name="cart_add"),
   url(r'^set-item-quantity/$', set_item_quantity, name="set_item_quantity"),
-  url(r'^empty-cart/$', cart_empty, name="cart_empty"),
   
   # Tabs
   url(r'^validation/$', tab_validation, name="tab_validation"),

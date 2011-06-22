@@ -61,7 +61,7 @@
         {% for item in history.object_list %}
           <tr class="{% cycle 'even' 'odd' %}">
             <td>{{ item.date_created|date }}</td>
-            <td>{{ item.team }} ({{item.user}})</td>
+            <td>{{ item.team }}</td>
             <td>{{ item.provider }}</td>
             <td>{{ item.price }}</td>
             <td>{{ item.budget }}</td>

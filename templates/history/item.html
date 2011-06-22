@@ -8,6 +8,7 @@
   
   <table class="list">
     <thead>
+      <th>Utilisateur</th>
       <th>Produit</th>
       <th>Conditionnement</th>
       <th>Référence</th>
@@ -20,6 +21,7 @@
     <tbody>
       {% for item in history.items.all %}
         <tr class="{% cycle 'odd' 'even' %}">
+          <td>{{ item.get_fullname }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.packaging|default:"" }}</td>
           <td>{{ item.reference|default:"" }}</td>

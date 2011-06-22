@@ -13,13 +13,14 @@ from utils import *
 
 @login_required
 def home(request):
-  if is_validator(request.user):
-    return redirect('tab_validation')
-  
-  if is_secretary(request.user):
-    return redirect('tab_orders')
-  
-  return redirect('product_index')
+  # if is_secretary(request.user):
+  #   return redirect('tab_orders')
+  # 
+  # if is_validator(request.user):
+  #   return redirect('tab_validation')
+  # 
+  # return redirect('product_index')
+  return direct_to_template( request, 'homepage.html', {})
 
 def error(request):
   return direct_to_template( request, '500.html', {} )

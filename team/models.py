@@ -6,10 +6,16 @@ from constants import MEMBERTYPE_CHOICES
 from constants import NORMAL, VALIDATOR, SECRETARY, ADMIN
 
 class Team(models.Model):
-  name = models.CharField("Nom", max_length=100)
+  name = models.CharField(u"Nom", max_length=100)
+  fullname = models.CharField(u"Nom complet", max_length=100)
+  is_active = models.BooleanField(u"Actif?", default = True)
+  
+  class Meta:
+    verbose_name = u'Equipe'
+    verbose_name_plural = u'Equipes'
   
   def __unicode__(self):
-    return u"%s" % self.name
+    return u"%s" % self.fullname and self.fullname or self.name
   
   def get_members(self):
     return self.teammember_set
@@ -19,6 +25,10 @@ class TeamMember(models.Model):
   team = models.ForeignKey(Team, verbose_name="Equipe", null = True, blank = True)
   user = models.ForeignKey(User, verbose_name="Utilisateur")
   member_type = models.IntegerField(u"Type d'utilisateur", choices = MEMBERTYPE_CHOICES, default = 0)
+  
+  class Meta:
+    verbose_name = u'Membre équipe'
+    verbose_name_plural = u'Membres équipe'
   
   def __unicode__(self):
     return unicode(self.user)

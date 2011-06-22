@@ -3,14 +3,6 @@
 
 {% block menu_cart %}selected{% endblock %}
 
-{% block buttons %}
-  <div class="btn_wrapper">
-    <a href="{% url cart_empty %}" class="btn_medium">
-      <img src="{{ MEDIA_URL }}img/icons/basket_delete.png" />Vider le panier
-    </a>
-  </div>
-{% endblock %}
-
 {% block content %}
 {% for order in order_list %}
   <div id="content" style="min-height:0">

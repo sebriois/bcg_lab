@@ -45,9 +45,11 @@
               <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin button">
                 Voir détail
               </a>
-              <a href="{% url budget_edit budget.id %}" class="pencil button">
-                Editer
-              </a>
+              {% if user|is_admin %}
+                <a href="{% url budget_edit budget.id %}" class="pencil button">
+                  Editer
+                </a>
+              {% endif %}
               <a href="{% url credit_budget budget.id %}" class="plus button">
                 Créditer
               </a>

@@ -1,7 +1,7 @@
 {% load filters %}
 <ul>
   <li>Commande créée le {{ order.date_created|date }}</li>
-  <li>Commande créée par {{ order.team.name }} - {{ order.get_full_name }}</li>
+  <li>Commande équipe {{ order.team }}</li>
   {% if order.data_delivered %}
     <li>Commande livrée le {{ order.date_delivered|date }}</li>
   {% else %}
@@ -19,6 +19,7 @@
 
 <table class="list">
   <thead>
+    <th>Utilisateur</th>
     <th>Produit</th>
     <th>Conditionnement</th>
     <th>Référence</th>
@@ -34,6 +35,7 @@
   <tbody>
     {% for order_item in order.items.all %}
       <tr class="{% cycle 'odd' 'even' %}">
+        <td>{{ order_item.get_fullname }}</td>
         <td>{{ order_item.name }}</td>
         <td>{{ order_item.packaging|default:"" }}</td>
         <td>{{ order_item.reference|default:"" }}</td>
@@ -125,6 +127,7 @@
   <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
     <input type="hidden" name="cost_type" value="1" />
     <div class="form-row">
+      <input type="hidden" name="username" value="{{user.username}}" />
       <label for="name">Désignation *</label>
       <input type="text" name="name" id="autocomplete" choices="Frais de port;Frais de conditionnement"/>
       <div class="cleaner"></div>
@@ -148,6 +151,7 @@
   <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
     <input type="hidden" name="cost_type" value="0" />
     <div class="form-row">
+      <input type="hidden" name="username" value="{{user.username}}" />
       <label for="name">Désignation *</label>
       <input type="text" name="name" id="autocomplete" choices="Remise;Promotion"/>
       <div class="cleaner"></div>

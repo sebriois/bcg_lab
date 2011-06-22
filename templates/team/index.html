@@ -6,7 +6,7 @@
 {% block menu_team %}selected{% endblock %}
 
 {% block buttons %}
-{% if user.is_superuser %}
+{% if user.is_superuser or user|is_admin %}
   <div class="btn_wrapper">
     <a href="{% url team_new %}" class="btn_medium">
       <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe

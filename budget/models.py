@@ -10,6 +10,7 @@ class Budget(models.Model):
   budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
   default_credit_type = models.CharField(u"Type de crédit", max_length=30, null = True, blank = True)
   default_nature = models.CharField(u"Nature", max_length=20, null = True, blank = True)
+  is_active = models.BooleanField(u"Actif?", default = True)
   
   class Meta:
     verbose_name = "Budget"
@@ -21,7 +22,7 @@ class Budget(models.Model):
   
   def get_amount_left(self):
     amount_left = 0
-    for line in BudgetLine.objects.filter( team = self.team.name, name = self.name ):
+    for line in BudgetLine.objects.filter( budget_id = self.id ):
       if line.credit:
         amount_left += line.credit
       
@@ -34,9 +35,12 @@ class Budget(models.Model):
 
 class BudgetLine(models.Model):
   team          = models.CharField(u"Equipe", max_length = 100)
-  name          = models.CharField(u"Nom", max_length = 100)
+  order_id      = models.IntegerField( u"ID de commande", null = True, blank = True )
+  orderitem_id  = models.IntegerField( u"ID d'item de commande", null = True, blank = True )
+  budget_id     = models.IntegerField( u"ID de budget" )
+  budget        = models.CharField(u"Budget", max_length = 100)
   number        = models.CharField(u"N° de cde", max_length = 30, null = True, blank = True)
-  date          = models.DateField(u"Date de l'acte")
+  date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True)
   nature        = models.CharField(u"Nature", max_length = 20)
   budget_type   = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
   credit_type   = models.CharField(u"Type crédit", max_length = 40)
@@ -53,11 +57,11 @@ class BudgetLine(models.Model):
   class Meta:
     verbose_name = "Ligne budgétaire"
     verbose_name = "Lignes budgétaires"
-    ordering = ("team", "name", "date")
+    ordering = ("team", "budget_id", "-order_id", "date")
   
   def get_amount_left(self):
     amount_left = 0
-    for line in BudgetLine.objects.filter( team = self.team, name = self.name ):
+    for line in BudgetLine.objects.filter( team = self.team, budget = self.budget ):
       if line.credit:
         amount_left += line.credit
       

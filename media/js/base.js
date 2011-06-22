@@ -25,17 +25,7 @@ $(document).ready(function(){
     // 
     // EFFECTS
     // 
-    function effectCallback() {
-      setTimeout(function() {
-        $('li.info').effect('blind', {}, '2000', function() { 
-          $(this).hide() 
-        });
-      }, 1000 );
-    };
-    
-    $('li.info, li.warning, li.error').effect( 
-      'pulsate', {}, 'slow', effectCallback
-    );
+    $('li.info, li.warning, li.error').effect( 'pulsate', {}, 'slow' );
     
     // 
     // BUTTONS STYLE

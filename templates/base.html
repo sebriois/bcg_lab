@@ -38,6 +38,11 @@
         <div id="main-menu">
           <ul>
             <li>
+              <a href="{% url home %}" class="{% block home %}{% endblock %}">
+                Infos
+              </a>
+            </li>
+            <li>
               <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
                 Produits
               </a>
