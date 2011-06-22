@@ -104,7 +104,7 @@ def change_password(request, user_id):
   user = get_object_or_404( User, id = user_id )
   
   if request.method == 'GET':
-    if is_validator(request.user):
+    if is_validator(request.user) and request.user != user:
       form = SetPasswordForm( user = user )
     else:
       form = PasswordChangeForm( user = user )
@@ -114,7 +114,7 @@ def change_password(request, user_id):
       'user_id': user_id
     })
   elif request.method == 'POST':
-    if is_validator(request.user):
+    if is_validator(request.user) and request.user != user:
       form = SetPasswordForm( user = user, data = request.POST )
     else:
       form = PasswordChangeForm( user = user, data = request.POST )
