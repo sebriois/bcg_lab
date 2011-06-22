@@ -21,6 +21,7 @@
 <table>
   <tr><td class="user_gray">Admin</td></tr>
   <tr><td class="user_suit">Validateur</td></tr>
+  <tr><td class="user_orange">Gestionnaire</td></tr>
   <tr><td class="user_green">Utilisateur normal - activé</td></tr>
   <tr><td class="user_red">Utilisateur normal - inactivé</td></tr>
 </table>
@@ -45,11 +46,13 @@
               <td class="user_red">{{ member.user.username }}</td>
             {% else %}{% if member.user|is_admin %}
               <td class="user_gray">{{ member.user.username }}</td>
+            {% else %}{% if member.user|is_secretary %}
+              <td class="user_orange">{{ member.user.username }}</td>
             {% else %}{% if member.user|is_validator %}
               <td class="user_suit">{{ member.user.username }}</td>
             {% else %}
               <td class="user_green">{{ member.user.username }}</td>
-            {% endif %}{% endif %}{% endif %}
+            {% endif %}{% endif %}{% endif %}{% endif %}
             <td>{{ member.user.get_full_name }}</td>
             <td>{{ member.user.email }}</td>
             <td>{{ member.user.last_login }}</td>
