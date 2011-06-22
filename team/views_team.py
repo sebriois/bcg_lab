@@ -60,7 +60,7 @@ def _team_list(request):
   if request.user.is_superuser or is_admin(request.user):
     teams = Team.objects.all()
   else:
-    teams = [m.team for m in user.teammember_set.all()]
+    teams = [m.team for m in request.user.teammember_set.all()]
   
   return direct_to_template(request, 'team/index.html',{
       'team_list': teams,
