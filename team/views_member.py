@@ -111,7 +111,7 @@ def change_password(request, user_id):
     
     return direct_to_template(request, 'auth/change_password.html', {
       'form': form,
-      'change_user': user_id
+      'user_id': user_id
     })
   elif request.method == 'POST':
     if is_validator(request.user):
