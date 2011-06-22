@@ -104,16 +104,17 @@ def change_password(request, user_id):
   user = get_object_or_404( User, id = user_id )
   
   if request.method == 'GET':
-    if is_admin(request.user):
+    if is_validator(request.user):
       form = SetPasswordForm( user = user )
     else:
       form = PasswordChangeForm( user = user )
     
     return direct_to_template(request, 'auth/change_password.html', {
-      'form': form
+      'form': form,
+      'change_user': user_id
     })
   elif request.method == 'POST':
-    if is_admin(request.user):
+    if is_validator(request.user):
       form = SetPasswordForm( user = user, data = request.POST )
     else:
       form = PasswordChangeForm( user = user, data = request.POST )
@@ -123,7 +124,8 @@ def change_password(request, user_id):
       info_msg( request, 'Nouveau mot de passe enregistré.')
     else:
       return direct_to_template(request, 'auth/change_password.html', {
-        'form': form
+        'form': form,
+        'change_user': user_id
       })
   
   return redirect('team_index')
