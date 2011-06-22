@@ -125,7 +125,7 @@ def change_password(request, user_id):
     else:
       return direct_to_template(request, 'auth/change_password.html', {
         'form': form,
-        'change_user': user_id
+        'user_id': user_id
       })
   
   return redirect('team_index')
