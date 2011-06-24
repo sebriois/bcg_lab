@@ -421,6 +421,15 @@ p.info {
   border: 1px solid #e4e4e4;
 }
 
+tr.expired {
+  background: #ffe7dc;
+  color: #e2350d;
+}
+tr.soon_expired {
+  background: #fff6e0;
+  color: #f9a900;
+}
+
 div.cleaner { clear:both; padding-bottom:5px; }
 .splitcontentleft  { float:left;  width:49%; }
 .splitcontentright { float:right; width:49%; }

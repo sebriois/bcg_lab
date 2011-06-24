@@ -41,3 +41,11 @@ def delete(request, issue_id):
 	issue = get_object_or_404( Issue, id = issue_id )
 	issue.delete()
 	return redirect('home')
+
+@login_required
+@transaction.commit_on_success
+def set_status(request, issue_id, status):
+	issue = get_object_or_404( Issue, id = issue_id )
+	issue.status = int(status)
+	issue.save()
+	return redirect('home')

@@ -43,6 +43,7 @@
         <td>{{ order_item.price }} €</td>
         <td>
         {% if order.status == 0 or order.status == 1 and user|is_validator %}
+          {# <input type="text" id="{{order_item.id}}" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" /> #}
           <button id="{{order_item.id}}" class="pencil setQty">{{ order_item.quantity }}</button>
         {% else %}
           {{ order_item.quantity }}

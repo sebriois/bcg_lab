@@ -104,11 +104,11 @@ $(document).ready(function(){
       }
     });
     
-    $('.dialog form input').keydown(function (e) {
-      if (e.which == 13) {
-        $(this).parent('form').submit();
-      }
-    });
+    // $('.dialog form input').keydown(function (e) {
+    //   if (e.which == 13) {
+    //     $(this).parent('form').submit();
+    //   }
+    // });
     
     $('a, button').not('.noloading').click(function(e){
       $('#loadingDialog').dialog('open');

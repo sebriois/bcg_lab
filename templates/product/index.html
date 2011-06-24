@@ -61,7 +61,7 @@
     
     <tbody>
       {% for product in products.object_list %}
-        <tr class="{% cycle 'even' 'odd' %}">
+        <tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
           <td>{{ product.provider.name }}</td>
           <td>{{ product.name }}</td>
           <td>{{ product.packaging }}</td>

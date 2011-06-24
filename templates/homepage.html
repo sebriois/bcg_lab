@@ -17,7 +17,13 @@
       </thead>
       <tbody>
         {% for info in infos %}
-          <tr>
+          {% if info.has_expired %}
+            <tr class="expired">
+          {% else %}{% if info.soon_expired %}
+            <tr class="soon_expired">
+          {% else %}
+            <tr>
+          {% endif %}{% endif %}
             <td>{{ info.date_created|date }}</td>
             <td>{{ info.expiry|date }}</td>
             <td>{{ info.text }}</td>
