@@ -27,7 +27,7 @@
     </table>
   </div>
   <div style="float:left;width:26%">
-    <form action="{% url infos %}" method="POST">{% csrf_token %}
+    <form action="{% url info_index %}" method="POST">{% csrf_token %}
       {% for field in info_form %}
         {% include "form_snippet.html"%}
       {% endfor %}
