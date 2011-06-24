@@ -46,10 +46,10 @@
               <td class="user_red">{{ member.user.username }}</td>
             {% else %}{% if member.user|is_admin %}
               <td class="user_gray">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_validator %}
-              <td class="user_suit">{{ member.user.username }}</td>
             {% else %}{% if member.user|is_secretary %}
               <td class="user_orange">{{ member.user.username }}</td>
+            {% else %}{% if member.user|is_validator %}
+              <td class="user_suit">{{ member.user.username }}</td>
             {% else %}
               <td class="user_green">{{ member.user.username }}</td>
             {% endif %}{% endif %}{% endif %}{% endif %}
