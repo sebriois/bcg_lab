@@ -251,6 +251,7 @@ $(document).ready(function(){
       width: 400,
       buttons: {
         Valider: function() {
+          $('#addDebit input[name="price"]').val($('#addDebit input[name="price"]').val().replace(',','.'));
           $( this ).dialog( "close" );
           $('#loadingDialog').dialog('open');
           $('#addDebit form').submit();
@@ -269,6 +270,7 @@ $(document).ready(function(){
       width: 400,
       buttons: {
         Valider: function() {
+          $('input[name="price"]').val($('input[name="price"]').val().replace(',','.'));
           $( this ).dialog( "close" );
           $('#loadingDialog').dialog('open');
           $('#addCredit form').submit();
