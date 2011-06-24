@@ -12,19 +12,14 @@ from order.models import Order
 from issues.models import Issue
 from issues.forms import IssueForm
 from infos.models import Info
+from infos.forms import InfoForm
 from utils import *
 
 @login_required
 def home(request):
-  # if is_secretary(request.user):
-  #   return redirect('tab_orders')
-  # 
-  # if is_validator(request.user):
-  #   return redirect('tab_validation')
-  # 
-  # return redirect('product_index')
   return direct_to_template( request, 'homepage.html', {
 		'infos': Info.objects.all(),
+		'info_form': InfoForm(),
 		'issues': Issue.objects.all(),
 		'issue_form': IssueForm()
   })

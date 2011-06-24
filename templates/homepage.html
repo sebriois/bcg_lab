@@ -8,10 +8,37 @@
 {% block content %}
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Infos</h2></div>
+  <div style="float:left;width:75%;min-height:600px;border-right:1px solid #eee;">
+    <table class="list">
+      <thead>
+        <th>Date</th>
+        <th>Info</th>
+        <th>Expiration</th>
+      </thead>
+      <tbody>
+        {% for issue in issues %}
+          <tr>
+            <td>{{ info.date }}</td>
+            <td>{{ info.text }}</td>
+            <td>{{ info.expiry }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="float:left;width:24%">
+    <form action="{% url issue_index %}" method="POST">{% csrf_token %}
+      {% for field in issue_form %}
+        {% include "form_snippet.html"%}
+      {% endfor %}
+      <button type="submit" class="check button">Valider</button>
+    </form>
+  </div>
+  <div class="cleaner"></div>
 </div>
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Bugs</h2></div>
-  <div style="float:left;width:70%;min-height:600px;border-right:1px solid #eee;">
+  <div style="float:left;width:75%;min-height:600px;border-right:1px solid #eee;">
     <table class="list">
       <thead>
         <th>Titre</th>
@@ -35,7 +62,7 @@
       </tbody>
     </table>
   </div>
-  <div style="float:left;width:29%">
+  <div style="float:left;width:24%">
     <form action="{% url issue_index %}" method="POST">{% csrf_token %}
       {% for field in issue_form %}
         {% include "form_snippet.html"%}

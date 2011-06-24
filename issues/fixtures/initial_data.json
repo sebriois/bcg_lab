@@ -1,5 +1,83 @@
 [
     {
+        "pk": 4, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "popup de changement de qt\u00e9", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:29:16", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "popup de changement de budget", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:33:06", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "chargement", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:53:49", 
+            "description": "Le chargement des pages produits est assez long avec mon mac sous Firefox ...\r\n--> r\u00e9duire le nb d'items par page \u00e0 50 ?"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "Pb de redirections", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:30:49", 
+            "description": "revoir les redirections sur les boutons \"retour\" et \"valider\""
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "d\u00e9cimales", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:45:29", 
+            "description": "Le formulaire \"remise\" n'accepte pas les virgules sous Firefox Mac (seuls les points sont accept\u00e9s)"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "d\u00e9cimales", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:47:50", 
+            "description": "idem pour frais annexes"
+        }
+    }, 
+    {
         "pk": 1, 
         "model": "issues.issue", 
         "fields": {
@@ -13,6 +91,19 @@
         }
     }, 
     {
+        "pk": 8, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "cr\u00e9ation de compte -> email validateur", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:35:13", 
+            "description": "envoyer un mail au validateur apres demande de cr\u00e9ation de compte"
+        }
+    }, 
+    {
         "pk": 2, 
         "model": "issues.issue", 
         "fields": {
@@ -23,6 +114,97 @@
             "issue_type": 1, 
             "date_created": "2011-06-24 10:23:39", 
             "description": "pouvoir valider une commande sans donner de budget, en utilisant les notes/commentaires par exemple"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "virement inter-budget", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:34:00", 
+            "description": "pouvoir faire un virement entre 2 budgets de mani\u00e8re simple avec cr\u00e9dit/d\u00e9bit automatique"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "onglet panier: mettre le fournisseur plus en \u00e9vidence", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:36:30", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "email apres modif cde par validateur", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:37:17", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "notes/commentaires", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:38:56", 
+            "description": "li\u00e9s \u00e0 une commande et toujours visibles jusqu'\u00e0 r\u00e9ception"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "d\u00e9cimales encore ...", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:50:33", 
+            "description": "* pour la saisie de quantit\u00e9, si on met une virgule on a une pop-up signalant l'erreur de saisie --> OK\r\n\r\n* si on met un point, on a droit \u00e0 une jolie page d'erreur syst\u00e8me !!"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "alerter qd offre produit expire", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:28:29", 
+            "description": "alerter par les infos, surligner en rouge le produit, et en orange 10j avant l'expiration"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "modifier bouton d\u00e9connexion", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:35:47", 
+            "description": ""
         }
     }
 ]
