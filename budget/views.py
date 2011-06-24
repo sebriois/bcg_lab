@@ -60,11 +60,20 @@ def credit_budget(request, budget_id):
   
   if request.method == 'POST':
     data = request.POST.copy()
-    data.update({'name': budget.name})
+    data.update({'budget': budget.name})
     form = CreditBudgetForm( budget, data = data )
     
     if form.is_valid():
-      budget_line = form.save()
+      bl = form.save( commit = False )
+      bl.team         = budget.team.name
+      bl.budget_id    = budget.id
+      bl.nature       = budget.default_nature
+      bl.budget_type  = budget.budget_type
+      bl.credit_type  = budget.default_credit_type
+      bl.quantity     = 1
+      bl.credit       = bl.quantity * bl.product_price
+      bl.debit        = 0
+      bl.save()
       
       info_msg(request, "Ligne de crédit ajoutée avec succès!")
       return redirect('budgetlines')
@@ -91,9 +100,17 @@ def debit_budget(request, budget_id):
   data.update({'name': budget.name})
   form = DebitBudgetForm( budget, data = data )
   if form.is_valid():
-    budget_line = form.save( commit = False )
-    budget_line.debit = budget_line.quantity * budget_line.product_price
-    budget_line.save()
+    bl = form.save( commit = False )
+    bl.team         = budget.team.name
+    bl.budget_id    = budget.id
+    bl.nature       = budget.default_nature
+    bl.budget_type  = budget.budget_type
+    bl.credit_type  = budget.default_credit_type
+    bl.quantity     = 1
+    bl.credit       = 0
+    bl.debit        = bl.quantity * bl.product_price
+    bl.save()
+    
     info_msg(request, "Ligne de débit ajoutée avec succès!")
     return redirect('budgetlines')
   else:

@@ -53,6 +53,7 @@
         <th>Réf.</th>
         <th>Prix</th>
         <th>N° Offre</th>
+        <th>Expiration</th>
         <th>Nomen.</th>
         <th>MAJ</th>
         <th>Action</th>
@@ -67,11 +68,12 @@
           <td>{{ product.reference }}</td>
           <td>{{ product.price }}&nbsp;€</td>
           <td>{{ product.offer_nb }}</td>
+          <td>{{ product.expiry|date }}</td>
           <td>{{ product.nomenclature }}</td>
           <td>{{ product.last_change|date }}</td>
           <td>
             <button id="{{product.id}}" class="plus addToCart noloading">
-              Ajouter&nbsp;au&nbsp;panier
+              Panier
             </button>
             {% if product|is_in_charge:user or user|is_admin %}
               <a href="{% url product_item product.id %}" class="pencil">Editer</a>

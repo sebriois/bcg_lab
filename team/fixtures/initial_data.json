@@ -527,7 +527,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 29, 
-            "member_type": 1, 
+            "member_type": 2, 
             "team": 4
         }
     }, 
@@ -536,7 +536,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 9, 
-            "member_type": 2, 
+            "member_type": 1, 
             "team": 3
         }
     }, 
@@ -545,7 +545,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 10, 
-            "member_type": 2, 
+            "member_type": 1, 
             "team": 3
         }
     }, 
@@ -572,7 +572,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 3, 
-            "member_type": 1, 
+            "member_type": 2, 
             "team": 1
         }
     }, 
@@ -590,7 +590,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 24, 
-            "member_type": 1, 
+            "member_type": 2, 
             "team": 2
         }
     }, 
@@ -599,7 +599,7 @@
         "model": "team.teammember", 
         "fields": {
             "user": 23, 
-            "member_type": 2, 
+            "member_type": 2,
             "team": 3
         }
     }

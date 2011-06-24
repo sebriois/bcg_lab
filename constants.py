@@ -1,36 +1,57 @@
 # -*- encoding: utf8 -*-
 
 NORMAL = 0
-VALIDATOR = 1
-SECRETARY = 2
+SECRETARY = 1
+VALIDATOR = 2
 ADMIN = 3
 
 MEMBERTYPE_CHOICES = (
-  (0, "Normal"),
-  (1, "Validateur"),
-  (2, "Gestionnaire"),
-  (3, "Admin")
+  (NORMAL, u"Normal"),
+  (SECRETARY, u"Gestionnaire"),
+  (VALIDATOR, u"Validateur"),
+  (ADMIN, u"Admin")
 )
 
 STATE_CHOICES = (
-  (0, "Non passée"),
-  (1, "En attente de validation"),
-  (2, "Transmise au secrétariat"),
-  (3, "En attente d'envoi"),
-  (4, "Envoyée au fournisseur"),
-  (5, "Commande réceptionnée")
+  (0, u"Non passée"),
+  (1, u"En attente de validation"),
+  (2, u"Transmise au secrétariat"),
+  (3, u"En attente d'envoi"),
+  (4, u"Envoyée au fournisseur"),
+  (5, u"Commande réceptionnée")
+)
+
+ISSUE_CHOICES = (
+  (0, u"Bug"),
+  (1, u"Amélioration")
+)
+
+ISSUE_SEVERITY_CHOICES = (
+  (0, u"Bloquant"),
+	(1, u"Majeur"),
+  (2, u"Normal"),
+  (3, u"Mineur")
+)
+
+ISSUE_STATUS_CHOICES = (
+  (0, u"Non lu"),
+  (1, u"En cours"),
+  (2, u"Doublon"),
+  (3, u"Déjà résolu"),
+  (4, u"Résolu"),
+  (5, u"Ne sera pas résolu")
 )
 
 BUDGET_CHOICES = (
-  (0, "CNRS"),
-  (1, "UPS")
+  (0, u"CNRS"),
+  (1, u"UPS")
 )
 
 CREDIT = 0
 DEBIT = 1
 COST_TYPE_CHOICES = (
-  (CREDIT, "Crédit"),
-  (DEBIT, "Débit")
+  (CREDIT, u"Crédit"),
+  (DEBIT, u"Débit")
 )
 
-EMAIL_MAGASIN = 'sbriois@cict.fr'
+EMAIL_MAGASIN = 'escaffit@cict.fr'

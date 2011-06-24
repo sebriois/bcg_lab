@@ -104,6 +104,8 @@ INSTALLED_APPS = (
     'order',
     'history',
     'budget',
+    'infos',
+    'issues',
     'utils'
 )
 

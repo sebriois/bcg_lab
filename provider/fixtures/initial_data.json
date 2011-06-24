@@ -1,18 +1,9 @@
 [
     {
-        "pk": 45, 
-        "model": "provider.provider", 
-        "fields": {
-            "notes": null, 
-            "users_in_charge": [], 
-            "name": "ATMS", 
-            "reseller": null
-        }
-    }, 
-    {
         "pk": 51, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Abcam", 
@@ -23,6 +14,7 @@
         "pk": 48, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Addgene", 
@@ -33,6 +25,7 @@
         "pk": 50, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Affymetrix", 
@@ -43,6 +36,7 @@
         "pk": 57, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Air liquide", 
@@ -53,6 +47,7 @@
         "pk": 59, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Amaxa", 
@@ -63,6 +58,7 @@
         "pk": 61, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Amersham", 
@@ -73,6 +69,7 @@
         "pk": 63, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Applied Biosystem", 
@@ -83,6 +80,7 @@
         "pk": 65, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Archives Dutscher", 
@@ -90,9 +88,21 @@
         }
     }, 
     {
+        "pk": 45, 
+        "model": "provider.provider", 
+        "fields": {
+            "is_local": false, 
+            "notes": null, 
+            "users_in_charge": [], 
+            "name": "ATMS", 
+            "reseller": null
+        }
+    }, 
+    {
         "pk": 67, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "BD Biosciences", 
@@ -103,6 +113,7 @@
         "pk": 69, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Beckman Coulter", 
@@ -113,6 +124,7 @@
         "pk": 71, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "BioCat", 
@@ -123,6 +135,7 @@
         "pk": 73, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "BioRad", 
@@ -133,6 +146,7 @@
         "pk": 75, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Bruneau", 
@@ -143,6 +157,7 @@
         "pk": 77, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Buroservices", 
@@ -153,6 +168,7 @@
         "pk": 55, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "CICT", 
@@ -163,6 +179,7 @@
         "pk": 80, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "CliniSciences", 
@@ -173,6 +190,7 @@
         "pk": 81, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Dell", 
@@ -183,6 +201,7 @@
         "pk": 83, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Dutscher", 
@@ -193,6 +212,7 @@
         "pk": 84, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Eurogentec", 
@@ -203,6 +223,7 @@
         "pk": 86, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Euromedex", 
@@ -213,6 +234,7 @@
         "pk": 52, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Fischer", 
@@ -223,6 +245,7 @@
         "pk": 53, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "GE Healthcare", 
@@ -230,19 +253,10 @@
         }
     }, 
     {
-        "pk": 54, 
-        "model": "provider.provider", 
-        "fields": {
-            "notes": null, 
-            "users_in_charge": [], 
-            "name": "In Vivogen", 
-            "reseller": null
-        }
-    }, 
-    {
         "pk": 44, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Inmac", 
@@ -253,6 +267,7 @@
         "pk": 46, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Interchim", 
@@ -263,6 +278,7 @@
         "pk": 47, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Invitrogen", 
@@ -270,9 +286,21 @@
         }
     }, 
     {
+        "pk": 54, 
+        "model": "provider.provider", 
+        "fields": {
+            "is_local": false, 
+            "notes": null, 
+            "users_in_charge": [], 
+            "name": "In Vivogen", 
+            "reseller": null
+        }
+    }, 
+    {
         "pk": 49, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "LCG promochem", 
@@ -283,6 +311,7 @@
         "pk": 56, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Lonza", 
@@ -290,12 +319,13 @@
         }
     }, 
     {
-        "pk": 58, 
+        "pk": 87, 
         "model": "provider.provider", 
         "fields": {
-            "notes": null, 
+            "is_local": true, 
+            "notes": "", 
             "users_in_charge": [], 
-            "name": "MP Biomedicals", 
+            "name": "MAGASIN", 
             "reseller": null
         }
     }, 
@@ -303,6 +333,7 @@
         "pk": 60, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Millipore", 
@@ -310,9 +341,21 @@
         }
     }, 
     {
+        "pk": 58, 
+        "model": "provider.provider", 
+        "fields": {
+            "is_local": false, 
+            "notes": null, 
+            "users_in_charge": [], 
+            "name": "MP Biomedicals", 
+            "reseller": null
+        }
+    }, 
+    {
         "pk": 62, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Ozyme", 
@@ -323,6 +366,7 @@
         "pk": 64, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Perbio", 
@@ -333,6 +377,7 @@
         "pk": 66, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Pierce", 
@@ -343,6 +388,7 @@
         "pk": 68, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Promega", 
@@ -353,6 +399,7 @@
         "pk": 70, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Qiagen", 
@@ -363,6 +410,7 @@
         "pk": 72, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Roche", 
@@ -373,6 +421,7 @@
         "pk": 74, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Santa Cruz", 
@@ -383,6 +432,7 @@
         "pk": 76, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Sigma", 
@@ -393,6 +443,7 @@
         "pk": 78, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "StarLab", 
@@ -403,6 +454,7 @@
         "pk": 79, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Stratagene", 
@@ -413,6 +465,7 @@
         "pk": 85, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "Tebu Bio", 
@@ -423,6 +476,7 @@
         "pk": 82, 
         "model": "provider.provider", 
         "fields": {
+            "is_local": false, 
             "notes": null, 
             "users_in_charge": [], 
             "name": "VWR", 

@@ -13,6 +13,7 @@ class Team(models.Model):
   class Meta:
     verbose_name = u'Equipe'
     verbose_name_plural = u'Equipes'
+    ordering = ('name',)
   
   def __unicode__(self):
     return u"%s" % self.fullname and self.fullname or self.name
@@ -29,6 +30,7 @@ class TeamMember(models.Model):
   class Meta:
     verbose_name = u'Membre équipe'
     verbose_name_plural = u'Membres équipe'
+    ordering = ('team', '-member_type', 'user__username')
   
   def __unicode__(self):
     return unicode(self.user)

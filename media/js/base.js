@@ -16,11 +16,9 @@ $(document).ready(function(){
     
     // Datepicker widget
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
-    
-    $( ".datepicker" ).datepicker({
-      dateFormat: 'dd/mm/yy',
-      maxDate: 'today'
-    });
+
+    $( ".datepicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
+    $( ".datepicker.maxToday" ).datepicker({ maxDate: 'today' });
     
     // 
     // EFFECTS

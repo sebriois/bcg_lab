@@ -1,8 +1,8 @@
 
 /* @group Layout */
 body, #wrapper {
-  font-family:"Lucida Grande", verdana, arial, helvetica, sans-serif;
-  font-size: 12px; 
+  font-family:"Trebuchet MS","Lucida Grande", verdana, arial, helvetica, sans-serif;
+  font-size: 0.8em;
   color:#484848; 
   margin: 0; 
   padding: 0; 
@@ -97,7 +97,7 @@ body, #wrapper {
 }
 #main-menu li a.selected, #main-menu li a.selected:hover {
   font-weight: bold;
-  background-color:#EEE;
+  background-color:#eee;
   color:#111;
   -moz-border-radius-topleft: 5px;
   -moz-border-radius-topright: 5px;
@@ -109,7 +109,6 @@ body, #wrapper {
 
 
 #main {
-  background-color:#EEEEEE;
   margin: 8px 24px 0px 24px;
 }
 
@@ -170,8 +169,11 @@ h2 {
   padding: 10px 20px;
   background-color: #edf3fe;
   background-color: #e4f0ff;
+  background-color: #5e90c9;
+/*  background-color: #b79b71;*/
   color: #000;
   color: #507aaa;
+  color: #fff;
 }
 
 h3 {
@@ -262,7 +264,9 @@ table.list thead th {
   padding: 5px;
   background-color:#e4f0ff;
   background-color:#f2f7ff;
+/*  background-color:#fdeddb;*/
   color: #507aaa;
+/*  color: #b79b71;*/
   font-weight:normal;
   white-space:nowrap;
   text-transform:uppercase;

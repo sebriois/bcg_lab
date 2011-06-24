@@ -9,6 +9,9 @@ from django.shortcuts import redirect
 from django.conf import settings
 
 from order.models import Order
+from issues.models import Issue
+from issues.forms import IssueForm
+from infos.models import Info
 from utils import *
 
 @login_required
@@ -20,7 +23,11 @@ def home(request):
   #   return redirect('tab_validation')
   # 
   # return redirect('product_index')
-  return direct_to_template( request, 'homepage.html', {})
+  return direct_to_template( request, 'homepage.html', {
+		'infos': Info.objects.all(),
+		'issues': Issue.objects.all(),
+		'issue_form': IssueForm()
+  })
 
 def error(request):
   return direct_to_template( request, '500.html', {} )

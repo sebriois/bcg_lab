@@ -51,9 +51,9 @@
         <td>{{ order_item.total_price }} €</td>
         {% if order.status < 2 %}
           <td>
-            {% if order.status == 0 or user|is_validator %}
-              <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next=tab_cart" class="trash confirmDelCart">Retirer du panier</button>
-            {% endif %}
+            <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDelCart">
+              Retirer du panier
+            </button>
           </td>
         {% else %}{% if user|is_secretary %}
           <td>
@@ -67,14 +67,14 @@
 </table>
 
 <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
-
+<div style="float:right">
+  <button class="plus addDebit">Frais annexes</button>
+  <button class="minus addCredit">Remises</button>
+</div>
+<br />
 
 {% if user|is_secretary %}
   {% if order.status > 1 %}
-    <div style="float:right">
-      <button class="plus addDebit">Frais annexes</button>
-      <button class="minus addCredit">Remises</button>
-    </div>
     <a href="{% url tab_orders %}" class="check">Valider</a>
   {% endif %}
 {% endif %}
