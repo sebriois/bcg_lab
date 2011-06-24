@@ -1,0 +1,28 @@
+[
+    {
+        "pk": 1, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "un utilisateur doit pouvoir appartenir \u00e0 plrs equipes", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:21:30", 
+            "description": "notamment pour les validateurs qui peuvent valider les commandes de plusieurs equipes"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "cde sans budget", 
+            "issue_type": 1, 
+            "date_created": "2011-06-24 10:23:39", 
+            "description": "pouvoir valider une commande sans donner de budget, en utilisant les notes/commentaires par exemple"
+        }
+    }
+]

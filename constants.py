@@ -34,7 +34,7 @@ ISSUE_SEVERITY_CHOICES = (
 )
 
 ISSUE_STATUS_CHOICES = (
-  (0, u"Non lu"),
+  (0, u"En attente"),
   (1, u"En cours"),
   (2, u"Doublon"),
   (3, u"Déjà résolu"),

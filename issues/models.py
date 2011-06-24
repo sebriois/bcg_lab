@@ -5,7 +5,7 @@ from constants import *
 
 class Issue(models.Model):
 	title = models.CharField(u"Titre", max_length=100)
-	description = models.TextField(u"Description")
+	description = models.TextField(u"Description", null = True, blank = True)
 	issue_type = models.IntegerField(u"Type", choices = ISSUE_CHOICES, default = 0)
 	severity = models.IntegerField(u"Sévérité", choices = ISSUE_SEVERITY_CHOICES, default = 1)
 	status = models.IntegerField(u"Statut", choices = ISSUE_STATUS_CHOICES, default = 0)
