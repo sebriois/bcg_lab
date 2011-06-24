@@ -104,11 +104,12 @@ $(document).ready(function(){
       }
     });
     
-    // $('.dialog form input').keydown(function (e) {
-    //   if (e.which == 13) {
-    //     $(this).parent('form').submit();
-    //   }
-    // });
+    $('.dialog form input').keydown(function (e) {
+      if (e.which == 13) {
+        // $(this).parent('form').submit();
+        return false;
+      }
+    });
     
     $('a, button').not('.noloading').click(function(e){
       $('#loadingDialog').dialog('open');
@@ -327,7 +328,7 @@ $(document).ready(function(){
       width: 400,
       buttons: {
         Valider: function() {
-          var qty = +( $('#setQty.dialog input[name="quantity"]').val() );
+          var qty = $('#setQty.dialog input[name="quantity"]').val();
           var intRegex = /^\d+$/;
           
           if ( intRegex.test(qty) && qty > 0 && qty == parseInt(qty) ) {
