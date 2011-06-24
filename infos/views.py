@@ -16,5 +16,8 @@ from utils import *
 def index(request):
 	if request.method == 'POST':
 		form = InfoForm( data = request.POST )
-		if form.is_valid(): form.save()
+		
+		if form.is_valid():
+			form.save()
+		
 		return redirect('home')

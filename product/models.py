@@ -12,7 +12,7 @@ class Product(models.Model):
   price         = models.DecimalField( u'Prix', max_digits=12, decimal_places=2)
   offer_nb      = models.CharField( u'N° Offre', blank = True, null = True, max_length = 100)
   nomenclature  = models.CharField( u'Nomenclature', blank = True, null = True, max_length = 100)
-  expiry   			= models.DateTimeField( u'Expiration', blank = True, null = True )
+  expiry   			= models.DateTimeField( u"Date d'expiration", help_text = u"Format jj/mm/aaaa", blank = True, null = True )
   last_change   = models.DateTimeField( u'Dernière modification', auto_now = True)
   
   class Meta:

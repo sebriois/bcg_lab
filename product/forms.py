@@ -7,14 +7,9 @@ from provider.models import Provider
 class ProductForm(forms.ModelForm):
 		class Meta:
 				model = Product
-				exclude = ('expiry',)
-		
-		expiry = forms.DateField( 
-			label         = "Date d'expiration",
-			input_formats = ["%d/%m/%Y"],
-			widget        = forms.TextInput( attrs = { 'class' : 'datepicker' }),
-			required      = False
-	  )
+				widgets = {
+					'expiry': widgets.DateInput(attrs={'class':'datepicker'})
+				}
 		
 		def __init__( self, provider = None, *args, **kwargs ):
 			super( ProductForm, self ).__init__( *args, **kwargs )

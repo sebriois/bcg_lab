@@ -132,3 +132,4 @@ LOGIN_URL = '/%slogin/' % ROOT_URL
 LOGIN_REDIRECT_URL = '/' + ROOT_URL
 
 DATE_FORMAT = "d/m/Y"
+DATE_INPUT_FORMATS = ('%d/%m/%Y',)
