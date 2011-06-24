@@ -1,20 +1,10 @@
 [
     {
-        "pk": 1, 
-        "model": "budget.budget", 
-        "fields": {
-            "default_nature": "FO", 
-            "default_credit_type": "SB", 
-            "budget_type": 0, 
-            "team": 1, 
-            "name": "OB1INSB"
-        }
-    }, 
-    {
         "pk": 2, 
         "model": "budget.budget", 
         "fields": {
             "default_nature": "FO", 
+            "is_active": true, 
             "default_credit_type": "AFM MV", 
             "budget_type": 0, 
             "team": 1, 
@@ -22,47 +12,75 @@
         }
     }, 
     {
-        "pk": 2, 
-        "model": "budget.budgetline", 
+        "pk": 1, 
+        "model": "budget.budget", 
         "fields": {
-            "team": "DTROU",
-            "product": null,
-            "budget_id": 2,
-            "budget": "A1INSB", 
-            "nature": "FO", 
-            "number": null, 
-            "product_price": null, 
-            "credit_type": "AFM MV", 
-            "credit": "18000.00", 
-            "offer": null, 
+            "default_nature": "FO", 
+            "is_active": true, 
+            "default_credit_type": "SB", 
             "budget_type": 0, 
-            "provider": "", 
-            "date": "2011-04-21", 
-            "debit": null, 
-            "ref": null, 
-            "quantity": null
+            "team": 1, 
+            "name": "OB1INSB"
         }
     }, 
     {
-        "pk": 1, 
-        "model": "budget.budgetline", 
+        "pk": 4, 
+        "model": "budget.budget", 
         "fields": {
-            "team": "DTROU",
-            "product": null,
-            "budget_id": 1,
-            "budget": "OB1INSB", 
-            "nature": "FO",
-            "number": null, 
-            "product_price": null, 
-            "credit_type": "SB", 
-            "credit": "10875.28", 
-            "offer": null, 
+            "default_nature": "", 
+            "is_active": true, 
+            "default_credit_type": "", 
+            "budget_type": 1, 
+            "team": 1, 
+            "name": "UPS-DTROU"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "budget.budget", 
+        "fields": {
+            "default_nature": "", 
+            "is_active": true, 
+            "default_credit_type": "", 
             "budget_type": 0, 
-            "provider": "", 
-            "date": "2011-04-21", 
-            "debit": null, 
-            "ref": null, 
-            "quantity": null
+            "team": 2, 
+            "name": "CNRS-LEGU"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "budget.budget", 
+        "fields": {
+            "default_nature": "", 
+            "is_active": true, 
+            "default_credit_type": "", 
+            "budget_type": 1, 
+            "team": 2, 
+            "name": "UPS-LEGU"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "budget.budget", 
+        "fields": {
+            "default_nature": "", 
+            "is_active": true, 
+            "default_credit_type": "", 
+            "budget_type": 1, 
+            "team": 6, 
+            "name": "UPS-MSUZA"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "budget.budget", 
+        "fields": {
+            "default_nature": "", 
+            "is_active": true, 
+            "default_credit_type": "", 
+            "budget_type": 1, 
+            "team": 15, 
+            "name": "Service Commun"
         }
     }
 ]
