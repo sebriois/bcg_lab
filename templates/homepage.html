@@ -11,16 +11,16 @@
   <div style="float:left;width:73%;min-height:600px;border-right:1px solid #eee;">
     <table class="list">
       <thead>
-        <th>Date</th>
+        <th width="60px">Date</th>
+        <th width="60px">Expiration</th>
         <th>Info</th>
-        <th>Expiration</th>
       </thead>
       <tbody>
         {% for info in infos %}
           <tr>
-            <td>{{ info.date }}</td>
+            <td>{{ info.date_created|date }}</td>
+            <td>{{ info.expiry|date }}</td>
             <td>{{ info.text }}</td>
-            <td>{{ info.expiry }}</td>
           </tr>
         {% endfor %}
       </tbody>
