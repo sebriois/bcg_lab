@@ -8,7 +8,7 @@
 {% block content %}
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Infos</h2></div>
-  <div style="float:left;width:75%;min-height:600px;border-right:1px solid #eee;">
+  <div style="float:left;width:73%;min-height:600px;border-right:1px solid #eee;">
     <table class="list">
       <thead>
         <th>Date</th>
@@ -26,7 +26,7 @@
       </tbody>
     </table>
   </div>
-  <div style="float:left;width:24%">
+  <div style="float:left;width:26%">
     <form action="{% url infos %}" method="POST">{% csrf_token %}
       {% for field in info_form %}
         {% include "form_snippet.html"%}
@@ -38,7 +38,7 @@
 </div>
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Bugs</h2></div>
-  <div style="float:left;width:75%;min-height:600px;border-right:1px solid #eee;">
+  <div style="float:left;width:73%;min-height:600px;border-right:1px solid #eee;">
     <table class="list">
       <thead>
         <th>Titre</th>
@@ -62,7 +62,7 @@
       </tbody>
     </table>
   </div>
-  <div style="float:left;width:24%">
+  <div style="float:left;width:26%">
     <form action="{% url issue_index %}" method="POST">{% csrf_token %}
       {% for field in issue_form %}
         {% include "form_snippet.html"%}
