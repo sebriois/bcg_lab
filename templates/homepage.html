@@ -16,7 +16,7 @@
         <th>Expiration</th>
       </thead>
       <tbody>
-        {% for issue in issues %}
+        {% for info in infos %}
           <tr>
             <td>{{ info.date }}</td>
             <td>{{ info.text }}</td>
@@ -27,8 +27,8 @@
     </table>
   </div>
   <div style="float:left;width:24%">
-    <form action="{% url issue_index %}" method="POST">{% csrf_token %}
-      {% for field in issue_form %}
+    <form action="{% url infos %}" method="POST">{% csrf_token %}
+      {% for field in info_form %}
         {% include "form_snippet.html"%}
       {% endfor %}
       <button type="submit" class="check button">Valider</button>
