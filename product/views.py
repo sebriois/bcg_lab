@@ -45,9 +45,8 @@ def new(request):
 @login_required
 @team_required
 def delete(request, product_id):
-    """ Confirmation page for deletion. """
-    product = get_object_or_404(Product, id = product_id)
-    return direct_to_template(request, "product/delete.html", { 'product': product })
+  product = get_object_or_404(Product, id = product_id)
+  return direct_to_template(request, "product/delete.html", { 'product': product })
 
 #--- Private views
 def _product_list(request):
@@ -65,7 +64,7 @@ def _product_list(request):
   
   return direct_to_template(request, 'product/index.html',{
       'filter_form': form,
-      'products': paginate( request, product_list, 100 ),
+      'products': paginate( request, product_list, 50 ),
       'url_params': urlencode(request.GET)
   })
 
