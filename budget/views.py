@@ -78,7 +78,6 @@ def credit_budget(request, budget_id):
       info_msg(request, "Ligne de crédit ajoutée avec succès!")
       return redirect('budgetlines')
     else:
-      error_msg(request, "Le formulaire n'est pas valide.")
       return direct_to_template(request, 'budget/form_credit.html',{
         'budget': budget,
         'form': form
@@ -114,7 +113,6 @@ def debit_budget(request, budget_id):
     info_msg(request, "Ligne de débit ajoutée avec succès!")
     return redirect('budgetlines')
   else:
-    error_msg(request, "Le formulaire n'est pas valide.")
     return direct_to_template(request, 'budget/form_debit.html',{
       'budget': budget,
       'form': form
@@ -143,8 +141,6 @@ def _budget_creation(request):
     
     return redirect('budgets')
   else:
-    error_msg(request, "Le formulaire n'est pas valide.")
-    
     return direct_to_template(request, 'budget/form.html',{
       'form': form
     })
