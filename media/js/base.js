@@ -330,7 +330,7 @@ $(document).ready(function(){
           var qty = +( $('#setQty.dialog input[name="quantity"]').val() );
           var intRegex = /^\d+$/;
           
-          if ( intRegex.test(qty) && qty > 0 ) {
+          if ( intRegex.test(qty) && qty > 0 && qty == parseInt(qty) ) {
             $("#qty-error-msg").text('');
             $( this ).dialog( "close" );
             $('#loadingDialog').dialog('open');
