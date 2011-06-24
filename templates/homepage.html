@@ -42,7 +42,6 @@
     <table class="list">
       <thead>
         <th>Titre</th>
-        <th>Description</th>
         <th>Type</th>
         <th>Priorité</th>
         <th>Statut</th>
@@ -51,8 +50,9 @@
       <tbody>
         {% for issue in issues %}
           <tr>
-            <td>{{ issue.title }}</td>
-            <td>{{ issue.description }}</td>
+            <td>
+              <a href="{% url issue_item issue.id %}">{{ issue.title }}</a>
+            </td>
             <td>{{ issue.get_issue_type_display }}</td>
             <td>{{ issue.get_severity_display }}</td>
             <td>{{ issue.get_status_display }}</td>

@@ -1,0 +1,31 @@
+{% extends "main_custom.html" %}
+{% load filters %}
+
+{% block menu_home %}selected{% endblock %}
+
+{% block header %}Modification d'un bug{% endblock %}
+
+{% if user|is_admin or user.is_superuser %}
+  {% block buttons %}
+  <div class="btn_wrapper">
+    <a href="{% url issue_delete issue.id %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer
+    </a>
+  </div>
+  {% endblock %}
+{% endif %}
+
+{% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Modification d'un bug</h2></div>
+  <form action="{% url issue_item issue.id %}" method="post">{% csrf_token %}
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    {% for field in form %}
+        {% include "form_snippet.html"%}
+    {% endfor %}
+    <button type="submit" class="check button">Valider</button>
+  </form>
+</div>
+{% endblock %}
