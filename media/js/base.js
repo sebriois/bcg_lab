@@ -270,7 +270,7 @@ $(document).ready(function(){
       width: 400,
       buttons: {
         Valider: function() {
-          $('input[name="price"]').val($('input[name="price"]').val().replace(',','.'));
+          $('#addCredit input[name="price"]').val($('#addCredit input[name="price"]').val().replace(',','.'));
           $( this ).dialog( "close" );
           $('#loadingDialog').dialog('open');
           $('#addCredit form').submit();
