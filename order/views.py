@@ -158,7 +158,7 @@ def add_orderitem(request, order_id):
 	data = request.POST.copy()
 	data['price'] = data['price'].replace(',','.')
 	
-	form = OrderItemForm( data = request.POST )
+	form = OrderItemForm( data = data )
 	if form.is_valid():
 		item = form.save( commit = False )
 		item.username = request.user.username
