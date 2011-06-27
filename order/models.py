@@ -106,6 +106,9 @@ class OrderItem(models.Model):
     verbose_name = "Item de commande"
     verbose_name_plural = "Items de commande"
     ordering = ('id',)
+	
+	def get_order(self):
+		return self.order_set.get()
   
   def get_fullname(self):
     users = User.objects.filter( username = self.username )
