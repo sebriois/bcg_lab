@@ -19,83 +19,89 @@ from utils import is_admin
 @login_required
 @transaction.commit_on_success
 def index(request):
-  if request.method == 'GET':  return _team_list(request)
-  if request.method == 'POST': return _team_creation(request)
+	if request.method == 'GET':	 return _team_list(request)
+	if request.method == 'POST': return _team_creation(request)
 
 @login_required
 @transaction.commit_on_success
 def item(request, team_id):
-  team = get_object_or_404(Team, id = team_id)
-  if request.method == 'GET': return _team_detail(request, team)
-  if request.method == 'PUT': return _team_update(request, team)
+	team = get_object_or_404(Team, id = team_id)
+	if request.method == 'GET': return _team_detail(request, team)
+	if request.method == 'PUT': return _team_update(request, team)
 
 @login_required
 @superuser_required
 def new(request):
-  return direct_to_template(request, 'team/form.html', {
-    'form': TeamForm()
-  })
+	return direct_to_template(request, 'team/form.html', {
+		'form': TeamForm()
+	})
 
 @login_required
 def add_user_to_team(request, user_id):
-  user = get_object_or_404( User, id = user_id )
-  
-  team_id = request.GET.get( 'team_id', None )
-  if team_id:
-    team = get_object_or_404( Team, id = team_id )
-    member = TeamMember.objects.create(
-      user = user,
-      team = team
-    )
-  return redirect( 'team_index' )
+	user = get_object_or_404( User, id = user_id )
+	
+	team_id = request.GET.get( 'team_id', None )
+	if team_id:
+		team = get_object_or_404( Team, id = team_id )
+		member = TeamMember.objects.create(
+			user = user,
+			team = team
+		)
+	return redirect( 'team_index' )
 
 
 #--- Private views
 def _team_list(request):
-  noteam = []
-  for user in User.objects.all():
-    if user.teammember_set.all().count() == 0:
-      noteam.append( user )
-  
-  if request.user.is_superuser or is_admin(request.user):
-    teams = Team.objects.all()
-  else:
-    teams = [m.team for m in request.user.teammember_set.all()]
-  
-  return direct_to_template(request, 'team/index.html',{
-      'team_list': teams,
-      'noteam': noteam
-  })
+	noteam = []
+	for user in User.objects.all():
+		if user.teammember_set.all().count() == 0:
+			noteam.append( user )
+	
+	if request.user.is_superuser or is_admin(request.user):
+		teams = Team.objects.all()
+	else:
+		teams = [m.team for m in request.user.teammember_set.all()]
+	
+	return direct_to_template(request, 'team/index.html',{
+			'team_list': teams,
+			'noteam': noteam
+	})
 
 def _team_detail(request, team):
-  form = TeamForm(instance = team)
-  return direct_to_template(request, 'team/item.html',{
-      'team': team,
-      'form': form
-  })
+	form = TeamForm(instance = team)
+	return direct_to_template(request, 'team/item.html',{
+			'team': team,
+			'form': form
+	})
 
 def _team_creation(request):
-  form = TeamForm(request.POST)
-  if form.is_valid():
-    team = form.save()
-    
-    info_msg( request, u"Equipe ajoutée avec succès." )
-    return redirect( 'team_index' )
-  else:
-    return direct_to_template(request, 'team/form.html',{
-        'form': form
-    })
+	form = TeamForm(request.POST)
+	if form.is_valid():
+		team = form.save()
+		
+		info_msg( request, u"Equipe ajoutée avec succès." )
+		return redirect( 'team_index' )
+	else:
+		return direct_to_template(request, 'team/form.html',{
+				'form': form
+		})
 
 def _team_update(request, team):
-  form = TeamForm(instance = team, data = request.REQUEST)
-  if form.is_valid():
-    team = form.save()
-    
-    info_msg( request, u"Equipe modifiée avec succès." )
-    return redirect( 'team_index' )
-  else:
-    return direct_to_template(request, 'team/item.html',{
-        'team': team,
-        'form': form
-    })
-  
+	form = TeamForm(instance = team, data = request.REQUEST)
+	name_before = team.name
+	
+	if form.is_valid():
+		team = form.save()
+		
+		if name_before != team.name:
+			for budget in team.budget_set.all():
+				budget.update_budget_lines_team()
+		
+		info_msg( request, u"Equipe modifiée avec succès." )
+		return redirect( 'team_index' )
+	else:
+		return direct_to_template(request, 'team/item.html',{
+				'team': team,
+				'form': form
+		})
+	
