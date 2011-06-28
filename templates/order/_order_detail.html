@@ -68,11 +68,23 @@
 </table>
 
 <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
-{% if order.status < 3 or user|is_secretary %}
-<div style="float:right">
-  <button class="plus addDebit">Frais annexes</button>
-  <button class="minus addCredit">Remises</button>
-</div>
+{% if not order.number %}
+  {% if order.status < 2 and user|is_normal %}
+    <div style="float:right">
+      <button class="plus addDebit">Frais annexes</button>
+      <button class="minus addCredit">Remises</button>
+    </div>
+  {% else %}{% if order.status < 3 and user|is_validator %}
+    <div style="float:right">
+      <button class="plus addDebit">Frais annexes</button>
+      <button class="minus addCredit">Remises</button>
+    </div>
+  {% else %}{% if order.status > 2 and user|is_secretary %}
+    <div style="float:right">
+      <button class="plus addDebit">Frais annexes</button>
+      <button class="minus addCredit">Remises</button>
+    </div>
+  {% endif %}{% endif %}{% endif %}
 {% endif %}
 <br />
 
