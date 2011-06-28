@@ -86,6 +86,12 @@ $(document).ready(function(){
     $(".export").button({
       icons: { primary: "ui-icon-arrowthickstop-1-n" }
     });
+    $(".notice").button({
+      icons: { primary: "ui-icon-notice" }
+    });
+    $(".flag").button({
+      icons: { primary: "ui-icon-flag" }
+    });
     
     // 
     // DIALOGS

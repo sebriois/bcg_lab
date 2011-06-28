@@ -17,12 +17,18 @@ from utils import *
 
 @login_required
 def home(request):
-  return direct_to_template( request, 'homepage.html', {
+	if request.GET.get('fixed',False):
+		issues = Issue.objects.filter( status = 4 )
+	else:
+		issues = Issue.objects.exclude( status = 4 )
+	
+	return direct_to_template( request, 'homepage.html', {
 		'infos': Info.objects.all(),
 		'info_form': InfoForm(),
-		'issues': Issue.objects.all(),
+		'issues': issues,
 		'issue_form': IssueForm()
-  })
+	})
+
 
 def error(request):
   return direct_to_template( request, '500.html', {} )
