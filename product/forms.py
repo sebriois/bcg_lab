@@ -31,17 +31,40 @@ class ProductForm(forms.ModelForm):
 
 class ProductFilterForm(forms.Form):
 	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
+	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
 	
-	provider	= forms.ModelChoiceField( label = u"Fournisseur",
-								queryset	= Provider.objects.all(),
-								required	= False
-							)
-	product		= forms.CharField( label = u"Produit",
-								widget	= forms.TextInput( attrs = {
-									'class' : 'autocomplete',
-									'choices': PRODUCT_CHOICES
-								}),
-								help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
-								required = False
-							)
+	connector = forms.TypedChoiceField(
+		choices 		= [("OR", u"l'une des"), ("AND",u"toutes les")],
+		initial 		= "AND",
+		coerce 			= str,
+		empty_value = None,
+		required 		= True
+	)
+	
+	provider = forms.ModelChoiceField( 
+		label			= u"Fournisseur",
+		queryset	= Provider.objects.all(),
+		required	= False
+	)
+	
+	name = forms.CharField(
+		label			= u"Produit",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': PRODUCT_CHOICES
+		}),
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
+	
+	reference = forms.CharField(
+		label	= u"Référence",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': REFERENCE_CHOICES
+		}),
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
+
 

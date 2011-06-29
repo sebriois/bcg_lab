@@ -1,22 +1,26 @@
 $(document).ready(function(){
-  $('.collapsable h2').click(function(){
-    $(".content").toggle();
-    $('.ui-icon-arrowthickstop-1-n').toggleClass('ui-icon-arrowthickstop-1-s');
-  });
-  
+    $('.collapsable .content').toggle();
+    $('.collapsable h2').click(function(){
+      $(".content").toggle();
+    });
+    
     // Autocomplete widget
-    if ( $('.autocomplete').length > 0 ) {
-        var choices = $('.autocomplete').attr('choices').split(';');
-        $('.autocomplete').autocomplete({
-          delay: 0,
-          minLength: 2,
-          source: choices
-        });
-    }
+    $('.autocomplete').each(function(i){
+      var choices = $(this).attr('choices').split(';');
+      $(this).autocomplete({
+        delay: 0,
+        minLength: 2,
+        source: choices
+      });
+    });
+    
+    $( "#sortable" ).sortable({
+      'axis': 'x'
+    });
     
     // Datepicker widget
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
-
+    
     $( ".datepicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
     $( ".datepicker.maxToday" ).datepicker({ maxDate: 'today' });
     
@@ -91,6 +95,9 @@ $(document).ready(function(){
     });
     $(".flag").button({
       icons: { primary: "ui-icon-flag" }
+    });
+    $(".close-thick").button({
+      icons: { primary: "ui-icon-closethick" }
     });
     $(".no-text").button({
       text: false

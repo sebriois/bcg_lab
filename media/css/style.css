@@ -375,6 +375,18 @@ a.btn_big img, a.btn_small img, a.btn_medium img {
 }
 /* @end */
 
+
+ul#sortable {
+  list-style-type: decimal;
+}
+ul#sortable li {
+  float: left;
+  margin-left: 0px;
+  margin-right: 40px;
+  padding: 5px;
+}
+
+
 /* @group PAGINATOR */
 .paginator { font-size:11px; line-height:22px; margin-top: 5px; }
 .paginator .end { border-width:2px !important; margin-right:6px; }

@@ -22,35 +22,36 @@
   <h3>Consignes d'utilisation</h3>
   <ul>
     <li>
-      Le fichier importé doit être au format csv. Dans le fichier, 
-      le seul délimiteur de colonnes accepté est le point-virgule.
-    </li>
-    <li>
-      Le fichier doit contenir une première ligne d'entête:
-      <ul>
-        <li>designation <strong>(requis)</strong></li>
-        <li>reference <strong>(requis)</strong></li>
-        <li>conditionnement</li>
-        <li>prix <strong>(requis)</strong></li>
-        <li>offre</li>
-        <li>nomenclature</li>
-      </ul>
+      Le fichier importé doit être au format <strong>CSV</strong>. Dans le fichier, 
+      le seul délimiteur de colonnes accepté est le <strong>point-virgule</strong>.
     </li>
   </ul>
   
   <h3>Exemple de fichier</h3>
   <code>
-    designation;reference;conditionnement;prix;offre;nomenclature<br />
     carotte;car001;30mL;10;;nomenclature1<br />
     banane;ban001;10kg;12;offre1;nomenclature2<br />
     poirreau;poi001;;8;;<br />
   </code>
+  <br />
+  <h3>Veuillez ordonner les colonnes comme dans votre fichier</h3>
+  <ul id="sortable">
+  	<li class="ui-state-default">Désignation</li>
+  	<li class="ui-state-default">Référence</li>
+  	<li class="ui-state-default">Conditionnement</li>
+  	<li class="ui-state-default">Prix</li>
+  	<li class="ui-state-default">N° d'offre</li>
+  	<li class="ui-state-default">Nomenclature</li>
+  	<li class="ui-state-default">Fournisseur d'origine</li>
+  </ul>
+  <div class="cleaner"></div>
+  <br />
   
   <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+    <h3>Sélectionnez le fichier à importer</h3>
     {% with form.csv_file as field %}
       <div class="form-row{% if field.errors %} error {% endif %}">
         {% if field.errors %}{{ field.errors }}{% endif %}
-        <label for="{{ field.html_name }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
         <div class="cleaner"></div>
         {{ field }}
         {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
@@ -68,6 +69,7 @@
   <div id="content_header">
     <h2>Résultat de l'importation et confirmation</h2>
   </div>
+  <a href="{% url perform_import_products provider.id %}" class="check">Valider l'import</a>
   <table class="list">
     {% for line in data %}
       {% if forloop.counter == 1 %}
@@ -85,7 +87,6 @@
       {% endif %}
     {% endfor %}
   </table>
-  <a href="{% url perform_import_products provider.id %}" class="check">Valider l'import</a>
 </div>
 {% endif %}
 
