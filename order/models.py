@@ -100,7 +100,7 @@ class OrderItem(models.Model):
 	reference			= models.CharField( u'Référence', max_length = 100, blank = True, null = True )
 	offer_nb			= models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
 	nomenclature	= models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
-	price					= models.DecimalField( u'Prix', max_digits = 12, decimal_places = 2 )
+	price					= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
 	cost_type			= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
 	quantity			= models.IntegerField( default = 1 )
 	

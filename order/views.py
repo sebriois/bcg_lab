@@ -93,7 +93,8 @@ def order_detail(request, order_id):
 	return direct_to_template(request, 'order/item.html',{
 		'order': order,
 		'budgets': budgets,
-		'prev_url': reverse(request.GET.get('next', 'tab_orders'))
+		'prev_url': reverse(request.GET.get('next', 'tab_orders')),
+		'next': request.GET.get('next', 'tab_orders')
 	})
 
 

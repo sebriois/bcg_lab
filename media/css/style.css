@@ -422,12 +422,12 @@ p.info {
 }
 
 tr.expired {
-  background: #ffe7dc;
-  color: #e2350d;
+  background: #ddd;
+  color: #999;
 }
 tr.soon_expired {
-  background: #fff6e0;
-  color: #f9a900;
+  background: #ffe7dc;
+  color: #e2350d;
 }
 
 div.cleaner { clear:both; padding-bottom:5px; }

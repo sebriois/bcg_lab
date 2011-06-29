@@ -45,7 +45,7 @@
 </div>
 
 <div id="content" style="min-height:0">
-  <div id="content_header"><h2>Ajout de frais annexes</h2></div>
+  <div id="content_header"><h2>Frais annexes</h2></div>
   <form action="{% url add_debit order.id %}" method="POST">{% csrf_token %}
     <input type="hidden" name="next" value="{{next}}" />
     <input type="hidden" name="username" value="{{user.username}}" />
