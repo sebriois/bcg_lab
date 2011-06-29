@@ -4,6 +4,7 @@ Une nouvelle commande est en attente de validation:
 * Fournisseur: {{ order.provider.name }}
 * Détail:
 {% for order_item in order.items.all %}
+  - Utilisateur {{ order_item.get_fullname }}
   - Produit: {{ order_item.name}}
   - Conditionnement: {{ order_item.packaging }}
   - Référence: {{ order_item.reference }}
