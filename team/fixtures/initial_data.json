@@ -1,41 +1,5 @@
 [
     {
-        "pk": 7, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "bugler", 
-            "first_name": "B\u00e9atrix", 
-            "last_name": "BUGLER", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-10 23:42:07", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$688d9$87ceeaa2a70a3cce7c6520a06acf355d005886c8", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-05-03 17:59:40"
-        }
-    }, 
-    {
-        "pk": 18, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "culture", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-21 18:04:35", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$bea06$9e5af0a1878687be79722fb7f2ca3852dbf1a2c8", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-06-21 18:04:35"
-        }
-    }, 
-    {
         "pk": 29, 
         "model": "auth.user", 
         "fields": {
@@ -69,60 +33,6 @@
             "password": "sha1$64f64$c62032b931a3d96ddca98936a6b15d923cd0084a", 
             "email": "escaffit@cict.fr", 
             "date_joined": "2011-06-21 18:07:22"
-        }
-    }, 
-    {
-        "pk": 20, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "reserve", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-21 18:07:57", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$08dc0$0690bba973cce6f102cde2e84ef9801546bf172a", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-06-21 18:07:57"
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "caron", 
-            "first_name": "Pierre", 
-            "last_name": "CARON", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-22 14:01:38", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$e838e$a2e330b15b30783e68af702f6ac7ffa117946379", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-05-03 17:59:40"
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "briois", 
-            "first_name": "S\u00e9bastien", 
-            "last_name": "BRIOIS", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-22 12:28:00", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$cd5de$bfa125209af02e24440bd509debafb3c016bf751", 
-            "email": "sbriois@cict.fr", 
-            "date_joined": "2011-05-03 17:59:39"
         }
     }, 
     {
@@ -216,78 +126,6 @@
         }
     }, 
     {
-        "pk": 38, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "djabali", 
-            "first_name": "Malek", 
-            "last_name": "DJABALI", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-23 14:28:14", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$0274f$a8b6e8aa74f790d7b1ebe00f89ad6cfe065b9ff2", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-06-23 14:10:19"
-        }
-    }, 
-    {
-        "pk": 36, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "grezy", 
-            "first_name": "Aude", 
-            "last_name": "GREZY", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-23 12:09:02", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$e689f$997de0d8d1080c24ab875a1e931b22701778bd25", 
-            "email": "agrezy@cict.fr", 
-            "date_joined": "2011-06-22 13:33:16"
-        }
-    }, 
-    {
-        "pk": 15, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "escaffit", 
-            "first_name": "Fabrice", 
-            "last_name": "ESCAFFIT", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": true, 
-            "last_login": "2011-06-23 14:30:11", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$c41a5$2b39439cac2956e08c612caa0a16e0125d5195c0", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-06-21 17:49:20"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "trouche", 
-            "first_name": "Didier", 
-            "last_name": "TROUCHE", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-23 14:31:44", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$b963c$73ee125b2429230e14443730ddbb7b7850cbe32f", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-05-03 17:59:39"
-        }
-    }, 
-    {
         "pk": 39, 
         "model": "auth.user", 
         "fields": {
@@ -306,24 +144,6 @@
         }
     }, 
     {
-        "pk": 9, 
-        "model": "auth.user", 
-        "fields": {
-            "username": "tristani", 
-            "first_name": "M-Christine", 
-            "last_name": "TRISTANI", 
-            "is_active": true, 
-            "is_superuser": false, 
-            "is_staff": false, 
-            "last_login": "2011-06-23 14:40:26", 
-            "groups": [], 
-            "user_permissions": [], 
-            "password": "sha1$d1cff$346ba9cfbcdcdfe1ab45a45ecefb2f911fdcb641", 
-            "email": "escaffit@cict.fr", 
-            "date_joined": "2011-05-03 17:59:40"
-        }
-    }, 
-    {
         "pk": 1, 
         "model": "auth.user", 
         "fields": {
@@ -333,7 +153,7 @@
             "is_active": true, 
             "is_superuser": true, 
             "is_staff": true, 
-            "last_login": "2011-06-24 09:46:58", 
+            "last_login": "2011-06-27 22:54:12", 
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$1b0a1$59f772dd4d9b642431bbad59eaffa01133852431", 
@@ -342,7 +162,97 @@
         }
     }, 
     {
-        "pk": 37, 
+        "pk": 18, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "culture", 
+            "first_name": "", 
+            "last_name": "", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-27 22:55:52", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$bea06$9e5af0a1878687be79722fb7f2ca3852dbf1a2c8", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-06-21 18:04:35"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "escaffit", 
+            "first_name": "Fabrice", 
+            "last_name": "ESCAFFIT", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2011-06-28 09:47:40", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$c41a5$2b39439cac2956e08c612caa0a16e0125d5195c0", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-06-21 17:49:20"
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "quaranta", 
+            "first_name": "Muriel", 
+            "last_name": "QUARANTA", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-28 09:55:17", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$102df$4d791546b48ddbd321f68c95852123821bcfeb5e", 
+            "email": "quaranta@cict.fr", 
+            "date_joined": "2011-06-24 17:47:50"
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "djabali", 
+            "first_name": "Malek", 
+            "last_name": "DJABALI", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-26 10:40:46", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$0274f$a8b6e8aa74f790d7b1ebe00f89ad6cfe065b9ff2", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-06-23 14:10:19"
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "chailleux", 
+            "first_name": "Catherine", 
+            "last_name": "CHAILLEUX", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-28 15:16:25", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$f4ff1$0e4e0dd6f00d9cebcda84fa10346a46bca091ab7", 
+            "email": "chailleu@cict.fr", 
+            "date_joined": "2011-06-27 08:56:23"
+        }
+    }, 
+    {
+        "pk": 46, 
         "model": "auth.user", 
         "fields": {
             "username": "briet", 
@@ -351,30 +261,66 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2011-06-23 12:40:36", 
+            "last_login": "2011-06-27 09:52:59", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "sha1$cf262$34955d86a2b449ff2029b1f9f1cdf37199704d57", 
+            "password": "sha1$b039a$0e9b886544fae86889cd6ba89aad3ab142b13e02", 
             "email": "briet@cict.fr", 
-            "date_joined": "2011-06-23 12:40:36"
+            "date_joined": "2011-06-27 09:38:39"
         }
     }, 
     {
-        "pk": 4, 
+        "pk": 2, 
         "model": "auth.user", 
         "fields": {
-            "username": "chailleux", 
-            "first_name": "Cathy", 
-            "last_name": "CHAILLEUX", 
+            "username": "briois", 
+            "first_name": "S\u00e9bastien", 
+            "last_name": "BRIOIS", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": true, 
+            "last_login": "2011-06-28 15:50:03", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$cd5de$bfa125209af02e24440bd509debafb3c016bf751", 
+            "email": "sbriois@cict.fr", 
+            "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "trouche", 
+            "first_name": "Didier", 
+            "last_name": "TROUCHE", 
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2011-06-23 12:22:59", 
+            "last_login": "2011-06-28 22:08:42", 
             "groups": [], 
             "user_permissions": [], 
-            "password": "sha1$0d979$a3b1655dc5417ec2713d0d7e2f14a1bd346c1334", 
-            "email": "chailleu@cict.fr", 
+            "password": "sha1$b963c$73ee125b2429230e14443730ddbb7b7850cbe32f", 
+            "email": "escaffit@cict.fr", 
             "date_joined": "2011-05-03 17:59:39"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "auth.user", 
+        "fields": {
+            "username": "tristani", 
+            "first_name": "M-Christine", 
+            "last_name": "TRISTANI", 
+            "is_active": true, 
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-28 22:10:23", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$d1cff$346ba9cfbcdcdfe1ab45a45ecefb2f911fdcb641", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-05-03 17:59:40"
         }
     }, 
     {
@@ -387,7 +333,7 @@
             "is_active": true, 
             "is_superuser": false, 
             "is_staff": false, 
-            "last_login": "2011-06-24 09:54:16", 
+            "last_login": "2011-06-28 22:57:56", 
             "groups": [], 
             "user_permissions": [], 
             "password": "sha1$0924a$b5939ff4f4982a0ae5a89633d53572cfd705401e", 
@@ -396,120 +342,156 @@
         }
     }, 
     {
-        "pk": 1, 
-        "model": "team.team", 
+        "pk": 44, 
+        "model": "auth.user", 
         "fields": {
-            "fullname": "", 
+            "username": "mazzolini", 
+            "first_name": "Laurent", 
+            "last_name": "MAZZOLINI", 
             "is_active": true, 
-            "name": "DTROU"
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-26 10:40:19", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$d3f3d$8b1aa897230c4d06c2ee340e08d3756c895e3197", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-06-26 10:40:19"
         }
     }, 
     {
-        "pk": 2, 
-        "model": "team.team", 
+        "pk": 20, 
+        "model": "auth.user", 
         "fields": {
-            "fullname": "", 
+            "username": "reserve", 
+            "first_name": "", 
+            "last_name": "", 
             "is_active": true, 
-            "name": "GLEGU"
-        }
-    }, 
-    {
-        "pk": 3, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "GESTI"
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "STOUR"
-        }
-    }, 
-    {
-        "pk": 5, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "MDJAB"
-        }
-    }, 
-    {
-        "pk": 6, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "MSUZA"
-        }
-    }, 
-    {
-        "pk": 8, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "SCULT"
-        }
-    }, 
-    {
-        "pk": 9, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "SMICR"
-        }
-    }, 
-    {
-        "pk": 10, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "SRESE"
-        }
-    }, 
-    {
-        "pk": 11, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "SINFO"
-        }
-    }, 
-    {
-        "pk": 12, 
-        "model": "team.team", 
-        "fields": {
-            "fullname": "", 
-            "is_active": true, 
-            "name": "SLAVP"
+            "is_superuser": false, 
+            "is_staff": false, 
+            "last_login": "2011-06-27 22:49:23", 
+            "groups": [], 
+            "user_permissions": [], 
+            "password": "sha1$08dc0$0690bba973cce6f102cde2e84ef9801546bf172a", 
+            "email": "escaffit@cict.fr", 
+            "date_joined": "2011-06-21 18:07:57"
         }
     }, 
     {
         "pk": 14, 
         "model": "team.team", 
         "fields": {
-            "fullname": "", 
+            "fullname": "ADMINISTRATEURS", 
             "is_active": true, 
             "name": "ADMIN"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "DJABALI", 
+            "is_active": true, 
+            "name": "DJABALI"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "GESTION", 
+            "is_active": true, 
+            "name": "GESTION"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "LEGUBE", 
+            "is_active": true, 
+            "name": "LEGUBE"
         }
     }, 
     {
         "pk": 15, 
         "model": "team.team", 
         "fields": {
-            "fullname": "", 
+            "fullname": "- Service COMMUN", 
             "is_active": true, 
-            "name": "SCOMM"
+            "name": "- SCOMM"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "- Service CULTURE", 
+            "is_active": true, 
+            "name": "- SCULT"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "- Service INFORMATIQUE", 
+            "is_active": true, 
+            "name": "- SINFO"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "- Service LAVERIE-PREPARATOIRE", 
+            "is_active": true, 
+            "name": "- SLAVP"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "- Service MICROSCOPIE", 
+            "is_active": true, 
+            "name": "- SMICR"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "- Service RESERVE", 
+            "is_active": true, 
+            "name": "- SRESE"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "SUZANNE", 
+            "is_active": true, 
+            "name": "SUZANNE"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "TOURNIER", 
+            "is_active": true, 
+            "name": "TOURNIER"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "team.team", 
+        "fields": {
+            "fullname": "TROUCHE", 
+            "is_active": true, 
+            "name": "TROUCHE"
         }
     }, 
     {
@@ -531,30 +513,66 @@
         }
     }, 
     {
+        "pk": 38, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 38, 
+            "member_type": 2, 
+            "team": 5
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 44, 
+            "member_type": 0, 
+            "team": 5
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 23, 
+            "member_type": 1, 
+            "team": 3
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 10, 
+            "member_type": 1, 
+            "team": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 9, 
+            "member_type": 1, 
+            "team": 3
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 24, 
+            "member_type": 2, 
+            "team": 2
+        }
+    }, 
+    {
         "pk": 18, 
         "model": "team.teammember", 
         "fields": {
             "user": 18, 
             "member_type": 0, 
             "team": 8
-        }
-    }, 
-    {
-        "pk": 19, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 19, 
-            "member_type": 0, 
-            "team": 9
-        }
-    }, 
-    {
-        "pk": 20, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 20, 
-            "member_type": 0, 
-            "team": 10
         }
     }, 
     {
@@ -576,21 +594,30 @@
         }
     }, 
     {
-        "pk": 8, 
+        "pk": 19, 
         "model": "team.teammember", 
         "fields": {
-            "user": 8, 
+            "user": 19, 
             "member_type": 0, 
-            "team": 2
+            "team": 9
         }
     }, 
     {
-        "pk": 7, 
+        "pk": 20, 
         "model": "team.teammember", 
         "fields": {
-            "user": 7, 
+            "user": 20, 
             "member_type": 0, 
-            "team": 2
+            "team": 10
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "team.teammember", 
+        "fields": {
+            "user": 39, 
+            "member_type": 2, 
+            "team": 6
         }
     }, 
     {
@@ -603,28 +630,19 @@
         }
     }, 
     {
-        "pk": 9, 
+        "pk": 3, 
         "model": "team.teammember", 
         "fields": {
-            "user": 9, 
-            "member_type": 1, 
-            "team": 3
+            "user": 3, 
+            "member_type": 2, 
+            "team": 1
         }
     }, 
     {
-        "pk": 10, 
+        "pk": 45, 
         "model": "team.teammember", 
         "fields": {
-            "user": 10, 
-            "member_type": 1, 
-            "team": 3
-        }
-    }, 
-    {
-        "pk": 36, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 36, 
+            "user": 46, 
             "member_type": 0, 
             "team": 1
         }
@@ -639,11 +657,11 @@
         }
     }, 
     {
-        "pk": 3, 
+        "pk": 44, 
         "model": "team.teammember", 
         "fields": {
-            "user": 3, 
-            "member_type": 2, 
+            "user": 45, 
+            "member_type": 0, 
             "team": 1
         }
     }, 
@@ -657,57 +675,12 @@
         }
     }, 
     {
-        "pk": 24, 
+        "pk": 41, 
         "model": "team.teammember", 
         "fields": {
-            "user": 24, 
-            "member_type": 2, 
-            "team": 2
-        }
-    }, 
-    {
-        "pk": 23, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 23, 
-            "member_type": 1, 
-            "team": 3
-        }
-    }, 
-    {
-        "pk": 37, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 37, 
+            "user": 41, 
             "member_type": 0, 
             "team": 1
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 4, 
-            "member_type": 0, 
-            "team": 1
-        }
-    }, 
-    {
-        "pk": 38, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 38, 
-            "member_type": 2, 
-            "team": 5
-        }
-    }, 
-    {
-        "pk": 39, 
-        "model": "team.teammember", 
-        "fields": {
-            "user": 39, 
-            "member_type": 2, 
-            "team": 6
         }
     }
 ]

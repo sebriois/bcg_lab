@@ -5,9 +5,9 @@ $(document).ready(function(){
   });
   
     // Autocomplete widget
-    if ( $('#autocomplete').length > 0 ) {
-        var choices = $('#autocomplete').attr('choices').split(';');
-        $('#autocomplete').autocomplete({
+    if ( $('.autocomplete').length > 0 ) {
+        var choices = $('.autocomplete').attr('choices').split(';');
+        $('.autocomplete').autocomplete({
           delay: 0,
           minLength: 2,
           source: choices
@@ -92,6 +92,10 @@ $(document).ready(function(){
     $(".flag").button({
       icons: { primary: "ui-icon-flag" }
     });
+    $(".no-text").button({
+      text: false
+    });
+    $(".ui-button-icon-only").height(19);
     
     // 
     // DIALOGS
@@ -253,43 +257,6 @@ $(document).ready(function(){
       $( "#setOrderRef" ).dialog("open");
     });
     
-    $("#addDebit").dialog({
-      width: 400,
-      buttons: {
-        Valider: function() {
-          $('#addDebit input[name="price"]').val($('#addDebit input[name="price"]').val().replace(',','.'));
-          $( this ).dialog( "close" );
-          $('#loadingDialog').dialog('open');
-          $('#addDebit form').submit();
-        },
-        Annuler: function() {
-          $('#loadingDialog').dialog('close');
-          $(this).dialog('close');
-        }
-      }
-    });
-    $( '.addDebit' ).click(function(e){
-      $("#addDebit").dialog('open');
-    });
-    
-    $("#addCredit").dialog({
-      width: 400,
-      buttons: {
-        Valider: function() {
-          $('#addCredit input[name="price"]').val($('#addCredit input[name="price"]').val().replace(',','.'));
-          $( this ).dialog( "close" );
-          $('#loadingDialog').dialog('open');
-          $('#addCredit form').submit();
-        },
-        Annuler: function() {
-          $('#loadingDialog').dialog('close');
-          $(this).dialog('close');
-        }
-      }
-    });
-    $( '.addCredit' ).click(function(e){
-      $("#addCredit").dialog('open');
-    });
     // 
     // PRODUCT PAGE - Select quantity when adding to cart
     // 

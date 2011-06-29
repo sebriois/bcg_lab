@@ -47,6 +47,9 @@ BUDGET_CHOICES = (
   (1, u"UPS")
 )
 
+CREDIT_ORDER_CHOICES	= u"Remise;Promotion"
+DEBIT_ORDER_CHOICES 	= u"Frais de port;Frais de conditionnement"
+
 CREDIT = 0
 DEBIT = 1
 COST_TYPE_CHOICES = (

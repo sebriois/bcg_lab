@@ -3,12 +3,16 @@ from datetime import datetime, date
 
 from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import SetPasswordForm
+from django.views.generic.simple import direct_to_template
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
+from django.template import Context, loader
 
 from team.models import Team, TeamMember
 from team.forms import TeamForm, TeamMemberForm
@@ -80,8 +84,28 @@ def new_member(request):
 			
 			del request.session['member_user']
 			
-			info_msg( request, u"Votre demande de création de compte a bien été envoyée. Vous serez informé(e) par email dès qu'elle aura été validée.")
-			return redirect( 'product_index' )
+			# SEND MAIL TO VALIDATORS ...
+			subject = "[Commandes LBCMCP] Demande d'ouverture de compte"
+			emails = []
+			for m in member.team.members.filter(member_type__in = [VALIDATOR,SECRETARY]):
+				if m.user.email:
+					emails.append(m.user.email)
+			# ... and ADMINS
+			for m in TeamMember.objects.filter( member_type = ADMIN ):
+				if m.user.email:
+					emails.append(m.user.email)
+			
+			if emails:
+				template = loader.get_template('email_new_member.txt')
+				message = template.render( Context({ 
+					'member': member, 
+					'url': request.build_absolute_uri(reverse('team_index'))
+				}) )
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+				info_msg( request, u"Votre demande de création de compte a bien été envoyée mais votre compte reste INACTIF en attendant sa validation.")
+			else:
+				warn_msg( request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
+			return redirect( 'home' )
 	else:
 		form = TeamMemberForm(is_admin = is_admin(request.user))
 	
@@ -96,6 +120,18 @@ def toggle_active( request, user_id ):
 	user = get_object_or_404( User, id = user_id )
 	user.is_active = not user.is_active
 	user.save()
+	
+	if user.is_active:
+		subject = "[Commandes LBCMCP] Votre compte vient d'être activé"
+		content = "Vous pouvez désormais vous connecter à l`application."
+	else:
+		subject = "[Commandes LBCMCP] Votre compte vient d'être inactivé"
+		content = "Vous ne pouvez plus vous connecter à l`application pour le moment."
+	
+	emails = [user.email]
+	template = loader.get_template('email_empty.txt')
+	message = template.render( Context({ 'message': content }) )
+	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 	return redirect('team_index')
 
 @login_required
@@ -133,12 +169,12 @@ def change_password(request, user_id):
 @login_required
 @transaction.commit_on_success
 def delete(request, user_id):
-	from order import OrderItem
+	from order.models import Order
 	user = get_object_or_404( User, id = user_id )
 	
-	for item in OrderItem.objects.filter( username = user.username, status__lt = STATE_CHOICES[-1] ):
-		order = item.get_order()
-		item.delete()
+	for order in Order.objects.filter( number__isnull = True, items__username = user.username ):
+		for item in order.items.filter( username = user.username ):
+			item.delete()
 		if order.items.all().count() == 0:
 			order.delete()
 	

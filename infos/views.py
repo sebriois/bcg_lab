@@ -21,3 +21,11 @@ def index(request):
 			form.save()
 		
 		return redirect('home')
+
+@login_required
+@transaction.commit_on_success
+def delete(request, info_id):
+	info = get_object_or_404( Info, id = info_id )
+	info.delete()
+	
+	return redirect('home')

@@ -1,0 +1,47 @@
+[
+    {
+        "pk": 7, 
+        "model": "infos.info", 
+        "fields": {
+            "text": "Bonjour \u00e0 tous,\r\nLe service de gestion sera ferm\u00e9 jeudi 23 juin apr\u00e8s-midi. Nous sommes en effet convi\u00e9s \u00e0 une r\u00e9union \u00e0 la D\u00e9l\u00e9gation du CNRS.\r\nMerci d\u2019en tenir compte.\r\n\r\n", 
+            "date_created": "2011-06-24", 
+            "expiry": "2011-06-23"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "infos.info", 
+        "fields": {
+            "text": "test blabalabla", 
+            "date_created": "2011-06-24", 
+            "expiry": "2011-06-30"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "infos.info", 
+        "fields": {
+            "text": "MILLEGEN\r\n- 40% pour toute commande \r\navant le 8 Juillet 2011*\r\n\r\n Synth\u00e8se peptidique \r\nDe 5 \u00e0 45 acides amin\u00e9s \r\nPuret\u00e9 de 70% \u00e0 97% \r\nQuantit\u00e9 de 1 mg \u00e0 100 mg \r\nAvec ou sans modifications \r\nContr\u00f4le de puret\u00e9 et de masse \r\n \r\nOffre n\u00b0MP110620 : \r\n\u00e0 nous communiquer pour l'\u00e9tablissement de votre devis  ", 
+            "date_created": "2011-06-24", 
+            "expiry": "2011-07-08"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "infos.info", 
+        "fields": {
+            "text": "\r\n Millegen\r\n- 40% pour toute commande \r\navant le 8 Juillet 2011*\r\n Synth\u00e8se peptidique \r\nDe 5 \u00e0 45 acides amin\u00e9s \r\nPuret\u00e9 de 70% \u00e0 97% \r\nQuantit\u00e9 de 1 mg \u00e0 100 mg \r\nAvec ou sans modifications \r\nContr\u00f4le de puret\u00e9 et de masse \r\n Offre n\u00b0MP110620 : \r\n\u00e0 nous communiquer pour l'\u00e9tablissement de votre devis  \r\n", 
+            "date_created": "2011-06-24", 
+            "expiry": "2011-07-08"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "infos.info", 
+        "fields": {
+            "text": "  ABCAM\r\n  -25% de r\u00e9duction sur tous nos kits ELISA \r\n(Offre valable jusqu'au offre valable jusqu'au 31 juillet 2011)\r\n\r\n\r\nProfitez d\u00e8s maintenant d'une remise exceptionnelle de 25% sur les kits ELISA\r\n\r\n\u2714 Une large gamme de plus de 500 kits ELISA\r\n\r\n\u2714 Une tr\u00e8s grande sensibilit\u00e9 (inf\u00e9rieure \u00e0 1pg/mL)\r\n\r\n\u2714 Rapide et facile \u00e0 utiliser\r\n\r\n\u2714 Ciblant des antig\u00e8nes natifs ou recombinants\r\n\r\n\u2714 Compatible pour les analyses de s\u00e9rums, plasmas ou de supernageants\r\n \r\nNotez le code promotionnel sur votre commande pour b\u00e9n\u00e9ficier de cette offre :\r\n\r\nELISA-25-E7W70\r\n \r\n \r\n", 
+            "date_created": "2011-06-24", 
+            "expiry": "2011-07-31"
+        }
+    }
+]

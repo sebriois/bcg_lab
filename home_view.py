@@ -1,4 +1,5 @@
 # coding: utf-8
+from datetime import date
 
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
@@ -17,6 +18,8 @@ from utils import *
 
 @login_required
 def home(request):
+	Info.objects.filter( expiry__lt = date.today() ).delete()
+	
 	if request.GET.get('fixed',False):
 		issues = Issue.objects.filter( status = 4 )
 	else:

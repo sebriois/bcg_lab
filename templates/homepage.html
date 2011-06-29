@@ -13,7 +13,8 @@
       <thead>
         <th width="60px">Date</th>
         <th width="60px">Expiration</th>
-        <th>Information</th>
+        <th width="100%">Information</th>
+        <th width="60px"></th>
       </thead>
       <tbody>
         {% for info in infos %}
@@ -27,6 +28,10 @@
             <td>{{ info.date_created|date }}</td>
             <td>{{ info.expiry|date }}</td>
             <td>{{ info.text }}</td>
+            <td>
+              <a href="{% url info_delete info.id %}" class="trash no-text"></a>
+              {# <a href="{% url info_edit info.id %}" class="pencil">Editer</a> #}
+            </td>
           </tr>
         {% endfor %}
       </tbody>

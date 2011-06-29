@@ -2,7 +2,7 @@
 <ul>
   <li>Commande créée le {{ order.date_created|date }}</li>
   <li>Commande équipe {{ order.team }}</li>
-  {% if order.data_delivered %}
+  {% if order.date_delivered %}
     <li>Commande livrée le {{ order.date_delivered|date }}</li>
   {% else %}
     <li>Statut: {{ order.get_status_display }}</li>
@@ -71,20 +71,22 @@
 {% if not order.number %}
   {% if order.status < 2 and user|is_normal %}
     <div style="float:right">
-      <button class="plus addDebit">Frais annexes</button>
-      <button class="minus addCredit">Remises</button>
+      <a href="{% url add_debit order.id %}?next={{next}}" class="plus">Frais annexes</a>
+      <a href="{% url add_credit order.id %}?next={{next}}" class="minus">Remises</a>
     </div>
   {% else %}{% if order.status < 3 and user|is_validator %}
     <div style="float:right">
-      <button class="plus addDebit">Frais annexes</button>
-      <button class="minus addCredit">Remises</button>
+      <a href="{% url add_debit order.id %}?next={{next}}" class="plus">Frais annexes</a>
+      <a href="{% url add_credit order.id %}?next={{next}}" class="minus">Remises</a>
     </div>
-  {% else %}{% if order.status > 2 and user|is_secretary %}
-    <div style="float:right">
-      <button class="plus addDebit">Frais annexes</button>
-      <button class="minus addCredit">Remises</button>
-    </div>
-  {% endif %}{% endif %}{% endif %}
+  {% endif %}{% endif %}
+{% endif %}
+
+{% if user|is_secretary %}
+  <div style="float:right">
+    <a href="{% url add_debit order.id %}?next={{next}}" class="plus">Frais annexes</a>
+    <a href="{% url add_credit order.id %}?next={{next}}" class="minus">Remises</a>
+  </div>
 {% endif %}
 <br />
 
@@ -108,107 +110,4 @@
   <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
 {% endif %}{% endif %}
 
-
-
-{# ################## #}
-{#                    #}
-{#      DIALOGS       #}
-{#                    #}
-{# ################## #}
-
-<div id="setBudget" class="dialog" title="Choisir le budget à imputer">
-  <div class="form-row">
-    <label for="budget">Budget à imputer</label>
-    <div class="cleaner"></div>
-    <select name="budget" width="200px">
-      {% for budget in budgets %}
-        {% if order.budget == budget %}
-          <option selected="selected" value="{{budget.id}}">
-            {% if user|is_secretary %}{{budget.team.name}} - {% endif %}
-            {{budget}}
-          </option>
-        {% else %}
-          <option value="{{budget.id}}">
-            {% if user|is_secretary %}{{budget.team.name}} - {% endif %}
-            {{budget}}
-          </option>
-        {% endif %}
-      {% endfor %}
-    </select>
-  </div>
-</div>
-
-<div id="addDebit" class="dialog" title="Frais annexes">
-  <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
-    <input type="hidden" name="cost_type" value="1" />
-    <div class="form-row">
-      <input type="hidden" name="username" value="{{user.username}}" />
-      <label for="name">Désignation *</label>
-      <input type="text" name="name" id="autocomplete" choices="Frais de port;Frais de conditionnement"/>
-      <div class="cleaner"></div>
-      <label for="provider">Fournisseur</label>
-      <input type="text" name="provider" />
-      <div class="cleaner"></div>
-      <label for="offer_nb">Offre</label>
-      <input type="text" name="offer_nb" />
-      <div class="cleaner"></div>
-      <label for="price">Montant *</label>
-      <input type="text" name="price" />
-      <div class="cleaner"></div>
-      <label for="quantity">Quantité *</label>
-      <input type="text" name="quantity" value="1" />
-      <div class="cleaner"></div>
-    </div>
-  </form>
-</div>
-
-<div id="addCredit" class="dialog" title="Remise">
-  <form action="{% url add_orderitem order.id %}" method="POST">{% csrf_token %}
-    <input type="hidden" name="cost_type" value="0" />
-    <div class="form-row">
-      <input type="hidden" name="username" value="{{user.username}}" />
-      <label for="name">Désignation *</label>
-      <input type="text" name="name" id="autocomplete" choices="Remise;Promotion"/>
-      <div class="cleaner"></div>
-      <label for="provider">Fournisseur</label>
-      <input type="text" name="provider" />
-      <div class="cleaner"></div>
-      <label for="offer_nb">Offre</label>
-      <input type="text" name="offer_nb" />
-      <div class="cleaner"></div>
-      <label for="price">Montant *</label>
-      <input type="text" name="price" />
-      <div class="cleaner"></div>
-      <label for="quantity">Quantité *</label>
-      <input type="text" name="quantity" value="1" />
-      <div class="cleaner"></div>
-    </div>
-  </form>
-</div>
-
-<div id="setQty" class="dialog" title="Modifier la quantité à commander">
-  <form action="{% url set_item_quantity %}" method="POST" style="padding:0">{% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}" />
-    <input type="hidden" name="orderitem_id" value="" />
-    <div class="form-row">
-      <div id="qty-error-msg"></div>
-      <label for="quantity">Quantité</label>
-      <div class="cleaner"></div>
-      <input type="text" name="quantity" value="" />
-      <div class="cleaner"></div>
-    </div>
-  </form>
-</div>
-
-<div id="confirmDel" class="dialog" title="Confirmer la suppression">
-  Merci de confirmer la suppression.
-</div>
-
-<div id="confirm" class="dialog" title="Confirmation requise">
-  Après confirmation, un email va être envoyé au(x) validateur(s), 
-  puis la commande sera transmise au secrétariat.
-</div>
-
-<div id="confirmDelCart" class="dialog" title="Confirmation requise">
-  Êtes-vous sûr de vouloir supprimer cet article ?
-</div>
+{% include "order/_dialogs.html" %}

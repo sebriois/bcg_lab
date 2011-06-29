@@ -1,6 +1,8 @@
 {% extends "main_custom.html" %}
 {% load paginator %}
 
+{% block menu_order %}selected{% endblock %}
+
 {% block buttons %}
 <div class="btn_wrapper">
   <a href="{{ prev_url }}" class="btn_small">

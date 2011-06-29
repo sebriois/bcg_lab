@@ -17,7 +17,7 @@ from provider.models import Provider
 from product.models import Product
 from budget.models import Budget
 from order.models import Order, OrderItem
-from order.forms import OrderItemForm
+from order.forms import OrderItemForm, AddDebitForm, AddCreditForm
 
 from constants import *
 from utils import *
@@ -155,13 +155,10 @@ def orderitem_detail(request, orderitem_id):
 @transaction.commit_on_success
 def add_orderitem(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	data = request.POST.copy()
-	data['price'] = data['price'].replace(',','.')
-	
-	form = OrderItemForm( data = data )
+	info_msg( request, request.POST.items())
+	form = OrderItemForm( data = request.POST )
 	if form.is_valid():
 		item = form.save( commit = False )
-		item.username = request.user.username
 		item.cost_type = request.POST['cost_type']
 		item.save()
 		order.items.add(item)
@@ -171,10 +168,67 @@ def add_orderitem(request, order_id):
 		
 		info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
 	else:
-		error_msg( request, "Le formulaire n'est pas valide, veuillez remplir les champs obligatoires." )
+		error_msg( request, "Le formulaire n'est pas valide, veuillez remplir les champs obligatoires. %s %s" % ( form.errors, request.POST.items() ) )
 	
-	return redirect(order)
+	return redirect( request.POST.get('next', order))
 
+@login_required
+@transaction.commit_on_success
+def add_credit(request, order_id):
+	order = get_object_or_404( Order, id = order_id )
+	
+	if request.method == 'GET':
+		next = request.GET.get('next', 'tab_orders')
+		form = AddCreditForm()
+	elif request.method == 'POST':
+		next = request.POST.get('next', 'tab_orders')
+		form = AddCreditForm( data = request.POST )
+		if form.is_valid():
+			item = form.save( commit = False )
+			item.username = request.POST['username']
+			item.save()
+			order.items.add(item)
+			
+			if order.number:
+				item.create_budget_line()
+			
+			info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
+			return redirect( next )
+	
+	return direct_to_template( request, "order/add_credit.html", {
+		'order': order,
+		'form': form,
+		'next': next
+	})
+
+@login_required
+@transaction.commit_on_success
+def add_debit(request, order_id):
+	order = get_object_or_404( Order, id = order_id )
+	
+	if request.method == 'GET':
+		next = request.GET.get('next', 'tab_orders')
+		form = AddDebitForm()
+	elif request.method == 'POST':
+		next = request.POST.get('next', 'tab_orders')
+		form = AddDebitForm( data = request.POST )
+		if form.is_valid():
+			item = form.save( commit = False )
+			item.username = request.POST['username']
+			item.save()
+			order.items.add(item)
+			
+			if order.number:
+				item.create_budget_line()
+			
+			info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
+			return redirect( next )
+	
+	return direct_to_template( request, "order/add_debit.html", {
+		'order': order,
+		'form': form,
+		'next': next
+	})
 
 @login_required
 @GET_method

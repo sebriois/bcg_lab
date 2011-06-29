@@ -1,0 +1,2 @@
+{{ member.get_full_name }} demande l'ouverture de son compte:
+{{ url }}

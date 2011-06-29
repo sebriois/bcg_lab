@@ -102,7 +102,7 @@
                   Affilier à une équipe
                 </a>
               {% endif %}
-              {% if user.is_superuser  %}
+              {% if user.is_superuser or user|is_admin %}
                 <a href="{% url user_delete lonely_user.id %}" class="trash confirm">
                   Supprimer
                 </a>

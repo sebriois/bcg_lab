@@ -38,7 +38,7 @@ class ProductFilterForm(forms.Form):
 							)
 	product		= forms.CharField( label = u"Produit",
 								widget	= forms.TextInput( attrs = {
-									'id' : 'autocomplete',
+									'class' : 'autocomplete',
 									'choices': PRODUCT_CHOICES
 								}),
 								help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
