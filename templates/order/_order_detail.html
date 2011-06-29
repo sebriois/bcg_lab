@@ -68,7 +68,7 @@
 </table>
 
 <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
-{% if not order.number %}
+{% if not order.number and not user|is_secretary %}
   {% if order.status < 2 and user|is_normal %}
     <div style="float:right">
       <a href="{% url add_debit order.id %}?next={{next}}" class="plus">Frais annexes</a>
