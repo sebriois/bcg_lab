@@ -6,7 +6,7 @@ from provider.models import Provider
 
 class Product(models.Model):
 	provider			= models.ForeignKey( Provider, verbose_name = 'Fournisseur' )
-	# origin				= models.CharField( u'Origine', max_length = 100, null = True, blank = True )
+	origin				= models.CharField( u'Origine', max_length = 100, null = True, blank = True )
 	name					= models.CharField( u'Désignation', max_length = 500 )
 	packaging			= models.CharField( u'Conditionnement', blank = True, null = True, max_length = 100)
 	reference			= models.CharField( u'Référence', max_length = 100)
