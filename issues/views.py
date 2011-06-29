@@ -13,10 +13,26 @@ from utils import *
 @login_required
 @transaction.commit_on_success
 def index(request):
-	if request.method == 'POST':
+	if request.method == 'GET':
+		if request.GET.get('fixed',False):
+			issues = Issue.objects.filter( status = 4 )
+		else:
+			issues = Issue.objects.exclude( status = 4 )
+		
+		return direct_to_template( request, 'issues/index.html', {
+			'issues': issues
+		})
+	
+	elif request.method == 'POST':
 		form = IssueForm( data = request.POST )
-		if form.is_valid(): form.save()
-		return redirect('home')
+		if form.is_valid():
+			form.save()
+			return redirect('issue_index')
+		else:
+			return direct_to_template( request, 'issues/new.html', {
+				'form': form
+			})
+
 
 @login_required
 @transaction.commit_on_success
@@ -28,7 +44,7 @@ def item(request, issue_id):
 		form = IssueForm( data = request.POST, instance = issue )
 		if form.is_valid():
 			form.save()
-			return redirect('home')
+			return redirect('issue_index')
 	
 	return direct_to_template( request, 'issues/item.html', {
 		'form': form,
@@ -36,11 +52,17 @@ def item(request, issue_id):
 	})
 
 @login_required
+def new(request):
+	return direct_to_template( request, "issues/new.html", {
+		'form': IssueForm()
+	})
+
+@login_required
 @transaction.commit_on_success
 def delete(request, issue_id):
 	issue = get_object_or_404( Issue, id = issue_id )
 	issue.delete()
-	return redirect('home')
+	return redirect('issue_index')
 
 @login_required
 @transaction.commit_on_success
@@ -48,4 +70,4 @@ def set_status(request, issue_id, status):
 	issue = get_object_or_404( Issue, id = issue_id )
 	issue.status = int(status)
 	issue.save()
-	return redirect('home')
+	return redirect('issue_index')

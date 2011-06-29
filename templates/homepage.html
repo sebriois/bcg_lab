@@ -47,45 +47,4 @@
   </div>
   <div class="cleaner"></div>
 </div>
-
-
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Bugs</h2></div>
-  <div style="float:left;width:70%;min-height:600px;border-right:1px solid #eee;">
-    <br />
-    <a href="." class="notice">Non résolus</a>
-    <a href=".?fixed=True" class="flag">Résolus</a>
-    <table class="list">
-      <thead>
-        <th>Titre</th>
-        <th>Type</th>
-        <th>Priorité</th>
-        <th>Statut</th>
-        <th>Date</th>
-      </thead>
-      <tbody>
-        {% for issue in issues %}
-          <tr>
-            <td>
-              <a href="{% url issue_item issue.id %}">{{ issue.title }}</a>
-            </td>
-            <td>{{ issue.get_issue_type_display }}</td>
-            <td>{{ issue.get_severity_display }}</td>
-            <td>{{ issue.get_status_display }}</td>
-            <td>{{ issue.date_created|date }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <div style="float:left;width:29%">
-    <form action="{% url issue_index %}" method="POST">{% csrf_token %}
-      {% for field in issue_form %}
-        {% include "form_snippet.html"%}
-      {% endfor %}
-      <button type="submit" class="check button">Valider</button>
-    </form>
-  </div>
-  <div class="cleaner"></div>
-</div>
 {% endblock %}
