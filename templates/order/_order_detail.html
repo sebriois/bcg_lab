@@ -106,7 +106,12 @@
   {% endif %}
   <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
 {% else %}{% if order.status == 1 and user|is_validator %}
-  <a href="{% url set_next_status order.id %}" class="check setBudget">Valider</a>
+  {% if not order.provider.is_local %}
+    <a href="{% url set_next_status order.id %}" class="check setBudget">Valider</a>
+  {% else %}
+    <a href="{% url set_next_status order.id %}" class="check">Valider</a>
+  {% endif %}
+  
   <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
 {% endif %}{% endif %}
 

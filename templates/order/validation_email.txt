@@ -4,12 +4,12 @@ Une nouvelle commande est en attente de validation:
 * Fournisseur: {{ order.provider.name }}
 * Détail:
 {% for order_item in order.items.all %}
-  - Utilisateur {{ order_item.get_fullname }}
+  - Utilisateur: {{ order_item.get_fullname }}
   - Produit: {{ order_item.name}}
   - Conditionnement: {{ order_item.packaging }}
   - Référence: {{ order_item.reference }}
   - N° offre: {{ order_item.offer_nb }}
-  - PU: {{ order_item.price }}€
+  - Montant: {{ order_item.price }}€
   - Quantité: {{ order_item.quantity }}
   - Prix total: {{ order_item.total_price }}€
 {% endfor %}

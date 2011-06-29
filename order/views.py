@@ -350,6 +350,7 @@ def set_next_status(request, order_id):
 			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
 			order.status = 5
 			order.save()
+			order.save_to_history()
 			info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 		else:
 			budget_line = request.GET.get("budget", None)
