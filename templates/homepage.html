@@ -8,7 +8,7 @@
 {% block content %}
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Infos</h2></div>
-  <div style="float:left;width:73%;min-height:400px;border-right:1px solid #eee;overflow:auto;">
+  <div style="float:left;width:70%;min-height:400px;border-right:1px solid #eee;overflow:auto;">
     <table class="list">
       <thead>
         <th width="60px">Date</th>
@@ -37,7 +37,7 @@
       </tbody>
     </table>
   </div>
-  <div style="float:left;width:26%">
+  <div style="float:left;width:29%">
     <form action="{% url info_index %}" method="POST">{% csrf_token %}
       {% for field in info_form %}
         {% include "form_snippet.html"%}
@@ -51,7 +51,7 @@
 
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Bugs</h2></div>
-  <div style="float:left;width:73%;min-height:600px;border-right:1px solid #eee;">
+  <div style="float:left;width:70%;min-height:600px;border-right:1px solid #eee;">
     <br />
     <a href="." class="notice">Non résolus</a>
     <a href=".?fixed=True" class="flag">Résolus</a>
@@ -78,7 +78,7 @@
       </tbody>
     </table>
   </div>
-  <div style="float:left;width:26%">
+  <div style="float:left;width:29%">
     <form action="{% url issue_index %}" method="POST">{% csrf_token %}
       {% for field in issue_form %}
         {% include "form_snippet.html"%}
