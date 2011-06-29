@@ -7,6 +7,16 @@
 
 {% block buttons %}
   <div class="btn_wrapper">
+    <a href="{% url issue_index %}?fixed=True" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/flag_green.png" />Voir résolus
+    </a>
+  </div>
+  <div class="btn_wrapper">
+    <a href="{% url issue_index %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/flag_red.png" />Voir non résolus
+    </a>
+  </div>
+  <div class="btn_wrapper">
     <a href="{% url issue_new %}" class="btn_medium">
       <img src="{{ MEDIA_URL }}img/icons/bug_add.png" />Déclarer un bug
     </a>
@@ -16,9 +26,6 @@
 {% block content %}
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Bugs</h2></div>
-    <br />
-    <a href="." class="notice">Non résolus</a>
-    <a href=".?fixed=True" class="flag">Résolus</a>
     <table class="list">
       <thead>
         <th>Titre</th>
