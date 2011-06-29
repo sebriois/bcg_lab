@@ -16,11 +16,7 @@
       <table>
         <tr>
           <td>Equipe:</td>
-          {% if user|is_secretary %}
-            <td>{{ filter_form.team }}</td>
-          {% else %}
-            <td>{{ user|team }}</td>
-          {% endif %}
+          <td>{{ filter_form.team }}</td>
           <td width="10%"></td>
           <td>Date&nbsp;d'enregistrement&nbsp;(min/max):</td>
           <td>{{ filter_form.date_created__gte }}</td>

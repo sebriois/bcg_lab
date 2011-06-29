@@ -30,7 +30,17 @@
 
 {% for team in team_list %}
   <div id="content" style="min-height:0">
-    <div id="content_header"><h2>Equipe {{ team }}</h2></div>
+    <div id="content_header">
+      <h2>
+        {% if user|is_validator %}
+          <a href="{% url team_item team.id %}" class="edit" style="color:#fff">
+            Equipe {{ team }}
+          </a>
+        {% else %}
+          Equipe {{ team }}
+        {% endif %}
+      </h2>
+    </div>
     <table class="list">
       <thead>
         <th>Utilisateur</th>

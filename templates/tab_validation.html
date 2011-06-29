@@ -6,7 +6,7 @@
 
 {% for order in orders.object_list %}
   <div id="content" style="min-height:0">
-    <div id="content_header"><h2>{{ order.provider }}</h2></div>
+    <div id="content_header"><h2>{{ order.team.name }} - {{ order.provider|upper }}</h2></div>
     {% include "order/_order_detail.html" %}
   </div>
 {% empty %}

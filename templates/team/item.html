@@ -1,0 +1,15 @@
+{% extends "main_classic.html" %}
+
+{% block header %}Modification d'équipe{% endblock %}
+
+{% block content %}
+<form action="{% url team_item team.id %}" method="post">{% csrf_token %}
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    {% for field in form %}
+        {% include "form_snippet.html"%}
+    {% endfor %}
+    <button type="submit" class="check">Valider</button>
+</form>
+{% endblock %}

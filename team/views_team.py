@@ -9,11 +9,10 @@ from django.views.generic.simple import direct_to_template
 
 from team.models import Team, TeamMember
 from team.forms import TeamForm
+from history.models import History
 
 from constants import *
-from utils import info_msg, error_msg, warn_msg
-from utils import superuser_required
-from utils import is_admin
+from utils import *
 
 
 @login_required
@@ -26,8 +25,8 @@ def index(request):
 @transaction.commit_on_success
 def item(request, team_id):
 	team = get_object_or_404(Team, id = team_id)
-	if request.method == 'GET': return _team_detail(request, team)
-	if request.method == 'PUT': return _team_update(request, team)
+	if request.method == 'GET':	 return _team_detail(request, team)
+	if request.method == 'POST': return _team_update(request, team)
 
 @login_required
 @superuser_required
@@ -63,15 +62,15 @@ def _team_list(request):
 		teams = [m.team for m in request.user.teammember_set.all()]
 	
 	return direct_to_template(request, 'team/index.html',{
-			'team_list': teams,
-			'noteam': noteam
+		'team_list': teams,
+		'noteam': noteam
 	})
 
 def _team_detail(request, team):
 	form = TeamForm(instance = team)
 	return direct_to_template(request, 'team/item.html',{
-			'team': team,
-			'form': form
+		'team': team,
+		'form': form
 	})
 
 def _team_creation(request):
@@ -87,7 +86,7 @@ def _team_creation(request):
 		})
 
 def _team_update(request, team):
-	form = TeamForm(instance = team, data = request.REQUEST)
+	form = TeamForm(instance = team, data = request.POST)
 	name_before = team.name
 	
 	if form.is_valid():
@@ -96,6 +95,9 @@ def _team_update(request, team):
 		if name_before != team.name:
 			for budget in team.budget_set.all():
 				budget.update_budget_lines_team()
+			for history in History.objects.filter( team = name_before ):
+				history.team = team.name
+				history.save()
 		
 		info_msg( request, u"Equipe modifiée avec succès." )
 		return redirect( 'team_index' )

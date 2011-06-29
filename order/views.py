@@ -63,12 +63,12 @@ def tab_validation(request):
 	"""
 	Commandes à valider
 	"""
-	team = get_team_member( request ).team
-	order_list = Order.objects.filter( team = team, status = 1 )
+	teams = get_teams( request.user )
+	order_list = Order.objects.filter( team__in = teams, status = 1 )
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list ),
-		'budgets': Budget.objects.filter(team = team),
+		'budgets': Budget.objects.filter(team__in = teams),
 		'next': 'tab_validation'
 	})
 
@@ -354,11 +354,11 @@ def set_next_status(request, order_id):
 			order.save_to_history()
 			info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 		else:
-			budget_line = request.GET.get("budget", None)
-			if not budget_line or Budget.objects.filter( id = budget_line, team = member.team ).count() == 0:
-				error_msg(request, "Veuillez sélectionner une ligne budgétaire valide.")
+			budget_id = request.GET.get("budget", None)
+			if not budget_id or Budget.objects.filter( id = budget_id ).count() == 0:
+				error_msg(request, "Veuillez sélectionner un budget valide.")
 			else:
-				order.budget = Budget.objects.get( id = budget_line )
+				order.budget = Budget.objects.get( id = budget_id )
 				order.status = 2
 				order.save()
 				info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )

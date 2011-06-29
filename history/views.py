@@ -13,48 +13,51 @@ from utils import *
 
 @login_required
 def index(request):
-  team = get_team_member(request).team
-  
-  if is_secretary(request.user): # admin is also a 'secretary'
-    history_list = History.objects.all()
-  else:
-    history_list = History.objects.filter( team = team.name )
-  
-  if request.method == 'GET':
-    form = HistoryFilterForm()
-  
-  elif request.method == 'POST':
-    form = HistoryFilterForm( data = request.POST )
-    
-    if form.is_valid():
-      data = form.cleaned_data
-      
-      for key, value in data.items():
-        if not value:
-          del data[key]
-      
-      Q_obj = Q()
-      Q_obj.connector = data.pop("connector")
-      Q_obj.children  = data.items()
-      
-      history_list = history_list.filter( Q_obj )
-    else:
-      error_msg( request, "Le formulaire n'a pas pu être validé.")
-  else:
-    error_msg( request, "This request method (%s) is not handled on this page" % request.method )
-    return redirect( 'history' )
-  
-  history_list.order_by( 'date_created' )
-  return direct_to_template( request, "tab_history.html", {
-    'filter_form': form,
-    'history': paginate( request, history_list )
-  })
+	team_names = []
+	for team in get_teams(request.user):
+		if not team.name in team_names:
+			team_names.append(team.name)
+	
+	if is_secretary(request.user): # admin is also a 'secretary'
+		history_list = History.objects.all()
+	else:
+		history_list = History.objects.filter( team__in = team_names )
+	
+	if request.method == 'GET':
+		form = HistoryFilterForm()
+	
+	elif request.method == 'POST':
+		form = HistoryFilterForm( data = request.POST )
+		
+		if form.is_valid():
+			data = form.cleaned_data
+			
+			for key, value in data.items():
+				if not value:
+					del data[key]
+			
+			Q_obj = Q()
+			Q_obj.connector = data.pop("connector")
+			Q_obj.children	= data.items()
+			
+			history_list = history_list.filter( Q_obj )
+		else:
+			error_msg( request, "Le formulaire n'a pas pu être validé.")
+	else:
+		error_msg( request, "This request method (%s) is not handled on this page" % request.method )
+		return redirect( 'history' )
+	
+	history_list.order_by( 'date_created' )
+	return direct_to_template( request, "tab_history.html", {
+		'filter_form': form,
+		'history': paginate( request, history_list )
+	})
 
 
 @login_required
 def item(request, item_id):
-  item = get_object_or_404( History, id = item_id )
-  
-  return direct_to_template( request, 'history/item.html', {
-    'history': item
-  })
+	item = get_object_or_404( History, id = item_id )
+	
+	return direct_to_template( request, 'history/item.html', {
+		'history': item
+	})
