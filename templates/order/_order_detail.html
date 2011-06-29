@@ -14,7 +14,9 @@
         {{ order.budget }}
       </a>
     </li>
-  {% endif %}
+  {% else %}{% if order.number %}
+    <li>Budget imputé:{{ order.budget }}</li>
+  {% endif %}{% endif %}
 </ul>
 
 <table class="list">
