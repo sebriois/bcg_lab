@@ -107,7 +107,7 @@
         "pk": 32, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Mail au MAGASIN", 
@@ -146,7 +146,7 @@
         "pk": 40, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "ATTENTION : gestion budgetaire", 
@@ -159,7 +159,7 @@
         "pk": 42, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "ATTENTION : Commandes saisies II", 
@@ -172,7 +172,7 @@
         "pk": 43, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Frais/Remise = seulement pour les privil\u00e9gi\u00e9s ...", 
@@ -185,7 +185,7 @@
         "pk": 44, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "ATTENTION : Commandes saisies III", 
@@ -198,7 +198,7 @@
         "pk": 48, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Frais/Remise = seulement pour les privil\u00e9gi\u00e9s ... II", 
@@ -208,10 +208,62 @@
         }
     }, 
     {
+        "pk": 50, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Update budget_line", 
+            "issue_type": 0, 
+            "date_created": "2011-06-29 17:14:21", 
+            "description": "il faut que GESTION puisse changer les prix des items des commandes avec N\u00b0CDE"
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Acces produits \u00e0 tous", 
+            "issue_type": 0, 
+            "date_created": "2011-06-29 17:23:15", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "pas de olonne N\u00b0budget pour les utilisateurs non valid/gest", 
+            "issue_type": 0, 
+            "date_created": "2011-06-29 17:26:59", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Classement des lignes budgetaires dans \"D\u00e9tail d'un budget\"", 
+            "issue_type": 0, 
+            "date_created": "2011-06-29 22:22:45", 
+            "description": "il faudrait classer les lignes budgetaires par ordre chronologique sur la date du nouveau statut : N\u00b0 de commande pour la gestion budgetaire; date de r\u00e9ception pour classement dans l'historique"
+        }
+    }, 
+    {
         "pk": 5, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 1, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Pb de redirections", 
@@ -237,7 +289,7 @@
         "pk": 26, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Chgt de nom d'\u00e9quipe", 
@@ -250,7 +302,7 @@
         "pk": 28, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 1, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Import/export", 
@@ -263,7 +315,7 @@
         "pk": 36, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Changement de noms d'\u00e9quipe dans l'Historique", 
@@ -276,7 +328,7 @@
         "pk": 1, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 1, 
             "date_closed": null, 
             "severity": 1, 
             "title": "un utilisateur doit pouvoir appartenir \u00e0 plrs equipes", 
@@ -302,7 +354,7 @@
         "pk": 25, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Page \"acceuil\"", 
@@ -315,7 +367,7 @@
         "pk": 29, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": ">>>>>>> Tu vas me tuer ....", 
@@ -328,7 +380,7 @@
         "pk": 30, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Commandes MAGASIN", 
@@ -364,19 +416,6 @@
         }
     }, 
     {
-        "pk": 38, 
-        "model": "issues.issue", 
-        "fields": {
-            "status": 0, 
-            "date_closed": null, 
-            "severity": 1, 
-            "title": "Uniformisation d'affichage", 
-            "issue_type": 1, 
-            "date_created": "2011-06-26 11:07:36", 
-            "description": "Quelque soit la casse utilis\u00e9e lors de la saisie de son identit\u00e9 par l'utilisateur (\u00e0 la demande de cr\u00e9ation de son compte), faire appara\u00eetre son nom comme:\r\n\r\nLaurent MAZZOLINI"
-        }
-    }, 
-    {
         "pk": 41, 
         "model": "issues.issue", 
         "fields": {
@@ -393,7 +432,7 @@
         "pk": 47, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Recherche produit", 
@@ -432,7 +471,7 @@
         "pk": 10, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "onglet panier: mettre le fournisseur plus en \u00e9vidence", 
@@ -484,7 +523,7 @@
         "pk": 18, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Infos", 
@@ -497,7 +536,7 @@
         "pk": 19, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Infos", 
@@ -536,7 +575,7 @@
         "pk": 31, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Mail au validateur", 
@@ -549,7 +588,7 @@
         "pk": 45, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Date de r\u00e9ception dans l'historique", 
@@ -562,13 +601,26 @@
         "pk": 46, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "sur la page info.....", 
             "issue_type": 1, 
             "date_created": "2011-06-28 09:57:15", 
             "description": "Pour INFO :\r\nSur la page info, la section \"BUG\" n'est pas visible car elle est trop basse sur mon ordi! Je ne l'avais pas vue!\r\n"
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "remise en %", 
+            "issue_type": 1, 
+            "date_created": "2011-06-29 14:16:12", 
+            "description": "calcul sur orderitem ayant product_id not null"
         }
     }, 
     {
@@ -595,6 +647,19 @@
             "issue_type": 1, 
             "date_created": "2011-06-24 10:35:47", 
             "description": ""
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "Uniformisation d'affichage", 
+            "issue_type": 1, 
+            "date_created": "2011-06-26 11:07:36", 
+            "description": "Quelque soit la casse utilis\u00e9e lors de la saisie de son identit\u00e9 par l'utilisateur (\u00e0 la demande de cr\u00e9ation de son compte), faire appara\u00eetre son nom comme:\r\n\r\nLaurent MAZZOLINI"
         }
     }
 ]

@@ -77,11 +77,12 @@ class Order(models.Model):
 		from history.models import History
 		
 		history = History.objects.create(
-			team			= self.team.name,
-			provider	= self.provider.name,
-			budget		= self.budget.name,
-			number		= self.number,
-			price			= self.price(),
+			team						= self.team.name,
+			provider				= self.provider.name,
+			budget					= self.budget.name,
+			number					= self.number,
+			price						= self.price(),
+			date_delivered	= self.date_delivered
 		)
 		
 		for item in self.items.all():
