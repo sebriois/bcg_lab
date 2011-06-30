@@ -54,11 +54,17 @@
               {% if user|is_admin %}
                 <a href="{% url provider_item provider.id %}" class="pencil button">Editer</a>
               {% endif %}
-              {% if user in provider.users_in_charge.all or user|is_admin %}
-                <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
-                <a href="{% url import_products provider.id %}" class="import noloading">Import produits</a>
-                <a href="{% url export_products provider.id %}" class="export noloading">Export produits</a>
-              {% endif %}
+              {# {% if user in provider.users_in_charge.all or user|is_admin %} #}
+              {#   <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a> #}
+              {#   <a href="{% url import_products provider.id %}" class="import noloading">Import produits</a> #}
+              {#   <a href="{% url export_products provider.id %}" class="export noloading">Export produits</a> #}
+              {# {% endif %} #}
+              
+              {# FIXME: TEMPORARILY OPENED TO EVERYONE #}
+              <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
+              <a href="{% url import_products provider.id %}" class="import noloading">Import produits</a>
+              <a href="{% url export_products provider.id %}" class="export noloading">Export produits</a>
+              
               {% if provider.notes %}
                 <button class="comment notesDialog" content="{{ provider.notes }}">Voir les notes</button>
               {% endif %}
