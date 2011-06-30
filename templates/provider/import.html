@@ -33,22 +33,9 @@
     banane;ban001;10kg;12;offre1;nomenclature2<br />
     poirreau;poi001;;8;;<br />
   </code>
-  <br />
-  <h3>Veuillez ordonner les colonnes comme dans votre fichier</h3>
-  <ul id="sortable">
-  	<li class="ui-state-default">Désignation</li>
-  	<li class="ui-state-default">Référence</li>
-  	<li class="ui-state-default">Conditionnement</li>
-  	<li class="ui-state-default">Prix</li>
-  	<li class="ui-state-default">N° d'offre</li>
-  	<li class="ui-state-default">Nomenclature</li>
-  	<li class="ui-state-default">Fournisseur d'origine</li>
-  </ul>
-  <div class="cleaner"></div>
-  <br />
   
   <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <h3>Sélectionnez le fichier à importer</h3>
+    <h3>A) Sélectionnez le fichier à importer</h3>
     {% with form.csv_file as field %}
       <div class="form-row{% if field.errors %} error {% endif %}">
         {% if field.errors %}{{ field.errors }}{% endif %}
@@ -58,6 +45,18 @@
         <div class="cleaner"></div>
       </div>
     {% endwith %}
+    <h3>B) Veuillez ordonner (par glisser-déposer) les colonnes comme dans votre fichier</h3>
+    <ul id="sortable">
+    	<li class="ui-state-default">Désignation</li>
+    	<li class="ui-state-default">Référence</li>
+    	<li class="ui-state-default">Conditionnement</li>
+    	<li class="ui-state-default">Prix</li>
+    	<li class="ui-state-default">N° d'offre</li>
+    	<li class="ui-state-default">Nomenclature</li>
+    	<li class="ui-state-default">Fournisseur d'origine</li>
+    </ul>
+    <div class="cleaner"></div>
+    <br />
     
     <button type="submit" class="check">Valider</button>
     <a href="{% url provider_index %}" class="back">Annuler</a>

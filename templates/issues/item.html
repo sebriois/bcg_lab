@@ -3,7 +3,7 @@
 
 {% block menu_bugs %}selected{% endblock %}
 
-{% block header %}Modification d'un bug{% endblock %}
+{% block header %}{{ issue.title }}{% endblock %}
 
 {% if user|is_admin or user.is_superuser %}
   {% block buttons %}
