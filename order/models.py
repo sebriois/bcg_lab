@@ -161,17 +161,21 @@ class OrderItem(models.Model):
 	
 	def update_budget_line(self):
 		bl = BudgetLine.objects.get( orderitem_id = self.id )
+		
 		if self.cost_type == DEBIT:
 			bl.credit = 0
 			bl.debit = self.price
 		elif self.cost_type == CREDIT:
 			bl.credit = self.price
 			bl.debit = 0
+		else:
+			raise Exception("COST TYPE SHOULD NOT BE NULL")
+		
 		bl.provider = self.provider
-		bl.offer = self.offer_nb,
-		bl.product = self.name,
-		bl.product_price = self.total_price(),
-		bl.ref = self.reference,
+		bl.offer = self.offer_nb
+		bl.product = self.name
+		bl.product_price = self.total_price()
+		bl.ref = self.reference
 		bl.quantity = self.quantity
 		bl.save()
 	
