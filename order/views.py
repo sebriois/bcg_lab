@@ -106,8 +106,12 @@ def orderitem_detail(request, orderitem_id):
 	
 	if request.method == 'GET':
 		form = OrderItemForm( instance = orderitem )
+	
 	elif request.method == 'POST':
-		form = OrderItemForm( instance = orderitem, data = request.POST )
+		data = request.POST.copy()
+		data['provider'] = order.provider.name
+		
+		form = OrderItemForm( instance = orderitem, data = data )
 		if form.is_valid():
 			form.save()
 			

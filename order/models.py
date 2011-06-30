@@ -171,7 +171,7 @@ class OrderItem(models.Model):
 		else:
 			raise Exception("COST TYPE SHOULD NOT BE NULL")
 		
-		bl.provider = self.provider
+		bl.provider = bl.provider and bl.provider or self.provider
 		bl.offer = self.offer_nb
 		bl.product = self.name
 		bl.product_price = self.total_price()
