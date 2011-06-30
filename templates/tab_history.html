@@ -49,7 +49,9 @@
         <th>Equipe</th>
         <th>Fournisseur</th>
         <th>Prix</th>
-        <th>Budget</th>
+        {% if user|is_validator or user|is_secretary %}
+          <th>Budget</th>
+        {% endif %}
         <th>Action</th>
       </thead>
     
@@ -60,7 +62,9 @@
             <td>{{ item.team }}</td>
             <td>{{ item.provider }}</td>
             <td>{{ item.price }}</td>
-            <td>{{ item.budget }}</td>
+            {% if user|is_validator or user|is_secretary %}
+              <td>{{ item.budget }}</td>
+            {% endif %}
             <td>
               <a href="{{ item.get_absolute_url }}" class="zoomin">
                 Voir détail
