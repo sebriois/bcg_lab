@@ -1,0 +1,74 @@
+{% extends "main_custom.html" %}
+{% load paginator filters %}
+
+{% block menu_order %}selected{% endblock %}
+
+{% block buttons %}
+<div class="btn_wrapper">
+  <a href="{% url tab_orders %}" class="btn_small">
+    <img src="{{ MEDIA_URL }}img/icons/arrow_left.png" />Retour
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header">
+    <h2>Détail commande {{ order.provider }} du {{ order.date_created|date }}</h2>
+  </div>
+  <ul>
+    <li>Commande équipe {{ order.team }}</li>
+    <li>Statut: {{ order.get_status_display }}</li>
+  </ul>
+  
+  <table class="list">
+    <thead>
+      <th>Utilisateur</th>
+      <th>Produit</th>
+      <th>Conditionnement</th>
+      <th>Référence</th>
+      <th>N° Offre</th>
+      <th>Prix unitaire</th>
+      <th>Quantité</th>
+      <th>Prix total</th>
+      {% if order.status == 1 %} {# waiting for validation #}
+        <th>Action</th>
+      {% endif %}
+    </thead>
+    
+    <tbody>
+      {% for order_item in order.items.all %}
+        <tr class="{% cycle 'odd' 'even' %}">
+          <td>{{ order_item.get_fullname }}</td>
+          <td>{{ order_item.name }}</td>
+          <td>{{ order_item.packaging|default:"" }}</td>
+          <td>{{ order_item.reference|default:"" }}</td>
+          <td>{{ order_item.offer_nb|default:"" }}</td>
+          <td>{{ order_item.price }} €</td>
+          <td>{{ order_item.quantity }}</td>
+          <td>{{ order_item.total_price }} €</td>
+          {% if order.status == 1 %}
+            <td>
+              <a href="{% url orderitem_delete order_item.id %}" class="trash confirmDel">
+                Supprimer
+              </a>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+  <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
+  <a href="{% url tab_orders %}" class="check">Valider</a>
+  
+  {% if order.status == 1 %}
+    <div style="float:right">
+      <a href="{% url add_debit order.id %}?next={{order.get_absolute_url}}" class="plus">Frais annexes</a>
+      <a href="{% url add_credit order.id %}?next={{order.get_absolute_url}}" class="minus">Remises</a>
+    </div>
+  {% endif %}
+  
+  {% include "order/_dialogs.html" %}
+</div>
+{% endblock %}
