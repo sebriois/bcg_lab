@@ -16,13 +16,13 @@
         "pk": 6, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "popup de changement de budget", 
             "issue_type": 0, 
             "date_created": "2011-06-24 10:33:06", 
-            "description": "fonctionne sous chrome"
+            "description": "fonctionne sous chrome\r\n\r\nplus de popup d\u00e9sormais"
         }
     }, 
     {
@@ -260,6 +260,58 @@
         }
     }, 
     {
+        "pk": 57, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Suppression/modification de produit", 
+            "issue_type": 0, 
+            "date_created": "2011-07-01 16:40:16", 
+            "description": "Tout utilisateur doit pouvoir modifier/supprimer les produits\r\n(pour l'instant, il peut juste les ajouter)"
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Import de fichier produit .csv impossible", 
+            "issue_type": 0, 
+            "date_created": "2011-07-01 16:43:37", 
+            "description": "Traceback (most recent call last):\r\nFile \"/usr/local/lib/python2.7/dist-packages/django/core/handlers/base.py\", line 111, in get_response\r\nresponse = callback(request, *callback_args, **callback_kwargs)\r\nFile \"/usr/local/lib/python2.7/dist-packages/django/contrib/auth/decorators.py\", line 23, in _wrapped_view\r\nreturn view_func(request, *args, **kwargs)\r\nFile \"/var/www/lbcmcp_orders/provider/csv_import.py\", line 53, in import_csv\r\ndata = check_uploaded_file( request.FILES['csv_file'] )\r\nFile \"/var/www/lbcmcp_orders/provider/csv_import.py\", line 89, in check_uploaded_file\r\nline = line.decode('utf8').encode('utf8').rstrip('\\n').split(\";\")\r\nFile \"/usr/lib/python2.7/encodings/utf_8.py\", line 16, in decode\r\nreturn codecs.utf_8_decode(input, errors, True)\r\nUnicodeDecodeError: 'utf8' codec can't decode byte 0xb5 in position 27: invalid start byte\r\n\r\n\r\n"
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "HELP !!", 
+            "issue_type": 0, 
+            "date_created": "2011-07-01 16:59:56", 
+            "description": "L'utilisateur \"escaffit\" a bien le statut \u00e9quipe dans Django mais je n'ai pas le droit d'y faire quoi que ce soit (je n'ai pas acc\u00e8s au menu Django et je ne peux rien modifier)"
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 2, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Admin = super-validateur ??", 
+            "issue_type": 0, 
+            "date_created": "2011-07-01 17:21:21", 
+            "description": "L'admin pourrait-il valider les les commandes de toutes les \u00e9quipes\r\n\r\nDOUBLON, suivre: http://lbcmcp-orders.ups-tlse.fr/issues/65/"
+        }
+    }, 
+    {
         "pk": 5, 
         "model": "issues.issue", 
         "fields": {
@@ -322,6 +374,19 @@
             "issue_type": 0, 
             "date_created": "2011-06-26 10:37:43", 
             "description": "La liste d\u00e9roulante des \u00e9quipes dans l'historique pour les sessions Admin et Gestionnaires n'a pas pris en compte les changement de noms des \u00e9quipes introduits via Django. \r\n\r\nC'est ok pour les sessions Utilisateurs ou Validateurs (qui n'ont pas le choix des \u00e9quipes, le nom de leur \u00e9quipe suit bien les modifications)"
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "Redirection", 
+            "issue_type": 0, 
+            "date_created": "2011-07-01 16:52:11", 
+            "description": "La redirection apr\u00e8s saisie d'1 ligne \"Cr\u00e9diter\" ou \"D\u00e9biter\" dans un budget doit se faire vers le d\u00e9tail du budget impact\u00e9 et non pas vers le d\u00e9tail de tous les budgets"
         }
     }, 
     {
@@ -442,10 +507,88 @@
         }
     }, 
     {
-        "pk": 2, 
+        "pk": 54, 
         "model": "issues.issue", 
         "fields": {
             "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "modif permanente des produits par gestionnaire", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 10:32:42", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Log de l'\u00e9quipe GESTION directement sur \"Commandes \u00e0 saisir\"", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:47:43", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Possibilit\u00e9 d'export en .CSV sur toutes le pages de \"Gestion des budgets\"", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:49:39", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Modification des lignes dans le d\u00e9tail des budgets", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:54:57", 
+            "description": "Ajouter deux boutons (discrets) en bout de chaque ligne des d\u00e9tails de budgets (1 budget ou tous les budgets) pour pouvoir soit modifier la ligne, soit la supprimer.\r\nEvidemment, une pop-up de mise en garde s'impose ..."
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Validation de TOUTES les commandes par l'Admin", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 18:57:25", 
+            "description": ""
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 1, 
+            "title": "Ajout de pi\u00e8ces jointes", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 19:01:14", 
+            "description": "Serait-il possible que chaque utilisatuers puisse ajouter une pi\u00e8ce jointe \u00e0 sa commande ?\r\nExemple: devis, offre, ..."
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "commande sans budget", 
@@ -624,6 +767,19 @@
         }
     }, 
     {
+        "pk": 56, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 4, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "Bandeau de recherche", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:38:13", 
+            "description": "Laisser le bandeau de recherche produit (ou commande) toujours visible"
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "issues.issue", 
         "fields": {
@@ -660,6 +816,19 @@
             "issue_type": 1, 
             "date_created": "2011-06-26 11:07:36", 
             "description": "Quelque soit la casse utilis\u00e9e lors de la saisie de son identit\u00e9 par l'utilisateur (\u00e0 la demande de cr\u00e9ation de son compte), faire appara\u00eetre son nom comme:\r\n\r\nLaurent MAZZOLINI"
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "Indications sur page d'accueil", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:36:20", 
+            "description": "En bas de la page, indiquer :\r\n\"En rouge = annonces en voie de p\u00e9remption\"\r\n\r\nSupprimer les p\u00e9rim\u00e9es 1 jour apr\u00e8s p\u00e9remption"
         }
     }
 ]
