@@ -107,3 +107,13 @@ form#history_filter select {
   width: auto;
   float: none;
 }
+
+#select-budget {
+  float: none;
+  display: inline;
+  background: #f2f7ff;
+  color: #507aaa;
+  border: 1px solid #5e90c9;
+  font-size: 14px;
+  font-weight: bold;
+}

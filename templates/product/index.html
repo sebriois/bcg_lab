@@ -75,9 +75,10 @@
             <button id="{{product.id}}" class="plus addToCart noloading">
               Panier
             </button>
-            {% if product|is_in_charge:user or user|is_admin %}
-              <a href="{% url product_item product.id %}" class="pencil">Editer</a>
-            {% endif %}
+            <a href="{% url product_item product.id %}" class="pencil">Editer</a>
+            {# {% if product|is_in_charge:user or user|is_admin %} #}
+            {#   <a href="{% url product_item product.id %}" class="pencil">Editer</a> #}
+            {# {% endif %} #}
           </td>
         </tr>
       {% endfor %}

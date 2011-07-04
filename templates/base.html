@@ -19,87 +19,77 @@
 </head>
 
 <body>
-    <div id="top-menu">
-        <div id="account">
-            <ul>
-                <li><a href="{% url logout %}" class="login">Déconnexion ({{user}})</a></li>
-            </ul>
-        </div>
-        <ul>
-            {% if user.is_staff %}
-              <li><a href="{% url admin:index %}">Administration</a></li>
-            {% endif %}
-        </ul>
+  <div id="top-menu"></div>
+  <div id="account">
+    <a href="{% url logout %}" class="door_in">Déconnexion ({{user}})</a>
+    {% if user.is_staff %}
+    | <a href="{% url admin:index %}" class="shield">Administration</a>
+    {% endif %}
+  </div>
+  
+  <div id="header">
+    <h1>LBCMCP - Gestion des commandes</h1>
+    <div id="main-menu">
+      <ul>
+        <li>
+          <a href="{% url home %}" class="{% block menu_home %}{% endblock %}">
+            Accueil
+          </a>
+        </li>
+        <li>
+          <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
+            Produits
+          </a>
+        </li>
+        <li>
+          <a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">
+            Fournisseurs
+          </a>
+        </li>
+        <li>
+          <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
+            Panier
+          </a>
+        </li>
+        {% if user|is_validator or user|is_secretary_valid %}
+          <li>
+            <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
+              Commandes à valider
+            </a>
+          </li>
+        {% endif %}
+        <li>
+          <a href="{% url tab_orders %}" class="{% block menu_order %}{% endblock %}">
+            {% if user|is_secretary %}Commandes à saisir{% else %}Commandes en cours{% endif %}
+          </a>
+        </li>
+        {% if user|is_secretary %}
+          <li>
+            <a href="{% url budgets %}" class="{% block menu_budgets %}{% endblock %}">
+              Gestion des budgets
+            </a>
+          </li>
+        {% endif %}
+        <li>
+          <a href="{% url history %}" class="{% block menu_history %}{% endblock %}">
+            Historique
+          </a>
+        </li>
+        <li>
+          <a href="{% url team_index %}" class="{% block menu_team %}{% endblock %}">
+            Equipes
+          </a>
+        </li>
+        <li>
+          <a href="{% url issue_index %}" class="{% block menu_bugs %}{% endblock %}">
+            Bugs / Améliorations
+          </a>
+        </li>
+      </ul>
     </div>
-    
-    <div id="header">
-        <h1>LBCMCP - Gestion des commandes</h1>
-        
-        <div id="main-menu">
-          <ul>
-            <li>
-              <a href="{% url home %}" class="{% block menu_home %}{% endblock %}">
-                Accueil
-              </a>
-            </li>
-            <li>
-              <a href="{% url product_index %}" class="{% block menu_product %}{% endblock %}">
-                Produits
-              </a>
-            </li>
-            <li>
-              <a href="{% url provider_index %}" class="{% block menu_provider %}{% endblock %}">
-                Fournisseurs
-              </a>
-            </li>
-            <li>
-              <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
-                Panier
-              </a>
-            </li>
-            {% if user|is_validator %}
-              <li>
-                <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
-                  Commandes à valider
-                </a>
-              </li>
-            {% endif %}
-            <li>
-              <a href="{% url tab_orders %}" class="{% block menu_order %}{% endblock %}">
-                {% if user|is_secretary %}
-                  Commandes à saisir
-                {% else %}
-                  Commandes en cours
-                {% endif %}
-              </a>
-            </li>
-            {% if user|is_secretary %}
-              <li>
-                <a href="{% url budgets %}" class="{% block menu_budgets %}{% endblock %}">
-                  Gestion des budgets
-                </a>
-              </li>
-            {% endif %}
-            <li>
-              <a href="{% url history %}" class="{% block menu_history %}{% endblock %}">
-                Historique
-              </a>
-            </li>
-            <li>
-              <a href="{% url team_index %}" class="{% block menu_team %}{% endblock %}">
-                Equipes
-              </a>
-            </li>
-            <li>
-              <a href="{% url issue_index %}" class="{% block menu_bugs %}{% endblock %}">
-                Bugs / Améliorations
-              </a>
-            </li>
-          </ul>
-        </div>
-    </div>
-    
-    {% block main %}{% endblock %}
-    <div id="loadingDialog"></div>
+  </div>
+  
+  {% block main %}{% endblock %}
+  <div id="loadingDialog"></div>
 </body>
 </html>

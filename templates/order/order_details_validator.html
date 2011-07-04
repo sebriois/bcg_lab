@@ -4,7 +4,7 @@
 {% block menu_order %}selected{% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
+<div id="content" style="min-height:0" class="order">
   <div id="content_header">
     <h2>Détail commande {{ order.provider }} du {{ order.date_created|date }}</h2>
   </div>
@@ -72,8 +72,9 @@
   
   <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
   {% if not order.number %}
-    <input type="hidden" name="ajax-post-url" value="{% url set_item_quantity %}" />
-    <a href="{% url tab_orders %}" class="disk ajax-post">Enregistrer les modifications</a>
+    <a href="{% url tab_orders %}" class="disk ajax-post" url="{% url set_item_quantity %}">
+      Enregistrer les modifications
+    </a>
   {% else %}
     <a href="{% url tab_orders %}" class="check">Valider</a>
   {% endif %}

@@ -4,10 +4,70 @@
 {% block menu_cart %}selected{% endblock %}
 
 {% block content %}
+
 {% for order in order_list %}
-  <div id="content" style="min-height:0">
+  <div id="content" style="min-height:0" class="order">
     <div id="content_header"><h2>{{ order.provider }}</h2></div>
-    {% include "order/_order_detail.html" %}
+    <ul>
+      <li>Commande créée le {{ order.date_created|date }}</li>
+      <li>Commande équipe {{ order.team }}</li>
+      <li>Statut: {{ order.get_status_display }}</li>
+    </ul>
+    
+    <table class="list">
+      <thead>
+        <th>Utilisateur</th>
+        <th>Produit</th>
+        <th>Conditionnement</th>
+        <th>Référence</th>
+        <th>N° Offre</th>
+        <th>Prix unitaire</th>
+        <th>Quantité</th>
+        <th>Prix total</th>
+        <th>Action</th>
+      </thead>
+      
+      <tbody>
+        {% for order_item in order.items.all %}
+          <tr class="{% cycle 'odd' 'even' %}" id="{{order_item.id}}">
+            <td>{{ order_item.get_fullname }}</td>
+            <td>{{ order_item.name }}</td>
+            <td>{{ order_item.packaging|default:"" }}</td>
+            <td>{{ order_item.reference|default:"" }}</td>
+            <td>{{ order_item.offer_nb|default:"" }}</td>
+            <td>{{ order_item.price }} €</td>
+            <td>
+              <input type="text" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" />
+            </td>
+            <td>{{ order_item.total_price }} €</td>
+            <td>
+              <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next=tab_cart" class="trash confirmDelCart">
+                Retirer du panier
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
+    <div style="float:right">
+      <a href="{% url add_debit order.id %}?next=tab_cart" class="plus">Frais annexes</a>
+      <a href="{% url add_credit order.id %}?next=tab_cart" class="minus">Remises</a>
+    </div>
+    
+    <a href="{% url tab_cart %}" class="disk ajax-post" url="{% url set_item_quantity %}">
+      Enregistrer les modifications
+    </a>
+    
+    {% if user|is_validator %}
+      <a href="{% url set_next_status order.id %}" class="cart">Commander</a>
+    {% else %}
+      <a href="{% url set_next_status order.id %}" class="cart confirm">Commander</a>
+    {% endif %}
+    
+    <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
+    {% include "order/_dialogs.html" %}
   </div>
 {% empty %}
   <div id="content">

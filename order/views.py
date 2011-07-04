@@ -7,9 +7,10 @@ from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.template import Context, loader
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
+from django.template import Context, loader
 from django.utils.http import urlencode
 from django.views.generic.simple import direct_to_template
 
@@ -25,11 +26,7 @@ from utils import *
 @login_required
 @GET_method
 def tab_cart(request):
-	"""
-	Panier
-	"""
-	team = get_team_member( request ).team
-	orders = Order.objects.filter( team = team, status = 0 )
+	orders = Order.objects.filter( team__in = get_teams(request.user), status = 0 )
 	
 	return direct_to_template(request, "tab_cart.html", { 
 		'order_list': orders.order_by('provider__name'),
@@ -40,35 +37,39 @@ def tab_cart(request):
 @GET_method
 def tab_orders(request):
 	"""
-	Commandes en cours
+	Commandes en cours/Commandes à saisir
 	"""
 	if is_secretary(request.user):
 		order_list = Order.objects.filter( status__in = [2,3,4] )
+		template = 'tab_orders_secretary.html'
 	else:
 		order_list = Order.objects.filter(
-			team = get_team_member( request ).team,
-			status__gt = 0,
-			status__lt = STATE_CHOICES[-1][0]
+			team__in = get_teams( request.user ),
+			status__in = [1,2,3,4]
 		)
+		template = 'tab_orders.html'
 	
-	return direct_to_template(request, 'tab_orders.html',{
-			'orders': paginate( request, order_list ),
-			'next': 'tab_orders'
+	return direct_to_template( request, template, {
+		'orders': paginate( request, order_list ),
+		'next': 'tab_orders'
 	})
+
 
 @login_required
 @validator_required
 @GET_method
 def tab_validation(request):
-	"""
-	Commandes à valider
-	"""
-	teams = get_teams( request.user )
-	order_list = Order.objects.filter( team__in = teams, status = 1 )
+	if is_admin(request.user):
+		order_list = Order.objects.filter( status = 1 )
+		budget_list = Budget.objects.all()
+	else:
+		teams = get_teams( request.user )
+		order_list = Order.objects.filter( team__in = teams, status = 1 )
+		budget_list = Budget.objects.filter( team__in = teams )
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list ),
-		'budgets': Budget.objects.filter(team__in = teams),
+		'budgets': budget_list,
 		'next': 'tab_validation'
 	})
 
@@ -78,23 +79,26 @@ def tab_validation(request):
 @GET_method
 def order_detail(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	member = get_team_member( request )
-	
 	budgets = []
-	if member.is_validator():
-		for budget in Budget.objects.filter( team = member.team ):
-			if budget.get_amount_left() > 0:
-				budgets.append( budget )
-	elif member.is_secretary() or member.is_admin():
+	
+	if is_secretary(request.user) or is_admin(request.user):
 		for budget in Budget.objects.all():
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
-		
-	return direct_to_template(request, 'order/item.html',{
+		template = 'order/order_details_secretary.html'
+	
+	elif is_validator(request.user):
+		for budget in Budget.objects.filter( team__in = get_teams( request.user ) ):
+			if budget.get_amount_left() > 0:
+				budgets.append( budget )
+		template = 'order/order_details_validator.html'
+	
+	else:
+		template = 'order/order_details_normal.html'
+	
+	return direct_to_template(request, template, {
 		'order': order,
-		'budgets': budgets,
-		'prev_url': reverse(request.GET.get('next', 'tab_orders')),
-		'next': request.GET.get('next', 'tab_orders')
+		'budgets': budgets
 	})
 
 
@@ -247,9 +251,9 @@ def del_orderitem(request, orderitem_id):
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
+		return redirect('tab_orders')
 	
-	return redirect( request.GET.get('next', 'tab_orders') )
-
+	return redirect( order )
 
 @login_required
 @GET_method
@@ -263,7 +267,6 @@ def order_delete(request, order_id):
 
 
 @login_required
-@team_required
 @transaction.commit_on_success
 def set_delivered(request, order_id):
 	if not request.method == 'GET':
@@ -291,141 +294,192 @@ def set_delivered(request, order_id):
 	return redirect( 'tab_orders' )
 
 
+					#################
+					# AJAX REQUESTS #
+					#################
+
 @login_required
 @GET_method
-@secretary_required
 @transaction.commit_on_success
 def set_budget(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	budget_id = request.GET.get("budget_id", None)
+	if not budget_id:
+		return HttpResponseServerError('budget_id is missing.')
+	
 	order = get_object_or_404( Order, id = order_id )
+	budget_id = int(budget_id)
 	
-	budget = request.GET.get("budget", None)
-	if not budget or Budget.objects.filter( id = budget ).count() == 0:
-		error_msg(request, "Veuillez sélectionner un budget valide.")
-	else:
-		order.budget = Budget.objects.get( id = budget )
-		order.save()
+	if budget_id > 0:
+		budget = get_object_or_404( Budget, id = budget_id )
+		order.budget = budget
 	
-	return redirect(order)
-
+	if budget_id == 0:
+		# bugdet will be set by secretary
+		order.budget = None
+	
+	order.save()
+	return HttpResponse('ok')
 
 @login_required
 @GET_method
-@team_required
+@transaction.commit_on_success
+def set_item_quantity(request):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	orderitem_id = request.GET.get('orderitem_id', None)
+	quantity = request.GET.get('quantity', None)
+	
+	if not orderitem_id or not quantity:
+		return HttpResponseServerError('orderitem_id and/or quantity are missing.')
+	
+	quantity = int(quantity)
+	if quantity <= 0:
+		return HttpResponseServerError( u"'%s': Veuillez saisir une quantité entière positive." % item.name )
+	
+	item = get_object_or_404( OrderItem, id = orderitem_id )
+	item.quantity = quantity
+	item.save()
+	
+	return HttpResponse('ok')
+
+
+					################
+					# ORDER STATUS #
+					################
+
+@login_required
+@GET_method
 @transaction.commit_on_success
 def set_next_status(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	member = get_team_member(request)
 	
-	#							 #
-	#		STATUS 0:	 #
-	#							 #
 	if order.status == 0:
-		order.status = 1
-		order.save()
-		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-		
-		emails = []
-		for member in order.team.members.filter( member_type = VALIDATOR ):
-			if member.user.email and member.user.email not in emails:
-				emails.append( member.user.email )
-		
-		if emails:
-			subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
-			template = loader.get_template('order/validation_email.txt')
-			message = template.render( Context({ 'order': order, 'url': reverse('tab_validation') }) )
-			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		return _move_to_status_1(request, order)
+	
+	elif order.status == 1:
+		user_can_validate = order.team.members.filter( 
+			user = request.user,
+			member_type__in = [VALIDATOR, ADMIN]
+		).count() > 0
+		if user_can_validate:
+			return _move_to_status_2(request, order)
 		else:
-			warn_msg(request, "Aucun email de validation n'a pu être \
-			envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
-		
-		if member.is_normal:
-			return redirect( 'tab_cart' )
-		
-		if member.is_validator or member.is_admin:
-			return redirect( 'tab_validation' )
+			error_msg(request, "Vous n'avez pas les permissions nécessaires \
+			pour valider une commande")
 	
-	#							 #
-	#		STATUS 1	 #
-	#							 #
-	elif order.status == 1 and (member.is_validator or member.is_admin) and member.team == order.team:
-		if order.provider.is_local:
-			subject = "[Commandes LBCMCP] Nouvelle commande magasin"
-			template = loader.get_template('email_local_provider.txt')
-			message = template.render( Context({ 'order': order }) )
-			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
-			order.status = 5
-			order.save()
-			order.save_to_history()
-			info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
-		else:
-			budget_id = request.GET.get("budget", None)
-			if not budget_id or Budget.objects.filter( id = budget_id ).count() == 0:
-				error_msg(request, "Veuillez sélectionner un budget valide.")
-			else:
-				order.budget = Budget.objects.get( id = budget_id )
-				order.status = 2
-				order.save()
-				info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-		return redirect( 'tab_validation' )
+	elif order.status == 2 and is_secretary(request.user):
+		return _move_to_status_3(request, order)
 	
-	#							 #
-	#		STATUS 2	 #
-	#							 #
-	elif order.status == 2 and member.is_secretary:
-		if order.budget.budget_type == 0: # ie. CNRS
-			number = request.GET.get('number', None)
-			if not number:
-				error_msg(request, "Commande budget CNRS, veuillez saisir un numéro XLAB.")
-				return redirect( 'tab_orders' )
-			order.number = number
-			order.status = 4 # Skip status 3 when CNRS budget
-			order.save()
-			order.create_budget_line()
-		else:
-			order.status = 3
-			order.save()
-		
-		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+	elif order.status == 3 and is_secretary(request.user):
+		return _move_to_status_4(request, order)
 	
-	#							 #
-	#		STATUS 3	 #
-	#							 #
-	elif order.status == 3 and member.is_secretary:
-		if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
-			number = request.GET.get('number', None)
-			if not number:
-				error_msg(request, "Veuillez saisir un numéro de commande.")
-				return redirect( 'tab_orders' )
-			order.number = number
-			order.save()
-			order.create_budget_line()
-		
-		order.status = 4
-		order.save()
-		
-		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-	
-	#							 #
-	#		STATUS 4	 #
-	#							 #
 	elif order.status == 4:
-		try:
-			delivery_date = request.GET.get('delivery_date', None)
-			delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )
-		except:
-			error_msg(request, "Veuillez saisir une date valide (format jj/mm/aaaa).")
-			return redirect( 'tab_orders' )
-		
-		order.date_delivered = delivery_date
-		order.status = 5
-		order.save()
-		order.save_to_history()
-		# TODO: make a CRON job to weekly remove received orders
+		return _move_to_status_5(request, order)
+	
 	else:
 		error_msg(request, "Vous n'avez pas les permissions nécessaires \
 		pour modifier le statut de cette commande")
 	
 	return redirect( 'tab_orders' )
+
+
+def _move_to_status_1(request, order):
+	order.status = 1
+	order.save()
+	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+	
+	emails = []
+	for member in order.team.members.filter( member_type = VALIDATOR ):
+		if member.user.email and member.user.email not in emails:
+			emails.append( member.user.email )
+	
+	if emails:
+		subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
+		template = loader.get_template('order/validation_email.txt')
+		message = template.render( Context({ 'order': order, 'url': reverse('tab_validation') }) )
+		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+	else:
+		warn_msg(request, "Aucun email de validation n'a pu être \
+		envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
+	
+	if is_validator(request.user):
+		return redirect( 'tab_validation' )
+	
+	return redirect( 'tab_cart' )
+	
+
+def _move_to_status_2(request, order):
+	if order.provider.is_local:
+		subject = "[Commandes LBCMCP] Nouvelle commande magasin"
+		template = loader.get_template('email_local_provider.txt')
+		message = template.render( Context({ 'order': order }) )
+		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
+		
+		order.status = 5
+		order.save()
+		order.save_to_history()
+		
+		info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
+	else:
+		budget_id = request.GET.get("budget", None)
+		if budget_id:
+			order.budget = Budget.objects.get( id = budget_id )
+		
+		order.status = 2
+		order.save()
+		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+	return redirect( 'tab_validation' )
+
+def _move_to_status_3(request, order):
+	if order.budget.budget_type == 0: # ie. CNRS
+		number = request.GET.get('number', None)
+		if not number:
+			error_msg(request, "Commande budget CNRS, veuillez saisir un numéro XLAB.")
+			return redirect( 'tab_orders' )
+		order.number = number
+		order.status = 4 # Skip status 3 when CNRS budget
+		order.save()
+		order.create_budget_line()
+	else:
+		order.status = 3
+		order.save()
+	
+	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+
+def _move_to_status_4(request, order):
+	if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
+		number = request.GET.get('number', None)
+		if not number:
+			error_msg(request, "Veuillez saisir un numéro de commande.")
+			return redirect( 'tab_orders' )
+		order.number = number
+		order.save()
+		order.create_budget_line()
+	
+	order.status = 4
+	order.save()
+	
+	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+
+def _move_to_status_5(request, order):
+	try:
+		delivery_date = request.GET.get('delivery_date', None)
+		delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )
+	except:
+		error_msg(request, "Veuillez saisir une date valide (format jj/mm/aaaa).")
+		return redirect( 'tab_orders' )
+	
+	order.date_delivered = delivery_date
+	order.status = 5
+	order.save()
+	order.save_to_history()
+	# TODO: make a CRON job to weekly remove received orders
 
 
 					################
@@ -434,7 +488,6 @@ def set_next_status(request, order_id):
 
 @login_required
 @POST_method
-@team_required
 @transaction.commit_on_success
 def cart_add(request):
 	member = get_team_member( request )
@@ -455,28 +508,4 @@ def cart_add(request):
 	
 	info_msg( request, u"Produit ajouté au panier avec succès." )
 	return redirect( url )
-
-@login_required
-@POST_method
-@team_required
-@transaction.commit_on_success
-def set_item_quantity(request):
-	order_item = get_object_or_404( OrderItem, id = request.POST.get('orderitem_id') )
-	order = order_item.order_set.get()
-	quantity = int(request.POST.get('quantity'))
-	
-	if quantity == 0:
-		order_item.delete()
-		warn_msg( request, u"Produit retiré du panier.")
-		if order.items.all().count() == 0:
-			order.delete()
-			warn_msg( request, u"Commande %s retirée du panier." % order.provider.name )
-	elif quantity > 0:
-		order_item.quantity = quantity
-		order_item.save()
-		info_msg( request, u"Quantité modifiée avec succès.")
-	else:
-		error_msg( request, u"Veuillez saisir une quantité positive." )
-	
-	return redirect(request.POST.get('next','tab_cart'))
 

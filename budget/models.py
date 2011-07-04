@@ -20,6 +20,10 @@ class Budget(models.Model):
 	def __unicode__(self):
 		return u"%s (dispo: %s)" % ( self.name, self.get_amount_left() )
 	
+	@models.permalink
+	def get_absolute_url(self):
+		return ( 'budget_edit', [self.id] )
+	
 	def get_amount_left(self):
 		amount_left = 0
 		for line in BudgetLine.objects.filter( budget_id = self.id ):
@@ -28,7 +32,7 @@ class Budget(models.Model):
 			
 			if line.debit:
 				amount_left -= line.debit
-			
+		
 		return amount_left
 	
 	def update_budget_lines_team(self):

@@ -76,7 +76,7 @@ def credit_budget(request, budget_id):
       bl.save()
       
       info_msg(request, "Ligne de crédit ajoutée avec succès!")
-      return redirect('budgetlines')
+      return redirect(budget)
     else:
       return direct_to_template(request, 'budget/form_credit.html',{
         'budget': budget,
@@ -111,7 +111,7 @@ def debit_budget(request, budget_id):
     bl.save()
     
     info_msg(request, "Ligne de débit ajoutée avec succès!")
-    return redirect('budgetlines')
+    return redirect(budget)
   else:
     return direct_to_template(request, 'budget/form_debit.html',{
       'budget': budget,

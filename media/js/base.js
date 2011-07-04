@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    $('.collapsable .content').toggle();
     $('.collapsable h2').click(function(){
       $(".content").toggle();
     });
@@ -98,6 +97,9 @@ $(document).ready(function(){
     });
     $(".close-thick").button({
       icons: { primary: "ui-icon-closethick" }
+    });
+    $(".disk").button({
+      icons: { primary: "ui-icon-disk" }
     });
     $(".no-text").button({
       text: false
@@ -433,5 +435,50 @@ $(document).ready(function(){
       });
       
       $( "#setTeamDialog" ).dialog('open');
+    });
+    
+    
+    
+    // 
+    //    AJAX REQUESTS
+    // 
+    
+    $('.ajax-post').click(function(){
+      var parent = $(this).parent('div.order');
+      var url_qty = $(this).attr('url');
+      
+      // SAVE BUDGET
+      if( $('#select-budget',parent).length > 0 ) {
+        $.ajax({
+          url: $('#select-budget', parent).attr('url'),
+          async: false,
+          data: {
+            'budget_id': $('#select-budget', parent).val()
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            $('#loadingDialog').dialog('close');
+            alert(jqXHR.responseText);
+          }
+        });
+      }
+      
+      // SAVE QUANTITIES
+      $('input[name="setQuantity"]', parent).each(function(){
+        var orderitem_id = $(this).parent('td').parent('tr').attr('id');
+        var qty = +($(this).val());
+        
+        $.ajax({
+          url: url_qty,
+          async: false,
+          data: {
+            'orderitem_id': orderitem_id,
+            'quantity': qty
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            $('#loadingDialog').dialog('close');
+            alert(jqXHR.responseText);
+          }
+        });
+      });
     });
 });

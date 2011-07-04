@@ -15,9 +15,9 @@ from utils import *
 def index(request):
 	if request.method == 'GET':
 		if request.GET.get('fixed',False):
-			issues = Issue.objects.filter( status = 4 )
+			issues = Issue.objects.filter( status__in = [2,4] )
 		else:
-			issues = Issue.objects.exclude( status = 4 )
+			issues = Issue.objects.exclude( status__in = [2,4] )
 		
 		return direct_to_template( request, 'issues/index.html', {
 			'issues': issues

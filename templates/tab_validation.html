@@ -5,9 +5,77 @@
 {% block content %}
 
 {% for order in orders.object_list %}
-  <div id="content" style="min-height:0">
+  <div id="content" style="min-height:0" class="order" order_id="{{order.id}}">
     <div id="content_header"><h2>{{ order.team.name }} - {{ order.provider|upper }}</h2></div>
-    {% include "order/_order_detail.html" %}
+    <ul>
+      <li>Commande créée le {{ order.date_created|date }}</li>
+      <li>Commande équipe {{ order.team }}</li>
+      <li>Statut: {{ order.get_status_display }}</li>
+      {% if not order.provider.is_local %}
+        <li><strong>Budget à imputer:</strong>
+          <select id="select-budget" url="{% url order_budget order.id %}">
+            <option value="0" {% if not order.budget %}selected="selected"{% endif %}>
+              Défini par la gestionnaire
+            </option>
+            {% for budget in budgets %}
+              <option value="{{budget.id}}" {% if order.budget and order.budget == budget %}selected="selected"{% endif %}>
+                {{budget}}
+              </option>
+            {% endfor %}
+          </select>
+        </li>
+      {% endif %}
+    </ul>
+    
+    <table class="list">
+      <thead>
+        <th>Utilisateur</th>
+        <th>Produit</th>
+        <th>Conditionnement</th>
+        <th>Référence</th>
+        <th>N° Offre</th>
+        <th>Prix unitaire</th>
+        <th>Quantité</th>
+        <th>Prix total</th>
+        <th>Action</th>
+      </thead>
+      
+      <tbody>
+        {% for order_item in order.items.all %}
+          <tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
+            <td>{{ order_item.get_fullname }}</td>
+            <td>{{ order_item.name }}</td>
+            <td>{{ order_item.packaging|default:"" }}</td>
+            <td>{{ order_item.reference|default:"" }}</td>
+            <td>{{ order_item.offer_nb|default:"" }}</td>
+            <td>{{ order_item.price }} €</td>
+            <td>
+              <input type="text" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" />
+            </td>
+            <td>{{ order_item.total_price }} €</td>
+            <td>
+              <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next=tab_validation" class="trash confirmDelCart">
+                Retirer du panier
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
+    <div style="float:right">
+      <a href="{% url add_debit order.id %}?next={{next}}" class="plus">Frais annexes</a>
+      <a href="{% url add_credit order.id %}?next={{next}}" class="minus">Remises</a>
+    </div>
+    
+    <a href="{% url tab_validation %}" class="disk ajax-post" url="{% url set_item_quantity %}">
+      Enregistrer les modifications
+    </a>
+    <a href="{% url set_next_status order.id %}" class="check">Valider la commande</a>
+    <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
+    
+    {% include "order/_dialogs.html" %}
   </div>
 {% empty %}
   <div id="content">
@@ -15,7 +83,5 @@
     <p>Aucune commande à valider.</p>
   </div>
 {% endfor %}
-
 {% pagination orders %}
-
 {% endblock %}
