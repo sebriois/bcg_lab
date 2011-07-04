@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
+<div id="content" style="min-height:0" class="order">
   <div id="content_header">
     <h2>Détail commande {{ order.provider }} du {{ order.date_created|date }}</h2>
   </div>
@@ -38,14 +38,20 @@
     
     <tbody>
       {% for order_item in order.items.all %}
-        <tr class="{% cycle 'odd' 'even' %}">
+        <tr class="{% cycle 'odd' 'even' %}" id="{{order_item.id}}">
           <td>{{ order_item.get_fullname }}</td>
           <td>{{ order_item.name }}</td>
           <td>{{ order_item.packaging|default:"" }}</td>
           <td>{{ order_item.reference|default:"" }}</td>
           <td>{{ order_item.offer_nb|default:"" }}</td>
           <td>{{ order_item.price }} €</td>
-          <td>{{ order_item.quantity }}</td>
+          {% if order.status == 1 %}
+            <td>
+              <input type="text" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" />
+            </td>
+          {% else %}
+            <td>{{ order_item.quantity }}</td>
+          {% endif %}
           <td>{{ order_item.total_price }} €</td>
           {% if order.status == 1 %}
             <td>
@@ -60,6 +66,9 @@
   </table>
   
   <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
+  <a href="{{ order.get_absolute_url }}" class="disk ajax-post" url="{% url set_item_quantity %}">
+    Enregistrer les modifications
+  </a>
   <a href="{% url tab_orders %}" class="check">Valider</a>
   
   {% if order.status == 1 %}
