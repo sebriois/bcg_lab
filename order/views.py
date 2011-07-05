@@ -442,6 +442,7 @@ def _move_to_status_3(request, order):
 		if not number:
 			error_msg(request, "Commande budget CNRS, veuillez saisir un numéro XLAB.")
 			return redirect( 'tab_orders' )
+		
 		order.number = number
 		order.status = 4 # Skip status 3 when CNRS budget
 		order.save()
@@ -451,6 +452,7 @@ def _move_to_status_3(request, order):
 		order.save()
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+	return redirect('tab_orders')
 
 def _move_to_status_4(request, order):
 	if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
@@ -466,6 +468,7 @@ def _move_to_status_4(request, order):
 	order.save()
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+	return redirect('tab_orders')
 
 def _move_to_status_5(request, order):
 	try:
@@ -480,6 +483,7 @@ def _move_to_status_5(request, order):
 	order.save()
 	order.save_to_history()
 	# TODO: make a CRON job to weekly remove received orders
+	return redirect('tab_orders')
 
 
 					################

@@ -46,10 +46,10 @@ def team(user):
 @register.filter
 def dialogClass(order):
 	if order.status == 2 and order.budget.budget_type == 0: #ie. CNRS
-		return "setOrderRef"
+		return "setOrderNb"
 	
 	if order.status == 3 and order.budget.budget_type != 0: #ie. pas CNRS
-		return "setOrderRef"
+		return "setOrderNb"
 	
 	if order.status == 4:
 		return "setDeliveryDate"

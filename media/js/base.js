@@ -244,11 +244,11 @@ $(document).ready(function(){
       $( "#setDeliveryDate" ).dialog("open");
     });
     
-    $( '.setOrderRef' ).click(function(e){
+    $( '.setOrderNb' ).click(function(e){
       e.preventDefault();
       var targetUrl = $(this).attr('href');
       
-      $( "#setOrderRef" ).dialog({
+      $( "#setOrderNb" ).dialog({
         width: 430,
         buttons: {
           Valider: function() {
@@ -263,7 +263,7 @@ $(document).ready(function(){
         }
       });
       
-      $( "#setOrderRef" ).dialog("open");
+      $( "#setOrderNb" ).dialog("open");
     });
     
     // 
