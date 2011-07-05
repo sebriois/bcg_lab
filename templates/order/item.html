@@ -22,7 +22,7 @@
     {% if user|is_validator %}
       {% if not order.number and not order.provider.is_local %}
         <li><strong>Budget à imputer:</strong>
-          <select order_id="{{ order.id }}" class="select-budget">
+          <select order_id="{{ order.id }}" id="select-budget">
             {% for budget in budgets %}
               <option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
                 {{budget}}
