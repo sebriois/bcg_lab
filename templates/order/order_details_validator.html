@@ -13,7 +13,7 @@
     <li>Statut: {{ order.get_status_display }}</li>
     {% if budgets and not order.number and not order.provider.is_local %}
       <li><strong>Budget à imputer:</strong>
-        <select order_id="{{ order.id }}" id="select-budget">
+        <select id="select-budget" url="{% url order_budget order.id %}">
           {% for budget in budgets %}
             <option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
               {{budget}}
