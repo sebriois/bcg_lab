@@ -8,7 +8,10 @@ class BudgetForm(forms.ModelForm):
 		model = Budget
 		exclude = ('is_active',)
 	
-
+class BudgetLineForm(forms.ModelForm):
+	class Meta:
+		model = BudgetLine
+		exclude = ('order_id', 'orderitem_id', 'budget_id')
 
 class DebitBudgetForm(forms.ModelForm):
 	class Meta:

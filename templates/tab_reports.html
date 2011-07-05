@@ -56,6 +56,7 @@
       <th width="50px">qté</th>
       <th width="80px">Montant total</th>
       <th width="80px">Montant dispo</th>
+      <th width="70px"></th>
     </thead>
       
     <tbody>
@@ -87,6 +88,10 @@
           <td>{{ budget_line.quantity|default:1 }}</td>
           <td>{{ budget_line.product_price|default:"" }}</td>
           <td>{{ budget_line.get_amount_left }}</td>
+          <td>
+            <a href="{% url budgetline_edit budget_line.id %}" class="pencil no-text"></a>
+            <a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
+          </td>
         </tr>
         {% endfor %}
       {% endfor %}
@@ -95,5 +100,9 @@
   </div>
 {% endfor %}
 {% pagination budget_lines %}
+
+<div id="confirmDel" class="dialog" title="Confirmer la suppression">
+  Merci de confirmer la suppression.
+</div>
 
 {% endblock %}

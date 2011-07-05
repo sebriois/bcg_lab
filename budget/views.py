@@ -10,7 +10,7 @@ from django.views.generic.simple import direct_to_template
 from order.models import Order
 from budget.models import Budget, BudgetLine
 from budget.forms import BudgetForm, CreditBudgetForm, DebitBudgetForm
-from budget.forms import TransferForm
+from budget.forms import TransferForm, BudgetLineForm
 
 from utils import *
 
@@ -167,6 +167,31 @@ def transfer_budget(request):
 		'form': form
 	})
 
+@login_required
+@GET_method
+def delete_budgetline(request, bl_id):
+	bl = get_object_or_404( BudgetLine, id = bl_id )
+	budget_name = bl.budget
+	bl.delete()
+	return redirect( reverse('budgetlines') + "?budget_name=%s" % budget_name )
+
+@login_required
+@transaction.commit_on_success
+def edit_budgetline(request, bl_id):
+	bl = get_object_or_404( BudgetLine, id = bl_id )
+	
+	if request.method == 'GET':
+		form = BudgetLineForm( instance = bl )
+	elif request.method == 'POST':
+		form = BudgetLineForm( instance = bl, data = request.POST )
+		if form.is_valid():
+			form.save()
+			return redirect( reverse('budgetlines') + "?budget_name=%s" % bl.budget )
+	
+	return direct_to_template( request, 'budget/budgetline_edit.html', {
+		'form': form,
+		'bl': bl
+	})
 
 # 
 #		PRIVATE VIEWS

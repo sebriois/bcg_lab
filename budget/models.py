@@ -57,7 +57,7 @@ class BudgetLine(models.Model):
 	offer					= models.CharField(u"Offre", max_length = 100, null = True, blank = True )
 	product				= models.CharField(u"Désignation", max_length = 100, null = True, blank = True )
 	ref						= models.CharField(u"Réf", max_length = 50, null = True, blank = True )
-	quantity			= models.IntegerField(u"Qté", null = True, blank = True, default = 1)
+	quantity			= models.IntegerField(u"Quantité", null = True, blank = True, default = 1)
 	product_price = models.DecimalField(u"Montant", max_digits=12, decimal_places=2, null = True, blank = True)
 	credit				= models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
 	debit					= models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
