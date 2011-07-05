@@ -366,7 +366,7 @@ def set_next_status(request, order_id):
 		user_can_validate = order.team.members.filter( 
 			user = request.user,
 			member_type__in = [VALIDATOR, ADMIN]
-		).count() > 0
+		).count() > 0 or is_admin(request.user)
 		if user_can_validate:
 			return _move_to_status_2(request, order)
 		else:
