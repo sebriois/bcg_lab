@@ -14,6 +14,11 @@
       <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
     </a>
   </div>
+  <div class="btn_wrapper">
+    <a href="{% url budget_transfer %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/table_refresh.png" />Virement
+    </a>
+  </div>
 {% endblock %}
 
 {% block content %}

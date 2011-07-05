@@ -38,3 +38,7 @@ class CreditBudgetForm(forms.ModelForm):
 		self.fields['product_price'].required = True
 	
 
+class TransferForm(forms.Form):
+	budget1 = forms.ModelChoiceField( label = u"Débiter", queryset = Budget.objects.all() )
+	budget2 = forms.ModelChoiceField( label = u"Créditer", queryset = Budget.objects.all() )
+	amount = forms.DecimalField( label = u"Montant" )

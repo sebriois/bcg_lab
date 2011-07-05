@@ -10,6 +10,7 @@ from django.views.generic.simple import direct_to_template
 from order.models import Order
 from budget.models import Budget, BudgetLine
 from budget.forms import BudgetForm, CreditBudgetForm, DebitBudgetForm
+from budget.forms import TransferForm
 
 from utils import *
 
@@ -119,6 +120,52 @@ def debit_budget(request, budget_id):
 			'form': form
 		})
 
+@login_required
+@transaction.commit_on_success
+def transfer_budget(request):
+	if request.method == 'GET':
+		form = TransferForm()
+	elif request.method == 'POST':
+		form = TransferForm( data = request.POST )
+		if form.is_valid():
+			data = form.cleaned_data
+			budget1 = data['budget1']
+			budget2 = data['budget2']
+			amount	= data['amount']
+			
+			# DEBIT BUDGET1
+			BudgetLine.objects.create(
+				product			= u"Virement vers budget %s" % budget2.name,
+				team 				= budget1.team.name,
+				budget_id 	= budget1.id,
+				budget 			= budget1.name,
+				nature 			= budget1.default_nature,
+				budget_type	= budget1.budget_type,
+				credit_type	= budget1.default_credit_type,
+				quantity		= 1,
+				debit				= amount,
+				credit			= 0,
+				product_price = amount
+			)
+			# CREDIT BUDGET2
+			BudgetLine.objects.create(
+				product			= u"Virement reçu du budget %s" % budget1.name,
+				team 				= budget2.team.name,
+				budget_id 	= budget2.id,
+				budget 			= budget2.name,
+				nature 			= budget2.default_nature,
+				budget_type	= budget2.budget_type,
+				credit_type	= budget2.default_credit_type,
+				quantity		= 1,
+				debit				= 0,
+				credit			= amount,
+				product_price = amount
+			)
+			return redirect('budgets')
+			
+	return direct_to_template(request, 'budget/transfer.html', {
+		'form': form
+	})
 
 
 # 
