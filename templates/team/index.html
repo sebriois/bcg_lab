@@ -55,7 +55,7 @@
           <tr class="{% cycle 'even' 'odd' %}">
             {% if not member.user.is_active %}
               <td class="user_red">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_admin %}
+            {% else %}{% if member.user|is_admin or member.user|is_super_validator %}
               <td class="shield">{{ member.user.username }}</td>
             {% else %}{% if member.user|is_super_secretary %}
               <td class="user_suit">{{ member.user.username }}</td>

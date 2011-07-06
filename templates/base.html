@@ -51,7 +51,7 @@
             Panier
           </a>
         </li>
-        {% if user|is_validator or user|is_super_secretary %}
+        {% if user|is_validator or user|is_super_secretary or user|is_super_validator %}
           <li>
             <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
               Commandes à valider
