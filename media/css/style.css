@@ -265,7 +265,7 @@ table.list {
 /*  white-space:nowrap;*/
 }
 table.list thead {
-  background: #f2f7ff url('../img/layout/bg-thead') repeat-x;
+  background: #f2f7ff url('../img/layout/bg-thead.png') repeat-x;
   background-position: top left;
   color: #507aaa;
   border: none;
