@@ -41,6 +41,11 @@ body, #wrapper {
   margin-left: 6px;
   margin-right: 6px;
 }
+
+#content_header {
+  margin-bottom: 30px;
+}
+
 #header {
   position:relative;
   height:5.5em;
@@ -114,7 +119,7 @@ body, #wrapper {
   width: 80%;
   margin: 0px;
   margin-bottom: 20px;
-  padding: 6px 10px 10px 10px;
+  padding: 6px 10px 30px 10px;
   border-right: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
   -moz-box-shadow: #bbb 2px 2px 3px;
