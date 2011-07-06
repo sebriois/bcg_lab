@@ -58,7 +58,7 @@ def tab_orders(request):
 @login_required
 @GET_method
 def tab_validation(request):
-	if is_admin(request.user):
+	if is_admin(request.user) or is_super_validator(request.user):
 		order_list = Order.objects.filter( status = 1 )
 		budget_list = Budget.objects.all()
 	elif is_validator(request.user):

@@ -12,6 +12,7 @@ MEMBERTYPE_CHOICES = (
 	(VALIDATOR, u"Validateur"),
 	(ADMIN, u"Admin"),
 	(SUPER_SECRETARY, u"Gestionnaire"),
+	(SUPER_VALIDATOR, u"Super-Validateur"),
 )
 
 STATE_CHOICES = (
