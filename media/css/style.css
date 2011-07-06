@@ -122,8 +122,8 @@ body, #wrapper {
   z-index: 10;
   overflow: auto;
   background-color: #fff;
-  border-top-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-top-right-radius: 30px;
+  border-bottom-left-radius: 30px;
 }
 #main.nosidebar #content{ width: auto; border-right: 0; }
 
@@ -277,6 +277,7 @@ table.list thead {
 
 table.list thead th {
   padding-left: 10px;
+  padding-left: 5px;
   padding-top: 4px;
   padding-bottom: 0px;
   height: 30px;
@@ -290,7 +291,7 @@ table.list tbody tr {
 }
 
 table.list tbody td, table.list tbody tr td {
-  padding: 0px 5px 0px 5px;
+  padding: 2px 5px 2px 5px;
   border: 1px solid #ebe9db;
 }
 

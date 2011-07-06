@@ -48,7 +48,7 @@
   <table class="list">
     <thead>
         <th>Fournisseur</th>
-        <th {% if user|is_admin %}width="210px"{% endif %}>produit</th>
+        <th style="max-width:200px">produit</th>
         <th>Cond.</th>
         <th>Réf.</th>
         <th>Prix</th>
@@ -71,7 +71,7 @@
           <td>{{ product.expiry|date }}</td>
           <td>{{ product.nomenclature }}</td>
           <td>{{ product.last_change|date }}</td>
-          <td>
+          <td style="white-space:nowrap">
             <button id="{{product.id}}" class="plus addToCart noloading">
               Panier
             </button>

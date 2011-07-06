@@ -20,17 +20,17 @@ from utils import *
 @team_required
 @transaction.commit_on_success
 def index(request):
-		if request.method == 'GET':		return _product_list(request)
-		if request.method == 'POST':	return _product_creation(request)
+	if request.method == 'GET':		return _product_list(request)
+	if request.method == 'POST':	return _product_creation(request)
 
 @login_required
 @team_required
 @transaction.commit_on_success
 def item(request, product_id):
-		product = get_object_or_404(Product, id = product_id)
-		if request.method == 'GET':			return _product_detail(request, product)
-		if request.method == 'PUT':			return _product_update(request, product)
-		if request.method == 'DELETE':	return _product_delete(request, product)
+	product = get_object_or_404(Product, id = product_id)
+	if request.method == 'GET':			return _product_detail(request, product)
+	if request.method == 'PUT':			return _product_update(request, product)
+	if request.method == 'DELETE':	return _product_delete(request, product)
 
 @login_required
 @team_required
@@ -67,17 +67,17 @@ def _product_list(request):
 		product_list = product_list.filter( Q_obj )
 	
 	return direct_to_template(request, 'product/index.html',{
-			'filter_form': form,
-			'products': paginate( request, product_list, 50 ),
-			'url_params': urlencode(request.GET)
+		'filter_form': form,
+		'products': paginate( request, product_list, 50 ),
+		'url_params': urlencode(request.GET)
 	})
 
 def _product_detail(request, product):
-		form = ProductForm(instance = product, provider = product.provider)
-		return direct_to_template(request, 'product/item.html',{
-				'product': product,
-				'form': form
-		})
+	form = ProductForm(instance = product, provider = product.provider)
+	return direct_to_template(request, 'product/item.html',{
+		'product': product,
+		'form': form
+	})
 
 def _product_creation(request):
 	provider = get_object_or_404( Provider, id = request.POST.get('provider', None) )
@@ -89,25 +89,24 @@ def _product_creation(request):
 		return redirect( 'product_index' )
 	else:
 		return direct_to_template(request, 'product/form.html',{
-				'provider': provider,
-				'form': form
+			'provider': provider,
+			'form': form
 		})
 
 def _product_update(request, product):
-		form = ProductForm(instance = product, data = request.REQUEST)
-		if form.is_valid():
-				product = form.save()
-				
-				info_msg( request, u"Produit modifié avec succès." )
-				return redirect( 'product_index' )
-		else:
-				error_msg( request, u"Le formulaire n'a pas pu être validé." )
-				return direct_to_template(request, 'product/item.html',{
-						'product': product,
-						'form': form
-				})
+	form = ProductForm(instance = product, data = request.REQUEST)
+	if form.is_valid():
+		product = form.save()
+		
+		info_msg( request, u"Produit modifié avec succès." )
+		return redirect( 'product_index' )
+	else:
+		return direct_to_template(request, 'product/item.html',{
+			'product': product,
+			'form': form
+		})
 
 def _product_delete(request, product):
-		product.delete()
-		info_msg( request, u"Produit supprimé avec succès." )
-		return redirect( 'product_index' )
+	product.delete()
+	info_msg( request, u"Produit supprimé avec succès." )
+	return redirect( 'product_index' )
