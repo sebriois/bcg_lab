@@ -78,7 +78,7 @@
           <td>{{ budget_line.date|date }}</td>
           <td>{{ budget_line.nature }}</td>
           <td>{{ budget_line.get_budget_type_display|default:"" }}</td>
-          <td>{{ budget_line.credit_type|default:"" }}</td>
+          <td>{{ budget_line.origin|default:"" }}</td>
           <td>{{ budget_line.provider|default:"" }}</td>
           <td>{{ budget_line.offer|default:"" }}</td>
           <td>{{ budget_line.product|default:"" }}</td>

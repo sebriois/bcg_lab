@@ -143,7 +143,7 @@ class OrderItem(models.Model):
 			number				= order.number,
 			nature				= order.budget.default_nature,
 			budget_type		= order.budget.budget_type,
-			credit_type		= order.budget.default_credit_type,
+			origin		= order.budget.default_origin,
 			provider			= order.provider.name,
 			offer					= self.offer_nb,
 			product				= self.name,

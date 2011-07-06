@@ -56,16 +56,19 @@ def tab_orders(request):
 
 
 @login_required
-@validator_required
 @GET_method
 def tab_validation(request):
 	if is_admin(request.user):
 		order_list = Order.objects.filter( status = 1 )
 		budget_list = Budget.objects.all()
-	else:
+	elif is_validator(request.user):
 		teams = get_teams( request.user )
 		order_list = Order.objects.filter( team__in = teams, status = 1 )
 		budget_list = Budget.objects.filter( team__in = teams )
+	elif is_super_secretary(request.user):
+		teams = get_teams( request.user )
+		order_list = Order.objects.filter( team__in = teams, status = 1 )
+		budget_list = Budget.objects.all()
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list ),
@@ -366,8 +369,8 @@ def set_next_status(request, order_id):
 		user_can_validate = order.team.members.filter( 
 			user = request.user,
 			member_type__in = [VALIDATOR, ADMIN]
-		).count() > 0 or is_admin(request.user)
-		if user_can_validate:
+		).count() > 0
+		if user_can_validate or is_admin(request.user):
 			return _move_to_status_2(request, order)
 		else:
 			error_msg(request, "Vous n'avez pas les permissions nécessaires \
@@ -395,7 +398,7 @@ def _move_to_status_1(request, order):
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	
 	emails = []
-	for member in order.team.members.filter( member_type = VALIDATOR ):
+	for member in order.team.members.filter( member_type__in = [VALIDATOR, SUPER_SECRETARY] ):
 		if member.user.email and member.user.email not in emails:
 			emails.append( member.user.email )
 	

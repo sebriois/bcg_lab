@@ -62,16 +62,14 @@ def credit_budget(request, budget_id):
 	
 	if request.method == 'POST':
 		data = request.POST.copy()
-		data.update({'budget': budget.name})
+		data.update({'budget': budget.name}) # otherwise, form is not valid
+		
 		form = CreditBudgetForm( budget, data = data )
 		
 		if form.is_valid():
 			bl = form.save( commit = False )
 			bl.team					= budget.team.name
 			bl.budget_id		= budget.id
-			bl.nature				= budget.default_nature
-			bl.budget_type	= budget.budget_type
-			bl.credit_type	= budget.default_credit_type
 			bl.quantity			= 1
 			bl.credit				= bl.quantity * bl.product_price
 			bl.debit				= 0
@@ -106,7 +104,7 @@ def debit_budget(request, budget_id):
 		bl.budget_id		= budget.id
 		bl.nature				= budget.default_nature
 		bl.budget_type	= budget.budget_type
-		bl.credit_type	= budget.default_credit_type
+		bl.origin	= budget.default_origin
 		bl.quantity			= 1
 		bl.credit				= 0
 		bl.debit				= bl.quantity * bl.product_price
@@ -141,7 +139,7 @@ def transfer_budget(request):
 				budget 			= budget1.name,
 				nature 			= budget1.default_nature,
 				budget_type	= budget1.budget_type,
-				credit_type	= budget1.default_credit_type,
+				origin	= budget1.default_origin,
 				quantity		= 1,
 				debit				= amount,
 				credit			= 0,
@@ -155,7 +153,7 @@ def transfer_budget(request):
 				budget 			= budget2.name,
 				nature 			= budget2.default_nature,
 				budget_type	= budget2.budget_type,
-				credit_type	= budget2.default_credit_type,
+				origin	= budget2.default_origin,
 				quantity		= 1,
 				debit				= 0,
 				credit			= amount,

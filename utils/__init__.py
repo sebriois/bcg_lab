@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 from django.shortcuts import redirect
 from team.models import Team, TeamMember
-from constants import NORMAL, VALIDATOR, SECRETARY, ADMIN
+from constants import NORMAL, VALIDATOR, SECRETARY, SUPER_SECRETARY, ADMIN
 
 def info_msg( request, message ):
 	return messages.add_message( request, messages.INFO, message )
@@ -25,11 +25,11 @@ def is_validator(user):
 
 def is_secretary(user):
 	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
+	return user.teammember_set.filter(member_type__in = [SECRETARY, SUPER_SECRETARY, ADMIN]).count() > 0
 
-def is_secretary_valid(user):
+def is_super_secretary(user):
 	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SECRETARY_VALID, ADMIN]).count() > 0
+	return user.teammember_set.filter(member_type__in = [SUPER_SECRETARY, ADMIN]).count() > 0
 
 def is_admin(user):
 	if not user or user.is_anonymous(): return False

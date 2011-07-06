@@ -1,7 +1,7 @@
 # encoding: utf8
 from django import template
 
-from constants import NORMAL, VALIDATOR, SECRETARY, ADMIN
+from constants import NORMAL, VALIDATOR, SECRETARY, SUPER_SECRETARY, ADMIN
 from utils import get_teams
 
 register = template.Library()
@@ -26,9 +26,9 @@ def is_secretary(user):
 	return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
 
 @register.filter
-def is_secretary_valid(user):
+def is_super_secretary(user):
 	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SECRETARY_VALID, ADMIN]).count() > 0
+	return user.teammember_set.filter(member_type__in = [SUPER_SECRETARY, ADMIN]).count() > 0
 
 @register.filter
 def is_admin(user):

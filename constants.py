@@ -4,14 +4,14 @@ NORMAL = 0
 SECRETARY = 1
 VALIDATOR = 2
 ADMIN = 3
-SECRETARY_VALID = 4
+SUPER_SECRETARY = 4
 
 MEMBERTYPE_CHOICES = (
 	(NORMAL, u"Normal"),
-	(SECRETARY, u"Gestionnaire"),
+	(SECRETARY, u"Secrétaire"),
 	(VALIDATOR, u"Validateur"),
 	(ADMIN, u"Admin"),
-	(SECRETARY_VALID, u"Validateur gestion"),
+	(SUPER_SECRETARY, u"Gestionnaire"),
 )
 
 STATE_CHOICES = (

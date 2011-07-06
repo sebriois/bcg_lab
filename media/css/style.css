@@ -1,7 +1,7 @@
 
 /* @group Layout */
 body, #wrapper {
-  font-family:"Trebuchet MS","Lucida Grande", verdana, arial, helvetica, sans-serif;
+  font-family:"Trebuchet MS";
   font-size: 0.8em;
   color:#484848; 
   margin: 0; 
@@ -41,41 +41,18 @@ body, #wrapper {
   margin-left: 6px;
   margin-right: 6px;
 }
-/*#top-menu ul {
-  margin: 0;
-  padding: 0 21px;
-}
-#top-menu li {
-  float:left;
-  list-style-type:none;
-  line-height: 21px;
-  margin: 0;
-  margin-right: 4px;
-  padding: 0;
-  white-space:nowrap;
-  color: #ddd;
-}
-#top-menu li a {
-  margin-right: 8px;
-  padding:4px 5px;
-  color: #999;
-  font-weight: normal;
-}
-#top-menu li a:hover {
-  color: #fff;
-  text-decoration: none;
-}
-*/
-
 #header {
   position:relative;
   height:5.5em;
   margin:0;
   padding: 8px 8px 0 8px;
   background-color:#507AAA;
-  color:#f8f8f8;
+/*  color:#f8f8f8;*/
 }
-#header h1 { margin: 0 24px; }
+#header h1 { 
+  margin: 0 24px;
+  color: #f8f8f8;
+}
 #header a { color:#f8f8f8; }
 
 #main-menu {
@@ -140,8 +117,8 @@ body, #wrapper {
   padding: 6px 10px 10px 10px;
   border-right: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
-  -moz-box-shadow: #bbb 1px 1px 2px;
-  -webkit-box-shadow: 1px 1px 2px #bbb;
+  -moz-box-shadow: #bbb 2px 2px 3px;
+  -webkit-box-shadow: 2px 2px 3px #bbb;
   z-index: 10;
   overflow: auto;
   background-color: #fff;
@@ -175,7 +152,7 @@ body, #wrapper {
 
 
 /* @group Headers */
-h1, h2, h3, h4 { font-family: "Lucida Grande",arial,sans-serif; }
+h1, h2, h3, h4 { font-family: "Trebuchet MS","Lucida Grande",arial,sans-serif; }
 
 h1 {
   font-size: 24px;
@@ -192,7 +169,10 @@ h2 {
   background-color: #edf3fe;
   background-color: #e4f0ff;
   background-color: #5e90c9;
+  background-color: #507aaa;
+  text-transform: uppercase;
 /*  background-color: #b79b71;*/
+  background: #507aaa url('../img/layout/bg-content-header.png') no-repeat top right;
   color: #000;
   color: #507aaa;
   color: #fff;
@@ -281,21 +261,28 @@ table.list {
   margin-top: 10px;
   border: 0;
   border-collapse: collapse;
+  vertical-align: center;
+/*  white-space:nowrap;*/
 }
-table.list thead th {
-  border: none;
-  border-bottom: 1px solid #999;
-  border-top: 1px solid #999;
-  padding: 5px;
-  background-color:#e4f0ff;
-  background-color:#f2f7ff;
-/*  background-color:#fdeddb;*/
+table.list thead {
+  background: #f2f7ff url('../img/layout/bg-thead') repeat-x;
+  background-position: top left;
   color: #507aaa;
-/*  color: #b79b71;*/
-  font-weight:normal;
-  white-space:nowrap;
+  border: none;
+/*  border-top: 1px solid #aac7e6;
+  border-bottom: 1px solid #aac7e6;*/
   text-transform:uppercase;
   text-align: left;
+}
+
+table.list thead th {
+  padding-left: 10px;
+  padding-top: 4px;
+  padding-bottom: 0px;
+  height: 30px;
+  font-weight:normal;
+  border-right: 1px solid #d1e3f2;
+  border-right: 1px solid #e0eef9;
 }
 
 table.list tbody tr {
@@ -303,11 +290,14 @@ table.list tbody tr {
 }
 
 table.list tbody td, table.list tbody tr td {
-  padding: 3px;
-  vertical-align: center;
+  padding: 0px 5px 0px 5px;
+  border: 1px solid #ebe9db;
 }
 
-table.list tbody tr:hover { background-color:#ffc; }
+table.list tbody tr:hover { 
+  background-color:#ffc;
+  background: #eee0d3;
+}
 
 table.list tbody tr.empty_row {
 	height: 35px;

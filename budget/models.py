@@ -6,10 +6,12 @@ from constants import BUDGET_CHOICES
 
 class Budget(models.Model):
 	team = models.ForeignKey(Team, verbose_name="Equipe")
-	name = models.CharField(u"Nom", max_length=100, unique = True)
+	name = models.CharField(u"OTP", max_length=100, unique = True)
+	default_origin = models.CharField(u"Origine", max_length=30, null = True, blank = True)
 	budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
-	default_credit_type = models.CharField(u"Type de crédit", max_length=30, null = True, blank = True)
 	default_nature = models.CharField(u"Nature", max_length=20, null = True, blank = True)
+	tva_code = models.CharField(u"Code TVA", max_length=20, null = True, blank = True )
+	domain = models.CharField(u"Domaine fonctionnel", max_length = 100, null = True, blank = True )
 	is_active = models.BooleanField(u"Actif?", default = True)
 	
 	class Meta:
@@ -48,11 +50,11 @@ class BudgetLine(models.Model):
 	orderitem_id	= models.IntegerField( u"ID d'item de commande", null = True, blank = True )
 	budget_id			= models.IntegerField( u"ID de budget" )
 	budget				= models.CharField(u"Budget", max_length = 100)
-	number				= models.CharField(u"N° de cde", max_length = 30, null = True, blank = True)
+	number				= models.CharField(u"N° de commande", max_length = 30, null = True, blank = True)
 	date					= models.DateTimeField(u"Date de l'acte", auto_now_add = True)
 	nature				= models.CharField(u"Nature", max_length = 20)
 	budget_type		= models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
-	credit_type		= models.CharField(u"Type crédit", max_length = 40)
+	origin		= models.CharField(u"Type crédit", max_length = 40)
 	provider			= models.CharField(u"Fournisseur", max_length = 100)
 	offer					= models.CharField(u"Offre", max_length = 100, null = True, blank = True )
 	product				= models.CharField(u"Désignation", max_length = 100, null = True, blank = True )
