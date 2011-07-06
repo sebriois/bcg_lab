@@ -296,7 +296,7 @@ table.list tbody td, table.list tbody tr td {
 
 table.list tbody tr:hover { 
   background-color:#ffc;
-  background: #eee0d3;
+  background: #fff4ec;
 }
 
 table.list tbody tr.empty_row {
