@@ -458,7 +458,7 @@ def _move_to_status_3(request, order):
 	if order.budget.budget_type == 0: # ie. CNRS
 		number = request.GET.get('number', None)
 		if not number:
-			error_msg(request, "Commande budget CNRS, veuillez saisir un numéro XLAB.")
+			error_msg(request, "Commande CNRS, veuillez saisir le numéro de commande XLAB.")
 			return redirect( 'tab_orders' )
 		
 		order.number = number
@@ -476,14 +476,17 @@ def _move_to_status_4(request, order):
 	if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
 		number = request.GET.get('number', None)
 		if not number:
-			error_msg(request, "Veuillez saisir un numéro de commande.")
+			error_msg(request, "Commande UPS, veuillez saisir le numéro de commande SIFAC.")
 			return redirect( 'tab_orders' )
+		
 		order.number = number
+		order.status = 4
 		order.save()
 		order.create_budget_line()
 	
-	order.status = 4
-	order.save()
+	else:
+		order.status = 4
+		order.save()
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect('tab_orders')

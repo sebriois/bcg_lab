@@ -103,7 +103,7 @@ class OrderItem(models.Model):
 	nomenclature	= models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
 	price					= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
 	cost_type			= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
-	quantity			= models.IntegerField( default = 1 )
+	quantity			= models.IntegerField( u'Quantité', default = 1 )
 	
 	class Meta:
 		verbose_name = "Item de commande"
@@ -131,7 +131,7 @@ class OrderItem(models.Model):
 		if self.order_set.all().count() == 0:
 			# TODO: raise error instead
 			return
-			
+		
 		order = self.order_set.get()
 		
 		bl = BudgetLine.objects.create(
@@ -143,12 +143,12 @@ class OrderItem(models.Model):
 			number				= order.number,
 			nature				= order.budget.default_nature,
 			budget_type		= order.budget.budget_type,
-			origin		= order.budget.default_origin,
+			origin				= order.budget.default_origin,
 			provider			= order.provider.name,
 			offer					= self.offer_nb,
 			product				= self.name,
 			product_price = self.total_price(),
-			ref						= self.reference,
+			reference			= self.reference,
 			quantity			= self.quantity
 		)
 		
@@ -176,7 +176,7 @@ class OrderItem(models.Model):
 		bl.offer = self.offer_nb
 		bl.product = self.name
 		bl.product_price = self.total_price()
-		bl.ref = self.reference
+		bl.reference = self.reference
 		bl.quantity = self.quantity
 		bl.save()
 	
