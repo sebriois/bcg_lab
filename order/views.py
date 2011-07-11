@@ -378,6 +378,7 @@ def set_next_status(request, order_id):
 		else:
 			error_msg(request, "Vous n'avez pas les permissions nécessaires \
 			pour valider une commande")
+			return redirect('tab_validation')
 	
 	elif order.status == 2 and is_secretary(request.user):
 		return _move_to_status_3(request, order)
