@@ -191,12 +191,14 @@ def edit_budgetline(request, bl_id):
 
 @GET_method
 def _budget_list(request):
-	if is_secretary(request.user) or is_super_secretary(request.user):
+	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user):
 		budget_list = Budget.objects.all()
-	elif is_validator(request.user) or is_super_validator(request.user):
+	elif is_validator(request.user):
 		budget_list = Budget.objects.filter(
 			team__in = get_teams(request.user)
 		)
+	else:
+		budget_list = Budget.objects.none()
 	
 	return direct_to_template(request, 'tab_budgets.html',{
 		'budgets': paginate( request, budget_list )
@@ -243,7 +245,7 @@ def _budget_update(request, budget):
 def _budgetline_list(request):
 	budget_lines = BudgetLine.objects.filter( date__year = date.today().year )
 	
-	if is_validator(request.user) or is_super_validator(request.user):
+	if is_validator(request.user):
 		team_names = []
 		for team in get_teams(request.user):
 			if not team.name in team_names:
