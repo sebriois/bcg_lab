@@ -6,16 +6,18 @@
 {% block buttons %}
 
 {% if budget %}
-  <div class="btn_wrapper">
-    <a href="{% url debit_budget budget.id %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
-    </a>
-  </div>
-  <div class="btn_wrapper">
-    <a href="{% url credit_budget budget.id %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/add.png" />Créditer
-    </a>
-  </div>
+  {% if user|is_secretary or user|is_super_secretary %}
+    <div class="btn_wrapper">
+      <a href="{% url debit_budget budget.id %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
+      </a>
+    </div>
+    <div class="btn_wrapper">
+      <a href="{% url credit_budget budget.id %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/add.png" />Créditer
+      </a>
+    </div>
+  {% endif %}
   <div class="btn_wrapper">
     <a href="{% url budgetlines %}" class="btn_big">
       <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
