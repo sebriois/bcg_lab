@@ -297,6 +297,9 @@ def set_delivered(request, order_id):
 	return redirect( 'tab_orders' )
 
 
+
+
+
 					#################
 					# AJAX REQUESTS #
 					#################
@@ -368,9 +371,9 @@ def set_next_status(request, order_id):
 	elif order.status == 1:
 		user_can_validate = order.team.members.filter( 
 			user = request.user,
-			member_type__in = [VALIDATOR, ADMIN]
+			member_type = VALIDATOR
 		).count() > 0
-		if user_can_validate or is_admin(request.user):
+		if user_can_validate or is_super_validator(request.user):
 			return _move_to_status_2(request, order)
 		else:
 			error_msg(request, "Vous n'avez pas les permissions nécessaires \
