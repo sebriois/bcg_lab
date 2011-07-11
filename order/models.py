@@ -180,3 +180,15 @@ class OrderItem(models.Model):
 		bl.quantity = self.quantity
 		bl.save()
 	
+	def update_product(self):
+		if self.product_id:
+			product = Product.objects.get( id = self.product_id )
+			product.name = self.name
+			product.packaging = self.packaging
+			product.reference = self.reference
+			product.offer_nb = self.offer_nb
+			product.nomenclature = self.nomenclature
+			product.price = self.price
+			product.save()
+		
+	

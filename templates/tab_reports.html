@@ -56,20 +56,22 @@
       <th>qté</th>
       <th>Montant total</th>
       <th>Montant dispo</th>
-      <th></th>
+      {% if user|is_secretary or user|is_super_secretary %}
+        <th></th>
+      {% endif %}
     </thead>
       
     <tbody>
       {% for budget in budget_list %}
         {% if forloop.counter > 1 %}
           <tr class="empty_row">
-            <td colspan="15"></td>
+            <td colspan="16"></td>
           </tr>
         {% endif %}
         
         {% for budget_line in budget.list %}
-        <tr class="{% cycle 'even' 'odd' %}">
-          {% if forloop.counter == 1 %}
+        <tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
+          {% if forloop.first %}
             <td><strong>{{ budget.grouper }}</strong></td>
           {% else %}
             <td>{{ budget.grouper }}</td>
@@ -88,10 +90,12 @@
           <td>{{ budget_line.quantity|default:1 }}</td>
           <td>{{ budget_line.product_price|default:"" }}</td>
           <td>{{ budget_line.get_amount_left }}</td>
-          <td>
-            <a href="{% url budgetline_edit budget_line.id %}" class="pencil no-text"></a>
-            <a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
-          </td>
+          {% if user|is_secretary or user|is_super_secretary %}
+            <td>
+              <a href="{% url budgetline_edit budget_line.id %}" class="pencil no-text"></a>
+              <a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
+            </td>
+          {% endif %}
         </tr>
         {% endfor %}
       {% endfor %}

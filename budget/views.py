@@ -15,7 +15,6 @@ from budget.forms import TransferForm, BudgetLineForm
 from utils import *
 
 @login_required
-@secretary_required
 @transaction.commit_on_success
 def index_budget(request):
 	if request.method == "GET":		return _budget_list(request)
@@ -23,7 +22,6 @@ def index_budget(request):
 	return redirect('error')
 
 @login_required
-@secretary_required
 @transaction.commit_on_success
 def index_budgetline(request):
 	if request.method == "GET":		return _budgetline_list(request)
@@ -31,7 +29,6 @@ def index_budgetline(request):
 	return redirect('error')
 
 @login_required
-@secretary_required
 @transaction.commit_on_success
 def item_budget(request, budget_id):
 	budget = get_object_or_404( Budget, id = budget_id )
@@ -40,7 +37,6 @@ def item_budget(request, budget_id):
 	return redirect('error')
 
 @login_required
-@secretary_required
 @GET_method
 def new_budget(request):
 	return direct_to_template(request, 'budget/form.html',{
@@ -49,7 +45,6 @@ def new_budget(request):
 
 
 @login_required
-@secretary_required
 @transaction.commit_on_success
 def credit_budget(request, budget_id):
 	budget = get_object_or_404( Budget, id = budget_id )
@@ -84,7 +79,6 @@ def credit_budget(request, budget_id):
 			})
 
 @login_required
-@secretary_required
 @transaction.commit_on_success
 def debit_budget(request, budget_id):
 	budget = get_object_or_404( Budget, id = budget_id )
@@ -197,7 +191,13 @@ def edit_budgetline(request, bl_id):
 
 @GET_method
 def _budget_list(request):
-	budget_list = Budget.objects.all()
+	if is_secretary(request.user) or is_super_secretary(request.user):
+		budget_list = Budget.objects.all()
+	elif is_validator(request.user) or is_super_validator(request.user):
+		budget_list = Budget.objects.filter(
+			team__in = get_teams(request.user)
+		)
+	
 	return direct_to_template(request, 'tab_budgets.html',{
 		'budgets': paginate( request, budget_list )
 	})
@@ -242,6 +242,14 @@ def _budget_update(request, budget):
 @GET_method
 def _budgetline_list(request):
 	budget_lines = BudgetLine.objects.filter( date__year = date.today().year )
+	
+	if is_validator(request.user) or is_super_validator(request.user):
+		team_names = []
+		for team in get_teams(request.user):
+			if not team.name in team_names:
+				team_names.append(team.name)
+			
+		budget_lines = budget_lines.filter( team__in = team_names )
 	
 	budget_name = request.GET.get("budget_name", None)
 	if budget_name:

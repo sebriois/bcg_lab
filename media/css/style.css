@@ -52,6 +52,7 @@ body, #wrapper {
   margin:0;
   padding: 8px 8px 0 8px;
   background-color:#507AAA;
+  background: #507aaa url('../img/layout/bg-content-header.png') no-repeat top right;
 /*  color:#f8f8f8;*/
 }
 #header h1 { 
@@ -177,7 +178,7 @@ h2 {
   background-color: #507aaa;
   text-transform: uppercase;
 /*  background-color: #b79b71;*/
-  background: #507aaa url('../img/layout/bg-content-header.png') no-repeat top right;
+  background-color: #507aaa;
   color: #000;
   color: #507aaa;
   color: #fff;
@@ -466,6 +467,10 @@ tr.soon_expired {
 div.cleaner { clear:both; padding-bottom:5px; }
 .splitcontentleft  { float:left;  width:49%; }
 .splitcontentright { float:right; width:49%; }
+
+tr.border-top-double {
+  border-top: 2px double;
+}
 
 /* @end MISC */
 

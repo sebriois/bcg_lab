@@ -64,7 +64,7 @@
             {% if user|is_secretary %}Commandes à saisir{% else %}Commandes en cours{% endif %}
           </a>
         </li>
-        {% if user|is_super_secretary %}
+        {% if user|is_super_secretary or user|is_validator or user|is_super_validator %}
           <li>
             <a href="{% url budgets %}" class="{% block menu_budgets %}{% endblock %}">
               Gestion des budgets

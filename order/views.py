@@ -36,10 +36,7 @@ def tab_cart(request):
 @login_required
 @GET_method
 def tab_orders(request):
-	"""
-	Commandes en cours/Commandes à saisir
-	"""
-	if is_secretary(request.user):
+	if is_secretary(request.user) or is_super_secretary(request.user):
 		order_list = Order.objects.filter( status__in = [2,3,4] )
 		template = 'tab_orders_secretary.html'
 	else:
@@ -84,7 +81,7 @@ def order_detail(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	budgets = []
 	
-	if is_secretary(request.user) or is_admin(request.user):
+	if is_secretary(request.user) or is_super_secretary(request.user) or is_admin(request.user):
 		for budget in Budget.objects.all():
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
@@ -109,51 +106,65 @@ def order_detail(request, order_id):
 @transaction.commit_on_success
 def orderitem_detail(request, orderitem_id):
 	orderitem = get_object_or_404( OrderItem, id = orderitem_id )
-	order = orderitem.order_set.get()
 	
 	if request.method == 'GET':
-		form = OrderItemForm( instance = orderitem )
+		return _orderitem_get( request, orderitem )
 	
-	elif request.method == 'POST':
-		data = request.POST.copy()
-		data['provider'] = order.provider.name
+	if request.method == 'POST':
+		return _orderitem_update( request, orderitem )
+
+
+def _orderitem_get(request, orderitem ):
+	return direct_to_template( request, 'order/orderitem_detail.html', {
+		'form': OrderItemForm( instance = orderitem ),
+		'orderitem': orderitem,
+		'order': orderitem.order_set.get()
+	})
+
+def _orderitem_update(request, orderitem):
+	order = orderitem.order_set.get()
+	
+	data = request.POST.copy()
+	data['provider'] = order.provider.name
+	
+	form = OrderItemForm( instance = orderitem, data = data )
+	if form.is_valid():
+		form.save()
 		
-		form = OrderItemForm( instance = orderitem, data = data )
-		if form.is_valid():
-			form.save()
+		if order.number:
+			orderitem.update_budget_line()
+		
+		if orderitem.product_id:
+			orderitem.update_product()
 			
 			# Send product changes by email to users in charge
-			if orderitem.product_id and bool(request.POST.get('send_changes', 'False')):
-				product = Product.objects.get(id = orderitem.product_id)
-				template = loader.get_template('email_update_product.txt')
-				subject = "[Commandes LBCMCP] Mise à jour d'un produit"
-				emails = []
-				for user in product.provider.users_in_charge.all():
-					if user.email:
-						emails.append(user.email)
-					else:
-						warn_msg(request, "Le message n'a pas pu être envoyé à %s, faute d'adresse email valide." % user)
-					
-				changed_data = []
-				for attr in form.changed_data:
-					lbl = orderitem._meta.get_field(attr).verbose_name
-					val = getattr(orderitem, attr)
-					changed_data.append( (lbl,val) )
-				
-				message = template.render( Context({ 
-					'changed_data': changed_data,
-					'product': product,
-					'url': request.build_absolute_uri(product.get_absolute_url())
-				}) )
-				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
-			
-			if order.number:
-				orderitem.update_budget_line()
-				
-			info_msg(request, "Produit modifié avec succès.")
-			return redirect(order)
-		else:
-			error_msg(request, "Le formulaire n'est pas valide.")
+			# if orderitem.product_id and bool(request.POST.get('send_changes', 'False')):
+			# 	product = Product.objects.get(id = orderitem.product_id)
+			# 	template = loader.get_template('email_update_product.txt')
+			# 	subject = "[Commandes LBCMCP] Mise à jour d'un produit"
+			# 	emails = []
+			# 	for user in product.provider.users_in_charge.all():
+			# 		if user.email:
+			# 			emails.append(user.email)
+			# 		else:
+			# 			warn_msg(request, "Le message n'a pas pu être envoyé à %s, \
+			# 			faute d'adresse email valide." % user)
+			# 
+			# 	changed_data = []
+			# 	for attr in form.changed_data:
+			# 		lbl = orderitem._meta.get_field(attr).verbose_name
+			# 		val = getattr(orderitem, attr)
+			# 		changed_data.append( (lbl,val) )
+			# 
+			# 	message = template.render( Context({ 
+			# 		'changed_data': changed_data,
+			# 		'product': product,
+			# 		'url': request.build_absolute_uri(product.get_absolute_url())
+			# 	}) )
+			# 	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		
+		info_msg( request, "Commande modifiée avec succès.")
+		return redirect( order )
 	
 	return direct_to_template( request, 'order/orderitem_detail.html', {
 		'form': form,
@@ -380,10 +391,10 @@ def set_next_status(request, order_id):
 			pour valider une commande")
 			return redirect('tab_validation')
 	
-	elif order.status == 2 and is_secretary(request.user):
+	elif order.status == 2 and ( is_secretary(request.user) or is_super_secretary(request.user) ):
 		return _move_to_status_3(request, order)
 	
-	elif order.status == 3 and is_secretary(request.user):
+	elif order.status == 3 and ( is_secretary(request.user) or is_super_secretary(request.user) ):
 		return _move_to_status_4(request, order)
 	
 	elif order.status == 4:
