@@ -9,6 +9,16 @@
 <div id="content" style="min-height:0">
   <div id="content_header"><h2>Infos</h2></div>
   <div style="float:left;width:70%;min-height:400px;border-right:1px solid #eee;overflow:auto;">
+    <table>
+      <tr>
+        <td class="expired" width="50px" height="25px" style="border:1px solid #ccc"></td>
+        <td>Date d'expiration dépassée</td>
+        <td width="50px"></td>
+        <td class="soon_expired" width="50px" height="25px" style="border:1px solid #ffd3c4"></td>
+        <td>Date d'expiration à moins de 10jours</td>
+      </tr>
+    </table>
+    
     <table class="list">
       <thead>
         <th width="60px">Date</th>
@@ -27,7 +37,7 @@
           {% endif %}{% endif %}
             <td>{{ info.date_created|date }}</td>
             <td>{{ info.expiry|date }}</td>
-            <td>{{ info.text }}</td>
+            <td>{{ info.text|safe }}</td>
             <td>
               <a href="{% url info_delete info.id %}" class="trash no-text"></a>
               {# <a href="{% url info_edit info.id %}" class="pencil">Editer</a> #}

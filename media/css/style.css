@@ -455,11 +455,11 @@ p.info {
   border: 1px solid #e4e4e4;
 }
 
-tr.expired {
+.expired {
   background: #ddd;
   color: #999;
 }
-tr.soon_expired {
+.soon_expired {
   background: #ffe7dc;
   color: #e2350d;
 }
