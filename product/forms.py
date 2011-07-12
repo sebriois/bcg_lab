@@ -6,28 +6,28 @@ from product.models import Product
 from provider.models import Provider
 
 class ProductForm(forms.ModelForm):
-		class Meta:
-				model = Product
-				widgets = {
-					'expiry': widgets.DateInput(attrs={'class':'datepicker'})
-				}
+	class Meta:
+			model = Product
+			widgets = {
+				'expiry': widgets.DateInput(attrs={'class':'datepicker'})
+			}
+	
+	def __init__( self, provider = None, *args, **kwargs ):
+		super( ProductForm, self ).__init__( *args, **kwargs )
 		
-		def __init__( self, provider = None, *args, **kwargs ):
-			super( ProductForm, self ).__init__( *args, **kwargs )
-			
-			
-			if provider:
-				self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
-				self.fields['provider'].initial = provider
-			
-		def clean_expiry(self):
-			offer_nb = self.data.get('offer_nb', None)
-			expiry = self.cleaned_data.get('expiry', None)
-			
-			if offer_nb and not expiry:
-				raise forms.ValidationError(u"Veuillez donner une date d'expiration pour cette offre.")
-			
-			return expiry
+		
+		if provider:
+			self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
+			self.fields['provider'].initial = provider
+		
+	def clean_expiry(self):
+		offer_nb = self.data.get('offer_nb', None)
+		expiry = self.cleaned_data.get('expiry', None)
+		
+		if offer_nb and not expiry:
+			raise forms.ValidationError(u"Veuillez donner une date d'expiration pour cette offre.")
+		
+		return expiry
 
 class ProductFilterForm(forms.Form):
 	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )

@@ -411,7 +411,18 @@ $(document).ready(function(){
         }
       }
     });
-
+    
+    $('.check.csv-import').click(function(){
+      $('#sortable li').each(function(i){
+        if ( i == 0 ) {
+          $('input[name="column_order"]').val( $(this).text() );
+        } else {
+          var current_val = $('input[name="column_order"]').val();
+          $('input[name="column_order"]').val( current_val + ";" + $(this).text() );
+        }
+      });
+    });
+    
     // 
     // TEAM PAGE - For changing user's team membership
     // 

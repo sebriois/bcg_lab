@@ -53,6 +53,7 @@ def _product_list(request):
 	product_list = Product.objects.all()
 	
 	form = ProductFilterForm( data = request.GET )
+	info_msg(request, request.GET)
 	if len(request.GET.keys()) > 0 and form.is_valid():
 		data = form.cleaned_data
 		

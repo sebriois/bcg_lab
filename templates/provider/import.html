@@ -49,18 +49,18 @@
     {% endwith %}
     <h3>B) Veuillez ordonner (par glisser-déposer) les colonnes comme dans votre fichier</h3>
     <ul id="sortable">
-    	<li class="ui-state-default">Désignation</li>
-    	<li class="ui-state-default">Référence</li>
+    	<li class="ui-state-default">Désignation*</li>
+    	<li class="ui-state-default">Référence*</li>
+    	<li class="ui-state-default">Prix*</li>
     	<li class="ui-state-default">Conditionnement</li>
-    	<li class="ui-state-default">Prix</li>
     	<li class="ui-state-default">N° d'offre</li>
     	<li class="ui-state-default">Nomenclature</li>
     	<li class="ui-state-default">Fournisseur d'origine</li>
     </ul>
     <div class="cleaner"></div>
     <br />
-    
-    <button type="submit" class="check">Valider</button>
+    <input type="hidden" name="column_order" value="" />
+    <button type="submit" class="check csv-import">Valider</button>
     <a href="{% url provider_index %}" class="back">Annuler</a>
   </form>
 </div>

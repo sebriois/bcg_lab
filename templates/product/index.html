@@ -67,9 +67,9 @@
           <td>{{ product.packaging }}</td>
           <td>{{ product.reference }}</td>
           <td>{{ product.price }}&nbsp;€</td>
-          <td>{{ product.offer_nb }}</td>
+          <td>{{ product.offer_nb|default:"" }}</td>
           <td>{{ product.expiry|date }}</td>
-          <td>{{ product.nomenclature }}</td>
+          <td>{{ product.nomenclature|default:"" }}</td>
           <td>{{ product.last_change|date }}</td>
           <td style="white-space:nowrap">
             <button id="{{product.id}}" class="plus addToCart noloading">
