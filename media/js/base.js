@@ -101,6 +101,9 @@ $(document).ready(function(){
     $(".disk").button({
       icons: { primary: "ui-icon-disk" }
     });
+    $(".folder-collapsed").button({
+      icons: { primary: "ui-icon-folder-collapsed" }
+    });
     $(".no-text").button({
       text: false
     });

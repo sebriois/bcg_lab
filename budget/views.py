@@ -127,7 +127,7 @@ def transfer_budget(request):
 			
 			# DEBIT BUDGET1
 			BudgetLine.objects.create(
-				product			= u"Virement vers budget %s" % budget2.name,
+				product			= u"Virement vers %s" % budget2.name,
 				team 				= budget1.team.name,
 				budget_id 	= budget1.id,
 				budget 			= budget1.name,
@@ -141,7 +141,7 @@ def transfer_budget(request):
 			)
 			# CREDIT BUDGET2
 			BudgetLine.objects.create(
-				product			= u"Virement reçu du budget %s" % budget1.name,
+				product			= u"Virement reçu de %s" % budget1.name,
 				team 				= budget2.team.name,
 				budget_id 	= budget2.id,
 				budget 			= budget2.name,
@@ -158,6 +158,19 @@ def transfer_budget(request):
 	return direct_to_template(request, 'budget/transfer.html', {
 		'form': form
 	})
+
+@login_required
+@transaction.commit_on_success
+def toggle_budget(request, budget_id):
+	budget = get_object_or_404( Budget, id = budget_id )
+	budget.is_active = not budget.is_active
+	budget.save()
+	
+	for bl in BudgetLine.objects.filter( budget_id = budget.id ):
+		bl.is_active = budget.is_active
+		bl.save()
+	
+	return redirect('budgets')
 
 @login_required
 @GET_method
@@ -192,9 +205,10 @@ def edit_budgetline(request, bl_id):
 @GET_method
 def _budget_list(request):
 	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user):
-		budget_list = Budget.objects.all()
+		budget_list = Budget.objects.filter( is_active = True )
 	elif is_validator(request.user):
 		budget_list = Budget.objects.filter(
+			is_active = True,
 			team__in = get_teams(request.user)
 		)
 	else:
@@ -243,9 +257,9 @@ def _budget_update(request, budget):
 
 @GET_method
 def _budgetline_list(request):
-	budget_lines = BudgetLine.objects.filter( date__year = date.today().year )
+	budget_lines = BudgetLine.objects.filter( is_active = True )
 	
-	if is_validator(request.user):
+	if is_validator(request.user) and not is_admin(request.user):
 		team_names = []
 		for team in get_teams(request.user):
 			if not team.name in team_names:
@@ -257,7 +271,7 @@ def _budgetline_list(request):
 	if budget_name:
 		budget_lines = budget_lines.filter( budget = budget_name )
 		try:
-			budget = Budget.objects.get( name = budget_name )
+			budget = Budget.objects.get( name = budget_name, is_active = True )
 		except:
 			budget = None
 	else:

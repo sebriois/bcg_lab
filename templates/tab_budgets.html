@@ -51,28 +51,27 @@
             <td>{{ budget.default_nature }}</td>
             <td>{{ budget.get_amount_left }}</td>
             <td>
-              <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin button">
-                Voir détail
-              </a>
+              <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin">Voir détail</a>
               {% if user|is_admin %}
-                <a href="{% url budget_edit budget.id %}" class="pencil button">
-                  Editer
-                </a>
+                <a href="{% url budget_edit budget.id %}" class="pencil">Editer</a>
               {% endif %}
               {% if user|is_secretary or user|is_super_secretary %}
-                <a href="{% url credit_budget budget.id %}" class="plus button">
-                  Créditer
-                </a>
-                <a href="{% url debit_budget budget.id %}" class="minus button">
-                  Débiter
-                </a>
-                {% endif %}
+                <a href="{% url credit_budget budget.id %}" class="plus">Créditer</a>
+                <a href="{% url debit_budget budget.id %}" class="minus">Débiter</a>
+                <a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Archiver</a>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
   {% endif %}
+</div>
+
+<div id="confirm" class="dialog" title="Confirmer l'archivage">
+  Ce budget va être retiré de cette liste, ainsi que toutes ses lignes
+  budgétaires, pour être archivé. Vous n'aurez plus la possibilité de
+  le visualiser.
 </div>
 
 {% endblock %}

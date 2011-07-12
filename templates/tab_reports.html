@@ -44,8 +44,8 @@
   <table class="list">
     <thead>
       <th>budget</th>
-      <th>n° de cmde</th>
-      <th>date de l'acte</th>
+      <th>cmde</th>
+      <th>date</th>
       <th>nature</th>
       <th>tutelle</th>
       <th>origine</th>
@@ -56,8 +56,8 @@
       <th>crédit</th>
       <th>débit</th>
       <th>qté</th>
-      <th>Montant total</th>
-      <th>Montant dispo</th>
+      <th>Total</th>
+      <th>Dispo</th>
       {% if user|is_secretary or user|is_super_secretary %}
         <th></th>
       {% endif %}
@@ -93,7 +93,7 @@
           <td>{{ budget_line.product_price|default:"" }}</td>
           <td>{{ budget_line.get_amount_left }}</td>
           {% if user|is_secretary or user|is_super_secretary %}
-            <td>
+            <td style="white-space:nowrap">
               <a href="{% url budgetline_edit budget_line.id %}" class="pencil no-text"></a>
               <a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
             </td>

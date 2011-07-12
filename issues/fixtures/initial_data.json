@@ -276,7 +276,7 @@
         "pk": 58, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 2, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Import de fichier produit .csv impossible", 
@@ -312,19 +312,6 @@
         }
     }, 
     {
-        "pk": 5, 
-        "model": "issues.issue", 
-        "fields": {
-            "status": 1, 
-            "date_closed": null, 
-            "severity": 2, 
-            "title": "Pb de redirections", 
-            "issue_type": 0, 
-            "date_created": "2011-06-24 10:30:49", 
-            "description": "revoir les redirections sur les boutons \"retour\" et \"valider\""
-        }
-    }, 
-    {
         "pk": 21, 
         "model": "issues.issue", 
         "fields": {
@@ -354,7 +341,7 @@
         "pk": 28, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "Import/export", 
@@ -377,6 +364,19 @@
         }
     }, 
     {
+        "pk": 5, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 1, 
+            "date_closed": null, 
+            "severity": 3, 
+            "title": "Pb de redirections", 
+            "issue_type": 0, 
+            "date_created": "2011-06-24 10:30:49", 
+            "description": "revoir les redirections sur les boutons \"retour\" et \"valider\""
+        }
+    }, 
+    {
         "pk": 61, 
         "model": "issues.issue", 
         "fields": {
@@ -393,7 +393,7 @@
         "pk": 1, 
         "model": "issues.issue", 
         "fields": {
-            "status": 1, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "un utilisateur doit pouvoir appartenir \u00e0 plrs equipes", 
@@ -458,7 +458,7 @@
         "pk": 35, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 1, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Suppression/Archivage d'un budget", 
@@ -471,26 +471,13 @@
         "pk": 37, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Onglet budget pour le validateur ?", 
             "issue_type": 1, 
             "date_created": "2011-06-26 10:55:18", 
             "description": "Peut-\u00eatre faudrait-il que le validateur ait acc\u00e8s \u00e0 l'\u00e9tat de son(ses) budgets(s) en dehors de la validation d'une commande.\r\nDeux solutions :\r\n* soit lister quelques part dans l'interface Validateur les budgets auxquel il a acc\u00e8s et leurs soldes\r\n* soit ajouter un onglet \"gestion des budgets\" semblable \u00e0 celui de l'\u00e9quipe Gestion mais avec uniquement les budgets de l'\u00e9quipe dont il est validateur (et sans possibilit\u00e9 de modifier quoique ce soit)"
-        }
-    }, 
-    {
-        "pk": 41, 
-        "model": "issues.issue", 
-        "fields": {
-            "status": 0, 
-            "date_closed": null, 
-            "severity": 1, 
-            "title": "Modification du N\u00b0 de commande", 
-            "issue_type": 1, 
-            "date_created": "2011-06-27 12:51:58", 
-            "description": "il faudrait que l'\u00e9quipe Gestion puisse modifier le N\u00b0 de commande tant que celle-ci n'est pas r\u00e9ceptionn\u00e9e"
         }
     }, 
     {
@@ -510,25 +497,12 @@
         "pk": 54, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "modif permanente des produits par gestionnaire", 
             "issue_type": 1, 
             "date_created": "2011-07-01 10:32:42", 
-            "description": ""
-        }
-    }, 
-    {
-        "pk": 59, 
-        "model": "issues.issue", 
-        "fields": {
-            "status": 0, 
-            "date_closed": null, 
-            "severity": 1, 
-            "title": "Log de l'\u00e9quipe GESTION directement sur \"Commandes \u00e0 saisir\"", 
-            "issue_type": 1, 
-            "date_created": "2011-07-01 16:47:43", 
             "description": ""
         }
     }, 
@@ -549,7 +523,7 @@
         "pk": 62, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 1, 
             "title": "Modification des lignes dans le d\u00e9tail des budgets", 
@@ -601,7 +575,7 @@
         "pk": 7, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 2, 
             "title": "virement inter-budget", 
@@ -728,6 +702,19 @@
         }
     }, 
     {
+        "pk": 41, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "Modification du N\u00b0 de commande", 
+            "issue_type": 1, 
+            "date_created": "2011-06-27 12:51:58", 
+            "description": "il faudrait que l'\u00e9quipe Gestion puisse modifier le N\u00b0 de commande tant que celle-ci n'est pas r\u00e9ceptionn\u00e9e"
+        }
+    }, 
+    {
         "pk": 45, 
         "model": "issues.issue", 
         "fields": {
@@ -780,6 +767,19 @@
         }
     }, 
     {
+        "pk": 59, 
+        "model": "issues.issue", 
+        "fields": {
+            "status": 0, 
+            "date_closed": null, 
+            "severity": 2, 
+            "title": "Log de l'\u00e9quipe GESTION directement sur \"Commandes \u00e0 saisir\"", 
+            "issue_type": 1, 
+            "date_created": "2011-07-01 16:47:43", 
+            "description": ""
+        }
+    }, 
+    {
         "pk": 3, 
         "model": "issues.issue", 
         "fields": {
@@ -796,7 +796,7 @@
         "pk": 9, 
         "model": "issues.issue", 
         "fields": {
-            "status": 0, 
+            "status": 4, 
             "date_closed": null, 
             "severity": 3, 
             "title": "modifier bouton d\u00e9connexion", 
