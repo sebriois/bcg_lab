@@ -159,4 +159,4 @@ def get_team_member( request ):
 
 def get_teams( user ):
 	return Team.objects.filter( teammember__user = user )
-	
+

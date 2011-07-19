@@ -24,10 +24,10 @@ def index(request):
 		history_list = History.objects.filter( team__in = team_names )
 	
 	if request.method == 'GET':
-		form = HistoryFilterForm()
+		form = HistoryFilterForm( user = request.user )
 	
 	elif request.method == 'POST':
-		form = HistoryFilterForm( data = request.POST )
+		form = HistoryFilterForm( user = request.user, data = request.POST )
 		
 		if form.is_valid():
 			data = form.cleaned_data

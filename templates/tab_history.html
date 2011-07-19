@@ -25,10 +25,7 @@
         <tr>
           <td>Fournisseur:</td>
           <td>{{filter_form.provider}}</td>
-          <td width="10%"></td>
-          <td>Prix (min/max):</td>
-          <td>{{ filter_form.price__gte }}</td>
-          <td>{{ filter_form.price__lte }}</td>
+          <td colspan="4"></td>
         </tr>
       </table>
       <button type="submit" class="all button">Chercher</button>
@@ -62,7 +59,7 @@
             <td>{{ item.team }}</td>
             <td>{{ item.provider }}</td>
             <td>{{ item.price }}</td>
-            {% if user|is_validator or user|is_secretary %}
+            {% if user|is_validator or user|is_secretary or user|is_super_validator or user|is_super_secretary %}
               <td>{{ item.budget }}</td>
             {% endif %}
             <td>

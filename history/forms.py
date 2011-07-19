@@ -3,7 +3,7 @@ from django import forms
 
 from team.models import Team
 from provider.models import Provider
-
+from utils import *
 
 class HistoryFilterForm(forms.Form):
 	TEAM_CHOICES = [(team.name,team.name) for team in Team.objects.all()]
@@ -43,18 +43,13 @@ class HistoryFilterForm(forms.Form):
 		required			= False
 	)
 	
-	price__gte = forms.DecimalField(
-		label = "Prix min",
-		min_value = 0,
-		max_digits = 12,
-		decimal_places = 2,
-		required = False
-	)
+	def __init__(self, user, *args, **kwargs):
+		super( HistoryFilterForm, self ).__init__(*args, **kwargs)
+		
+		if is_super_validator(user) or is_secretary(user):
+			team_choices = [(team.name,team.name) for team in Team.objects.all()]
+		else:
+			team_choices = [(team.name,team.name) for team in get_teams(user)]
+		
+		self.fields['team'].choices = team_choices
 	
-	price__lte = forms.DecimalField(
-		label = "Prix max",
-		min_value = 0,
-		max_digits = 12,
-		decimal_places = 2,
-		required = False
-	)
