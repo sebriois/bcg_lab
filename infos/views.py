@@ -15,7 +15,12 @@ from utils import *
 @transaction.commit_on_success
 def index(request):
 	if request.method == 'POST':
-		form = InfoForm( data = request.POST )
+		data = request.POST.copy()
+		
+		if is_secretary( request.user ) or is_super_secretary( request.user ):
+			data['text'] = u'<strong><u>INFO GESTION:</u></strong> %s' % data['text']
+		
+		form = InfoForm( data = data )
 		
 		if form.is_valid():
 			form.save()

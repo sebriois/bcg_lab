@@ -36,7 +36,7 @@
       </thead>
       <tbody>
         {% for issue in issues %}
-          <tr>
+          <tr class="{% cycle 'even' 'odd' %}">
             <td>
               <a href="{% url issue_item issue.id %}">{{ issue.title }}</a>
             </td>
