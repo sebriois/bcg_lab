@@ -316,6 +316,20 @@ def set_delivered(request, order_id):
 					#################
 
 @login_required
+@transaction.commit_on_success
+def set_notes(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	order = get_object_or_404( Order, id = order_id )
+	if 'notes' in request.GET:
+		order.notes = requsest.GET['notes']
+		order.save()
+	
+	return HttpResponse('ok')
+
+@login_required
 @GET_method
 @transaction.commit_on_success
 def set_budget(request, order_id):

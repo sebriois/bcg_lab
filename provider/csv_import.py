@@ -105,9 +105,12 @@ def check_uploaded_file( header, file ):
 			else:
 				price = Decimal( price_str )
 				if price <= 0:
-					errors.append( base_error + "Colonne %s/%s - le prix est négatif ou nul, il doit être strictement positif." % (str(header['prix'] + 1),len(line)) )
+					errors.append( base_error + "Colonne %s/%s - le prix est \
+négatif ou nul, il doit être strictement positif." % (str(header['prix'] + 1),len(line)) )
 		except:
-			errors.append( base_error + "Colonne %s/%s - impossible de lire une valeur décimale (prix) dans cette colonne. Valeur lue: %s" % (str(header['prix'] + 1),len(line),price_str) )
+			errors.append( base_error + "Colonne %s/%s - impossible de lire \
+une valeur décimale (prix) dans cette colonne. \
+Valeur lue: %s" % (str(header['prix'] + 1),len(line),price_str) )
 		
 		if not errors:
 			result_table.append( line[0:6] )

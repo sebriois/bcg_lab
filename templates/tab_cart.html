@@ -50,6 +50,10 @@
       </tbody>
     </table>
     
+    <h4>Commentaires</h4>
+    <textarea id="order_notes" url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
+    <div class="cleaner"></div>
+
     <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
     <div style="float:right">
       <a href="{% url add_debit order.id %}?next=tab_cart" class="plus">Frais annexes</a>

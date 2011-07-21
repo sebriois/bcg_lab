@@ -458,6 +458,8 @@ $(document).ready(function(){
     // 
     
     $('.ajax-post').click(function(){
+      $('#loadingDialog').dialog('open');
+      
       var parent = $(this).parent('div.order');
       var url_qty = $(this).attr('url');
       
@@ -493,6 +495,21 @@ $(document).ready(function(){
             alert(jqXHR.responseText);
           }
         });
+      });
+      
+      // SAVE ORDER NOTES
+      var url_notes = $('#order_notes').attr('url');
+      var notes = $('#order_notes').val();
+      $.ajax({
+        url: url_notes,
+        async: false,
+        data: {
+          'notes': notes
+        },  
+        error: function(jqXHR, textStatus, errorThrown){
+          $('#loadingDialog').dialog('close');
+          alert(jqXHR.responseText);
+        }
       });
     });
 });
