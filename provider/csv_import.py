@@ -84,19 +84,30 @@ def check_uploaded_file( header, file ):
 				sorted_keys.append( h )
 	result_table.append(sorted_keys)
 	
-	for num_line, line in enumerate( file ):
+	# pre-process file by removing annoying microsoft's ^M shit end of line
+	lines = file.readlines()
+	if len(lines) == 1:
+		lines = lines[0].split("\r")
+	
+	for num_line, line in enumerate( lines ):
 		base_error = "Ligne %s - " % (num_line + 1)
 		try:
-			line = line.decode('utf8').encode('utf8').rstrip('\n').split(";")
+			line = line.decode('utf8').encode('utf8').split(";")
 		except:
-			line = line.decode('latin').encode('utf8').rstrip('\n').split(";")
+			line = line.decode('latin').encode('utf8').split(";")
 		
 		try:
-			price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace('€',''))
-			if price <= 0:
-				errors.append( base_error + "un prix strictement positif est requis." )
+			price_str = line[header['prix']].replace(" ","").replace(",",".").replace('€','')
+			
+			if not price_str:
+				errors.append( base_error + "Colonne %s/%s - la colonne prix est vide." % (str(header['prix'] + 1),len(line)) )
+			
+			else:
+				price = Decimal( price_str )
+				if price <= 0:
+					errors.append( base_error + "Colonne %s/%s - le prix est négatif ou nul, il doit être strictement positif." % (str(header['prix'] + 1),len(line)) )
 		except:
-			errors.append( base_error + "un prix strictement positif est requis. Il doit être strictement positif et ne doit pas contenir de sigle '€'.")
+			errors.append( base_error + "Colonne %s/%s - impossible de lire une valeur décimale (prix) dans cette colonne. Valeur lue: %s" % (str(header['prix'] + 1),len(line),price_str) )
 		
 		if not errors:
 			result_table.append( line[0:6] )

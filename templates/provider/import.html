@@ -27,14 +27,8 @@
     </li>
   </ul>
   
-  <h3>Exemple de fichier</h3>
-  <code>
-    carotte;car001;30mL;10;;nomenclature1<br />
-    banane;ban001;10kg;12;offre1;nomenclature2<br />
-    poirreau;poi001;;8;;<br />
-  </code>
-  
-  <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <h3>Import</h3>
+  <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data" style="padding-top:0">{% csrf_token %}
     <h3>A) Sélectionnez le fichier à importer</h3>
     {% with form.csv_file as field %}
       <div class="form-row{% if field.errors %} error {% endif %}">
