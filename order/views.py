@@ -324,7 +324,7 @@ def set_notes(request, order_id):
 	
 	order = get_object_or_404( Order, id = order_id )
 	if 'notes' in request.GET:
-		order.notes = requsest.GET['notes']
+		order.notes = request.GET['notes']
 		order.save()
 	
 	return HttpResponse('ok')
