@@ -47,9 +47,9 @@ class HistoryFilterForm(forms.Form):
 		super( HistoryFilterForm, self ).__init__(*args, **kwargs)
 		
 		if is_super_validator(user) or is_secretary(user):
-			team_choices = [(team.name,team.name) for team in Team.objects.all()]
+			team_choices = [("","---------")] + [(team.name,team.name) for team in Team.objects.all()]
 		else:
-			team_choices = [(team.name,team.name) for team in get_teams(user)]
+			team_choices = [("","---------")] + [(team.name,team.name) for team in get_teams(user)]
 		
 		self.fields['team'].choices = team_choices
 		self.fields['team'].initial = get_teams(user)[0].name

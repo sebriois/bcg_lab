@@ -73,6 +73,14 @@ class Order(models.Model):
 		for item in self.items.all():
 			item.create_budget_line()
 	
+	def update_budget_lines(self):
+		for bl in BudgetLine.objects.filter( order_id = self.id ):
+			bl.number = self.number
+			bl.save()
+			
+		for item in self.items.all():
+			item.update_budget_line()
+	
 	def save_to_history(self):
 		from history.models import History
 		

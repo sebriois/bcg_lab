@@ -316,6 +316,7 @@ def set_delivered(request, order_id):
 					#################
 
 @login_required
+@GET_method
 @transaction.commit_on_success
 def set_notes(request, order_id):
 	if not request.is_ajax():
@@ -326,6 +327,25 @@ def set_notes(request, order_id):
 	if 'notes' in request.GET:
 		order.notes = request.GET['notes']
 		order.save()
+	
+	return HttpResponse('ok')
+
+@login_required
+@GET_method
+@transaction.commit_on_success
+def set_number(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	order = get_object_or_404( Order, id = order_id )
+	
+	if 'number' in request.GET:
+		order.number = request.GET['number']
+		order.save()
+		order.update_budget_lines()
+	else:
+		return HttpResponseServerError('order number is missing.')
 	
 	return HttpResponse('ok')
 
@@ -427,7 +447,7 @@ def _move_to_status_1(request, order):
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	
 	emails = []
-	for member in order.team.members.filter( member_type__in = [VALIDATOR, SUPER_SECRETARY] ):
+	for member in order.team.members.filter( member_type__in = [VALIDATOR, SUPER_VALIDATOR, SUPER_SECRETARY] ):
 		if member.user.email and member.user.email not in emails:
 			emails.append( member.user.email )
 	

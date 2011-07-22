@@ -511,5 +511,21 @@ $(document).ready(function(){
           alert(jqXHR.responseText);
         }
       });
+      
+      // SAVE ORDER NUMBER
+      $.ajax({
+        url: $('#order_number').attr('url'),
+        async: false,
+        data: {
+          'number': $('#order_number').val()
+        },  
+        error: function(jqXHR, textStatus, errorThrown){
+          $('#loadingDialog').dialog('close');
+          alert(jqXHR.responseText);
+        }
+      });
+      
+      alert('Toutes les modifications ont bien été enregistrées!');
+      $('#loadingDialog').dialog('close');
     });
 });
