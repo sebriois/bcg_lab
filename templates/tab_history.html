@@ -46,7 +46,7 @@
         <th>Equipe</th>
         <th>Fournisseur</th>
         <th>Prix</th>
-        {% if user|is_validator or user|is_secretary %}
+        {% if user|is_validator or user|is_super_validator or user|is_secretary or user|is_super_secretary %}
           <th>Budget</th>
         {% endif %}
         <th>Action</th>
@@ -59,7 +59,7 @@
             <td>{{ item.team }}</td>
             <td>{{ item.provider }}</td>
             <td>{{ item.price }}</td>
-            {% if user|is_validator or user|is_secretary or user|is_super_validator or user|is_super_secretary %}
+            {% if user|is_validator or user|is_super_validator or user|is_secretary or user|is_super_secretary %}
               <td>{{ item.budget }}</td>
             {% endif %}
             <td>
