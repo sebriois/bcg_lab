@@ -91,7 +91,7 @@ class Order(models.Model):
 			budget					= self.budget and self.budget.name or "",
 			number					= self.number,
 			price						= self.price(),
-			date_delivered	= self.date_delivered
+			date_delivered	= self.date_delivered and self.date_delivered or date.today()
 		)
 		
 		for item in self.items.all():
