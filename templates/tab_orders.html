@@ -16,7 +16,7 @@
         {% if user|has_multiple_teams %}
           <th>Equipe</th>
         {% endif %}
-        {% if user|is_validator %}
+        {% if user|is_validator or user|is_super_validator %}
           <th>Budget</th>
         {% endif %}
         <th>Montant</th>
@@ -34,7 +34,7 @@
             {% if user|has_multiple_teams %}
               <td>{{ order.get_full_name }}</td>
             {% endif %}
-            {% if user|is_validator %}
+            {% if user|is_validator or user|is_super_validator %}
               <td>{{ order.budget.name }}</td>
             {% endif %}
             <td>{{ order.price }} €</td>
