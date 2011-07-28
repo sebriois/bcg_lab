@@ -74,7 +74,7 @@
                 <a href="{% url user_item member.id %}" class="pencil">Editer</a>
                 <a href="{% url change_password member.user.id %}" class="key">Changer de mot de passe</a>
               {% else %}
-                {% if user|is_validator or user.is_superuser %}
+                {% if user|is_validator or user.is_superuser or user|is_super_validator %}
                   <a href="{% url user_item member.id %}" class="pencil">Editer</a>
                   <a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
                   <a href="{% url change_password member.user.id %}" class="key">Nouveau mot de passe</a>

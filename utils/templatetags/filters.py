@@ -41,6 +41,11 @@ def is_admin(user):
 	return user.teammember_set.filter(member_type = ADMIN).count() > 0
 
 @register.filter
+def in_team_secretary(user):
+	if not user or user.is_anonymous(): return False
+	return user.teammember_set.filter(team__name = "GESTION").count() > 0
+
+@register.filter
 def is_in_charge(product, user):
 	return user in product.provider.users_in_charge.all()
 
@@ -50,10 +55,7 @@ def team(user):
 
 @register.filter
 def dialogClass(order):
-	if order.status == 2 and order.budget.budget_type == 0: #ie. CNRS
-		return "setOrderNb"
-	
-	if order.status == 3 and order.budget.budget_type != 0: #ie. pas CNRS
+	if order.status == 3:
 		return "setOrderNb"
 	
 	if order.status == 4:

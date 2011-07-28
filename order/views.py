@@ -414,9 +414,9 @@ def set_next_status(request, order_id):
 		return _move_to_status_1(request, order)
 	
 	elif order.status == 1:
-		user_can_validate = order.team.members.filter( 
+		user_can_validate = order.team.members.filter(
 			user = request.user,
-			member_type = VALIDATOR
+			member_type__in = [VALIDATOR, SUPER_SECRETARY]
 		).count() > 0
 		if user_can_validate or is_super_validator(request.user):
 			return _move_to_status_2(request, order)
@@ -425,10 +425,10 @@ def set_next_status(request, order_id):
 			pour valider une commande")
 			return redirect('tab_validation')
 	
-	elif order.status == 2 and ( is_secretary(request.user) or is_super_secretary(request.user) ):
+	elif order.status == 2 and (in_team_secretary(request.user) or is_admin(request.user)):
 		return _move_to_status_3(request, order)
 	
-	elif order.status == 3 and ( is_secretary(request.user) or is_super_secretary(request.user) ):
+	elif order.status == 3 and (in_team_secretary(request.user) or is_admin(request.user)):
 		return _move_to_status_4(request, order)
 	
 	elif order.status == 4:
@@ -464,7 +464,7 @@ def _move_to_status_1(request, order):
 		return redirect( 'tab_validation' )
 	
 	return redirect( 'tab_cart' )
-	
+
 
 def _move_to_status_2(request, order):
 	if order.provider.is_local:
@@ -489,38 +489,29 @@ def _move_to_status_2(request, order):
 	return redirect( 'tab_validation' )
 
 def _move_to_status_3(request, order):
-	if order.budget.budget_type == 0: # ie. CNRS
-		number = request.GET.get('number', None)
-		if not number:
-			error_msg(request, "Commande CNRS, veuillez saisir le numéro de commande XLAB.")
-			return redirect( 'tab_orders' )
-		
-		order.number = number
-		order.status = 4 # Skip status 3 when CNRS budget
-		order.save()
-		order.create_budget_line()
-	else:
-		order.status = 3
-		order.save()
+	order.status = 3
+	order.save()
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect('tab_orders')
 
 def _move_to_status_4(request, order):
-	if order.budget.budget_type != 0: # ie. pas CNRS (UPS, etc.)
-		number = request.GET.get('number', None)
-		if not number:
-			error_msg(request, "Commande UPS, veuillez saisir le numéro de commande SIFAC.")
-			return redirect( 'tab_orders' )
-		
-		order.number = number
-		order.status = 4
-		order.save()
-		order.create_budget_line()
+	number = request.GET.get('number', None)
 	
-	else:
-		order.status = 4
-		order.save()
+	if not number:
+		if order.budget.budget_type == 0: # ie. CNRS
+			msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
+			
+		else:
+			msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
+		
+		error_msg(request, msg)
+		return redirect( 'tab_orders' )
+	
+	order.number = number
+	order.status = 4
+	order.save()
+	order.create_budget_line()
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect('tab_orders')

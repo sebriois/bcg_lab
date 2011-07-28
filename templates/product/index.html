@@ -67,7 +67,7 @@
             {% if product.origin %} - {{ product.origin }}{% endif %}
           </td>
           <td>{{ product.name }}</td>
-          <td>{{ product.packaging }}</td>
+          <td>{{ product.packaging|default:"" }}</td>
           <td>{{ product.reference }}</td>
           <td>{{ product.price }}&nbsp;€</td>
           <td>{{ product.offer_nb|default:"" }}</td>

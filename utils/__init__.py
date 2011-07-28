@@ -39,6 +39,11 @@ def is_admin(user):
 	if not user or user.is_anonymous(): return False
 	return user.teammember_set.filter(member_type = ADMIN).count() > 0
 
+def in_team_secretary(user):	
+	# FIXME: Ugly way of testing if this team is secretary, use permissions instead
+	if not user or user.is_anonymous(): return False
+	return user.teammember_set.filter( team__name = "GESTION" ).count() > 0
+
 def GET_method(view):
 	"""
 	Decorator that checks whether the view is called using the GET method

@@ -17,7 +17,7 @@ def index(request):
 	if request.method == 'POST':
 		data = request.POST.copy()
 		
-		if is_secretary( request.user ) or is_super_secretary( request.user ):
+		if in_team_secretary( request.user ):
 			data['text'] = u'<strong><u>INFO GESTION:</u></strong> %s' % data['text']
 		
 		form = InfoForm( data = data )
