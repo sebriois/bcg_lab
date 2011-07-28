@@ -88,7 +88,7 @@ class Order(models.Model):
 		history = History.objects.create(
 			team						= self.team.name,
 			provider				= self.provider.name,
-			budget					= self.budget.name,
+			budget					= self.budget and self.budget.name or "",
 			number					= self.number,
 			price						= self.price(),
 			date_delivered	= self.date_delivered
