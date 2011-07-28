@@ -65,6 +65,10 @@
     </tbody>
   </table>
   
+  <h4>Commentaires</h4>
+  <textarea id="order_notes" url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
+  <div class="cleaner"></div>
+  
   <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
   <a href="{{ order.get_absolute_url }}" class="disk ajax-post" url="{% url set_item_quantity %}">
     Enregistrer les modifications

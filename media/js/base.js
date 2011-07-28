@@ -500,30 +500,37 @@ $(document).ready(function(){
       // SAVE ORDER NOTES
       var url_notes = $('#order_notes').attr('url');
       var notes = $('#order_notes').val();
-      $.ajax({
-        url: url_notes,
-        async: false,
-        data: {
-          'notes': notes
-        },  
-        error: function(jqXHR, textStatus, errorThrown){
-          $('#loadingDialog').dialog('close');
-          alert(jqXHR.responseText);
-        }
-      });
+      if ( url_notes ) {
+        $.ajax({
+          url: url_notes,
+          async: false,
+          data: {
+            'notes': notes
+          },  
+          error: function(jqXHR, textStatus, errorThrown){
+            $('#loadingDialog').dialog('close');
+            alert(jqXHR.responseText);
+          }
+        });
+      }
       
       // SAVE ORDER NUMBER
-      $.ajax({
-        url: $('#order_number').attr('url'),
-        async: false,
-        data: {
-          'number': $('#order_number').val()
-        },  
-        error: function(jqXHR, textStatus, errorThrown){
-          $('#loadingDialog').dialog('close');
-          alert(jqXHR.responseText);
-        }
-      });
+      var url_order_nb = $('#order_number').attr('url');
+      var number = $('#order_number').attr('url');
+      
+      if ( url_order_nb && number ) {
+        $.ajax({
+          url: url_order_nb,
+          async: false,
+          data: {
+            'number': number
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            $('#loadingDialog').dialog('close');
+            alert(jqXHR.responseText);
+          }
+        });
+      }
       
       alert('Toutes les modifications ont bien été enregistrées!');
       $('#loadingDialog').dialog('close');
