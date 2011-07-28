@@ -31,6 +31,7 @@ class ProductForm(forms.ModelForm):
 
 class ProductFilterForm(forms.Form):
 	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
+	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
 	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
 	
 	connector = forms.TypedChoiceField(
@@ -66,5 +67,14 @@ class ProductFilterForm(forms.Form):
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
-
+	
+	origin = forms.CharField(
+		label		= u"Fournisseur d'origine",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': ORIGIN_CHOICES
+		}),
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
 

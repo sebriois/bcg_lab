@@ -23,7 +23,7 @@ def home(request):
 	return direct_to_template( request, 'homepage.html', {
 		'infos': Info.objects.all(),
 		'info_form': InfoForm()
-		})
+	})
 
 
 def error(request):
