@@ -87,7 +87,7 @@ def order_detail(request, order_id):
 				budgets.append( budget )
 		template = 'order/order_details_secretary.html'
 	
-	elif is_validator(request.user):
+	elif is_validator(request.user) or is_super_validator(request.user):
 		for budget in Budget.objects.filter( team__in = get_teams( request.user ) ):
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
