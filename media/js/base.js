@@ -457,11 +457,11 @@ $(document).ready(function(){
     //    AJAX REQUESTS
     // 
     
-    $('.ajax-post').click(function(){
+    $('.save-changes, .ajax-post').click(function(){
       $('#loadingDialog').dialog('open');
       
       var parent = $(this).parent('div.order');
-      var url_qty = $(this).attr('url');
+      var url_qty = $('.ajax-post').attr('url');
       
       // SAVE BUDGET
       if( $('#select-budget',parent).length > 0 ) {
@@ -516,7 +516,7 @@ $(document).ready(function(){
       
       // SAVE ORDER NUMBER
       var url_order_nb = $('#order_number').attr('url');
-      var number = $('#order_number').attr('url');
+      var number = $('#order_number').val();
       
       if ( url_order_nb && number ) {
         $.ajax({

@@ -65,9 +65,9 @@
     </a>
     
     {% if user|is_validator %}
-      <a href="{% url set_next_status order.id %}" class="cart">Commander</a>
+      <a href="{% url set_next_status order.id %}" class="cart save-changes">Commander</a>
     {% else %}
-      <a href="{% url set_next_status order.id %}" class="cart confirm">Commander</a>
+      <a href="{% url set_next_status order.id %}" class="cart confirm save-changes">Commander</a>
     {% endif %}
     
     <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>

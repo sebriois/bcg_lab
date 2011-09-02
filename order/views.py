@@ -36,7 +36,7 @@ def tab_cart(request):
 @login_required
 @GET_method
 def tab_orders(request):
-	if is_secretary(request.user) or is_super_secretary(request.user):
+	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user):
 		order_list = Order.objects.filter( status__in = [2,3,4] )
 		template = 'tab_orders_secretary.html'
 	else:
@@ -81,13 +81,13 @@ def order_detail(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	budgets = []
 	
-	if is_secretary(request.user) or is_super_secretary(request.user) or is_admin(request.user):
+	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user) or is_admin(request.user):
 		for budget in Budget.objects.all():
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
 		template = 'order/order_details_secretary.html'
 	
-	elif is_validator(request.user) or is_super_validator(request.user):
+	elif is_validator(request.user):
 		for budget in Budget.objects.filter( team__in = get_teams( request.user ) ):
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )

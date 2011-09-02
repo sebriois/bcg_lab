@@ -18,13 +18,11 @@ from utils import *
 
 @login_required
 def home(request):
-	Info.objects.filter( expiry__lt = date.today() ).delete()
+	# UGLY WAY TO REDIRECT SECRETARY LOGIN
+	if is_secretary(request.user) or is_super_secretary(request.user) or request.user.username == "kandel":
+		return redirect('tab_orders')
 	
-	return direct_to_template( request, 'homepage.html', {
-		'infos': Info.objects.all(),
-		'info_form': InfoForm()
-	})
-
+	return redirect('info_index')
 
 def error(request):
   return direct_to_template( request, '500.html', {} )

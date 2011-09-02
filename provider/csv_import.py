@@ -50,13 +50,15 @@ def import_csv( request, provider_id ):
 		
 		if form.is_valid():
 			header = {column.lower().replace('*','') : i for i, column in enumerate(request.POST['column_order'].split(';'))}
-			try:
-				data = check_uploaded_file( header, request.FILES['csv_file'] )
-				request.session['import_csv_data'] = json.dumps({ 'data': data }).encode('utf8')
+			data, errors = check_uploaded_file( header, request.FILES['csv_file'] )
+			request.session['import_csv_data'] = json.dumps({ 'data': data }).encode('utf8')
+			
+			if errors:
+				msg = u"Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
+				error_msg( request, msg )
+			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
-			except ImportCSVException, e:
-				error_msg( request, str(e) )
-				return redirect( reverse('import_products', args=[provider_id]) )
+			return redirect( reverse('import_products', args=[provider_id]) )
 	
 	return direct_to_template(request, 'provider/import.html', {
 		'form': form,
@@ -111,14 +113,11 @@ négatif ou nul, il doit être strictement positif." % (str(header['prix'] + 1),
 			errors.append( base_error + "Colonne %s/%s - impossible de lire \
 une valeur décimale (prix) dans cette colonne. \
 Valeur lue: %s" % (str(header['prix'] + 1),len(line),price_str) )
+			continue
 		
-		if not errors:
-			result_table.append( line[0:6] )
+		result_table.append( line[0:6] )
 	
-	if errors:
-		raise ImportCSVException( "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors) )
-	else:
-		return result_table
+	return result_table, errors
 
 
 @login_required

@@ -76,7 +76,7 @@
     <a href="{% url tab_validation %}" class="disk ajax-post" url="{% url set_item_quantity %}">
       Enregistrer les modifications
     </a>
-    <a href="{% url set_next_status order.id %}" class="check">Valider la commande</a>
+    <a href="{% url set_next_status order.id %}" class="check save-changes">Valider la commande</a>
     <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
     
     {% include "order/_dialogs.html" %}

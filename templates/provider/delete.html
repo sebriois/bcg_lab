@@ -1,0 +1,22 @@
+{% extends "main_custom.html" %}
+
+{% block header %}Suppression d'un fournisseur{% endblock %}
+
+{% block content %}
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Suppression du fournisseur {{ provider.name }}</h2></div>
+
+<p>
+  La suppression d'un fournisseur est définitive et l'ensemble
+  des produits et commandes lui étant rattachées seront 
+  également supprimés.
+</p>
+
+<p>Êtes-vous sûr de vouloir supprimer ce fournisseur ?</p>
+
+<form action="{% url provider_item provider.id %}" method="post">{% csrf_token %}
+  <input type="hidden" name="method" value="DELETE" />
+  <button type="submit" class="trash button">Supprimer {{ provider.name }}</button>
+  <a href="{% url provider_index %}" class="cross button">Abandonner la suppression</a>
+</form>
+{% endblock %}
