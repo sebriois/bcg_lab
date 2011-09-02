@@ -28,6 +28,7 @@
   <div id="content_header"><h2>Bugs et améliorations</h2></div>
     <table class="list">
       <thead>
+        <th>#</th>
         <th>Titre</th>
         <th>Type</th>
         <th>Priorité</th>
@@ -37,6 +38,7 @@
       <tbody>
         {% for issue in issues %}
           <tr class="{% cycle 'even' 'odd' %}">
+            <td>{{ issue.id }}</td>
             <td>
               <a href="{% url issue_item issue.id %}">{{ issue.title }}</a>
             </td>
