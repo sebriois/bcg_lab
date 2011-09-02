@@ -70,7 +70,9 @@
               <a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
               <a href="{% url import_products provider.id %}" class="import noloading">Import produits</a>
               <a href="{% url export_products provider.id %}" class="export noloading">Export produits</a>
-              <a href="{% url provider_delete provider.id %}" class="trash">Supprimer</a>
+              {% if user|is_admin %}
+                <a href="{% url provider_delete provider.id %}" class="trash">Supprimer</a>
+              {% endif %}
               
               {% if provider.notes %}
                 <button class="comment notesDialog" content="{{ provider.notes }}">Voir les notes</button>
