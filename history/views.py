@@ -18,7 +18,7 @@ def index(request):
 		if not team.name in team_names:
 			team_names.append(team.name)
 	
-	if is_secretary(request.user) or is_super_secretary(request.user): # admin is also a 'secretary'
+	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user): # admin is also a 'secretary'
 		history_list = History.objects.all()
 	else:
 		history_list = History.objects.filter( team__in = team_names )

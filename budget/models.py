@@ -44,6 +44,7 @@ class Budget(models.Model):
 				bl.save()
 	
 
+
 class BudgetLine(models.Model):
 	team					= models.CharField(u"Equipe", max_length = 100)
 	order_id			= models.IntegerField( u"ID de commande", null = True, blank = True )

@@ -52,5 +52,6 @@ class HistoryFilterForm(forms.Form):
 			team_choices = [("","---------")] + [(team.name,team.name) for team in get_teams(user)]
 		
 		self.fields['team'].choices = team_choices
-		self.fields['team'].initial = get_teams(user)[0].name
+		# TODO:
+		# self.fields['team'].initial = get_teams(user)[0].name
 	

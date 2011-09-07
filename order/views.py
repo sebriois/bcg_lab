@@ -342,12 +342,19 @@ def set_number(request, order_id):
 	
 	if 'number' in request.GET:
 		order.number = request.GET['number']
-		order.save()
-		order.update_budget_lines()
-	else:
-		return HttpResponseServerError('order number is missing.')
+		
+		if order.status == 3:
+			order.status = 4
+			order.save()
+			order.create_budget_line()
+		else:
+			order.save()
+			order.update_budget_lines()
+		
+		return HttpResponse(order.number)
 	
-	return HttpResponse('ok')
+	return HttpResponseServerError('order number is missing.')
+	
 
 @login_required
 @GET_method
@@ -464,7 +471,6 @@ def _move_to_status_1(request, order):
 		return redirect( 'tab_validation' )
 	
 	return redirect( 'tab_cart' )
-
 
 def _move_to_status_2(request, order):
 	if order.provider.is_local:
