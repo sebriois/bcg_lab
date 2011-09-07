@@ -19,7 +19,7 @@ MEMBERTYPE_CHOICES = (
 STATE_CHOICES = (
 	(0, u"Non passée"),
 	(1, u"En attente de validation"),
-	(2, u"Transmise au secrétariat"),
+	(2, u"Transmise à la gestion"),
 	(3, u"En attente d'envoi"),
 	(4, u"Envoyée au fournisseur"),
 	(5, u"Commande réceptionnée")
