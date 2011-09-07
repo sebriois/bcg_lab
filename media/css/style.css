@@ -219,6 +219,13 @@ a:hover, a:active{
 }
 a img{ border: 0; }
 
+a.sifac {
+  color: #f42514;
+}
+a.xlab {
+  color: #18a70b;
+}
+
 #sidebar a { padding: 2px; }
 #sidebar a:hover {
   text-decoration: none;
