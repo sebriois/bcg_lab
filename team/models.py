@@ -43,6 +43,8 @@ class TeamMember(models.Model):
 			return self.user.get_full_name()
 		return self.user.username
 	
+	
+	# DEPRECATED
 	def is_active(self):
 		return self.user.is_active
 	

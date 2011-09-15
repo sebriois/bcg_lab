@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from provider.models import Provider
 
+from constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
+
 class Product(models.Model):
 	provider			= models.ForeignKey( Provider, verbose_name = 'Fournisseur' )
 	origin				= models.CharField( u"Fournisseur d'origine", max_length = 100, null = True, blank = True )
@@ -13,6 +15,8 @@ class Product(models.Model):
 	price					= models.DecimalField( u'Prix', max_digits=12, decimal_places=2)
 	offer_nb			= models.CharField( u'N° Offre', blank = True, null = True, max_length = 100)
 	nomenclature	= models.CharField( u'Nomenclature', blank = True, null = True, max_length = 100)
+	category			= models.IntegerField( u'Type', blank = True, null = True, choices = CATEGORY_CHOICES )
+	sub_category	= models.IntegerField( u'Sous-Type', blank = True, null = True, choices = SUBCATEGORY_CHOICES )
 	expiry				= models.DateTimeField( u"Date d'expiration", help_text = u"Format jj/mm/aaaa", blank = True, null = True )
 	last_change		= models.DateTimeField( u'Dernière modification', auto_now = True)
 	

@@ -46,6 +46,14 @@ ISSUE_STATUS_CHOICES = (
 	(5, u"Ne sera pas résolu")
 )
 
+CATEGORY_CHOICES = (
+	(0, u"Produit chimique")
+)
+
+SUBCATEGORY_CHOICES = (
+)
+
+
 BUDGET_CHOICES = (
 	(0, u"CNRS"),
 	(1, u"UPS")
