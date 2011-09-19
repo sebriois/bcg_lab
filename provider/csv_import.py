@@ -54,11 +54,11 @@ def import_csv( request, provider_id ):
 			request.session['import_csv_data'] = json.dumps({ 'data': data }).encode('utf8')
 			
 			if errors:
-				msg = u"Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
+				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
 				error_msg( request, msg )
-			else:
-				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
-			return redirect( reverse('import_products', args=[provider_id]) )
+				return redirect( reverse('import_products', args=[provider_id]) )
+			
+			info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
 	
 	return direct_to_template(request, 'provider/import.html', {
 		'form': form,
