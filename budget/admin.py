@@ -7,6 +7,6 @@ class BudgetAdmin(admin.ModelAdmin):
 admin.site.register(Budget, BudgetAdmin)
 
 class BudgetLineAdmin(admin.ModelAdmin):
-  list_display = ('team', 'date', 'budget', 'number', 'budget_type', 'nature')
+  list_display = ('team', 'date', 'budget', 'number', 'budget_type', 'nature', 'product', 'quantity', 'credit', 'debit')
   list_display_links = ('date',)
 admin.site.register(BudgetLine, BudgetLineAdmin)
