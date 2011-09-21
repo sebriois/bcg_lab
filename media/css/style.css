@@ -47,8 +47,8 @@ body, #wrapper {
 }
 
 #header {
-  position:relative;
-  height:5.5em;
+/*  position:relative;*/
+/*  height:5.5em;*/
   margin:0;
   padding: 8px 8px 0 8px;
   background-color:#507AAA;
@@ -61,15 +61,18 @@ body, #wrapper {
 #header a { color:#f8f8f8; }
 
 #main-menu {
-  position: absolute;
+/*  position: absolute;
   bottom: 0px;
   left:6px;
   margin: 0 24px;
   margin-right: -500px;
+*/
+  margin-left: 24px;
 }
 #main-menu ul {
   margin: 0;
   padding: 0;
+  height: 25px;
 }
 #main-menu li {
   float:left;
