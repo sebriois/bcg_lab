@@ -526,7 +526,7 @@ $(document).ready(function(){
         });
       }
       
-      alert('Toutes les modifications ont bien été enregistrées!');
+      // alert('Toutes les modifications ont bien été enregistrées!');
       $('#loadingDialog').dialog('close');
     });
 });
