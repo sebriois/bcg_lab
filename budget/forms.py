@@ -16,10 +16,7 @@ class BudgetLineForm(forms.ModelForm):
 class DebitBudgetForm(forms.ModelForm):
 	class Meta:
 		model = BudgetLine
-		fields = ('budget', 'budget_type', 'nature', 'origin', 'number', 'product', 'product_price')
-		widgets = {
-			'origin': forms.HiddenInput()
-		}
+		fields = ('budget', 'number', 'product', 'product_price')
 	
 	def __init__( self, budget, *args, **kwargs ):
 		super( DebitBudgetForm, self ).__init__( *args, **kwargs )
@@ -28,18 +25,12 @@ class DebitBudgetForm(forms.ModelForm):
 		self.fields['budget'].widget.attrs.update({'disabled':'disabled'})
 		self.fields['product'].required = True
 		self.fields['product_price'].required = True
-		self.fields['nature'].initial = budget.default_nature
-		self.fields['budget_type'].initial = budget.budget_type
-		self.fields['origin'].initial = budget.default_origin
 	
 
 class CreditBudgetForm(forms.ModelForm):
 	class Meta:
 		model = BudgetLine
-		fields = ('budget', 'budget_type', 'nature', 'number', 'product', 'product_price', 'origin')
-		widgets = {
-			'origin': forms.HiddenInput()
-		}
+		fields = ('budget', 'number', 'product', 'product_price')
 	
 	def __init__( self, budget, *args, **kwargs ):
 		super( CreditBudgetForm, self ).__init__( *args, **kwargs )
@@ -48,9 +39,6 @@ class CreditBudgetForm(forms.ModelForm):
 		self.fields['budget'].widget.attrs.update({'disabled':'disabled'})
 		self.fields['product'].required = True
 		self.fields['product_price'].required = True
-		self.fields['nature'].initial = budget.default_nature
-		self.fields['budget_type'].initial = budget.budget_type
-		self.fields['origin'].initial = budget.default_origin
 	
 
 class TransferForm(forms.Form):
