@@ -365,14 +365,8 @@ $(document).ready(function(){
       $("#sendChanges.dialog").dialog({
         width: 800,
         buttons: {
-          "Envoyer (Modification permanente)": function() {
+          "Valider la mise à jour du prix": function() {
             $('input[name="sendChanges"]').val("True");
-            $( this ).dialog( "close" );
-            $('#loadingDialog').dialog('open');
-            $('#productUpdateForm').submit();
-          },
-          "Ne pas envoyer (Modification exceptionnelle)": function() {
-            $('input[name="sendChanges"]').val("False");
             $( this ).dialog( "close" );
             $('#loadingDialog').dialog('open');
             $('#productUpdateForm').submit();
@@ -386,7 +380,7 @@ $(document).ready(function(){
       
       $('#sendChanges').dialog("open");
     });
-
+    
     // 
     // PROVIDER PAGE
     // 

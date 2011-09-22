@@ -47,7 +47,8 @@ ISSUE_STATUS_CHOICES = (
 )
 
 CATEGORY_CHOICES = (
-	(0, u"Produit chimique"),
+	(0, u""),
+	(1, u"Produit chimique"),
 )
 
 SUBCATEGORY_CHOICES = (

@@ -51,8 +51,9 @@ def delete(request, product_id):
 #--- Private views
 def _product_list(request):
 	product_list = Product.objects.all()
+	product_choices = ";".join( [ unicode(p) for p in product_list ] )
 	
-	form = ProductFilterForm( data = request.GET )
+	form = ProductFilterForm( data = request.GET, product_choices = product_choices )
 	if len(request.GET.keys()) > 0 and form.is_valid():
 		data = form.cleaned_data
 		

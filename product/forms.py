@@ -4,6 +4,7 @@ from django.forms import widgets
 
 from product.models import Product
 from provider.models import Provider
+from constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
 
 class ProductForm(forms.ModelForm):
 	class Meta:
@@ -30,7 +31,6 @@ class ProductForm(forms.ModelForm):
 		return expiry
 
 class ProductFilterForm(forms.Form):
-	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
 	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
 	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
 	
@@ -41,25 +41,19 @@ class ProductFilterForm(forms.Form):
 		empty_value = None,
 		required 		= True
 	)
-	
 	provider = forms.ModelChoiceField( 
 		label			= u"Fournisseur",
 		queryset	= Provider.objects.all(),
 		required	= False
 	)
-	
 	name = forms.CharField(
 		label			= u"Produit",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': PRODUCT_CHOICES
-		}),
+		widget		= forms.TextInput( attrs = { 'class' : 'autocomplete' }),
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
-	
 	reference = forms.CharField(
-		label	= u"Référence",
+		label			= u"Référence",
 		widget		= forms.TextInput( attrs = {
 			'class' : 'autocomplete',
 			'choices': REFERENCE_CHOICES
@@ -67,9 +61,8 @@ class ProductFilterForm(forms.Form):
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
-	
 	origin = forms.CharField(
-		label		= u"Fournisseur d'origine",
+		label			= u"Fournisseur d'origine",
 		widget		= forms.TextInput( attrs = {
 			'class' : 'autocomplete',
 			'choices': ORIGIN_CHOICES
@@ -77,4 +70,25 @@ class ProductFilterForm(forms.Form):
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
+	nomenclature = forms.CharField(
+		label			= u"Nomenclature",
+		required	= False
+	)
+	category = forms.TypedChoiceField(
+		label			= u"Type",
+		choices		= CATEGORY_CHOICES,
+		coerce		= int,
+		required	= False
+	)
+	sub_category = forms.TypedChoiceField(
+		label			= u"Sous-Type",
+		choices		= SUBCATEGORY_CHOICES,
+		coerce		= int,
+		required	= False
+	)
+	
+	def __init__(self, product_choices, *args, **kwargs):
+		super( ProductFilterForm, self ).__init__( *args, **kwargs )
+		self.fields['name'].widget.attrs.update({'choices': product_choices})
+	
 

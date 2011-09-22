@@ -45,7 +45,7 @@
                   {{ provider.reseller.name }}
                 </a>
               {% else %}
-                <a href="{% url product_index %}?provider={{provider.id}}" class="table_go">
+                <a href="{% url product_index %}?provider={{provider.id}}&connector=OR" class="table_go">
                   {{ provider.name }}
                 </a>({{ provider.product_set.all.count }} produits)
               {% endif %}

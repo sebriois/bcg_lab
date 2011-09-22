@@ -47,12 +47,9 @@ body, #wrapper {
 }
 
 #header {
-/*  position:relative;*/
-/*  height:5.5em;*/
   margin:0;
   padding: 8px 8px 0 8px;
   background-color:#507AAA;
-/*  color:#f8f8f8;*/
 }
 #header h1 { 
   margin: 0 24px;
@@ -61,12 +58,6 @@ body, #wrapper {
 #header a { color:#f8f8f8; }
 
 #main-menu {
-/*  position: absolute;
-  bottom: 0px;
-  left:6px;
-  margin: 0 24px;
-  margin-right: -500px;
-*/
   margin-left: 24px;
 }
 #main-menu ul {
