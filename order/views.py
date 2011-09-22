@@ -57,15 +57,15 @@ def tab_orders(request):
 def tab_validation(request):
 	if is_admin(request.user) or is_super_validator(request.user):
 		order_list = Order.objects.filter( status = 1 )
-		budget_list = Budget.objects.all()
+		budget_list = Budget.objects.filter(is_active = True)
 	elif is_validator(request.user):
 		teams = get_teams( request.user )
 		order_list = Order.objects.filter( team__in = teams, status = 1 )
-		budget_list = Budget.objects.filter( team__in = teams )
+		budget_list = Budget.objects.filter( team__in = teams, is_active = True )
 	elif is_super_secretary(request.user):
 		teams = get_teams( request.user )
 		order_list = Order.objects.filter( team__in = teams, status = 1 )
-		budget_list = Budget.objects.all()
+		budget_list = Budget.objects.filter(is_active = True)
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list ),
@@ -82,13 +82,13 @@ def order_detail(request, order_id):
 	budgets = []
 	
 	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user) or is_admin(request.user):
-		for budget in Budget.objects.all():
+		for budget in Budget.objects.filter(default_nature = "FO", is_active = True):
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
 		template = 'order/order_details_secretary.html'
 	
 	elif is_validator(request.user):
-		for budget in Budget.objects.filter( team__in = get_teams( request.user ) ):
+		for budget in Budget.objects.filter( team__in = get_teams( request.user ), is_active = True ):
 			if budget.get_amount_left() > 0:
 				budgets.append( budget )
 		template = 'order/order_details_validator.html'
