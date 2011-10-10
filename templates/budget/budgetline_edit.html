@@ -1,15 +1,80 @@
-{% extends "main_classic.html" %}
-
-{% block header %}Ajout d'un budget{% endblock %}
+{% extends "main_custom.html" %}
 
 {% block content %}
-<form action="{% url budgetline_edit bl.id %}" method="post">{% csrf_token %}
-    <p class="instructions">
-      <em>Les champs marqués d'une étoile sont obligatoires</em>
-    </p>
-    {% for field in form %}
-        {% include "form_snippet.html"%}
-    {% endfor %}
-    <button type="submit" class="check button">Valider</button>
-</form>
+
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Modification d'une ligne budgétaire</h2></div>
+
+  <form action="{% url budgetline_edit bl.id %}" method="post">{% csrf_token %}
+      <p class="instructions">
+        <em>Les champs marqués d'une étoile sont obligatoires</em>
+      </p>
+      
+      <fieldset style="float:left;height:270px;">
+        <legend>Budget</legend>
+        {% with form.team as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.budget as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.origin as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.nature as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.budget_type as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+      </fieldset>
+      
+      <fieldset style="float:left;height:270px;">
+        <legend>Description</legend>
+        {% with form.provider as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.offer as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.product as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.reference as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        {% with form.confidential as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+      </fieldset>
+      
+      <fieldset style="float:left;height:270px;">
+        <legend>Montant</legend>
+      
+        <table>
+          <tr>
+            <td>
+              <input type="radio" name="cost_type" value="credit" {% if bl.credit %}checked="on"{% endif %} />Crédit
+            </td>
+            <td width="20px"></td>
+            <td>
+              <input type="radio" name="cost_type" value="debit" {% if bl.debit %}checked="on"{% endif %} />Débit
+            </td>
+          </tr>
+        </table>
+        <div class="cleaner"></div>
+        
+        {% with form.cost as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+        
+        {% with form.quantity as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
+      </fieldset>
+      <div class="cleaner"></div>
+      
+      <button type="submit" class="check button">Valider</button>
+  </form>
+
 {% endblock %}

@@ -64,7 +64,7 @@ class BudgetLine(models.Model):
 	product_price = models.DecimalField(u"Montant", max_digits=12, decimal_places=2, null = True, blank = True)
 	credit				= models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
 	debit					= models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
-	confidential	= models.BooleanField(u"Donnée confidentielle", default = False)
+	confidential	= models.BooleanField(u"Ligne confidentielle", default = False)
 	is_active			= models.BooleanField(u"Active?", default = True)
 	
 	class Meta:

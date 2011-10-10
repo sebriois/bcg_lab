@@ -11,7 +11,22 @@ class BudgetForm(forms.ModelForm):
 class BudgetLineForm(forms.ModelForm):
 	class Meta:
 		model = BudgetLine
-		exclude = ('order_id', 'orderitem_id', 'budget_id')
+		exclude = ('order_id', 'orderitem_id', 'budget_id', 'credit', 'debit', 'product_price')
+	
+	def __init__( self, *args, **kwargs ):
+		super( BudgetLineForm, self ).__init__( *args, **kwargs )
+		
+		if self.instance and self.instance.credit:
+			initial_cost = self.instance.credit
+		elif self.instance and self.instance.debit:
+			initial_cost = self.instance.debit
+		else:
+			initial_cost = 0
+		
+		self.fields["cost"] = forms.DecimalField( label = u"Montant unitaire", initial = initial_cost)
+		self.fields["quantity"].required = True
+		
+	
 
 class DebitBudgetForm(forms.ModelForm):
 	class Meta:
