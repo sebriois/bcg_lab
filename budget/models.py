@@ -30,10 +30,10 @@ class Budget(models.Model):
 		amount_left = 0
 		for line in BudgetLine.objects.filter( budget_id = self.id ):
 			if line.credit:
-				amount_left += line.credit
+				amount_left += product_price
 			
 			if line.debit:
-				amount_left -= line.debit
+				amount_left -= product_price
 		
 		return amount_left
 	
@@ -76,10 +76,10 @@ class BudgetLine(models.Model):
 		amount_left = 0
 		for line in BudgetLine.objects.filter( team = self.team, budget = self.budget ):
 			if line.credit:
-				amount_left += line.credit
+				amount_left += product_price
 			
 			if line.debit:
-				amount_left -= line.debit
+				amount_left -= product_price
 			
 			if line == self:
 				break

@@ -69,7 +69,7 @@ def credit_budget(request, budget_id):
 			bl.budget_type	= budget.budget_type
 			bl.origin				= budget.default_origin
 			bl.quantity			= 1
-			bl.credit				= bl.quantity * bl.product_price
+			bl.credit				= bl.product_price
 			bl.debit				= 0
 			bl.save()
 			
@@ -94,7 +94,7 @@ def debit_budget(request, budget_id):
 	
 	data = request.POST.copy()
 	data.update({ 'budget': budget.name }) # otherwise, form is not valid
-
+	
 	form = DebitBudgetForm( budget, data = data )
 	if form.is_valid():
 		bl = form.save( commit = False )
@@ -105,7 +105,7 @@ def debit_budget(request, budget_id):
 		bl.origin				= budget.default_origin
 		bl.quantity			= 1
 		bl.credit				= 0
-		bl.debit				= bl.quantity * bl.product_price
+		bl.debit				= bl.product_price
 		bl.save()
 		
 		info_msg(request, "Ligne de débit ajoutée avec succès!")

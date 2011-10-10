@@ -43,10 +43,8 @@ def import_csv( request, provider_id ):
 	
 	if request.method == 'GET':
 		form = ImportForm()
-		data = None
 	elif request.method == 'POST':
 		form = ImportForm(data = request.POST, files = request.FILES)
-		data = None
 		
 		if form.is_valid():
 			header = {column.lower().replace('*','') : i for i, column in enumerate(request.POST['column_order'].split(';'))}
@@ -57,15 +55,17 @@ def import_csv( request, provider_id ):
 				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
 				error_msg( request, msg )
 				return redirect( reverse('import_products', args=[provider_id]) )
-			
-			info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
+			else:
+				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
+				return direct_to_template(request, 'provider/import_preview.html', {
+					'data': data,
+					'provider': provider
+				})
 	
 	return direct_to_template(request, 'provider/import.html', {
 		'form': form,
-		'data': data,
 		'provider': provider
 	})
-	
 
 
 def check_uploaded_file( header, file ):
@@ -86,7 +86,7 @@ def check_uploaded_file( header, file ):
 				sorted_keys.append( h )
 	result_table.append(sorted_keys)
 	
-	# pre-process file by removing annoying microsoft's ^M shit end of line
+	# FIXME: can't import files having only 1 row
 	lines = file.readlines()
 	if len(lines) == 1:
 		lines = lines[0].split("\r")
@@ -137,12 +137,17 @@ votre navigateur)." )
 	# Loads data from cookie - dumped as json when the file was imported
 	csv_data = json.loads( request.session['import_csv_data'] )
 	
+	kept_items = map(int, request.GET['items'].split(','))
+	
 	header = {}
 	for num_line, line in enumerate(csv_data['data']):
 		if num_line == 0:
 			for i, head in enumerate(line):
 				head = head.lower().strip().replace(u'é', u'e')
 				header[head] = i
+			continue
+		
+		if not num_line in kept_items:
 			continue
 		
 		price = Decimal(line[header['prix']].replace(" ","").replace(",",".").replace(u'€',u''))

@@ -6,7 +6,6 @@
 {% block menu_provider %}selected{% endblock %}
 
 {% block content %}
-
 <div id="content" style="min-height:0">
   <div id="content_header">
     <h2>Mise à jour des produits du fournisseur {{ provider.name }}</h2>
@@ -56,31 +55,4 @@
     <a href="{% url provider_index %}" class="back">Annuler</a>
   </form>
 </div>
-
-{% if data %}
-<div id="content" style="min-height:0">
-  <div id="content_header">
-    <h2>Résultat de l'importation et confirmation</h2>
-  </div>
-  <a href="{% url perform_import_products provider.id %}" class="check">Valider l'import</a>
-  <table class="list">
-    {% for line in data %}
-      {% if forloop.counter == 1 %}
-        <thead>
-          {% for head in line %}
-            <th>{{head}}</th>
-          {% endfor %}
-        </thead>
-      {% else %}
-        <tr>
-          {% for item in line %}
-            <td>{{ item }}</td>
-          {% endfor %}
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </table>
-</div>
-{% endif %}
-
 {% endblock %}
