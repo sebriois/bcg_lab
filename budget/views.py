@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import date
+from decimal import Decimal
 
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
@@ -200,12 +201,12 @@ def edit_budgetline(request, bl_id):
 			
 			bl.is_active = True
 			if data["cost_type"] == "credit":
-				bl.credit = data["cost"]
+				bl.credit = Decimal(data["cost"])
 				bl.debit = 0
 				bl.product_price = bl.credit * bl.quantity
 			elif data["cost_type"] == "debit":
 				bl.credit = 0
-				bl.debit = data["cost"]
+				bl.debit = Decimal(data["cost"])
 				bl.product_price = bl.debit * bl.quantity
 			bl.save()
 			return redirect( reverse('budgetlines') + "?budget_name=%s" % bl.budget )
