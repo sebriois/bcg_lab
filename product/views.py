@@ -56,6 +56,8 @@ def _product_list(request):
 	form = ProductFilterForm( data = request.GET, product_choices = product_choices )
 	if len(request.GET.keys()) > 0 and form.is_valid():
 		data = form.cleaned_data
+		product_name = data['name']
+		del data['name']
 		
 		for key, value in data.items():
 			if not value:
@@ -66,6 +68,9 @@ def _product_list(request):
 		Q_obj.children  = data.items()
 		
 		product_list = product_list.filter( Q_obj )
+		
+		if product_name:
+			product_list = product_list.filter( name__icontains = product_name )
 	
 	return direct_to_template(request, 'product/index.html',{
 		'filter_form': form,
