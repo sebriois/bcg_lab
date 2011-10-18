@@ -71,6 +71,10 @@
         {% with form.quantity as field %}
             {% include "form_snippet.html"%}
         {% endwith %}
+        
+        {% with form.number as field %}
+            {% include "form_snippet.html"%}
+        {% endwith %}
       </fieldset>
       <div class="cleaner"></div>
       
