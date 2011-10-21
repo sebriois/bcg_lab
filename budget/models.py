@@ -9,7 +9,7 @@ class Budget(models.Model):
 	name = models.CharField(u"OTP", max_length=100, unique = True)
 	default_origin = models.CharField(u"Origine", max_length=30, null = True, blank = True)
 	budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
-	default_nature = models.CharField(u"Nature", max_length=20, null = True, blank = True)
+	default_nature = models.CharField(u"Nature", max_length=20)
 	tva_code = models.CharField(u"Code TVA", max_length=20, null = True, blank = True )
 	domain = models.CharField(u"Domaine fonctionnel", max_length = 100, null = True, blank = True )
 	is_active = models.BooleanField(u"Actif?", default = True)

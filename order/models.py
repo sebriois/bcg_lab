@@ -19,6 +19,7 @@ class Order(models.Model):
 	status					= models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
 	items						= models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
 	notes						= models.TextField( u"Commentaires", null = True, blank = True )
+	is_confidential	= models.BooleanField( u"Confidentielle?", default = False )
 	date_created		= models.DateTimeField(u"Date de création", auto_now_add = True)
 	date_delivered	= models.DateTimeField(u"Date de livraison", null = True, blank = True)
 	last_change			= models.DateTimeField(u"Dernière modification", auto_now = True)
@@ -101,18 +102,19 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-	username			= models.CharField( u"Utilisateur", max_length = 100 )
-	product_id		= models.IntegerField( u'ID produit', blank = True, null = True )
-	name					= models.CharField( u'Désignation', max_length = 500 )
-	provider			= models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
-	origin				= models.CharField( u"Fournisseur d'origine", max_length = 100, blank = True, null = True )
-	packaging			= models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
-	reference			= models.CharField( u'Référence', max_length = 100, blank = True, null = True )
-	offer_nb			= models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
-	nomenclature	= models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
-	price					= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
-	cost_type			= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
-	quantity			= models.IntegerField( u'Quantité', default = 1 )
+	username				= models.CharField( u"Utilisateur", max_length = 100 )
+	product_id			= models.IntegerField( u'ID produit', blank = True, null = True )
+	name						= models.CharField( u'Désignation', max_length = 500 )
+	provider				= models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
+	origin					= models.CharField( u"Fournisseur d'origine", max_length = 100, blank = True, null = True )
+	packaging				= models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
+	reference				= models.CharField( u'Référence', max_length = 100, blank = True, null = True )
+	offer_nb				= models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
+	nomenclature		= models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
+	price						= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
+	cost_type				= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
+	quantity				= models.IntegerField( u'Quantité', default = 1 )
+	is_confidential	= models.BooleanField( u"Confidentielle?", default = False )
 	
 	class Meta:
 		verbose_name = "Item de commande"

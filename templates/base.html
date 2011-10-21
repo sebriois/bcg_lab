@@ -48,6 +48,11 @@
           </a>
         </li>
         <li>
+          <a href="{% url tab_services %}" class="{% block menu_services %}{% endblock %}">
+            Services
+          </a>
+        </li>
+        <li>
           <a href="{% url tab_cart %}" class="{% block menu_cart %}{% endblock %}">
             Panier
           </a>
@@ -62,11 +67,6 @@
         <li>
           <a href="{% url tab_orders %}" class="{% block menu_order %}{% endblock %}">
             {% if user|in_team_secretary %}Commandes à saisir{% else %}Commandes en cours{% endif %}
-          </a>
-        </li>
-        <li>
-          <a href="{% url tab_services %}" class="{% block menu_services %}{% endblock %}">
-            Services
           </a>
         </li>
         {% if user|is_super_secretary or user|is_validator or user|is_super_validator %}

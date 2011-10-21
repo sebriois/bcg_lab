@@ -41,7 +41,7 @@ def delete(request, provider_id):
 #--- Private views
 def _provider_list(request):
     return direct_to_template(request, 'provider/index.html',{
-        'provider_list': Provider.objects.all()
+        'provider_list': Provider.objects.filter(is_service = False)
     })
 
 def _provider_detail(request, provider):

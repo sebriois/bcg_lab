@@ -37,7 +37,11 @@ class AddDebitForm(forms.ModelForm):
 	
 class ServiceForm(forms.Form):
 	team = forms.ModelChoiceField( label = u"Equipe", queryset = Team.objects.all() )
-	provider = forms.ModelChoiceField( label = u"Type de service", queryset = Provider.objects.filter(is_service = True) )
+	provider = forms.ModelChoiceField(
+		label = u"Type de service", 
+		queryset = Provider.objects.filter(is_service = True),
+		empty_label = None
+	)
 	name = forms.CharField( label = u"Désignation" )
 	cost = forms.CharField( label = u"Montant" )
 	quantity = forms.IntegerField( label = u"Quantité", initial = 1 )
