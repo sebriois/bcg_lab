@@ -1,0 +1,22 @@
+{% extends "main_custom.html" %}
+
+{% block content %}
+
+<div id="content" style="min-height:0">
+  <div id="content_header"><h2>Services</h2></div>
+  {# {% extends "base_main.html" %} #}
+  {# {% block menu_services %}active{% endblock %} #}
+  {#  #}
+  {# {% block content %} #}
+  <form action="{% url tab_services %}" method="POST">
+    {# <h3>Services</h3> #}
+    <fieldset>
+      {% for field in form %}
+        {% include "form_snippet.html" %}
+      {% endfor %}
+    </fieldset>
+  
+    <button type="submit" class="check">Commander</button>
+  </form>
+</div>
+{% endblock %}
