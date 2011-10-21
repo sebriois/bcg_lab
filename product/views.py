@@ -92,7 +92,7 @@ def _product_creation(request):
 	if form.is_valid():
 		form.save()
 		info_msg( request, u"Produit ajouté avec succès." )
-		return redirect( 'product_index' )
+		return redirect( reverse('product_index') + "?provider=%s" % provider.name )
 	else:
 		return direct_to_template(request, 'product/form.html',{
 			'provider': provider,

@@ -43,19 +43,3 @@ class TeamMember(models.Model):
 			return self.user.get_full_name()
 		return self.user.username
 	
-	
-	# DEPRECATED
-	def is_active(self):
-		return self.user.is_active
-	
-	def is_normal(self):
-		return self.member_type in NORMAL
-	
-	def is_validator(self):
-		return self.member_type == VALIDATOR or self.member_type == SECRETARY
-	
-	def is_secretary(self):
-		return self.member_type == SECRETARY
-	
-	def is_admin( self ):
-		return self.member_type == ADMIN

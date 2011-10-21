@@ -9,6 +9,7 @@ class Provider(models.Model):
   reseller        = models.ForeignKey( "Provider", verbose_name = "Revendeur", blank = True, null = True )
   notes           = models.TextField( 'Notes', blank = True, null = True )
   is_local        = models.BooleanField( u'Magasin ?', default = False )
+  is_service      = models.BooleanField( u'Service ?', default = False )
   
   class Meta:
     verbose_name = "Fournisseur"
