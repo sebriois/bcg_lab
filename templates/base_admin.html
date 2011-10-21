@@ -1,0 +1,18 @@
+{% extends "base_main.html" %}
+{% load filters %}
+
+{% block tab_admin %}active{% endblock %}
+
+{% block nav_secondary %}
+<ul id="subnav">
+  <li class="{% block menu_team %}{% endblock %}">
+    <a href="{% url team_index %}">Equipes</a>
+  </li>
+  <li class="{% block menu_group %}{% endblock %}">
+    <a href="{% url group_index %}">Groupes d'utilisateur</a>
+  </li>
+  <li class="{% block menu_permission %}{% endblock %}">
+    <a href="{% url perm_index %}">Permissions</a>
+  </li>
+</ul>
+{% endblock %}

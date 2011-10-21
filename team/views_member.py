@@ -24,8 +24,8 @@ from utils import *
 @transaction.commit_on_success
 def item(request, member_id):
 		member = get_object_or_404(TeamMember, id = member_id)
-		if request.method == 'GET': return _member_detail(request, member)
-		if request.method == 'PUT': return _member_update(request, member)
+		if request.method == 'GET':  return _member_detail(request, member)
+		if request.method == 'POST': return _member_update(request, member)
 
 @transaction.commit_on_success
 def new_user(request):

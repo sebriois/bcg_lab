@@ -27,84 +27,99 @@ $(document).ready(function(){
     // EFFECTS
     // 
     $('li.info, li.warning, li.error').effect( 'pulsate', {}, 'slow' );
+    $('.expand').hide().click(function(){
+        bar = $(this).parent('.bar');
+        $(bar).next('.bar_content').show();
+        $('.hide', bar).show();
+        $(this).hide();
+        return false;
+    });
+
+    $('.hide').click(function(){
+        bar = $(this).parent('.bar');
+        $(bar).next('.bar_content').hide();
+        $('.expand', bar).show();
+        $(this).hide();
+        return false;
+    });
     
     // 
     // BUTTONS STYLE
     // 
     $("button, .button").button();
-    $(".plus").button({
+    $(".plus").not(".no-button").button({
       icons: { primary: "ui-icon-plusthick" }
     });
-    $(".minus").button({
+    $(".minus").not(".no-button").button({
       icons: { primary: "ui-icon-minusthick" }
     });
-    $(".locked").button({
+    $(".locked").not(".no-button").button({
       icons: { primary: "ui-icon-locked" }
     });
-    $(".unlocked").button({
+    $(".unlocked").not(".no-button").button({
       icons: { primary: "ui-icon-unlocked" }
     });
-    $(".refresh").button({
+    $(".refresh").not(".no-button").button({
       icons: { primary: "ui-icon-refresh" }
     });
-    $(".all").button({
+    $(".all").not(".no-button").button({
       icons: { primary: "ui-icon-arrow-2-n-s" }
     });
-    $(".pencil").button({
+    $(".pencil").not(".no-button").button({
       icons: { primary: "ui-icon-pencil" }
     });
-    $(".key").button({
+    $(".key").not(".no-button").button({
       icons: { primary: "ui-icon-key" }
     });
-    $(".check").button({
+    $(".check").not(".no-button").button({
       icons: { primary: "ui-icon-check" }
     });
-    $(".comment").button({
+    $(".comment").not(".no-button").button({
       icons: { primary: "ui-icon-comment" }
     });
-    $(".mail").button({
+    $(".mail").not(".no-button").button({
       icons: { primary: "ui-icon-mail-closed" }
     });
-    $(".trash").button({
+    $(".trash").not(".no-button").button({
       icons: { primary: "ui-icon-trash" }
     });
-    $(".cart").button({
+    $(".cart").not(".no-button").button({
       icons: { primary: "ui-icon-cart" }
     });
-    $(".zoomin").button({
+    $(".zoomin").not(".no-button").button({
       icons: { primary: "ui-icon-zoomin" }
     });
-    $(".notice").button({
+    $(".notice").not(".no-button").button({
       icons: { primary: "ui-icon-notice" }
     });
-    $(".next-status").button({
+    $(".next-status").not(".no-button").button({
       icons: { primary: "ui-icon-arrowreturnthick-1-e" }
     });
-    $(".back").button({
+    $(".back").not(".no-button").button({
       icons: { primary: "ui-icon-arrowreturnthick-1-w" }
     });
-    $(".import").button({
+    $(".import").not(".no-button").button({
       icons: { primary: "ui-icon-arrowthickstop-1-s" }
     });
-    $(".export").button({
+    $(".export").not(".no-button").button({
       icons: { primary: "ui-icon-arrowthickstop-1-n" }
     });
-    $(".notice").button({
+    $(".notice").not(".no-button").button({
       icons: { primary: "ui-icon-notice" }
     });
-    $(".flag").button({
+    $(".flag").not(".no-button").button({
       icons: { primary: "ui-icon-flag" }
     });
-    $(".close-thick").button({
+    $(".close-thick").not(".no-button").button({
       icons: { primary: "ui-icon-closethick" }
     });
-    $(".disk").button({
+    $(".disk").not(".no-button").button({
       icons: { primary: "ui-icon-disk" }
     });
-    $(".folder-collapsed").button({
+    $(".folder-collapsed").not(".no-button").button({
       icons: { primary: "ui-icon-folder-collapsed" }
     });
-    $(".no-text").button({
+    $(".no-text").not(".no-button").button({
       text: false
     });
     $(".ui-button-icon-only").height(19);
@@ -465,13 +480,11 @@ $(document).ready(function(){
     // 
     
     $('.save-changes, .ajax-post').click(function(){
-      $('#loadingDialog').dialog('open');
-      
-      var parent = $(this).parent('div.order');
+      var parent = $(this).parents('.order')[0];
       var url_qty = $('.ajax-post').attr('url');
       
       // SAVE BUDGET
-      if( $('#select-budget',parent).length > 0 ) {
+      if( $('#select-budget', parent).length > 0 ) {
         $.ajax({
           url: $('#select-budget', parent).attr('url'),
           async: false,
@@ -539,7 +552,6 @@ $(document).ready(function(){
         });
       }
       
-      // alert('Toutes les modifications ont bien été enregistrées!');
-      $('#loadingDialog').dialog('close');
+      $(parent).effect('highlight');
     });
 });

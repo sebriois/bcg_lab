@@ -1,0 +1,25 @@
+{% extends "base_main.html" %}
+{% load paginator filters %}
+
+{% block tab_budgets %}active{% endblock %}
+
+{% block nav_secondary %}
+<ul id="subnav">
+  <li class="{% block menu_budget %}{% endblock %}">
+    <a href="{% url budgets %}">Liste des budgets</a>
+  </li>
+  {% if user|is_secretary or user|is_super_secretary %}
+    <li class="{% block menu_budget_new %}{% endblock %}">
+      <a href="{% url budget_new %}">Ajouter un budget</a>
+    </li>
+  {% endif %}
+  <li class="{% block menu_budget_lines %}{% endblock %}">
+    <a href="{% url budgetlines %}">Détail budgets</a>
+  </li>
+  {% if user|is_secretary or user|is_super_secretary %}
+  <li class="{% block menu_budget_transfer %}{% endblock %}">
+    <a href="{% url budget_transfer %}">Effectuer un virement</a>
+  </li>
+  {% endif %}
+</ul>
+{% endblock %}

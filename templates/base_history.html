@@ -1,0 +1,17 @@
+{% extends "base_main.html" %}
+{% load filters %}
+
+{% block tab_history %}active{% endblock %}
+
+{% block nav_secondary %}
+<ul id="subnav">
+  <li class="{% block history_orders %}{% endblock %}">
+    <a href="{% url history %}">Historique commandes</a>
+  </li>
+  {% if user|is_validator or user|is_super_secretary or user|is_super_validator %}
+    <li class="{% block history_budgets %}{% endblock %}">
+      <a href="{% url history_budgets %}">Historique budgets</a>
+    </li>
+  {% endif %}
+</ul>
+{% endblock %}

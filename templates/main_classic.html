@@ -1,15 +1,31 @@
-{% extends "base.html" %}
+{% extends "new_base.html" %}
 
-{% block main %}
-  <div id="main">
-    <div id="sidebar">{% block sidebar %}{% endblock %}</div>
-    
-    <div id="content">
-      <h2>{% block header %}{% endblock %}</h2>
-      
-      {% include "block_messages.html" %}
-      
-      {% block content %}{% endblock %}
-    </div>
-  </div>
+{% block main_content %}
+<div id="main">
+    {% block header %}{% endblock %}
+    {% for message in messages %}
+        {{ message|safe|linebreaks }}
+    {% endfor %}
+    {% for message in session_messages %}
+        {{ message|safe|linebreaks }}
+    {% endfor %}
+    <div class="cleaner"></div>
+    {% block content %}{% endblock %}
+</div>
+
+<br /><br /><br />
 {% endblock %}
+
+{# {% block content %} #}
+{#   <div id="main"> #}
+{#     <div id="sidebar">{% block sidebar %}{% endblock %}</div> #}
+{#      #}
+{#     <div id="content"> #}
+{#       <h2>{% block header %}{% endblock %}</h2> #}
+{#        #}
+{#       {% include "block_messages.html" %} #}
+{#        #}
+{#       {% block content %}{% endblock %} #}
+{#     </div> #}
+{#   </div> #}
+{# {% endblock %} #}

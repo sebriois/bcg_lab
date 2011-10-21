@@ -1,0 +1,14 @@
+{% extends "new_base.html" %}
+
+{% block main_content %}
+<div id="main">
+    {% block header %}{% endblock %}
+    
+    {% for message in messages %}
+        {{ message|safe|linebreaks }}
+    {% endfor %}
+    <div class="cleaner"></div>
+    
+    {% block content %}{% endblock %}
+</div>
+{% endblock %}

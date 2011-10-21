@@ -1,7 +1,8 @@
 Une nouvelle commande est en attente de validation:
 
 * Commande passée par {{ order.get_full_name }} le {{ order.date_created|date }}
-* Fournisseur: {{ order.provider.name }}
+* Fournisseur: {{ order.provider.name }}{% if order.notes %}
+* Commentaire: {{ order.notes|safe }}{% endif %}
 * Détail:
 {% for order_item in order.items.all %}
   - Utilisateur: {{ order_item.get_fullname }}

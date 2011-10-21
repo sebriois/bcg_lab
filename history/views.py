@@ -48,7 +48,7 @@ def index(request):
 		return redirect( 'history' )
 	
 	history_list.order_by( 'date_created' )
-	return direct_to_template( request, "tab_history.html", {
+	return direct_to_template( request, "history/orders.html", {
 		'filter_form': form,
 		'history': paginate( request, history_list )
 	})

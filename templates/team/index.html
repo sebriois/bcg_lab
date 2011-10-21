@@ -1,133 +1,115 @@
-{# PAGE EQUIPES #}
-
-{% extends "main_custom.html" %}
+{% extends "base_admin.html" %}
 {% load filters %}
+{% block menu_team %}active{% endblock %}
 
-{% block menu_team %}selected{% endblock %}
-
-{% block buttons %}
-{% if user.is_superuser or user|is_admin %}
+{% block header %}
+{% if user.is_superuser %}
   <div class="btn_wrapper">
     <a href="{% url team_new %}" class="btn_medium">
       <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe
     </a>
   </div>
 {% endif %}
+  <h1>Administration</h1>
+  <h2>Equipes</h2>
 {% endblock %}
 
 {% block content %}
-
-<h3>Types d'utilisateur</h3>
-<table>
-  <tr><td class="shield">Admin</td></tr>
-  <tr><td class="user_gray">Validateur</td></tr>
-  <tr><td class="user_suit">Gestionnaire</td></tr>
-  <tr><td class="user_orange">Secrétaire</td></tr>
-  <tr><td class="user_green">Utilisateur normal - activé</td></tr>
-  <tr><td class="user_red">Utilisateur normal - inactivé</td></tr>
-</table>
-<br />
-<br />
-
+<form>
 {% for team in team_list %}
-  <div id="content" style="min-height:0">
-    <div id="content_header">
-      <h2>
-        {% if user|is_validator %}
-          <a href="{% url team_item team.id %}" class="edit" style="color:#fff">
-            Equipe {{ team }}
-          </a>
-        {% else %}
-          Equipe {{ team }}
-        {% endif %}
-      </h2>
-    </div>
-    <table class="list">
-      <thead>
-        <th>Utilisateur</th>
-        <th>Nom</th>
-        <th>Email</th>
-        <th>Dernière connexion</th>
-        <th>Action</th>
-      </thead>
-      <tbody>
-        {% for member in team.members.all %}
-          <tr class="{% cycle 'even' 'odd' %}">
-            {% if not member.user.is_active %}
-              <td class="user_red">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_admin or member.user|is_super_validator %}
-              <td class="shield">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_super_secretary %}
-              <td class="user_suit">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_secretary %}
-              <td class="user_orange">{{ member.user.username }}</td>
-            {% else %}{% if member.user|is_validator %}
-              <td class="user_gray">{{ member.user.username }}</td>
+  <h3>
+    {% if user|is_validator %}
+      <a href="{% url team_item team.id %}">
+        Equipe {{ team }}
+      </a>
+    {% else %}
+      Equipe {{ team }}
+    {% endif %}
+  </h3>
+  <fieldset>
+  <table class="list">
+    <thead>
+      <th>Utilisateur</th>
+      <th>Nom</th>
+      <th>Email</th>
+      <th>Dernière connexion</th>
+      <th>Action</th>
+    </thead>
+    <tbody>
+      {% for member in team.members.all %}
+        <tr class="{% cycle 'even' 'odd' %}">
+          {% if not member.user.is_active %}
+            <td class="user_red">{{ member.user.username }}</td>
+          {% else %}{% if member.user|is_admin or member.user|is_super_validator %}
+            <td class="shield">{{ member.user.username }}</td>
+          {% else %}{% if member.user|is_super_secretary %}
+            <td class="user_suit">{{ member.user.username }}</td>
+          {% else %}{% if member.user|is_secretary %}
+            <td class="user_orange">{{ member.user.username }}</td>
+          {% else %}{% if member.user|is_validator %}
+            <td class="user_gray">{{ member.user.username }}</td>
+          {% else %}
+            <td class="user_green">{{ member.user.username }}</td>
+          {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+          <td>{{ member.user.get_full_name }}</td>
+          <td>{{ member.user.email }}</td>
+          <td>{{ member.user.last_login }}</td>
+          <td>
+            {% if member.user == user %}
+              <a href="{% url user_item member.id %}" class="pencil">Editer</a>
+              <a href="{% url change_password member.user.id %}" class="key">Changer de mot de passe</a>
             {% else %}
-              <td class="user_green">{{ member.user.username }}</td>
-            {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
-            <td>{{ member.user.get_full_name }}</td>
-            <td>{{ member.user.email }}</td>
-            <td>{{ member.user.last_login }}</td>
-            <td>
-              {% if member.user == user %}
+              {% if user|is_validator or user.is_superuser or user|is_super_validator %}
                 <a href="{% url user_item member.id %}" class="pencil">Editer</a>
-                <a href="{% url change_password member.user.id %}" class="key">Changer de mot de passe</a>
-              {% else %}
-                {% if user|is_validator or user.is_superuser or user|is_super_validator %}
-                  <a href="{% url user_item member.id %}" class="pencil">Editer</a>
-                  <a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
-                  <a href="{% url change_password member.user.id %}" class="key">Nouveau mot de passe</a>
-                  {% if member.user.is_active %}
-                    <a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
-                  {% else %}
-                    <a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
-                  {% endif %}
+                <a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
+                <a href="{% url change_password member.user.id %}" class="key">Nouveau mot de passe</a>
+                {% if member.user.is_active %}
+                  <a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
+                {% else %}
+                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
                 {% endif %}
               {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    
-    <div class="cleaner"></div>
-  </div>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </fieldset>
 {% endfor %}
 
 {% if noteam and user|is_validator %}
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Utilisateurs non-affiliés</h2>
-    <table class="list">
-      <thead>
-        <th>Utilisateur</th>
-        <th>Dernière connexion</th>
-        <th>Action</th>
-      </thead>
-      <tbody>
-        {% for lonely_user in noteam %}
-          <tr class="{% cycle 'even' 'odd' %}">
-            <td>{{ lonely_user.username }}</td>
-            <td>{{ lonely_user.last_login }}</td>
-            <td>
-              {% if user.is_superuser or user|is_admin %}
-                <a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">
-                  Affilier à une équipe
-                </a>
-              {% endif %}
-              {% if user.is_superuser or user|is_admin %}
-                <a href="{% url user_delete lonely_user.id %}" class="trash confirm">
-                  Supprimer
-                </a>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>  
+  <h3>Utilisateurs non-affiliés</h3>
+  <table class="list">
+    <thead>
+      <th>Utilisateur</th>
+      <th>Dernière connexion</th>
+      <th>Action</th>
+    </thead>
+    <tbody>
+      {% for lonely_user in noteam %}
+        <tr class="{% cycle 'even' 'odd' %}">
+          <td>{{ lonely_user.username }}</td>
+          <td>{{ lonely_user.last_login }}</td>
+          <td>
+            {% if user.is_superuser or user|is_admin %}
+              <a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">
+                Affilier à une équipe
+              </a>
+            {% endif %}
+            {% if user.is_superuser or user|is_admin %}
+              <a href="{% url user_delete lonely_user.id %}" class="trash confirm">
+                Supprimer
+              </a>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endif %}
+  
+</form>
 
 {# START: Add to team Dialog #}
 <div id="setTeamDialog" class="dialog" title="Affiliation à une équipe">

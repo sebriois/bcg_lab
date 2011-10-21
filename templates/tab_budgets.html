@@ -1,34 +1,14 @@
-{% extends "main_custom.html" %}
+{% extends "base_budgets.html" %}
 {% load paginator filters %}
 
-{% block menu_budgets %}selected{% endblock %}
+{% block menu_budget %}active{% endblock %}
 
-{% block buttons %}
-  {% if user|is_secretary or user|is_super_secretary %}
-    <div class="btn_wrapper">
-      <a href="{% url budget_new %}" class="btn_medium">
-        <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter un budget
-      </a>
-    </div>
-  {% endif %}
-  <div class="btn_wrapper">
-    <a href="{% url budgetlines %}" class="btn_big">
-      <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
-    </a>
-  </div>
-  {% if user|is_secretary or user|is_super_secretary %}
-    <div class="btn_wrapper">
-      <a href="{% url budget_transfer %}" class="btn_medium">
-        <img src="{{ MEDIA_URL }}img/icons/table_refresh.png" />Virement
-      </a>
-    </div>
-  {% endif %}
+{% block header %}
+  <h1>Gestion des budgets</h1>
+  <h2>Liste des budgets</h2>
 {% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Gestion des budgets</h2></div>
-  
   {% if budgets.object_list %}
     <table class="list">
       <thead>
@@ -66,7 +46,6 @@
       </tbody>
     </table>
   {% endif %}
-</div>
 
 <div id="confirm" class="dialog" title="Confirmer l'archivage">
   Ce budget va être retiré de cette liste, ainsi que toutes ses lignes

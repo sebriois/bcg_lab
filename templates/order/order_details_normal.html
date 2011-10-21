@@ -1,25 +1,27 @@
-{% extends "main_custom.html" %}
-{% load paginator filters %}
+{% extends "base_orders.html" %}
+{% load filters %}
 
-{% block menu_order %}selected{% endblock %}
+{% block menu_order %}active{% endblock %}
 
-{% block buttons %}
-<div class="btn_wrapper">
-  <a href="{% url tab_orders %}" class="btn_small">
-    <img src="{{ MEDIA_URL }}img/icons/arrow_left.png" />Retour
-  </a>
-</div>
+{% block header %}
+  <h1>Gestion des commandes</h1>
+  <h2>{{ order.provider }} - {{ order.date_created|date }}</h2>
 {% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0" class="order">
-  <div id="content_header">
-    <h2>{{ order.provider }} - {{ order.date_created|date }}</h2>
-  </div>
-  <ul>
+  <ul class="brown_arrow" style="float:left">
     <li>Commande équipe {{ order.team }}</li>
     <li>Statut: {{ order.get_status_display }}</li>
   </ul>
+  
+  <div style="float:right">
+    <h4>Commentaires</h4>
+    <textarea id="order_notes" url="{% url set_order_notes order.id %}" class="small_textarea">
+      {{ order.notes|default:"" }}
+    </textarea>
+  </div>
+  <div class="cleaner"></div>
+  <br />
   
   <table class="list">
     <thead>
@@ -65,11 +67,10 @@
     </tbody>
   </table>
   
-  <h4>Commentaires</h4>
-  <textarea id="order_notes" url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
-  <div class="cleaner"></div>
+  <br />
+  <strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong>
+  <br /><br />
   
-  <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
   <a href="{{ order.get_absolute_url }}" class="disk ajax-post" url="{% url set_item_quantity %}">
     Enregistrer les modifications
   </a>

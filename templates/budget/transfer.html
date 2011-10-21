@@ -1,15 +1,22 @@
-{% extends "main_classic.html" %}
+{% extends "base_budgets.html" %}
+{% block menu_budget_transfer %}active{% endblock %}
 
-{% block header %}Virement inter-budgets{% endblock %}
+{% block header %}
+  <h1>Gestion des budgets</h1>
+  <h2>Virement inter-budgets</h2>
+{% endblock %}
 
 {% block content %}
 <form action="{% url budget_transfer %}" method="post">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>
-    {% for field in form %}
-        {% include "form_snippet.html"%}
-    {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+    <fieldset>
+      {% for field in form %}
+          {% include "form_snippet.html"%}
+      {% endfor %}
+    </fieldset>
+    
+    <button type="submit" class="check">Valider</button>
 </form>
 {% endblock %}

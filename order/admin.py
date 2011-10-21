@@ -3,7 +3,7 @@ from order.models import Order, OrderItem
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
-      'id', 'team', 'date_created', 'provider', 'status', 'last_change'
+      'id', 'team', 'date_created', 'provider', 'status', 'last_change', 'is_confidential'
     )
 admin.site.register(Order, OrderAdmin)
 

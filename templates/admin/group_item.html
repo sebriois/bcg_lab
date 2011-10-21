@@ -1,0 +1,21 @@
+{% extends "base_admin.html" %}
+{% load filters %}
+{% block menu_group %}active{% endblock %}
+
+{% block header %}
+  <h1>Administration</h1>
+  <h2>Gestion des groupes</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url group_item group.id %}" method="POST">
+  <h3>Modification du groupe {{ group.name }}</h3>
+  <fieldset>
+    {% for field in form %}
+      {% include "form_snippet.html" %}
+    {% endfor %}
+  </fieldset>
+  
+  <button type="submit" class="check">Valider</button>
+</form>
+{% endblock %}

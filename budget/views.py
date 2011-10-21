@@ -216,6 +216,10 @@ def edit_budgetline(request, bl_id):
 		'bl': bl
 	})
 
+@login_required
+def history_budgetline(request):
+	return direct_to_template( request, 'history/budgets.html')
+
 # 
 #		PRIVATE VIEWS
 # 
@@ -295,7 +299,7 @@ def _budgetline_list(request):
 	else:
 		budget = None
 	
-	return direct_to_template(request, "tab_reports.html", {
+	return direct_to_template(request, "budget/budgetlines.html", {
 		'budget': budget,
 		'budget_lines' : paginate( request, budget_lines )
 	})

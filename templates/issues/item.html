@@ -3,49 +3,45 @@
 
 {% block menu_bugs %}selected{% endblock %}
 
-{% block header %}{{ issue.title }}{% endblock %}
-
-{% if user|is_admin or user.is_superuser %}
-  {% block buttons %}
-  <div class="btn_wrapper">
-    <a href="{% url issue_delete issue.id %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer
-    </a>
-  </div>
-  <div class="btn_wrapper">
-    <a href="{% url issue_status issue.id 1 %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/bug_edit.png" />En cours
-    </a>
-  </div>
-  <div class="btn_wrapper">
-    <a href="{% url issue_status issue.id 2 %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/bug_link.png" />Doublon
-    </a>
-  </div>
-  <div class="btn_wrapper">
-    <a href="{% url issue_status issue.id 4 %}" class="btn_small">
-      <img src="{{ MEDIA_URL }}img/icons/bug_go.png" />Résolu
-    </a>
-  </div>
-  <div class="btn_wrapper">
-    <a href="{% url issue_status issue.id 4 %}" class="btn_medium">
-      <img src="{{ MEDIA_URL }}img/icons/bug_delete.png" />Ne sera pas résolu
-    </a>
-  </div>
-  {% endblock %}
-{% endif %}
+{% block header %}
+  {% if user|is_admin or user.is_superuser %}
+    <div class="btn_wrapper">
+      <a href="{% url issue_delete issue.id %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer
+      </a>
+    </div>
+    <div class="btn_wrapper">
+      <a href="{% url issue_status issue.id 1 %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/bug_edit.png" />En cours
+      </a>
+    </div>
+    <div class="btn_wrapper">
+      <a href="{% url issue_status issue.id 2 %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/bug_link.png" />Doublon
+      </a>
+    </div>
+    <div class="btn_wrapper">
+      <a href="{% url issue_status issue.id 4 %}" class="btn_small">
+        <img src="{{ MEDIA_URL }}img/icons/bug_go.png" />Résolu
+      </a>
+    </div>
+  {% endif %}
+  <h1>Bugs et améliorations</h1>
+  <h2>Modification d'un bug</h2>
+{% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Modification d'un bug</h2></div>
-  <form action="{% url issue_item issue.id %}" method="post">{% csrf_token %}
-    <p class="instructions">
-      <em>Les champs marqués d'une étoile sont obligatoires</em>
-    </p>
+<h2>{{ issue.title }}</h2>
+<form action="{% url issue_item issue.id %}" method="post">{% csrf_token %}
+  <p class="instructions">
+    <em>Les champs marqués d'une étoile sont obligatoires</em>
+  </p>
+  <fieldset>
     {% for field in form %}
         {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
-  </form>
-</div>
+  </fieldset>
+  
+  <button type="submit" class="check">Valider</button>
+</form>
 {% endblock %}

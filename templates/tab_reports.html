@@ -1,34 +1,30 @@
-{% extends "main_custom.html" %}
+{% extends "base_budgets.html" %}
 {% load paginator filters %}
 
-{% block menu_budgets %}selected{% endblock %}
+{% block menu_budget_lines %}active{% endblock %}
 
-{% block buttons %}
-
-{% if budget %}
-  {% if user|is_secretary or user|is_super_secretary %}
+{% block header %}
+  {% if budget %}
+    {% if user|is_secretary or user|is_super_secretary %}
+      <div class="btn_wrapper">
+        <a href="{% url debit_budget budget.id %}" class="btn_small">
+          <img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
+        </a>
+      </div>
+      <div class="btn_wrapper">
+        <a href="{% url credit_budget budget.id %}" class="btn_small">
+          <img src="{{ MEDIA_URL }}img/icons/add.png" />Créditer
+        </a>
+      </div>
+    {% endif %}
     <div class="btn_wrapper">
-      <a href="{% url debit_budget budget.id %}" class="btn_small">
-        <img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
-      </a>
-    </div>
-    <div class="btn_wrapper">
-      <a href="{% url credit_budget budget.id %}" class="btn_small">
-        <img src="{{ MEDIA_URL }}img/icons/add.png" />Créditer
+      <a href="{% url budgetlines %}" class="btn_big">
+        <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
       </a>
     </div>
   {% endif %}
-  <div class="btn_wrapper">
-    <a href="{% url budgetlines %}" class="btn_big">
-      <img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
-    </a>
-  </div>
-{% endif %}
-<div class="btn_wrapper">
-  <a href="{% url budgets %}" class="btn_big">
-    <img src="{{ MEDIA_URL }}img/icons/coins.png" />Retour liste des budgets
-  </a>
-</div>
+  <h1>Gestion des budgets</h1>
+  <h2>Détail budgets</h2>
 {% endblock %}
 
 {% block content %}
@@ -36,11 +32,10 @@
 {% regroup budget_lines.object_list by team as team_list %}
 
 {% for team in team_list %}
-  <div id="content" style="min-height:0">
-  <div id="content_header"><h2>Equipe {{ team.grouper }}</h2></div>
+  <form><h3>Equipe {{ team.grouper }}</h3></form>
   
   {% regroup team.list by budget as budget_list %}
-  
+  <fieldset>
   <table class="list">
     <thead>
       <th>budget</th>
@@ -103,7 +98,7 @@
       {% endfor %}
     </tbody>
   </table>
-  </div>
+  </fieldset>
 {% endfor %}
 {% pagination budget_lines %}
 

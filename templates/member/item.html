@@ -1,18 +1,30 @@
-{% extends "main_classic.html" %}
+{% extends "base_admin.html" %}
+{% load filters %}
+{% block menu_team %}active{% endblock %}
 
-{% block menu_team %}selected{% endblock %}
-
-{% block header %}Modification d'un utilisateur{% endblock %}
+{% block header %}
+{% if user.is_superuser %}
+  <div class="btn_wrapper">
+    <a href="{% url team_new %}" class="btn_medium">
+      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe
+    </a>
+  </div>
+{% endif %}
+  <h1>Administration</h1>
+  <h2>Modification d'un utilisateur</h2>
+{% endblock %}
 
 {% block content %}
-<form action="{% url user_item member.id %}" method="post">{% csrf_token %}
-    <input type="hidden" name="method" value="PUT" />
-    <p class="instructions">
-      <em>Les champs marqués d'une étoile sont obligatoires</em>
-    </p>
+<form action="{% url user_item member.id %}" method="POST">{% csrf_token %}
+  <p class="instructions">
+    <em>Les champs marqués d'une étoile sont obligatoires</em>
+  </p>
+  <fieldset>
     {% for field in form %}
         {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+  </fieldset>
+  
+  <button type="submit" class="check">Valider</button>
 </form>
 {% endblock %}

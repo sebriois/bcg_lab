@@ -18,6 +18,9 @@ class Budget(models.Model):
 		verbose_name = "Budget"
 		verbose_name_plural = "Budgets"
 		ordering = ("team", "name")
+		permissions = (
+			('can_see_budgets', 'Voir les budgets'),
+		)
 	
 	def __unicode__(self):
 		return u"%s (dispo: %s)" % ( self.name, self.get_amount_left() )
