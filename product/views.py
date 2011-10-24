@@ -36,7 +36,11 @@ def item(request, product_id):
 @login_required
 @team_required
 def new(request):
-	provider = get_object_or_404( Provider, id = request.GET.get("provider_id", None) )
+	if "provider_id" in request.GET:
+		provider = get_object_or_404( Provider, id = request.GET.get("provider_id", None) )
+	else:
+		provider = None
+	
 	form = ProductForm( provider = provider )
 	return direct_to_template(request, 'product/form.html', {
 		'provider': provider,
