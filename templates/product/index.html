@@ -1,17 +1,9 @@
-{% extends "base_main.html" %}
+{% extends "base_products.html" %}
 {% load paginator filters %}
 
-{% block menu_product %}active{% endblock %}
+{% block product_list %}active{% endblock %}
 
 {% block header %}<h1>Gestion des produits</h1>{% endblock %}
-
-{% block nav_secondary %}
-<ul id="subnav">
-  <li class="active">
-    <a href="{% url product_index %}">Liste des produits</a>
-  </li>
-</ul>
-{% endblock %}
 
 {% block content %}
 <!-- Start: search form -->

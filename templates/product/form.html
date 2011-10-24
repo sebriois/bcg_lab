@@ -1,18 +1,26 @@
-{% extends "base_main.html" %}
+{% extends "base_products.html" %}
 
-{% block menu_product %}active{% endblock %}
+{% block product_new %}active{% endblock %}
 
-{% block header %}<h2>Nouveau produit ({{provider.name}})</h2>{% endblock %}
+{% block header %}
+  <h1>Gestion des produits</h1>
+  <h2>Nouveau produit</h2>
+{% endblock %}
 
 {% block content %}
-<form action="{% url product_index %}" method="post">{% csrf_token %}
-    <input type="hidden" name="provider" value="{{provider.id}}" />
-    <p class="instructions">
-      <em>Les champs marqués d'une étoile sont obligatoires</em>
-    </p>
+<form action="{% url product_index %}" method="POST">{% csrf_token %}
+  {% if provider %}
+    <input type="hidden" name="provider" value="{{ provider.id }}" />
+  {% endif %}
+  <p class="instructions">
+    <em>Les champs marqués d'une étoile sont obligatoires</em>
+  </p>
+  <fieldset>
     {% for field in form %}
-        {% include "form_snippet.html"%}
+      {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+  </fieldset>
+  
+  <button type="submit" class="check">Valider</button>
 </form>
 {% endblock %}
