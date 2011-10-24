@@ -3,6 +3,7 @@ from datetime import datetime, date
 
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
+from django.core.urlresolvers import reverse
 from django.db.models.query import Q
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
