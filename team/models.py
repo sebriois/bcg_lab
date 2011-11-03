@@ -27,6 +27,10 @@ class TeamMember(models.Model):
 	user = models.ForeignKey(User, verbose_name="Utilisateur")
 	member_type = models.IntegerField(u"Type d'utilisateur", choices = MEMBERTYPE_CHOICES, default = 0)
 	
+	send_on_validation = models.BooleanField(u"Email quand commande validée ?", default = False )
+	send_on_edit = models.BooleanField(u"Email quand commande modifiée ?", default = True )
+	send_on_sent = models.BooleanField(u"Email quand commande envoyée ?", default = False )
+	
 	class Meta:
 		verbose_name = u'Membre équipe'
 		verbose_name_plural = u'Membres équipe'

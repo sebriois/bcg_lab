@@ -3,11 +3,15 @@ from django import forms
 
 from team.models import Team
 from provider.models import Provider
+from product.models import Product
 from utils import *
 
 class HistoryFilterForm(forms.Form):
 	TEAM_CHOICES = [(team.name,team.name) for team in Team.objects.all()]
-	PROVIDER_CHOICES = [(p.name, p.name) for p in Provider.objects.all()]
+	PROVIDER_CHOICES = [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
+	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
+	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
+	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
 	
 	connector = forms.TypedChoiceField(
 		choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
@@ -22,11 +26,40 @@ class HistoryFilterForm(forms.Form):
 		choices		= [("","---------")] + TEAM_CHOICES,
 		required	= False
 	)
+
+	items__name = forms.CharField(
+		label			= u"Produit",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': PRODUCT_CHOICES
+		}),
+		help_text	= "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
+	
+	items__reference = forms.CharField(
+		label			= u"Référence",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': REFERENCE_CHOICES
+		}),
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
 	
 	provider = forms.ChoiceField(
 		label			= "Fournisseur",
 		choices		= [("","---------")] + PROVIDER_CHOICES,
 		required	= False
+	)
+	items__origin = forms.CharField(
+		label			= u"Fournisseur d'origine",
+		widget		= forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': ORIGIN_CHOICES
+		}),
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
 	)
 	
 	date_created__gte = forms.DateField( 

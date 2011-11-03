@@ -3,7 +3,9 @@
 
 {% block product_list %}active{% endblock %}
 
-{% block header %}<h1>Gestion des produits</h1>{% endblock %}
+{% block header %}
+  <h1>Gestion des produits</h1>
+{% endblock %}
 
 {% block content %}
 <!-- Start: search form -->
@@ -51,6 +53,11 @@
 <!-- End: search form -->
 
 {# START: Product list #}
+<div class="btn_wrapper">
+  <a href="{% url tab_cart %}" class="btn_medium">
+    <img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir panier
+  </a>
+</div>
 <h2>Liste des produits - Page {{ products.number }} sur {{ products.paginator.num_pages }}.</h2>
 
 {% pagination products %}

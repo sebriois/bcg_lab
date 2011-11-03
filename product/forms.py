@@ -16,7 +16,6 @@ class ProductForm(forms.ModelForm):
 	def __init__( self, provider = None, *args, **kwargs ):
 		super( ProductForm, self ).__init__( *args, **kwargs )
 		
-		
 		if provider:
 			self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
 			self.fields['provider'].initial = provider
@@ -43,13 +42,14 @@ class ProductFilterForm(forms.Form):
 	)
 	provider = forms.ModelChoiceField( 
 		label			= u"Fournisseur",
-		queryset	= Provider.objects.all(),
+		queryset	= Provider.objects.exclude(is_service = True),
 		required	= False
 	)
 	name = forms.CharField(
 		label			= u"Produit",
 		widget		= forms.TextInput( attrs = { 'class' : 'autocomplete' }),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+								# autocomplete choices are set below, in __init__ method
+		help_text	= "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
 	reference = forms.CharField(

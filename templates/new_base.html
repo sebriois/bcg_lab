@@ -61,7 +61,7 @@
           <a href="{% url history %}">Historique</a>
         </li>
         <li class="{% block tab_preferences %}{% endblock %}">
-          <a href="#">Préférences</a>
+          <a href="{% url preferences %}">Préférences</a>
         </li>
         {% if user.is_superuser or user|is_admin %}
           <li class="{% block tab_admin %}{% endblock %}">
@@ -73,6 +73,7 @@
         </li>
       </ul>
       <!--end: navigation -->
+      
       <!-- start: subnav -->
       {% block nav_secondary %}{% endblock %}
       <!-- end: subnav -->

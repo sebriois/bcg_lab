@@ -1,0 +1,15 @@
+{% extends "base_main.html" %}
+{% load paginator filters %}
+
+{% block tab_preferences %}active{% endblock %}
+
+{% block nav_secondary %}
+<ul id="subnav">
+  <li class="{% block menu_general %}{% endblock %}">
+    <a href="{% url preferences %}">Général</a>
+  </li>
+  <li class="{% block menu_password %}{% endblock %}">
+    <a href="{% url change_password %}">Mot de passe</a>
+  </li>
+</ul>
+{% endblock %}

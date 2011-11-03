@@ -62,10 +62,7 @@ em {
 }
 
 #left {
-    width:  660px;
-    min-height: 550px;
     display: block;
-    overflow: hidden;
     float: left;
     padding:  20px 0px 20px 0px;
 }
@@ -960,7 +957,7 @@ fieldset {
 }
 
 form label {
-    width: 220px;
+    width: 230px;
     display: block;
     float: left;
     clear: both;

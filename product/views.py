@@ -56,8 +56,8 @@ def delete(request, product_id):
 #--- Private views
 def _product_list(request):
 	product_list = Product.objects.all()
-	product_choices = ";".join( [ unicode(p) for p in product_list ] )
 	
+	product_choices = ";".join( [ unicode(p) for p in product_list ] )
 	form = ProductFilterForm( data = request.GET, product_choices = product_choices )
 	if len(request.GET.keys()) > 0 and form.is_valid():
 		data = form.cleaned_data
@@ -97,7 +97,7 @@ def _product_creation(request):
 	if form.is_valid():
 		form.save()
 		info_msg( request, u"Produit ajouté avec succès." )
-		return redirect( reverse('product_index') + "?provider=%s" % provider.name )
+		return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.name )
 	else:
 		return direct_to_template(request, 'product/form.html',{
 			'provider': provider,

@@ -136,30 +136,24 @@ def toggle_active( request, user_id ):
 
 @login_required
 @transaction.commit_on_success
-def change_password(request, user_id):
+def set_password(request, user_id):
 	user = get_object_or_404( User, id = user_id )
 	
 	if request.method == 'GET':
-		if is_validator(request.user) and request.user != user:
-			form = SetPasswordForm( user = user )
-		else:
-			form = PasswordChangeForm( user = user )
+		form = SetPasswordForm( user = user )
 		
-		return direct_to_template(request, 'auth/change_password.html', {
+		return direct_to_template(request, 'auth/set_password.html', {
 			'form': form,
 			'user_id': user_id
 		})
 	elif request.method == 'POST':
-		if is_validator(request.user) and request.user != user:
-			form = SetPasswordForm( user = user, data = request.POST )
-		else:
-			form = PasswordChangeForm( user = user, data = request.POST )
+		form = SetPasswordForm( user = user, data = request.POST )
 		
 		if form.is_valid():
 			form.save()
 			info_msg( request, 'Nouveau mot de passe enregistré.')
 		else:
-			return direct_to_template(request, 'auth/change_password.html', {
+			return direct_to_template(request, 'auth/set_password.html', {
 				'form': form,
 				'user_id': user_id
 			})

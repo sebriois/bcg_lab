@@ -1,0 +1,38 @@
+{% extends "base_preferences.html" %}
+{% block menu_general %}active{% endblock %}
+{% block header %}<h1>Préférences</h1>{% endblock %}
+
+{% block content %}
+  <form action="{% url preferences %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="form_name" value="user_form" />
+    
+    <h3>Informations générales</h3>
+    <p class="instructions">
+      <em>Les champs marqués d'une étoile sont obligatoires</em>
+    </p>
+    <fieldset>
+      {% for field in user_form %}
+        {% include "form_snippet.html" %}
+      {% endfor %}
+      <br />
+      <button type="submit" class="check">Valider</button>
+    </fieldset>
+    
+  </form>
+  
+  <form action="{% url preferences %}" method="POST">{% csrf_token %}
+    <input type="hidden" name="form_name" value="email_form" />
+    <h3>Préférences sur l'envoi d'emails</h3>
+    <p class="instructions">
+      <em>Envoyer un email automatiquement dans les cas suivants:</em>
+    </p>
+    <fieldset>
+      {% for field in email_form %}
+        {% include "form_snippet.html" %}
+      {% endfor %}
+      <br />
+      <button type="submit" class="check">Valider</button>
+    </fieldset>
+  </form>
+  
+{% endblock %}

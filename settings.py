@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
 		'admin',
+		'preferences',
     'team',
     'provider',
     'product',

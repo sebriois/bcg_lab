@@ -1,8 +1,17 @@
-{% extends "main_classic.html" %}
+{% extends "base_main.html" %}
 
-{% block header %}Déclaration de bug/amélioration{% endblock %}
+{% block menu_bugs %}selected{% endblock %}
+
+{% block header %}
+  <h1>Bugs et améliorations</h1>
+  <h2>Ajout d'un bug/amélioration</h2>
+{% endblock %}
 
 {% block content %}
+<p>
+  Merci de préciser l'adresse URL du problème (http://lbcmcp-orders.ups-tlse.fr/...)
+  dans la description pour faciliter la résolution du problème.
+</p>
 <form action="{% url issue_index %}" method="POST">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
