@@ -3,33 +3,33 @@
 {% block menu_group %}active{% endblock %}
 
 {% block header %}
-{% if user.is_superuser %}
-  <div class="btn_wrapper">
-    <a href="{% url group_new %}" class="btn_medium">
-      <img src="{{ MEDIA_URL }}img/icons/add.png" />Créer un groupe
-    </a>
-  </div>
-{% endif %}
-  <h1>Administration</h1>
-  <h2>Gestion des groupes</h2>
+<div class="btn_wrapper">
+	<a href="{% url group_new %}" class="btn_medium">
+		<img src="{{ MEDIA_URL }}img/icons/add.png" />Créer un groupe
+	</a>
+</div>
+<h1>Administration</h1>
+<h2>Gestion des groupes</h2>
 {% endblock %}
 
 {% block content %}
 <table class="list">
-  <thead>
-    <th>Groupe</th>
-    <th>Action</th>
-  </thead>
-  <tbody>
-    {% for group in groups %}
-    <tr>
-      <td>{{ group.name }}</td>
-      <td>
-        <a href="{% url group_item group.id %}" class="pencil">Editer</a>
-        <a href="#" class="trash">Supprimer</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+	<thead>
+		<th>Groupe</th>
+		<th>Utilisateurs</th>
+		<th>Action</th>
+	</thead>
+	<tbody>
+		{% for group in groups %}
+		<tr class="{% cycle even,odd %}">
+			<td>{{ group.name }}</td>
+			<td>{{ group.user_set.all|join:", "|default:"<b>AUCUN</b>" }}</td>
+			<td>
+				<a href="{% url group_item group.id %}" class="pencil">Editer</a>
+				<a href="#" class="trash">Supprimer</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
 </table>
 {% endblock %}

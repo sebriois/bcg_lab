@@ -18,10 +18,8 @@ from utils import *
 
 @login_required
 def home(request):
-	# UGLY WAY TO REDIRECT SECRETARY LOGIN
-	if is_secretary(request.user) or is_super_secretary(request.user) or request.user.username == "kandel":
+	if in_team_secretary( request.user ) and not request.user.is_superuser:
 		return redirect('tab_orders')
-	
 	return redirect('info_index')
 
 def error(request):

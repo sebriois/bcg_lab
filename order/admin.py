@@ -1,5 +1,5 @@
 from django.contrib import admin
-from order.models import Order, OrderItem
+from order.models import Order, OrderItem, OrderComplement
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = (
@@ -13,3 +13,7 @@ class OrderItemAdmin(admin.ModelAdmin):
       'price', 'packaging', 'reference', 'offer_nb', 'nomenclature'
     )
 admin.site.register(OrderItem, OrderItemAdmin)
+
+class OrderComplementAdmin(admin.ModelAdmin):
+    list_display = ( 'id', 'name', 'type_comp' )
+admin.site.register(OrderComplement, OrderComplementAdmin)

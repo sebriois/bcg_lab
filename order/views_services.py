@@ -15,14 +15,14 @@ from utils import *
 @transaction.commit_on_success
 def tab_services(request):
 	member = request.user.teammember_set.get()
+	
 	if request.method == 'GET':
 		form = ServiceForm( member = member )
 	elif request.method == 'POST':
 		data = request.POST.copy()
+		
 		if not in_team_secretary( request.user ):
-			data.update({
-				'team': member.team.id
-			})
+			data.update({ 'team': member.team.id })
 		
 		form = ServiceForm( member = member, data = data )
 		if form.is_valid():

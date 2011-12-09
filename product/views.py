@@ -18,14 +18,14 @@ from constants import *
 from utils import *
 
 @login_required
-@team_required
+
 @transaction.commit_on_success
 def index(request):
 	if request.method == 'GET':		return _product_list(request)
 	if request.method == 'POST':	return _product_creation(request)
 
 @login_required
-@team_required
+
 @transaction.commit_on_success
 def item(request, product_id):
 	product = get_object_or_404(Product, id = product_id)
@@ -34,7 +34,7 @@ def item(request, product_id):
 	if request.method == 'DELETE':	return _product_delete(request, product)
 
 @login_required
-@team_required
+
 def new(request):
 	if "provider_id" in request.GET:
 		provider = get_object_or_404( Provider, id = request.GET.get("provider_id", None) )
@@ -48,7 +48,7 @@ def new(request):
 	})
 
 @login_required
-@team_required
+
 def delete(request, product_id):
 	product = get_object_or_404(Product, id = product_id)
 	return direct_to_template(request, "product/delete.html", { 'product': product })
@@ -91,9 +91,12 @@ def _product_detail(request, product):
 	})
 
 def _product_creation(request):
-	provider = get_object_or_404( Provider, id = request.POST.get('provider', None) )
-	form = ProductForm( provider = provider, data = request.POST )
+	if 'provider' in request.POST and request.POST['provider']:
+		provider = get_object_or_404( Provider, id = request.POST['provider'] )
+	else:
+		provider = None
 	
+	form = ProductForm( provider = provider, data = request.POST )
 	if form.is_valid():
 		form.save()
 		info_msg( request, u"Produit ajouté avec succès." )

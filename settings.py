@@ -109,7 +109,8 @@ INSTALLED_APPS = (
     'budget',
     'infos',
     'issues',
-    'utils'
+    'utils',
+		'management'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

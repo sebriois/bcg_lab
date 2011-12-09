@@ -1,49 +1,25 @@
 # encoding: utf8
 from django import template
 
-from constants import NORMAL, VALIDATOR, SECRETARY, SUPER_SECRETARY, SUPER_VALIDATOR, ADMIN
 from utils import get_teams
 
 register = template.Library()
+
+@register.filter
+def has_perm(user, perm):
+	return user.has_perm(perm)
+
+@register.filter
+def has_perms(user, perms):
+	return user.has_perms(perms.split(";"))
 
 @register.filter
 def total_price(cart, provider):
 	return cart.total_price(provider)
 
 @register.filter
-def is_normal(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
-
-@register.filter
-def is_validator(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
-
-@register.filter
-def is_secretary(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SECRETARY, ADMIN]).count() > 0
-
-@register.filter
-def is_super_secretary(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SUPER_SECRETARY, ADMIN]).count() > 0
-
-@register.filter
-def is_super_validator(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SUPER_VALIDATOR, ADMIN]).count() > 0
-
-@register.filter
-def is_admin(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type = ADMIN).count() > 0
-
-@register.filter
 def in_team_secretary(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(team__name = "GESTION").count() > 0
+	return user.has_perm('order.custom_goto_status_4')
 
 @register.filter
 def is_in_charge(product, user):

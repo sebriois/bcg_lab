@@ -5,22 +5,22 @@
 
 {% block nav_secondary %}
 <ul id="subnav">
-  <li class="{% block menu_cart %}{% endblock %}">
-    <a href="{% url tab_cart %}">Panier</a>
-  </li>
-  {% if user|is_validator or user|is_super_secretary or user|is_super_validator %}
-    <li class="{% block menu_validation %}{% endblock %}">
-      <a href="{% url tab_validation %}">Commandes à valider</a>
-    </li>
-  {% endif %}
-  <li class="{% block menu_order %}{% endblock %}">
-    <a href="{% url tab_orders %}">
-      {% if user|in_team_secretary %}
-        Commandes à saisir
-      {% else %}
-        Commandes en cours
-      {% endif %}
-    </a>
-  </li>
+	<li class="{% block menu_cart %}{% endblock %}">
+		<a href="{% url tab_cart %}">Panier</a>
+	</li>
+	{% if user|has_perm:"order.custom_validate" %}
+	<li class="{% block menu_validation %}{% endblock %}">
+		<a href="{% url tab_validation %}">Commandes à valider</a>
+	</li>
+	{% endif %}
+	<li class="{% block menu_order %}{% endblock %}">
+		<a href="{% url tab_orders %}">
+			{% if user|has_perm:"order.custom_goto_status_4" and not user.is_superuser %}
+			Commandes à saisir
+			{% else %}
+			Commandes en cours
+			{% endif %}
+		</a>
+	</li>
 </ul>
 {% endblock %}

@@ -79,7 +79,7 @@ class HistoryFilterForm(forms.Form):
 	def __init__(self, user, *args, **kwargs):
 		super( HistoryFilterForm, self ).__init__(*args, **kwargs)
 		
-		if is_super_validator(user) or is_secretary(user):
+		if user.has_perm('team.view_all_teams'):
 			team_choices = [("","---------")] + [(team.name,team.name) for team in Team.objects.all()]
 		else:
 			team_choices = [("","---------")] + [(team.name,team.name) for team in get_teams(user)]

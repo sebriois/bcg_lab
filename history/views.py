@@ -14,13 +14,10 @@ from utils import *
 @login_required
 def index(request):
 	# Get initial history_list
-	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user): # admin is also a 'secretary'
+	if request.user.has_perm('team.custom_view_teams'):
 		history_list = History.objects.all()
 	else:
-		team_names = []
-		for team in get_teams(request.user):
-			if not team.name in team_names:
-				team_names.append(team.name)
+		team_names = [t.name for t in get_teams(request.user)]
 		history_list = History.objects.filter( team__in = team_names )
 	
 	# Filter history_list depending on received GET data

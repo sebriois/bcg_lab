@@ -57,7 +57,7 @@
             Panier
           </a>
         </li>
-        {% if user|is_validator or user|is_super_secretary or user|is_super_validator %}
+        {% if user|has_perm:"order.custom_validate" %}
           <li>
             <a href="{% url tab_validation %}" class="{% block menu_validation %}{% endblock %}">
               Commandes à valider
@@ -69,7 +69,7 @@
             {% if user|in_team_secretary %}Commandes à saisir{% else %}Commandes en cours{% endif %}
           </a>
         </li>
-        {% if user|is_super_secretary or user|is_validator or user|is_super_validator %}
+        {% if user|has_perm:"budget.custom_view_budget" %}
           <li>
             <a href="{% url budgets %}" class="{% block menu_budgets %}{% endblock %}">
               Gestion des budgets

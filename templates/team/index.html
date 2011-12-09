@@ -4,131 +4,121 @@
 
 {% block header %}
 {% if user.is_superuser %}
-  <div class="btn_wrapper">
-    <a href="{% url team_new %}" class="btn_medium">
-      <img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe
-    </a>
-  </div>
+<div class="btn_wrapper">
+	<a href="{% url team_new %}" class="btn_medium">
+		<img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une équipe
+	</a>
+</div>
 {% endif %}
-  <h1>Administration</h1>
-  <h2>Equipes</h2>
+<h1>Administration</h1>
+<h2>Gestion des équipes</h2>
 {% endblock %}
 
 {% block content %}
 <form>
 {% for team in team_list %}
-  <h3>
-    {% if user|is_validator %}
-      <a href="{% url team_item team.id %}">
-        Equipe {{ team }}
-      </a>
-    {% else %}
-      Equipe {{ team }}
-    {% endif %}
-  </h3>
-  <fieldset>
-  <table class="list">
-    <thead>
-      <th>Utilisateur</th>
-      <th>Nom</th>
-      <th>Email</th>
-      <th>Dernière connexion</th>
-      <th>Action</th>
-    </thead>
-    <tbody>
-      {% for member in team.members.all %}
-        <tr class="{% cycle 'even' 'odd' %}">
-          {% if not member.user.is_active %}
-            <td class="user_red">{{ member.user.username }}</td>
-          {% else %}{% if member.user|is_admin or member.user|is_super_validator %}
-            <td class="shield">{{ member.user.username }}</td>
-          {% else %}{% if member.user|is_super_secretary %}
-            <td class="user_suit">{{ member.user.username }}</td>
-          {% else %}{% if member.user|is_secretary %}
-            <td class="user_orange">{{ member.user.username }}</td>
-          {% else %}{% if member.user|is_validator %}
-            <td class="user_gray">{{ member.user.username }}</td>
-          {% else %}
-            <td class="user_green">{{ member.user.username }}</td>
-          {% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
-          <td>{{ member.user.get_full_name }}</td>
-          <td>{{ member.user.email }}</td>
-          <td>{{ member.user.last_login }}</td>
-          <td>
-            {% if member.user == user %}
-              <a href="{% url user_item member.id %}" class="pencil">Editer</a>
-              <a href="{% url change_password member.user.id %}" class="key">Changer de mot de passe</a>
-            {% else %}
-              {% if user|is_validator or user.is_superuser or user|is_super_validator %}
-                <a href="{% url user_item member.id %}" class="pencil">Editer</a>
-                <a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
-                <a href="{% url change_password member.user.id %}" class="key">Nouveau mot de passe</a>
-                {% if member.user.is_active %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
-                {% else %}
-                  <a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
-                {% endif %}
-              {% endif %}
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  </fieldset>
+	<h3>
+		{% if user.is_superuser %}
+			<a href="{% url team_item team.id %}">Equipe {{ team }}</a>
+		{% else %}
+			Equipe {{ team }}
+		{% endif %}
+	</h3>
+	<fieldset>
+	<table class="list">
+		<thead>
+			<th>Utilisateur</th>
+			<th>Nom</th>
+			<th>Email</th>
+			<th>Dernière connexion</th>
+			<th>Action</th>
+		</thead>
+		<tbody>
+			{% for member in team.members.all %}
+			<tr class="{% cycle 'even' 'odd' %}">
+				{% if not member.user.is_active %}
+				<td class="user_red">{{ member.user.username }}</td>
+				{% else %}{% if member.user|has_perms:"order.custom_validate;team.custom_view_teams" %}
+				<td class="shield">{{ member.user.username }}</td>
+				{% else %}{% if member.user|has_perms:"budget.custom_view_budget;team.custom_view_teams" %}
+				<td class="user_suit">{{ member.user.username }}</td>
+				{% else %}{% if member.user|has_perm:"order.custom_goto_status_4" %}
+				<td class="user_orange">{{ member.user.username }}</td>
+				{% else %}{% if member.user|has_perm:"order.custom_validate" %}
+				<td class="user_gray">{{ member.user.username }}</td>
+				{% else %}
+				<td class="user_green">{{ member.user.username }}</td>
+				{% endif %}{% endif %}{% endif %}{% endif %}{% endif %}
+				<td>{{ member.user.get_full_name }}</td>
+				<td>{{ member.user.email }}</td>
+				<td>{{ member.user.last_login }}</td>
+				<td>
+					{% if member.user == user %}
+						<a href="{% url user_item member.id %}" class="pencil">Editer</a>
+						<a href="{% url set_password member.user.id %}" class="key">Changer de mot de passe</a>
+					{% else %}
+						{% if user|has_perm:"team.custom_edit_member" %}
+							<a href="{% url user_item member.id %}" class="pencil">Editer</a>
+							<a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
+							<a href="{% url set_password member.user.id %}" class="key">Nouveau mot de passe</a>
+							{% if member.user.is_active %}
+								<a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
+							{% else %}
+								<a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	</fieldset>
 {% endfor %}
 
-{% if noteam and user|is_validator %}
-  <h3>Utilisateurs non-affiliés</h3>
-  <table class="list">
-    <thead>
-      <th>Utilisateur</th>
-      <th>Dernière connexion</th>
-      <th>Action</th>
-    </thead>
-    <tbody>
-      {% for lonely_user in noteam %}
-        <tr class="{% cycle 'even' 'odd' %}">
-          <td>{{ lonely_user.username }}</td>
-          <td>{{ lonely_user.last_login }}</td>
-          <td>
-            {% if user.is_superuser or user|is_admin %}
-              <a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">
-                Affilier à une équipe
-              </a>
-            {% endif %}
-            {% if user.is_superuser or user|is_admin %}
-              <a href="{% url user_delete lonely_user.id %}" class="trash confirm">
-                Supprimer
-              </a>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% if noteam and user|has_perm:"team.custom_activate_account" %}
+	<h3>Utilisateurs non-affiliés</h3>
+	<table class="list">
+		<thead>
+			<th>Utilisateur</th>
+			<th>Dernière connexion</th>
+			<th>Action</th>
+		</thead>
+		<tbody>
+			{% for lonely_user in noteam %}
+				<tr class="{% cycle 'even' 'odd' %}">
+					<td>{{ lonely_user.username }}</td>
+					<td>{{ lonely_user.last_login }}</td>
+					<td>
+						<a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">Affilier à une équipe</a>
+						<a href="{% url user_delete lonely_user.id %}" class="trash confirm">Supprimer</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 {% endif %}
-  
+
 </form>
 
 {# START: Add to team Dialog #}
 <div id="setTeamDialog" class="dialog" title="Affiliation à une équipe">
-  <div class="form-row">
-    <label for="team">Equipe</label>
-    <div class="cleaner"></div>
-    <select name="team_id">
-      {% for team in team_list %}
-        <option value="{{ team.id }}">{{ team.name }}</option>
-      {% endfor %}
-    </select>
-    <div class="cleaner"></div>
-  </div>
+	<div class="form-row">
+		<label for="team">Equipe</label>
+		<div class="cleaner"></div>
+		<select name="team_id">
+			{% for team in team_list %}
+				<option value="{{ team.id }}">{{ team.name }}</option>
+			{% endfor %}
+		</select>
+		<div class="cleaner"></div>
+	</div>
 </div>
 {# END #}
 
 {# START: Confirmation dialog for deleting a user #}
 <div id="confirm" class="dialog" title="Confirmation requise">
-  Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+	Êtes-vous sûr de vouloir supprimer cet utilisateur ?
 </div>
 {# END #}
 

@@ -43,6 +43,39 @@ $(document).ready(function(){
         return false;
     });
     
+    var creditFormIsHidden=true;
+    var debitFormIsHidden=true;
+    $('button#credit').click(function(){
+      $('#credit_form').toggle();
+      
+      creditFormIsHidden = !creditFormIsHidden;
+      if(debitFormIsHidden==false){
+        $('#debit_form').hide();
+        debitFormIsHidden=true;
+      }
+      
+      if(creditFormIsHidden==true && debitFormIsHidden==true){
+        $('div#order-buttons').show();
+      } else {
+        $('div#order-buttons').hide();
+      }
+    });
+    $('button#debit').click(function(){
+      $('#debit_form').toggle();
+      
+      debitFormIsHidden = !debitFormIsHidden;
+      if(creditFormIsHidden==false){
+        $('#credit_form').hide();
+        creditFormIsHidden=true;
+      }
+      
+      if(creditFormIsHidden==true && debitFormIsHidden==true){
+        $('div#order-buttons').show();
+      } else {
+        $('div#order-buttons').hide();
+      }
+    });
+    
     // 
     // BUTTONS STYLE
     // 
@@ -479,9 +512,8 @@ $(document).ready(function(){
     //    AJAX REQUESTS
     // 
     
-    $('.save-changes, .ajax-post').click(function(){
+    $('.save-changes').click(function(){
       var parent = $(this).parents('.order')[0];
-      var url_qty = $('.ajax-post').attr('url');
       
       // SAVE BUDGET
       if( $('#select-budget', parent).length > 0 ) {
@@ -499,12 +531,12 @@ $(document).ready(function(){
       }
       
       // SAVE QUANTITIES
-      $('input[name="setQuantity"]', parent).each(function(){
-        var orderitem_id = $(this).parent('td').parent('tr').attr('id');
-        var qty = +($(this).val());
+      $('#setQuantity', parent).each(function(){
+        var orderitem_id = $(this).parent('tr').attr('id');
+        var qty = +($('input', this).val());
         
         $.ajax({
-          url: url_qty,
+          url: $('input', this).attr('url'),
           async: false,
           data: {
             'orderitem_id': orderitem_id,
@@ -518,8 +550,8 @@ $(document).ready(function(){
       });
       
       // SAVE ORDER NOTES
-      var url_notes = $('#order_notes').attr('url');
-      var notes = $('#order_notes').val();
+      var url_notes = $('textarea', parent).attr('url');
+      var notes = $('textarea', parent).val();
       if ( url_notes ) {
         $.ajax({
           url: url_notes,
@@ -535,8 +567,8 @@ $(document).ready(function(){
       }
       
       // SAVE ORDER NUMBER
-      var url_order_nb = $('#order_number').attr('url');
-      var number = $('#order_number').val();
+      var url_order_nb = $('#order_number', parent).attr('url');
+      var number = $('#order_number', parent).val();
       
       if ( url_order_nb && number ) {
         $.ajax({

@@ -1,52 +1,48 @@
 {% extends "base_products.html" %}
 {% load paginator filters %}
-
 {% block product_list %}active{% endblock %}
-
-{% block header %}
-  <h1>Gestion des produits</h1>
-{% endblock %}
+{% block header %}<h1>Gestion des produits</h1>{% endblock %}
 
 {% block content %}
 <!-- Start: search form -->
 <div class="bar">
-    <a href="#" class="expand">Dérouler</a>
-    <a href="#" class="hide">Cacher</a>
-    <h4>Recherche de produits</h4>
+	<a href="#" class="expand">Voir</a>
+	<a href="#" class="hide">Cacher</a>
+	<h4>Recherche de produits</h4>
 </div>
 <div class="bar_content">
-  <form action="{% url product_index %}" method="GET" id="history_filter">{% csrf_token %}
-    <strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
-    <div class="cleaner"></div>
-    <table>
-      <tr>
-        <td>Fournisseur:</td>
-        <td>{{ filter_form.provider }}</td>
-        <td width="5%"></td>
-        <td>Produit:</td>
-        <td>{{ filter_form.name }}</td>
-        <td width="5%"></td>
-        <td>Référence:</td>
-        <td>{{ filter_form.reference }}</td>
-        <td width="5%"></td>
-        <td>Fournisseur d'origine:</td>
-        <td>{{ filter_form.origin }}</td>
-      </tr>
-      <tr>
-        <td>Nomenclature:</td>
-        <td>{{ filter_form.nomenclature }}</td>
-        <td width="5%"></td>
-        <td>Type:</td>
-        <td>{{ filter_form.category }}</td>
-        <td width="5%"></td>
-        <td>Sous-Type:</td>
-        <td>{{ filter_form.sub_category }}</td>
-      </tr>
-    </table>
-    <div class="cleaner"></div>
-    <button type="submit" class="all">Chercher</button>
-    <a href="{% url product_index %}" class="refresh">Liste globale</a>
-  </form>
+	<form action="{% url product_index %}" method="GET" id="history_filter">{% csrf_token %}
+		<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+		<div class="cleaner"></div>
+		<table>
+			<tr>
+				<td>Fournisseur:</td>
+				<td>{{ filter_form.provider }}</td>
+				<td width="5%"></td>
+				<td>Produit:</td>
+				<td>{{ filter_form.name }}</td>
+				<td width="5%"></td>
+				<td>Référence:</td>
+				<td>{{ filter_form.reference }}</td>
+				<td width="5%"></td>
+				<td>Fournisseur d'origine:</td>
+				<td>{{ filter_form.origin }}</td>
+			</tr>
+			<tr>
+				<td>Nomenclature:</td>
+				<td>{{ filter_form.nomenclature }}</td>
+				<td width="5%"></td>
+				<td>Type:</td>
+				<td>{{ filter_form.category }}</td>
+				<td width="5%"></td>
+				<td>Sous-Type:</td>
+				<td>{{ filter_form.sub_category }}</td>
+			</tr>
+		</table>
+		<div class="cleaner"></div>
+		<button type="submit" class="all">Chercher</button>
+		<a href="{% url product_index %}" class="refresh">Liste globale</a>
+	</form>
 </div>
 <div class="cleaner"></div>
 <br />
@@ -54,73 +50,64 @@
 
 {# START: Product list #}
 <div class="btn_wrapper">
-  <a href="{% url tab_cart %}" class="btn_medium">
-    <img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir panier
-  </a>
+	<a href="{% url tab_cart %}" class="btn_medium">
+		<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />VOIR PANIER
+	</a>
 </div>
+
 <h2>Liste des produits - Page {{ products.number }} sur {{ products.paginator.num_pages }}.</h2>
 
 {% pagination products %}
 <table class="list">
-  <thead>
-      <th>Fournisseur</th>
-      <th style="max-width:200px">produit</th>
-      <th>Cond.</th>
-      <th>Réf.</th>
-      <th>Prix</th>
-      <th>N° Offre</th>
-      <th>Expiration</th>
-      <th>Nomen.</th>
-      <th>MAJ</th>
-      <th>Action</th>
-  </thead>
-  
-  <tbody>
-    {% for product in products.object_list %}
-      <tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
-        <td>
-          {{ product.provider.name }}
-          {% if product.origin %} - {{ product.origin }}{% endif %}
-        </td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.packaging|default:"" }}</td>
-        <td>{{ product.reference }}</td>
-        <td>{{ product.price }}&nbsp;€</td>
-        <td>{{ product.offer_nb|default:"" }}</td>
-        <td>{{ product.expiry|date }}</td>
-        <td>{{ product.nomenclature|default:"" }}</td>
-        <td>{{ product.last_change|date }}</td>
-        <td style="white-space:nowrap">
-          <button id="{{product.id}}" class="plus addToCart noloading">
-            Panier
-          </button>
-          <a href="{% url product_item product.id %}" class="pencil">Editer</a>
-          {# {% if product|is_in_charge:user or user|is_admin %} #}
-          {#   <a href="{% url product_item product.id %}" class="pencil">Editer</a> #}
-          {# {% endif %} #}
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-  
-  <tfoot>
-    <tr><td colspan="9">{% pagination products %}</td></tr>
-  </tfoot>
+	<thead>
+			<th>Fournisseur</th>
+			<th style="max-width:200px">produit</th>
+			<th>Cond.</th>
+			<th>Réf.</th>
+			<th>Prix</th>
+			<th>N° Offre</th>
+			<th>Expiration</th>
+			<th>Nomen.</th>
+			<th>MAJ</th>
+			<th>Action</th>
+	</thead>
+	<tbody>
+		{% for product in products.object_list %}
+			<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+				<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+				<td>{{ product.name }}</td>
+				<td>{{ product.packaging|default:"" }}</td>
+				<td>{{ product.reference }}</td>
+				<td>{{ product.price }}&nbsp;€</td>
+				<td>{{ product.offer_nb|default:"" }}</td>
+				<td>{{ product.expiry|date }}</td>
+				<td>{{ product.nomenclature|default:"" }}</td>
+				<td>{{ product.last_change|date }}</td>
+				<td style="white-space:nowrap">
+					<button id="{{product.id}}" class="plus addToCart">Panier</button>
+					<a href="{% url product_item product.id %}" class="pencil">Editer</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr><td colspan="9">{% pagination products %}</td></tr>
+	</tfoot>
 </table>
 {# END: Product list #}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
-  <form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
-    <input type="hidden" name="url_params" value="{{url_params}}" />
-    <input type="hidden" name="product_id" value="" />
-    <div class="form-row">
-      <div id="qty-error-msg"></div>
-      <label for="quantity">Quantité</label>
-      <div class="cleaner"></div>
-      <input type="text" name="quantity" value="" />
-      <div class="cleaner"></div>
-    </div>
-  </form>
+	<form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
+		<input type="hidden" name="url_params" value="{{url_params}}" />
+		<input type="hidden" name="product_id" value="" />
+		<div class="form-row">
+			<div id="qty-error-msg"></div>
+			<label for="quantity">Quantité</label>
+			<div class="cleaner"></div>
+			<input type="text" name="quantity" value="" />
+			<div class="cleaner"></div>
+		</div>
+	</form>
 </div>
 
 {% endblock %}

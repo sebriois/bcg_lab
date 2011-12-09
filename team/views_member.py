@@ -33,7 +33,7 @@ def new_user(request):
 		
 		if 'member_user' in request.session:
 			return direct_to_template( request, 'member/form.html', {
-				'form': TeamMemberForm( is_admin = is_admin(request.user) )
+				'form': TeamMemberForm( is_admin = request.user.has_perm('team.custom_edit_member') )
 			})
 		
 		if request.method == 'POST':
@@ -46,7 +46,7 @@ def new_user(request):
 				request.session['member_user'] = user
 				request.session.save()
 				return direct_to_template( request, 'member/form.html', {
-					'form': TeamMemberForm( is_admin = is_admin(request.user) )
+					'form': TeamMemberForm( is_admin = request.user.has_perm('team.custom_edit_member') )
 				})
 		
 		return direct_to_template( request, 'auth/register.html', { 'form': form })
@@ -84,16 +84,12 @@ def new_member(request):
 			
 			del request.session['member_user']
 			
-			# SEND MAIL TO VALIDATORS ...
+			# SEND EMAIL FOR ACTIVATING ACCOUNT...
 			subject = "[Commandes LBCMCP] Demande d'ouverture de compte"
 			emails = []
-			for m in member.team.members.filter(member_type__in = [VALIDATOR,SECRETARY]):
-				if m.user.email:
-					emails.append(m.user.email)
-			# ... and ADMINS
-			for m in TeamMember.objects.filter( member_type = ADMIN ):
-				if m.user.email:
-					emails.append(m.user.email)
+			for u in User.objects.all():
+				if u.member_set.filter(team = member.team) and u.has_perm('team.custom_activate_account') and u.email and u.email not in emails:
+					emails.append(u.email)
 			
 			if emails:
 				template = loader.get_template('email_new_member.txt')
@@ -102,12 +98,12 @@ def new_member(request):
 					'url': request.build_absolute_uri(reverse('team_index'))
 				}) )
 				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
-				info_msg( request, u"Votre demande de création de compte a bien été envoyée mais votre compte reste INACTIF en attendant sa validation.")
+				info_msg( request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
 			else:
 				warn_msg( request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
 			return redirect( 'home' )
 	else:
-		form = TeamMemberForm(is_admin = is_admin(request.user))
+		form = TeamMemberForm(is_admin = request.user.has_perm('team.custom_edit_member') )
 	
 	return direct_to_template(request, 'member/form.html',{
 			'form': form,
@@ -180,7 +176,7 @@ def delete(request, user_id):
 
 #--- Private views
 def _member_detail(request, member):
-		form = TeamMemberForm(instance = member,is_admin = is_admin(request.user))
+		form = TeamMemberForm(instance = member, is_admin = request.user.has_perm('team.custom_edit_member'))
 		return direct_to_template(request, 'member/item.html',{
 				'member': member,
 				'form': form
@@ -191,14 +187,17 @@ def _member_update(request, member):
 	
 	# Need to do that cause field are disabled in HTML, so values are not
 	# sent over.
-	if not is_admin( request.user ):
+	if not request.user.has_perm('team.custom_edit_member'):
 		data.update({
 			'team': member.team.id,
-			'username': member.user.username,
-			'member_type': member.member_type
+			'username': member.user.username
 		})
 	
-	form = TeamMemberForm(instance = member, is_admin = is_admin(request.user), data = data)
+	form = TeamMemberForm(
+		instance = member, 
+		is_admin = request.user.has_perm('team.custom_edit_member'), 
+		data = data
+	)
 	
 	if form.is_valid():
 		data = form.cleaned_data
@@ -208,8 +207,6 @@ def _member_update(request, member):
 		member.user.last_name = data['last_name']
 		member.user.email = data['email']
 		member.user.save()
-		
-		member.member_type = data['member_type']
 		member.save()
 		
 		info_msg( request, u"Utilisateur modifié avec succès." )

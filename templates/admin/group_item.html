@@ -3,19 +3,65 @@
 {% block menu_group %}active{% endblock %}
 
 {% block header %}
-  <h1>Administration</h1>
-  <h2>Gestion des groupes</h2>
+<h1>Administration</h1>
+<h2>Gestion des groupes</h2>
 {% endblock %}
 
 {% block content %}
-<form action="{% url group_item group.id %}" method="POST">
-  <h3>Modification du groupe {{ group.name }}</h3>
-  <fieldset>
-    {% for field in form %}
-      {% include "form_snippet.html" %}
-    {% endfor %}
-  </fieldset>
-  
-  <button type="submit" class="check">Valider</button>
+<form action="{% url group_item group.id %}" method="POST">{% csrf_token %}
+	<h3>Modification du groupe {{ group.name }}</h3>
+	<fieldset>
+		{% with form.name as field %}
+			{% include "form_snippet.html" %}
+		{% endwith %}
+		{% with form.users as field %}
+			{% include "form_snippet.html" %}
+		{% endwith %}
+	</fieldset>
+	<h3>Permissions</h3>
+	<fieldset>
+		<table class="multiple_input">
+			<thead>
+				<th>Commandes</th>
+				<th>Budgets</th>
+				<th>Equipes</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						{{ form.custom_validate }}{{ form.custom_validate.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_edit_order }}{{ form.custom_edit_order.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_edit_number }}{{ form.custom_edit_number.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_edit_order_budget }}{{ form.custom_edit_order_budget.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_goto_status_3 }}{{ form.custom_goto_status_3.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_goto_status_4 }}{{ form.custom_goto_status_4.label }}
+					</td>
+					<td>
+						{{ form.custom_view_budget }}{{ form.custom_view_budget.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_add_budget }}{{ form.custom_add_budget.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_edit_budget }}{{ form.custom_edit_budget.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_history_budget }}{{ form.custom_history_budget.label }}
+					</td>
+					<td>
+						{{ form.custom_view_teams }}{{ form.custom_view_teams.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_edit_member }}{{ form.custom_edit_member.label }}
+						<div class="cleaner"></div>
+						{{ form.custom_activate_account }}{{ form.custom_activate_account.label }}
+						<div class="cleaner"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</fieldset>
+	<button type="submit" class="check">Valider</button>
 </form>
 {% endblock %}

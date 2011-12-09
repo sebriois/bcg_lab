@@ -8,7 +8,7 @@
   <li class="{% block history_orders %}{% endblock %}">
     <a href="{% url history %}">Historique commandes</a>
   </li>
-  {% if user|is_validator or user|is_super_secretary or user|is_super_validator %}
+  {% if user|has_perm:"budget.custom_history_budget" %}
     <li class="{% block history_budgets %}{% endblock %}">
       <a href="{% url history_budgets %}">Historique budgets</a>
     </li>

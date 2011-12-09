@@ -4,7 +4,6 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib import messages
 from django.shortcuts import redirect
 from team.models import Team, TeamMember
-from constants import NORMAL, VALIDATOR, SECRETARY, SUPER_SECRETARY, SUPER_VALIDATOR, ADMIN
 
 def info_msg( request, message ):
 	return messages.add_message( request, messages.INFO, message )
@@ -15,34 +14,8 @@ def error_msg( request, message ):
 def warn_msg( request, message ):
 	return messages.add_message( request, messages.WARNING, message )
 
-def is_normal(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [NORMAL, VALIDATOR, ADMIN]).count() > 0
-
-def is_validator(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [VALIDATOR, ADMIN]).count() > 0
-
-def is_secretary(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SECRETARY, SUPER_SECRETARY, ADMIN]).count() > 0
-
-def is_super_secretary(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SUPER_SECRETARY, ADMIN]).count() > 0
-
-def is_super_validator(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type__in = [SUPER_VALIDATOR, ADMIN]).count() > 0
-
-def is_admin(user):
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter(member_type = ADMIN).count() > 0
-
-def in_team_secretary(user):	
-	# FIXME: Ugly way of testing if this team is secretary, use permissions instead
-	if not user or user.is_anonymous(): return False
-	return user.teammember_set.filter( team__name = "GESTION" ).count() > 0
+def in_team_secretary(user):
+	return user.has_perm('order.custom_goto_status_4')
 
 def GET_method(view):
 	"""
@@ -94,56 +67,6 @@ def superuser_required( view ):
 		return view(request, *args, **kwargs)
 	return _wrapped_view
 
-def team_required( view ):
-	"""
-	Decorator that checks whether the user belongs to a team, redirecting
-	to the error page if not.
-	"""
-	def _wrapped_view( request, *args, **kwargs ):
-		if not TeamMember.objects.filter( user = request.user ).count() > 0:
-			warn_msg( request, u"Vous devez appartenir à une équipe pour accéder à cette page." )
-			return redirect('error')
-		return view(request, *args, **kwargs)
-	return _wrapped_view
-
-def validator_required( view ):
-	"""
-	Decorator that checks whether the user is a validator, redirecting
-	to the error page if not.
-	"""
-	def _wrapped_view( request, *args, **kwargs ):
-		if not is_validator(request.user):
-			warn_msg( request, u"Vous devez être validateur pour accéder à cette page." )
-			return redirect('error')
-		return view(request, *args, **kwargs)
-	return _wrapped_view
-	
-def secretary_required( view ):
-	"""
-	Decorator that checks whether the user belongs to a team, redirecting
-	to the error page if not.
-	"""
-	def _wrapped_view( request, *args, **kwargs ):
-		if not is_secretary(request.user):
-			warn_msg( request, u"Vous devez être gestionnaire pour accéder à cette page." )
-			return redirect('error')
-		return view(request, *args, **kwargs)
-	return _wrapped_view
-	
-
-def admin_required( view ):
-	"""
-	Decorator that checks whether the user belongs to a team, redirecting
-	to the error page if not.
-	"""
-	def _wrapped_view( request, *args, **kwargs ):
-		if not is_admin(request.user):
-			warn_msg( request, u"Vous devez être administrateur pour accéder à cette page." )
-			return redirect('error')
-		return view(request, *args, **kwargs)
-	return _wrapped_view
-	
-
 def paginate( request, object_list, nb_items = 40 ):
 	paginator = Paginator(object_list, nb_items ) # Show nb_items per page
 	
@@ -164,4 +87,7 @@ def get_team_member( request ):
 
 def get_teams( user ):
 	return Team.objects.filter( teammember__user = user )
+
+def not_allowed_msg( request ):
+	error_msg(request, "Vous ne disposez pas des permissions nécessaires pour accéder à cette page.")
 

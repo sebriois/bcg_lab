@@ -5,7 +5,7 @@
 
 {% block header %}
   {% if budget %}
-    {% if user|is_secretary or user|is_super_secretary %}
+    {% if user|has_perm:"budget.custom_edit_budget" %}
       <div class="btn_wrapper">
         <a href="{% url debit_budget budget.id %}" class="btn_small">
           <img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
@@ -89,7 +89,7 @@
           <td><strong>{{ budget_line.get_amount_left }}</strong></td>
           {% if user|in_team_secretary %}
             <td style="white-space:nowrap">
-              <a href="{% url budgetline_edit budget_line.id %}" class="pencil no-text"></a>
+              <a href="{% url budgetline_item budget_line.id %}" class="pencil no-text"></a>
               <a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
             </td>
           {% endif %}

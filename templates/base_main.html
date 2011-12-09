@@ -2,13 +2,15 @@
 
 {% block main_content %}
 <div id="main">
-    {% block header %}{% endblock %}
-    
-    {% for message in messages %}
-        {{ message|safe|linebreaks }}
-    {% endfor %}
-    <div class="cleaner"></div>
-    
-    {% block content %}{% endblock %}
+  {% block header %}{% endblock %}
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message|escape|safe }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="cleaner"></div>
+  {% block content %}{% endblock %}
 </div>
 {% endblock %}

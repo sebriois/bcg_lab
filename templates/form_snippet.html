@@ -1,9 +1,5 @@
-<div class="form-row{% if field.errors %} error {% endif %}">
-  {% if not field.is_hidden %}
-    {% if field.errors %}{{ field.errors }}{% endif %}
-    <label for="{{ field.html_name }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-  {% endif %}
-  {{ field }}
-  {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
-  <div class="cleaner"></div>
+<div class="form-row{% if field.errors %} error {% endif %}">{% if not field.is_hidden %}
+	<label for="{{ field.html_name }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>{% endif %}
+	{{ field }}{% if field.help_text %}<p class="help margin-left">{{ field.help_text|safe }}</p>{% endif %}
+	{% if not field.is_hidden and field.errors %}{{ field.errors }}{% endif %}<div class="cleaner"></div>
 </div>

@@ -13,7 +13,7 @@ from constants import *
 from utils import *
 
 @login_required
-@team_required
+
 @transaction.commit_on_success
 def index(request):
 	if request.method == 'GET':

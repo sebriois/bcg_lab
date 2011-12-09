@@ -1,6 +1,12 @@
-{% extends "main_classic.html" %}
+{% extends "base_provider.html" %}
+{% load paginator filters %}
 
-{% block header %}Modification d'un fournisseur{% endblock %}
+{% block provider_list %}active{% endblock %}
+
+{% block header %}
+<h1>Gestion des fournisseurs</h1>
+<h2>Modification d'un fournisseur</h2>
+{% endblock %}
 
 {% block content %}
 <form action="{% url provider_item provider.id %}" method="POST">{% csrf_token %}
@@ -11,6 +17,6 @@
     {% for field in form %}
         {% include "form_snippet.html"%}
     {% endfor %}
-    <button type="submit" class="check button">Valider</button>
+    <button type="submit" class="check">Valider</button>
 </form>
 {% endblock %}

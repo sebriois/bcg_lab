@@ -203,3 +203,9 @@ class OrderItem(models.Model):
 			product.save()
 		
 	
+
+
+class OrderComplement(models.Model):
+	name = models.CharField( u"Nom du complément", max_length = 50 )
+	type_comp = models.IntegerField( u"Type de complément", choices = ((CREDIT, u"Crédit"), (DEBIT, u"Débit")) )
+

@@ -1,0 +1,102 @@
+{% extends "base_budgets.html" %}
+{% load paginator filters %}
+
+{% block menu_budget_lines %}active{% endblock %}
+
+{% block header %}
+	{% if budget %}
+		{% if user|has_perm:"budget.custom_edit_budget" %}
+			<div class="btn_wrapper">
+				<a href="{% url debit_budget budget.id %}" class="btn_small">
+					<img src="{{ MEDIA_URL }}img/icons/delete.png" />Débiter
+				</a>
+			</div>
+			<div class="btn_wrapper">
+				<a href="{% url credit_budget budget.id %}" class="btn_small">
+					<img src="{{ MEDIA_URL }}img/icons/add.png" />Créditer
+				</a>
+			</div>
+		{% endif %}
+		<div class="btn_wrapper">
+			<a href="{% url budgetlines %}" class="btn_big">
+				<img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
+			</a>
+		</div>
+	{% endif %}
+	<h1>Gestion des budgets</h1>
+{% endblock %}
+
+{% block content %}
+{% include "budgetlines/search_form.html" %}
+
+{% regroup budget_lines by team as team_list %}
+
+{% for team in team_list %}
+<h2>Equipe {{ team.grouper }}</h2>
+{% regroup team.list by budget as budget_list %}
+<table class="list">
+	<thead>
+		<th>budget</th>
+		<th>cmde</th>
+		<th>date</th>
+		<th>nature</th>
+		<th>tutelle</th>
+		<th>origine</th>
+		<th>fournisseur</th>
+		<th>offre</th>
+		<th>désignation</th>
+		<th>ref</th>
+		<th>crédit</th>
+		<th>débit</th>
+		<th>qté</th>
+		<th>Total</th>
+		<th>Dispo</th>
+		{% if user|in_team_secretary %}<th></th>{% endif %}
+	</thead>
+	<tbody>
+		{% for budget in budget_list %}
+			{% if forloop.counter > 1 %}
+				<tr class="empty_row"><td colspan="16"></td></tr>
+			{% endif %}
+			
+			{% for budget_line in budget.list %}
+			<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
+				{% if forloop.first %}
+					<td><strong>{{ budget.grouper }}</strong></td>
+				{% else %}
+					<td>{{ budget.grouper }}</td>
+				{% endif %}
+				<td>{{ budget_line.number|default:"" }}</td>
+				<td>{{ budget_line.date|date }}</td>
+				<td>{{ budget_line.nature }}</td>
+				<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
+				<td>{{ budget_line.origin|default:"" }}</td>
+				<td>{{ budget_line.provider|default:"" }}</td>
+				<td>{{ budget_line.offer|default:"" }}</td>
+				<td title="{{ budget_line.product|default:""}}">
+					{{ budget_line.product|default:""|truncatewords:6 }}
+				</td>
+				<td>{{ budget_line.ref|default:"" }}</td>
+				<td style="color:green">{{ budget_line.credit|default:"" }}</td>
+				<td style="color:red">{{ budget_line.debit|default:"" }}</td>
+				<td>{{ budget_line.quantity|default:1 }}</td>
+				<td>{{ budget_line.product_price|default:"" }}</td>
+				<td><strong>{{ budget_line.get_amount_left }}</strong></td>
+				{% if user|has_perm:"budget.custom_edit_budget" %}
+					<td style="white-space:nowrap">
+						<a href="{% url budgetline_item budget_line.id %}" class="pencil no-text"></a>
+						<a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
+					</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		{% endfor %}
+	</tbody>
+</table>
+{% endfor %}
+
+<div id="confirmDel" class="dialog" title="Confirmer la suppression">
+	Merci de confirmer la suppression.
+</div>
+
+{% endblock %}

@@ -56,10 +56,10 @@ def _team_list(request):
 		if user.teammember_set.all().count() == 0:
 			noteam.append( user )
 	
-	if request.user.is_superuser or is_admin(request.user):
+	if request.user.has_perm("team.custom_view_teams"):
 		teams = Team.objects.all()
 	else:
-		teams = [m.team for m in request.user.teammember_set.all()]
+		teams = get_teams( request.user )
 	
 	return direct_to_template(request, 'team/index.html',{
 		'team_list': teams,

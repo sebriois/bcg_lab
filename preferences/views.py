@@ -33,7 +33,7 @@ def index(request):
 			email_form = EmailPrefForm( instance = get_team_member(request), data = data )
 			if email_form.is_valid():
 				email_form.save()
-				info_msg( request, "Préférences enregistrées!")
+				info_msg( request, "Préférences enregistrées!" )
 	
 	return direct_to_template( request, "preferences/index.html", {
 		'user_form': user_form,

@@ -1,58 +1,119 @@
-{% extends "main_custom.html" %}
+{% extends "base_orders.html" %}
 {% load filters %}
+{% block header %}<h1>Fournisseur: {{ order.provider }}</h1>{% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>{{ order.provider }}</h2></div>
-  <ul>
-    <li>Commande créée le {{ order.date_created|date }}</li>
-    <li>Commande équipe {{ order.team }}</li>
-    <li>Statut: {{ order.get_status_display }}</li>
-    {% if order.budget %}
-      <li>Budget à imputer: {{ order.budget }}</li>
-    {% endif %}
-  </ul>
-  
-  <table class="list">
-    <thead>
-      <th>Utilisateur</th>
-      <th>Produit</th>
-      <th>Conditionnement</th>
-      <th>Référence</th>
-      <th>N° Offre</th>
-      <th>Prix unitaire</th>
-      <th>Quantité</th>
-      <th>Prix total</th>
-    </thead>
-    
-    <tbody>
-      {% for order_item in order.items.all %}
-        <tr class="{% cycle 'odd' 'even' %}">
-          <td>{{ order_item.get_fullname }}</td>
-          <td>{{ order_item.name }}</td>
-          <td>{{ order_item.packaging|default:"" }}</td>
-          <td>{{ order_item.reference|default:"" }}</td>
-          <td>{{ order_item.offer_nb|default:"" }}</td>
-          <td>{{ order_item.price }} €</td>
-          <td>{{ order_item.quantity }}</td>
-          <td>{{ order_item.total_price }} €</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  
-  <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
-</div>
-
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Remise</h2></div>
-  <form action="{% url add_credit order.id %}" method="POST">{% csrf_token %}
-    <input type="hidden" name="next" value="{{next}}" />
-    <input type="hidden" name="username" value="{{user.username}}" />
-    {% for field in form %}
-      {% include "form_snippet.html"%}
-    {% endfor %}
-    <button type="submit" class="check">Valider</button>
-  </form>
+<div class="order">
+	<h3>Informations générales</h3>
+	<fieldset>
+		<div style="float:left;width:49%;height:130px;">
+			<p>Equipe: {{ order.team }}</p>
+			<p>Date: {{ order.date_created|date }}</p>
+			<p>Statut: {{ order.get_status_display }}</p>
+			{% if user|has_perm:"order.custom_edit_number" and order.status > 2 %}
+			<strong>Commande n°</strong>
+			<input type="text" id="order_number"
+				url="{% url set_order_number order.id %}"
+				value="{{ order.number|default:"" }}"
+				style="float:none;display:inline;padding:1px;"
+			/>
+			{% else %}{% if order.number %}
+			<p>Commande n°{{ order.number }}</p>
+			{% endif %}{% endif %}
+			
+			{% if user|has_perm:"order.custom_edit_order_budget" %}
+				{% if not order.number and not order.provider.is_local %}
+					<p>
+						<strong>Budget à imputer:</strong>
+						<select id="select-budget" url="{% url order_budget order.id %}">
+							{% for budget in budgets %}
+							<option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
+								{{budget}}
+							</option>
+							{% endfor %}
+						</select>
+					</p>
+				{% else %}
+					{% if order.number and order.budget %}
+						<p>Budget imputé: {{ order.budget }}</p>
+					{% else %}
+						<p>Budget à imputer:{{ order.budget|default:"A DEFINIR" }}</p>
+					{% endif %}
+				{% endif %}
+			{% endif %}
+		</div>
+		<div style="float:left">
+			<h4>Commentaires</h4>
+			<textarea id="order_notes" url="{% url set_order_notes order.id %}" class="comment-area">
+				{{ order.notes|default:"" }}
+			</textarea>
+		</div>
+	</fieldset>
+	
+	<h3>Détail de la commande</h3>
+	<fieldset>
+		<table class="list">
+			<thead>
+				<th>Utilisateur</th>
+				<th>Produit</th>
+				<th>Conditionnement</th>
+				<th>Référence</th>
+				<th>N° Offre</th>
+				<th>Prix unitaire</th>
+				<th>Quantité</th>
+				<th>Prix total</th>
+				{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
+				<th>Action</th>
+				{% endif %}
+			</thead>
+			<tbody>
+				{% for order_item in order.items.all %}
+				<tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
+					<td>{{ order_item.get_fullname }}</td>
+					<td>{{ order_item.name }}</td>
+					<td>{{ order_item.packaging|default:"" }}</td>
+					<td>{{ order_item.reference|default:"" }}</td>
+					<td>{{ order_item.offer_nb|default:"" }}</td>
+					<td>{{ order_item.price }} €</td>
+					{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
+					<td>
+						<input type="text" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" />
+					</td>
+					{% else %}
+					<td>{{ order_item.quantity }}</td>
+					{% endif %}
+					<td>{{ order_item.total_price }} €</td>
+					{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
+					<td>
+						{% if user|has_perm:"order.custom_edit_number" %}
+							<a href="{% url orderitem_detail order_item.id %}" class="pencil">Modifier</a>
+						{% endif %}
+						<a href="{% url orderitem_delete order_item.id %}" class="trash confirmDel">Supprimer</a>
+					</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<br />
+		{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
+		<div style="float:right">
+			<a href="{% url add_debit order.id %}?next={{order.get_absolute_url}}" class="plus">Frais annexes</a>
+			<a href="{% url add_credit order.id %}?next={{order.get_absolute_url}}" class="minus">Remises</a>
+		</div>
+		{% endif %}
+		<p style="font-size:16px">PRIX TOTAL COMMANDE: <b>{{ order.price }} €</b></p>
+		</fieldset>
+		
+		<h3>Remise</h3>
+		<fieldset>
+			<form action="{% url add_credit order.id %}" method="POST">{% csrf_token %}
+			  <input type="hidden" name="next" value="{{next}}" />
+			  <input type="hidden" name="username" value="{{user.username}}" />
+			  {% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+			  <button type="submit" class="check">Valider</button>
+				<a href="{{ order.get_absolute_url }}" class="back">Annuler</a>
+			</form>
+		</fieldset>
 </div>
 {% endblock %}

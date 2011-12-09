@@ -1,21 +1,5 @@
 # -*- encoding: utf8 -*-
 
-NORMAL = 0
-SECRETARY = 1
-VALIDATOR = 2
-ADMIN = 3
-SUPER_SECRETARY = 4
-SUPER_VALIDATOR = 5
-
-MEMBERTYPE_CHOICES = (
-	(NORMAL, u"Normal"),
-	(SECRETARY, u"Secrétaire"),
-	(VALIDATOR, u"Validateur"),
-	(ADMIN, u"Admin"),
-	(SUPER_SECRETARY, u"Gestionnaire"),
-	(SUPER_VALIDATOR, u"Super-Validateur"),
-)
-
 STATE_CHOICES = (
 	(0, u"Non passée"),
 	(1, u"En attente de validation"),
@@ -60,9 +44,6 @@ BUDGET_CHOICES = (
 	(0, u"CNRS"),
 	(1, u"UPS")
 )
-
-CREDIT_ORDER_CHOICES	= u"Remise;Promotion"
-DEBIT_ORDER_CHOICES		= u"Frais de port;Frais de conditionnement"
 
 CREDIT = 0
 DEBIT = 1

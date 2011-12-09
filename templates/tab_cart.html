@@ -4,86 +4,18 @@
 {% block menu_cart %}active{% endblock %}
 
 {% block header %}
-  <h1>Gestion des commandes</h1>
-  <h2>Panier</h2>
+<h1>Gestion des commandes</h1>
+<h2>Panier</h2>
 {% endblock %}
 
 {% block content %}
 {% for order in order_list %}
-  <h2 class="em">{{ order.provider }}</h2>
-  <fieldset class="order">
-    <div style="float:left">
-      <h4>Commentaires</h4>
-      <textarea id="order_notes" class="small_textarea" url="{% url set_order_notes order.id %}">
-        {{ order.notes|default:"" }}
-      </textarea>
-    </div>
-    <ul class="brown_arrow" style="float:right">
-      <li>Commande créée le {{ order.date_created|date }}</li>
-      <li>Commande équipe {{ order.team }}</li>
-      <li>Statut: {{ order.get_status_display }}</li>
-    </ul>
-    <div class="cleaner"></div>
-    <br />
-  
-    <table class="list">
-      <thead>
-        <th>Utilisateur</th>
-        <th>Produit</th>
-        <th>Conditionnement</th>
-        <th>Référence</th>
-        <th>N° Offre</th>
-        <th>Prix unitaire</th>
-        <th>Quantité</th>
-        <th>Prix total</th>
-        <th>Action</th>
-      </thead>
-
-      <tbody>
-        {% for order_item in order.items.all %}
-          <tr class="{% cycle 'odd' 'even' %}" id="{{order_item.id}}">
-            <td>{{ order_item.get_fullname }}</td>
-            <td>{{ order_item.name }}</td>
-            <td>{{ order_item.packaging|default:"" }}</td>
-            <td>{{ order_item.reference|default:"" }}</td>
-            <td>{{ order_item.offer_nb|default:"" }}</td>
-            <td>{{ order_item.price }} €</td>
-            <td>
-              <input type="text" name="setQuantity" value="{{ order_item.quantity }}" style="width:15px;" />
-            </td>
-            <td>{{ order_item.total_price }} €</td>
-            <td>
-              <button id="{{order_item.id}}" href="{% url orderitem_delete order_item.id %}?next=tab_cart" class="trash confirmDelCart">
-                Retirer du panier
-              </button>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <br />
-    
-    <p><strong>PRIX TOTAL COMMANDE: {{ order.price }} €</strong></p>
-    <div style="float:right">
-      <a href="{% url add_debit order.id %}?next=tab_cart" class="plus">Frais annexes</a>
-      <a href="{% url add_credit order.id %}?next=tab_cart" class="minus">Remises</a>
-    </div>
-
-    <a href="{% url tab_cart %}" class="disk ajax-post" url="{% url set_item_quantity %}">
-      Enregistrer les modifications
-    </a>
-
-    {% if user|is_validator %}
-      <a href="{% url set_next_status order.id %}" class="cart save-changes">Commander</a>
-    {% else %}
-      <a href="{% url set_next_status order.id %}" class="cart confirm save-changes">Commander</a>
-    {% endif %}
-
-    <a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer</a>
-  </fieldset>
-
-  {% include "order/_dialogs.html" %}
+	<h2 class="order-title">{{ order.provider }}</h2>
+	<div class="order">
+		{% include "order/_order_detail.html" %}
+	</div>
 {% empty %}
-  <p>Votre panier est vide</p>
+	<p>Votre panier est vide</p>
 {% endfor %}
+{% include "order/_dialogs.html" %}
 {% endblock %}

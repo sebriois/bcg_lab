@@ -8,8 +8,10 @@
   <li class="{% block product_list %}{% endblock %}">
     <a href="{% url product_index %}">Liste des produits</a>
   </li>
-  <li class="{% block product_new %}{% endblock %}">
-    <a href="{% url product_new %}">Ajouter un produit</a>
-  </li>
+  {% if user|has_perm:"product.custom_add_product" %}
+    <li class="{% block product_new %}{% endblock %}">
+      <a href="{% url product_new %}">Ajouter un produit</a>
+    </li>
+  {% endif %}
 </ul>
 {% endblock %}

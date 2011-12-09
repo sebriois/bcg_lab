@@ -1,0 +1,55 @@
+{% extends "base_budgets.html" %}
+{% load paginator filters %}
+
+{% block menu_budget %}active{% endblock %}
+
+{% block header %}
+  <h1>Gestion des budgets</h1>
+  <h2>Liste des budgets</h2>
+{% endblock %}
+
+{% block content %}
+{% if budgets.object_list %}
+  <table class="list">
+    <thead>
+      <th>Equipe</th>
+      <th>Nom</th>
+      <th>Origine</th>
+      <th>Tutelle</th>
+      <th>Nature</th>
+      <th>Montant disponible</th>
+      <th>Action</th>
+    </thead>
+    
+    <tbody>
+      {% for budget in budgets.object_list %}
+      <tr class="{% cycle 'even' 'odd' %}">
+        <td>{{ budget.team }}</td>
+        <td>{{ budget.name }}</td>
+        <td>{{ budget.default_origin }}</td>
+        <td>{{ budget.get_budget_type_display }}</td>
+        <td>{{ budget.default_nature }}</td>
+        <td>{{ budget.get_amount_left }}</td>
+        <td>
+          <a href="{% url budgetlines %}?budget_name={{budget.name}}" class="zoomin">Voir détail</a>
+          {% if user|has_perm:"budget.custom_edit_budget" %}
+          <a href="{% url budget_edit budget.id %}" class="pencil">Editer</a>
+          <a href="{% url credit_budget budget.id %}" class="plus">Créditer</a>
+          <a href="{% url debit_budget budget.id %}" class="minus">Débiter</a>
+          {% endif %}
+          {% if user|has_perm:"budget.custom_archive_budget" %}
+          <a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Archiver</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<div id="confirm" class="dialog" title="Confirmer l'archivage">
+  Ce budget va être retiré de cette liste, ainsi que toutes ses lignes
+  budgétaires, pour être archivé. Vous n'aurez plus la possibilité de
+  le visualiser.
+</div>
+{% endblock %}

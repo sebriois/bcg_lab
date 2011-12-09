@@ -1,0 +1,17 @@
+{% extends "base_main.html" %}
+{% load filters %}
+
+{% block menu_provider %}active{% endblock %}
+
+{% block nav_secondary %}
+<ul id="subnav">
+  <li class="{% block provider_list %}{% endblock %}">
+    <a href="{% url provider_index %}">Liste des fournisseurs</a>
+  </li>
+  {% if user|has_perm:"provider.custom_add_provider" %}
+    <li class="{% block provider_new %}{% endblock %}">
+      <a href="{% url provider_new %}">Ajouter un fournisseur</a>
+    </li>
+  {% endif %}
+</ul>
+{% endblock %}

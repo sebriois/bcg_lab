@@ -2,9 +2,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
-from constants import MEMBERTYPE_CHOICES
-from constants import NORMAL, VALIDATOR, SECRETARY, ADMIN
-
 class Team(models.Model):
 	name = models.CharField(u"Nom", max_length=100)
 	fullname = models.CharField(u"Nom complet", max_length=100)
@@ -25,7 +22,7 @@ class Team(models.Model):
 class TeamMember(models.Model):
 	team = models.ForeignKey(Team, verbose_name="Equipe", null = True, blank = True)
 	user = models.ForeignKey(User, verbose_name="Utilisateur")
-	member_type = models.IntegerField(u"Type d'utilisateur", choices = MEMBERTYPE_CHOICES, default = 0)
+	member_type = models.IntegerField(u"Type d'utilisateur", default = 0)
 	
 	send_on_validation = models.BooleanField(u"Email quand commande validée ?", default = False )
 	send_on_edit = models.BooleanField(u"Email quand commande modifiée ?", default = True )
@@ -34,7 +31,7 @@ class TeamMember(models.Model):
 	class Meta:
 		verbose_name = u'Membre équipe'
 		verbose_name_plural = u'Membres équipe'
-		ordering = ('team', '-member_type', 'user__username')
+		ordering = ('team', 'user__username')
 	
 	def __unicode__(self):
 		return unicode(self.user)

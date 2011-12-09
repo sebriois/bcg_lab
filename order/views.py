@@ -26,27 +26,42 @@ from utils import *
 @login_required
 @GET_method
 def tab_cart(request):
-	orders = Order.objects.filter( team__in = get_teams(request.user), status = 0 )
+	orders = Order.objects.filter(
+		team__in = get_teams(request.user),
+		status = 0
+	)
+	if not request.user.has_perm('budget.custom_view_budget'):
+		orders = orders.filter(
+			Q(items__is_confidential = False) |
+			Q(items__username = request.user.username)
+		).distinct()
 	
 	return direct_to_template(request, "tab_cart.html", { 
 		'order_list': orders.order_by('provider__name'),
+		'credit_form': AddCreditForm(),
+		'debit_form': AddDebitForm(),
 		'next': 'tab_cart'
 	})
 
 @login_required
 @GET_method
 def tab_orders(request):
-	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user):
+	if request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter( status__in = [2,3,4] )
-		template = 'tab_orders_secretary.html'
 	else:
 		order_list = Order.objects.filter(
 			team__in = get_teams( request.user ),
 			status__in = [1,2,3,4]
 		)
-		template = 'tab_orders.html'
 	
-	return direct_to_template( request, template, {
+	# Exclude confidential orders
+	if not request.user.has_perm('budget.custom_view_budget'):
+		order_list = order_list.filter(
+			Q(items__is_confidential = False) |
+			Q(items__username = request.user.username)
+		).distinct()
+	
+	return direct_to_template( request, "order/index.html", {
 		'orders': paginate( request, order_list ),
 		'next': 'tab_orders'
 	})
@@ -54,51 +69,60 @@ def tab_orders(request):
 
 @login_required
 @GET_method
-def tab_validation(request):
-	if is_admin(request.user) or is_super_validator(request.user):
+def tab_validation( request ):
+	teams = get_teams( request.user )
+	
+	# ORDERS THAT CAN BE SEEN
+	if request.user.has_perms(['team.custom_view_teams','order.custom_validate']):
 		order_list = Order.objects.filter( status = 1 )
-		budget_list = Budget.objects.filter(is_active = True)
-	elif is_validator(request.user):
-		teams = get_teams( request.user )
+	elif request.user.has_perm('order.custom_validate'):
 		order_list = Order.objects.filter( team__in = teams, status = 1 )
-		budget_list = Budget.objects.filter( team__in = teams, is_active = True )
-	elif is_super_secretary(request.user):
-		teams = get_teams( request.user )
-		order_list = Order.objects.filter( team__in = teams, status = 1 )
+	else:
+		not_allowed_msg( request )
+		return redirect('home')
+	
+	# BUDGETS THAT CAN BE SELECTED
+	if request.user.has_perms(['team.custom_view_teams','budget.custom_view_budget']):
 		budget_list = Budget.objects.filter(is_active = True)
+	elif request.user.has_perm('budget.custom_view_budget'):
+		budget_list = Budget.objects.filter(team__in = teams, is_active = True)
+	else:
+		budget_list = Budget.objects.none()
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list ),
 		'budgets': budget_list,
+		'credit_form': AddCreditForm(),
+		'debit_form': AddDebitForm(),
 		'next': 'tab_validation'
 	})
-
 
 
 @login_required
 @GET_method
 def order_detail(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	budgets = []
 	
-	if is_secretary(request.user) or is_super_secretary(request.user) or is_super_validator(request.user) or is_admin(request.user):
-		for budget in Budget.objects.filter(default_nature = "FO", is_active = True):
-			if budget.get_amount_left() > 0:
-				budgets.append( budget )
-		template = 'order/order_details_secretary.html'
-	
-	elif is_validator(request.user):
-		for budget in Budget.objects.filter( team__in = get_teams( request.user ), is_active = True ):
-			if budget.get_amount_left() > 0:
-				budgets.append( budget )
-		template = 'order/order_details_validator.html'
-	
+	if request.user.has_perms(['budget.custom_view_budget','team.custom_view_teams']):
+		budgets = Budget.objects.filter(
+			default_nature = "FO",
+			is_active = True
+		)
+	elif request.user.has_perm('budget.custom_view_budget'):
+		budgets = Budget.objects.filter(
+			team__in = get_teams(request.user),
+			default_nature = "FO",
+			is_active = True
+		)
 	else:
-		template = 'order/order_details_normal.html'
+		budgets = Budget.objects.none()
 	
-	return direct_to_template(request, template, {
+	return direct_to_template(request, 'order/item.html', {
 		'order': order,
-		'budgets': budgets
+		'budgets': budgets,
+		'credit_form': AddCreditForm(),
+		'debit_form': AddDebitForm(),
+		'next': order.get_absolute_url()
 	})
 
 
@@ -136,35 +160,9 @@ def _orderitem_update(request, orderitem):
 		
 		if orderitem.product_id:
 			orderitem.update_product()
-			
-			# Send product changes by email to users in charge
-			# if orderitem.product_id and bool(request.POST.get('send_changes', 'False')):
-			# 	product = Product.objects.get(id = orderitem.product_id)
-			# 	template = loader.get_template('email_update_product.txt')
-			# 	subject = "[Commandes LBCMCP] Mise à jour d'un produit"
-			# 	emails = []
-			# 	for user in product.provider.users_in_charge.all():
-			# 		if user.email:
-			# 			emails.append(user.email)
-			# 		else:
-			# 			warn_msg(request, "Le message n'a pas pu être envoyé à %s, \
-			# 			faute d'adresse email valide." % user)
-			# 
-			# 	changed_data = []
-			# 	for attr in form.changed_data:
-			# 		lbl = orderitem._meta.get_field(attr).verbose_name
-			# 		val = getattr(orderitem, attr)
-			# 		changed_data.append( (lbl,val) )
-			# 
-			# 	message = template.render( Context({ 
-			# 		'changed_data': changed_data,
-			# 		'product': product,
-			# 		'url': request.build_absolute_uri(product.get_absolute_url())
-			# 	}) )
-			# 	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 		
 		info_msg( request, "Commande modifiée avec succès.")
-		return redirect( order )
+		return redirect(order)
 	
 	return direct_to_template( request, 'order/orderitem_detail.html', {
 		'form': form,
@@ -199,59 +197,49 @@ def add_orderitem(request, order_id):
 @transaction.commit_on_success
 def add_credit(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	
-	if request.method == 'GET':
-		next = request.GET.get('next', 'tab_orders')
-		form = AddCreditForm()
-	elif request.method == 'POST':
-		next = request.POST.get('next', 'tab_orders')
-		form = AddCreditForm( data = request.POST )
-		if form.is_valid():
-			item = form.save( commit = False )
-			item.username = request.POST['username']
-			item.save()
-			order.items.add(item)
-			
-			if order.number:
-				item.create_budget_line()
-			
-			info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
-			return redirect( next )
-	
-	return direct_to_template( request, "order/add_credit.html", {
-		'order': order,
-		'form': form,
-		'next': next
-	})
+	next = request.POST.get('next', 'tab_orders')
+	form = AddCreditForm( data = request.POST )
+	if form.is_valid():
+		item = form.save( commit = False )
+		item.username = request.POST['username']
+		item.provider = order.provider.name
+		item.save()
+		order.items.add(item)
+		
+		if order.number:
+			item.create_budget_line()
+		
+		info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
+	else:
+		error_msg( request, u"Une erreur s'est produite lors de l'ajout de la remise. \
+Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
+	return redirect( next )
+
 
 @login_required
+@POST_method
 @transaction.commit_on_success
 def add_debit(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	
-	if request.method == 'GET':
-		next = request.GET.get('next', 'tab_orders')
-		form = AddDebitForm()
-	elif request.method == 'POST':
-		next = request.POST.get('next', 'tab_orders')
-		form = AddDebitForm( data = request.POST )
-		if form.is_valid():
-			item = form.save( commit = False )
-			item.username = request.POST['username']
-			item.save()
-			order.items.add(item)
-			
-			if order.number:
-				item.create_budget_line()
-			
-			info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
-			return redirect( next )
+	next = request.POST.get('next', 'tab_orders')
+	form = AddDebitForm( data = request.POST )
+	if form.is_valid():
+		item = form.save( commit = False )
+		item.username = request.POST['username']
+		item.provider = order.provider.name
+		item.save()
+		order.items.add(item)
+		
+		if order.number:
+			item.create_budget_line()
+		
+		info_msg( request, u"'%s' ajouté à la commande avec succès." % item.name )
+	else:
+		error_msg( request, u"Une erreur s'est produite lors de l'ajout de frais. \
+Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 	
-	return direct_to_template( request, "order/add_debit.html", {
-		'order': order,
-		'form': form,
-		'next': next
-	})
+	return redirect( next )
 
 @login_required
 @GET_method
@@ -262,12 +250,18 @@ def del_orderitem(request, orderitem_id):
 	info_msg( request, u"'%s' supprimé avec succès." % item.name )
 	item.delete()
 	
+	if order.status == 0:
+		next_page = request.GET.get('next', 'tab_cart')
+	elif order.status == 1 and request.user.has_perm('order.custom_validate'):
+		next_page = request.GET.get('next', 'tab_validation')
+	else:
+		next_page = request.GET.get('next', order)
+	
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
-		return redirect('tab_orders')
 	
-	return redirect( order )
+	return redirect( next_page )
 
 @login_required
 @GET_method
@@ -306,7 +300,6 @@ def set_delivered(request, order_id):
 	order.set_as_delivered( delivery_date )
 	info_msg( request, "Commande marquée comme livrée.")
 	return redirect( 'tab_orders' )
-
 
 
 
@@ -420,30 +413,26 @@ def set_next_status(request, order_id):
 	if order.status == 0:
 		return _move_to_status_1(request, order)
 	
-	elif order.status == 1:
-		user_can_validate = order.team.members.filter(
-			user = request.user,
-			member_type__in = [VALIDATOR, SUPER_SECRETARY]
-		).count() > 0
-		if user_can_validate or is_super_validator(request.user):
+	elif order.status == 1 and request.user.has_perm('order.custom_validate'):
+		if request.user.has_perm('team.custom_view_teams'):
+			return _move_to_status_2(request, order)
+		elif order.team.members.filter( user = request.user ):
 			return _move_to_status_2(request, order)
 		else:
-			error_msg(request, "Vous n'avez pas les permissions nécessaires \
-			pour valider une commande")
+			error_msg(request, "Vous ne disposez pas des permissions nécessaires pour valider cette commande")
 			return redirect('tab_validation')
 	
-	elif order.status == 2 and (in_team_secretary(request.user) or is_admin(request.user)):
+	elif order.status == 2 and request.user.has_perm('order.custom_goto_status_3'):
 		return _move_to_status_3(request, order)
 	
-	elif order.status == 3 and (in_team_secretary(request.user) or is_admin(request.user)):
+	elif order.status == 3 and request.user.has_perm('order.custom_goto_status_4'):
 		return _move_to_status_4(request, order)
 	
 	elif order.status == 4:
 		return _move_to_status_5(request, order)
 	
 	else:
-		error_msg(request, "Vous n'avez pas les permissions nécessaires \
-		pour modifier le statut de cette commande")
+		error_msg(request, "Vous n'avez pas les permissions nécessaires pour modifier le statut de cette commande")
 	
 	return redirect( 'tab_orders' )
 
@@ -454,9 +443,10 @@ def _move_to_status_1(request, order):
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	
 	emails = []
-	for member in order.team.members.filter( member_type__in = [VALIDATOR, SUPER_VALIDATOR, SUPER_SECRETARY] ):
-		if member.user.email and member.user.email not in emails:
-			emails.append( member.user.email )
+	for member in order.team.members.all():
+		user = member.user
+		if user.has_perm('order.custom_validate') and not user.is_superuser and user.email and user.email not in emails:
+			emails.append( user.email )
 	
 	if emails:
 		subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
@@ -467,7 +457,7 @@ def _move_to_status_1(request, order):
 		warn_msg(request, "Aucun email de validation n'a pu être \
 		envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
 	
-	if is_validator(request.user):
+	if request.user.has_perm('order.custom_validate'):
 		return redirect( 'tab_validation' )
 	
 	return redirect( 'tab_cart' )
@@ -492,7 +482,7 @@ def _move_to_status_2(request, order):
 		order.status = 2
 		order.save()
 		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-	return redirect( 'tab_validation' )
+	return redirect( request.GET.get('next','tab_validation') )
 
 def _move_to_status_3(request, order):
 	order.status = 3
