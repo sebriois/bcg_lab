@@ -10,8 +10,7 @@ from django.views.generic.simple import direct_to_template
 
 from order.models import Order
 from budget.models import Budget, BudgetLine
-from budget.forms import BudgetForm, CreditBudgetForm, DebitBudgetForm
-from budget.forms import TransferForm, BudgetLineForm
+from budget.forms import BudgetLineForm, BudgetLineFilterForm
 
 from utils import *
 
@@ -40,7 +39,8 @@ def index(request):
 	
 	return direct_to_template(request, "budgetlines/index.html", {
 		'budget': budget,
-		'budget_lines' : budget_lines
+		'budget_lines' : budget_lines,
+		'filter_form': BudgetLineFilterForm( request.user )
 	})
 
 
