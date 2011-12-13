@@ -11,7 +11,7 @@ class History(models.Model):
 	team						= models.CharField(u"Equipe", max_length=100)
 	provider				= models.CharField(u"Fournisseur", max_length=100)
 	number					= models.CharField(u"N° cde", max_length = 100, null = True, blank = True)
-	price						= models.DecimalField(u"Prix total", max_digits=12, decimal_places=2)
+	price						= models.DecimalField(u"Montant total", max_digits=12, decimal_places=2)
 	budget					= models.CharField(u"Ligne budgétaire", max_length = 100)
 	date_delivered	= models.DateTimeField(u"Date de réception")
 	date_created		= models.DateTimeField(u"Date", auto_now_add = True)

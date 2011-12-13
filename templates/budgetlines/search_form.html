@@ -5,7 +5,7 @@
 </div>
 
 <div class="bar_content">
-  <form action="{% url budgetlines %}" method="POST">{% csrf_token %}
+  <form action="{% url budgetlines %}" method="GET">{% csrf_token %}
     <strong>
       Chercher les lignes budgétaires qui correspondent à
       {{ filter_form.connector }} conditions suivantes:
@@ -18,7 +18,7 @@
         <td>{{ filter_form.team }}</td>
         <td width="10%"></td>
         <td>Budget:</td>
-        <td>{{ filter_form.budget }}</td>
+        <td>{{ filter_form.budget_id }}</td>
         <td width="10%"></td>
         <td>Date (min/max):</td>
         <td>{{ filter_form.date_created__gte }}</td>
@@ -31,16 +31,16 @@
         <td>Nature:</td>
         <td>{{ filter_form.nature }}</td>
         <td width="10%"></td>
+        <td>Désignation:</td>
+        <td>{{ filter_form.product }}</td>
       </tr>
       <tr>
         <td>Fournisseur:</td>
         <td>{{ filter_form.provider }}</td>
         <td width="10%"></td>
-        <td>N° de commande:</td>
-        <td>{{ filter_form.order_number }}</td>
+        <td>N°cmde:</td>
+        <td>{{ filter_form.number }}</td>
         <td width="10%"></td>
-        <td>Désignation:</td>
-        <td>{{ filter_form.name }}</td>
       </tr>
     </table>
     <div class="cleaner"></div>

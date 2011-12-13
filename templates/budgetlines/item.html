@@ -1,4 +1,5 @@
 {% extends "base_budgets.html" %}
+{% block menu_budget %}active{% endblock %}
 {% block header %}
 <h1>Gestion des budgets</h1>
 <h2>Modification d'une ligne budgétaire</h2>
@@ -11,23 +12,23 @@
 	
 	<h3>Ligne budgétaire</h3>
 	<fieldset>
-		{% with form.budget as field %}
-				{% include "form_snippet.html"%}
+		{% with form.budget_id as field %}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		{% with form.number as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		{% with form.provider as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		{% with form.offer as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		{% with form.product as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		{% with form.reference as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 	</fieldset>
 	
@@ -37,15 +38,16 @@
 		<input type="radio" name="cost_type" value="debit" {% if bl.debit %}checked="on"{% endif %} />&nbsp;Débit
 		
 		{% with form.cost as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 		
 		{% with form.quantity as field %}
-				{% include "form_snippet.html"%}
+			{% include "form_snippet.html"%}
 		{% endwith %}
 	</fieldset>
 	
 	<button type="submit" class="check">Valider</button>
+	<a href="{% url budgetlines %}?{{search_args}}" class="back">Retour</a>
 </form>
 
 {% endblock %}

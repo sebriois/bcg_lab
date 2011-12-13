@@ -77,7 +77,7 @@ class BudgetLine(models.Model):
 	
 	def get_amount_left(self):
 		amount_left = 0
-		for line in BudgetLine.objects.filter( team = self.team, budget = self.budget ):
+		for line in BudgetLine.objects.filter( budget_id = self.budget_id ):
 			if line.credit:
 				amount_left += line.product_price
 			
@@ -88,4 +88,13 @@ class BudgetLine(models.Model):
 				break
 		
 		return amount_left
+	
+	def update_budget_relation(self):
+		b = Budget.objects.get(id = self.budget_id)
+		self.budget = b.name
+		self.team = b.team.name
+		self.nature = b.default_nature
+		self.budget_type = b.budget_type
+		self.origin = b.default_origin
+		self.save()
 	

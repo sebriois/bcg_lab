@@ -53,3 +53,5 @@ COST_TYPE_CHOICES = (
 )
 
 EMAIL_MAGASIN = 'escaffit@cict.fr'
+
+EMPTY_SEL = [("","---------")]

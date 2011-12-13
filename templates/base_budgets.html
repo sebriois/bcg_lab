@@ -8,17 +8,11 @@
   <li class="{% block menu_budget %}{% endblock %}">
     <a href="{% url budgets %}">Liste des budgets</a>
   </li>
-  
   {% if user|has_perm:"budget.custom_add_budget" %}
   <li class="{% block menu_budget_new %}{% endblock %}">
     <a href="{% url budget_new %}">Ajouter un budget</a>
   </li>
   {% endif %}
-  
-  <li class="{% block menu_budget_lines %}{% endblock %}">
-    <a href="{% url budgetlines %}">Détail budgets</a>
-  </li>
-  
   {% if user|has_perm:"budget.custom_edit_budget" %}
   <li class="{% block menu_budget_transfer %}{% endblock %}">
     <a href="{% url budget_transfer %}">Effectuer un virement</a>

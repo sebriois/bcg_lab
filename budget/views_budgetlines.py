@@ -1,8 +1,10 @@
 # coding: utf-8
 from datetime import date
 from decimal import Decimal
+import urllib
 
 from django.db import transaction
+from django.db.models.query import Q
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
@@ -28,19 +30,32 @@ def index(request):
 		not_allowed_msg(request)
 		return redirect('home')
 	
-	budget_name = request.GET.get("budget_name", None)
-	if budget_name:
-		budget_lines = budget_lines.filter( budget = budget_name )
+	# 
+	# Filter history_list depending on received GET data
+	form = BudgetLineFilterForm( user = request.user, data = request.GET )
+	if len(request.GET.keys()) > 0 and form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		budget_lines = budget_lines.filter( Q_obj )
 	
-	try:
-		budget = Budget.objects.get( name = budget_name, is_active = True )
-	except:
-		budget = None
+	budgets = list(set(budget_lines.values_list('budget_id',flat=True)))
+	if len(budgets) == 1:
+		budget = Budget.objects.get( id = budgets[0], is_active = True )
+	else:
+		budget = Budget.objects.none()
 	
 	return direct_to_template(request, "budgetlines/index.html", {
 		'budget': budget,
 		'budget_lines' : budget_lines,
-		'filter_form': BudgetLineFilterForm( request.user )
+		'filter_form': form,
+		'search_args': urllib.urlencode(request.GET)
 	})
 
 
@@ -58,6 +73,7 @@ def item(request, bl_id):
 		form = BudgetLineForm( instance = bl, data = data )
 		if form.is_valid():
 			bl = form.save( commit = False )
+			bl.update_budget_relation()
 			
 			bl.is_active = True
 			if data["cost_type"] == "credit":
@@ -73,7 +89,8 @@ def item(request, bl_id):
 	
 	return direct_to_template( request, 'budgetlines/item.html', {
 		'form': form,
-		'bl': bl
+		'bl': bl,
+		'search_args': urllib.urlencode(request.GET)
 	})
 
 

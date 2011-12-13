@@ -3,43 +3,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Commandes LBCMCP - login</title>
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/login.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/form.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.12.custom.css" type="text/css" />
-    
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.5.1.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.12.custom.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
-    
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Commandes LBCMCP - login</title>
+		<link rel="stylesheet" href="{{ MEDIA_URL }}css/new_login.css" type="text/css" />
+		<link rel="stylesheet" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.12.custom.css" type="text/css" />
+		
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.12.custom.min.js"></script>
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
+		
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
 </head>
 
 <body>
 
 <div id="login-messages">
-  {% include "block_messages.html" %}
-  {{ form.non_field_errors }}
+	{% include "block_messages.html" %}
+	{{ form.non_field_errors }}
 </div>
 
-<div id="header">
-    <h2>Gestion des commandes LBCMCP<br />Identification</h2>
-</div>
-
+<!-- start: wrapper -->
 <div id="wrapper">
-    <div id="login">
-        <form method="post" action="{% url django.contrib.auth.views.login %}" name="login">{% csrf_token %}
-            {% for field in form %}
-              {% include "form_snippet.html" %}
-            {% endfor %}
-            <button type="submit" class="locked button">Connexion</button>
-            <input type="hidden" name="next" value="{{ next }}" />
-        </form>
-        <div id="register">
-          <a href="{% url new_user %}">>> Créer un compte</a>
-        </div>
-    </div>
+	<div id="login">
+		<div id="header"><h1>Gestion des commandes LBCMCP</h1></div>
+		<div id="in_login">
+			<div id="login_subhead">Identification</div>
+			<form method="post" action="{% url django.contrib.auth.views.login %}" name="login">{% csrf_token %}
+				{% for field in form %}{% include "form_snippet.html" %}{% endfor %}
+				<br/>
+				<input type="image" src="{{ MEDIA_URL }}img/layout/btn-login.png" value="Connexion" class="submit" />
+			</form>
+		</div>
+		<div id="footer">
+			<a href="{% url new_user %}">Créer un compte</a>
+		</div>
+	</div>
 </div>
+<!-- end: wrapper -->
 </body>
 </html>

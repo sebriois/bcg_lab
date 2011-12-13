@@ -46,8 +46,12 @@ def tab_cart(request):
 @login_required
 @GET_method
 def tab_orders(request):
-	if request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
-		order_list = Order.objects.filter( status__in = [2,3,4] )
+	if request.user.has_perm('order.custom_goto_status_4') and not request.user.is_superuser:
+		order_list = Order.objects.filter(
+			status__in = [2,3,4]
+		).order_by('-status','last_change')
+	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
+		order_list = Order.objects.filter(status__in = [2,3,4])
 	else:
 		order_list = Order.objects.filter(
 			team__in = get_teams( request.user ),
@@ -74,9 +78,9 @@ def tab_validation( request ):
 	
 	# ORDERS THAT CAN BE SEEN
 	if request.user.has_perms(['team.custom_view_teams','order.custom_validate']):
-		order_list = Order.objects.filter( status = 1 )
+		order_list = Order.objects.filter( status = 1 ).order_by('-date_created')
 	elif request.user.has_perm('order.custom_validate'):
-		order_list = Order.objects.filter( team__in = teams, status = 1 )
+		order_list = Order.objects.filter( team__in = teams, status = 1 ).order_by('-date_created')
 	else:
 		not_allowed_msg( request )
 		return redirect('home')
@@ -103,19 +107,12 @@ def tab_validation( request ):
 def order_detail(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	
-	if request.user.has_perms(['budget.custom_view_budget','team.custom_view_teams']):
-		budgets = Budget.objects.filter(
-			default_nature = "FO",
-			is_active = True
-		)
+	if request.user.has_perms(['team.custom_view_teams','budget.custom_view_budget']):
+		budget_list = Budget.objects.filter(is_active = True)
 	elif request.user.has_perm('budget.custom_view_budget'):
-		budgets = Budget.objects.filter(
-			team__in = get_teams(request.user),
-			default_nature = "FO",
-			is_active = True
-		)
+		budget_list = Budget.objects.filter(team__in = get_teams(request.user), is_active = True)
 	else:
-		budgets = Budget.objects.none()
+		budget_list = Budget.objects.none()
 	
 	return direct_to_template(request, 'order/item.html', {
 		'order': order,

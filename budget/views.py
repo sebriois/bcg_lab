@@ -1,6 +1,7 @@
 # coding: utf-8
 from datetime import date
 from decimal import Decimal
+import urllib
 
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
@@ -81,34 +82,34 @@ def credit(request, budget_id):
 	if request.method == "GET":
 		return direct_to_template(request, "budget/form_credit.html",{
 			'budget': budget,
-			'form': CreditBudgetForm( budget )
+			'form': CreditBudgetForm( budget ),
+			'prev': request.META.get('HTTP_REFERER','') + urllib.urlencode(request.GET)
 		})
 	
-	if request.method == 'POST':
-		data = request.POST.copy()
-		data.update({ 'budget': budget.name }) # otherwise, form is not valid
+	data = request.POST.copy()
+	data.update({ 'budget': budget.name }) # otherwise, form is not valid
+	
+	form = CreditBudgetForm( budget, data = data )
+	
+	if form.is_valid():
+		bl = form.save( commit = False )
+		bl.team					= budget.team.name
+		bl.budget_id		= budget.id
+		bl.nature				= budget.default_nature
+		bl.budget_type	= budget.budget_type
+		bl.origin				= budget.default_origin
+		bl.quantity			= 1
+		bl.credit				= bl.product_price
+		bl.debit				= 0
+		bl.save()
 		
-		form = CreditBudgetForm( budget, data = data )
-		
-		if form.is_valid():
-			bl = form.save( commit = False )
-			bl.team					= budget.team.name
-			bl.budget_id		= budget.id
-			bl.nature				= budget.default_nature
-			bl.budget_type	= budget.budget_type
-			bl.origin				= budget.default_origin
-			bl.quantity			= 1
-			bl.credit				= bl.product_price
-			bl.debit				= 0
-			bl.save()
-			
-			info_msg(request, "Ligne de crédit ajoutée avec succès!")
-			return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
-		else:
-			return direct_to_template(request, 'budget/form_credit.html',{
-				'budget': budget,
-				'form': form
-			})
+		info_msg(request, "Ligne de crédit ajoutée avec succès!")
+		return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
+	else:
+		return direct_to_template(request, 'budget/form_credit.html',{
+			'budget': budget,
+			'form': form
+		})
 
 
 @login_required
@@ -119,7 +120,8 @@ def debit(request, budget_id):
 	if request.method == "GET":
 		return direct_to_template(request, "budget/form_debit.html",{
 			'budget': budget,
-			'form': DebitBudgetForm( budget )
+			'form': DebitBudgetForm( budget ),
+			'prev': request.META.get('HTTP_REFERER','') + urllib.urlencode(request.GET)
 		})
 	
 	data = request.POST.copy()

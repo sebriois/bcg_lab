@@ -5,22 +5,29 @@ from budget.models import Budget, BudgetLine
 from team.models import Team
 from provider.models import Provider
 from product.models import Product
+from utils import *
+from constants import *
 
 class BudgetForm(forms.ModelForm):
 	class Meta:
 		model = Budget
 		exclude = ('is_active',)
 	
+
+BUDGET_CHOICES = [(b.id, b.name) for b in Budget.objects.filter(is_active=True)]
 class BudgetLineForm(forms.ModelForm):
-	budget = forms.ModelChoiceField(
+	budget_id = forms.TypedChoiceField(
 		label = u"Budget",
-		queryset = Budget.objects.filter(is_active = True),
-		required = True
+		choices = BUDGET_CHOICES,
+		coerce = int,
+		required = True,
+		empty_value = None
 	)
 	
 	class Meta:
 		model = BudgetLine
-		fields = ('provider','number','offer','product','reference','quantity')
+		fields = ('budget_id','provider','number','offer','product','reference','quantity')
+	
 	
 	def __init__( self, *args, **kwargs ):
 		super( BudgetLineForm, self ).__init__( *args, **kwargs )
@@ -30,7 +37,7 @@ class BudgetLineForm(forms.ModelForm):
 				initial_cost = self.instance.credit
 			elif self.instance.debit:
 				initial_cost = self.instance.debit
-			self.fields['budget'].initial = Budget.objects.get(name = self.instance.budget)
+			self.fields['budget_id'].initial = Budget.objects.get(id = self.instance.budget_id)
 		else:
 			initial_cost = 0
 		
@@ -74,11 +81,8 @@ class TransferForm(forms.Form):
 
 
 class BudgetLineFilterForm(forms.Form):
-	TEAM_CHOICES = [(team.name,team.name) for team in Team.objects.all()]
 	PROVIDER_CHOICES = [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
-	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
-	PRODUCT_CHOICES = ";".join( [ unicode(p) for p in Product.objects.all() ] )
-	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
+	NATURE_CHOICES = list(set([(b.default_nature,b.default_nature) for b in Budget.objects.all()]))
 	
 	connector = forms.TypedChoiceField(
 		choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
@@ -90,43 +94,43 @@ class BudgetLineFilterForm(forms.Form):
 	
 	team = forms.ChoiceField(
 		label			= "Equipe",
-		choices		= [("","---------")] + TEAM_CHOICES,
+		choices		= EMPTY_SEL,
 		required	= False
 	)
-
-	items__name = forms.CharField(
-		label			= u"Produit",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': PRODUCT_CHOICES
-		}),
-		help_text	= "Appuyez sur 'esc' pour fermer la liste de choix.",
-		required 	= False
+	
+	budget_type = forms.ChoiceField(
+		label = "Tutelle",
+		choices = EMPTY_SEL + [(0, u"CNRS"),(1, u"UPS")],
+		required = False
 	)
 	
-	items__reference = forms.CharField(
-		label			= u"Référence",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': REFERENCE_CHOICES
-		}),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+	budget_id = forms.ChoiceField(
+		label			= "Budget",
+		choices		= EMPTY_SEL,
+		required	= False
+	)
+	
+	nature = forms.ChoiceField(
+		label			= "Nature",
+		choices		= EMPTY_SEL + NATURE_CHOICES,
+		required	= False
+	)
+	
+	number = forms.CharField(
+		label			= "N°cmde",
+		required	= False
+	)
+	
+	product = forms.CharField(
+		label			= u"Produit",
+		help_text	= "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
 	
 	provider = forms.ChoiceField(
 		label			= "Fournisseur",
-		choices		= [("","---------")] + PROVIDER_CHOICES,
+		choices		= EMPTY_SEL + PROVIDER_CHOICES,
 		required	= False
-	)
-	items__origin = forms.CharField(
-		label			= u"Fournisseur d'origine",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': ORIGIN_CHOICES
-		}),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
-		required 	= False
 	)
 	
 	date_created__gte = forms.DateField( 
@@ -146,14 +150,31 @@ class BudgetLineFilterForm(forms.Form):
 	def __init__(self, user, *args, **kwargs):
 		super( BudgetLineFilterForm, self ).__init__(*args, **kwargs)
 		
-		if user.has_perm('team.view_all_teams'):
-			team_choices = [("","---------")] + [(team.name,team.name) for team in Team.objects.all()]
+		if user.has_perm('team.custom_view_teams'):
+			teams = [t.name for t in Team.objects.all()]
+			budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=True)]
 		else:
-			team_choices = [("","---------")] + [(team.name,team.name) for team in get_teams(user)]
+			teams = [t.name for t in get_teams(user)]
+			budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=True, team__in=get_teams(user))]
 		
-		self.fields['team'].choices = team_choices
-		# TODO:
-		# self.fields['team'].initial = get_teams(user)[0].name
+		name_choices = []
+		number_choices = []
+		for bl in BudgetLine.objects.filter(is_active = True, team__in = teams):
+			if bl.product and not bl.product in name_choices:
+				name_choices.append(bl.product)
+			if bl.number and not bl.number in number_choices:
+				number_choices.append(bl.number)
+		
+		self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
+		self.fields['team'].choices = EMPTY_SEL + [(name,name) for name in teams]
+		self.fields['product'].widget = forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': ";".join(name_choices)
+		})
+		self.fields['number'].widget = forms.TextInput( attrs = {
+			'class' : 'autocomplete',
+			'choices': ";".join(number_choices)
+		})
 	
 
-	
+

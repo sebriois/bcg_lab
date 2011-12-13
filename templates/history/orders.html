@@ -4,78 +4,39 @@
 {% block history_orders %}active{% endblock %}
 
 {% block header %}
-	<h1>Historique commandes</h1>
+<h1>Historique commandes</h1>
 {% endblock %}
 
 {% block content %}
-<!-- Start: search form -->
-<div class="bar">
-		<a href="#" class="expand">Dérouler</a>
-		<a href="#" class="hide">Cacher</a>
-		<h4>Recherche de commandes réceptionnées</h4>
-</div>
-<div class="bar_content">
-	<form action="{% url history %}" method="GET">{% csrf_token %}
-		<strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
-		<div class="cleaner"></div>
-		<table>
-			<tr>
-				<td>Equipe:</td>
-				<td>{{ filter_form.team }}</td>
-				<td width="10%"></td>
-				<td>Date de réception (min/max):</td>
-				<td>{{ filter_form.date_created__gte }}</td>
-				<td>{{ filter_form.date_created__lte }}</td>
-			</tr>
-			<tr>
-				<td>Fournisseur:</td>
-				<td>{{ filter_form.provider }}</td>
-				<td width="5%"></td>
-				<td>Fournisseur d'origine:</td>
-				<td>{{ filter_form.items__origin }}</td>
-			</tr>
-			<tr>
-				<td>Produit:</td>
-				<td>{{ filter_form.items__name }}</td>
-				<td width="5%"></td>
-				<td>Référence:</td>
-				<td>{{ filter_form.items__reference }}</td>
-			</tr>
-		</table>
-		<div class="cleaner"></div>
-		<button type="submit" class="all">Chercher</button>
-		<a href="{% url history %}" class="refresh">Liste globale</a>
-	</form>
-</div>
-<div class="cleaner"></div>
-<br />
-<!-- End: search form -->
+{% include "history/search_form.html" %}
 
-{% if history.object_list %}
-	<h2>Liste des commandes réceptionnées - Page {{ history.number }} sur {{ history.paginator.num_pages }}.</h2>
+{% if objects.object_list %}
+	<h2>Liste des commandes réceptionnées - Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.</h2>
 	
-	{% pagination history %}
+	{% pagination objects %}
 	{% if display == "by_order" %}
 		<table class="list">
 			<thead>
-				<th>Date</th>
+				<th>Date réception</th>
 				<th>Equipe</th>
 				<th>Fournisseur</th>
-				<th>Prix</th>
+				<th>N°cmde</th>
+				<th>Montant</th>
 				{% if user|has_perm:"budget.custom_view_budget" %}
-					<th>Budget</th>
+				<th>Budget</th>
 				{% endif %}
 				<th>Action</th>
 			</thead>
 			<tbody>
-				{% for order in history.object_list %}
+				{% for order in objects.object_list %}
 				<tr class="{% cycle 'even' 'odd' %}">
 					<td>{{ order.date_delivered|date }}</td>
 					<td>{{ order.team }}</td>
 					<td>{{ order.provider }}</td>
+					<td>{{ order.number|default:"" }}</td>
 					<td>{{ order.price }}</td>
 					{% if user|has_perm:"budget.custom_view_budget" %}
-						<td>{{ order.budget }}</td>
+					<td>{{ order.budget }}</td>
 					{% endif %}
 					<td>
 						<a href="{{ order.get_absolute_url }}" class="zoomin">Voir détail</a>
@@ -91,7 +52,8 @@
 				<th>Equipe</th>
 				<th>Utilisateur</th>
 				<th>Fournisseur</th>
-				<th>Produit</th>
+				<th>N°cmde</th>
+				<th>Désignation</th>
 				<th>Conditionnement</th>
 				<th>Référence</th>
 				<th>N° Offre</th>
@@ -101,28 +63,29 @@
 				<th>Montant cmde</th>
 			</thead>
 			<tbody>
-				{% for order in history.object_list %}
-					{% for product in order.items.all %}
+				{% for item in objects.object_list %}
+					{% with item.history_set.get as history %}
 						<tr class="{% cycle 'even' 'odd' %}">
-							<td>{{ order.date_delivered|date }}</td>
-							<td>{{ order.team }}</td>
-							<td>{{ product.get_fullname }}</td>
-							<td>{{ order.provider }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
-							<td>{{ product.name }}</td>
-							<td>{{ product.packaging|default:"" }}</td>
-							<td>{{ product.reference|default:"" }}</td>
-							<td>{{ product.offer_nb|default:"" }}</td>
-							<td>{{ product.price }} €</td>
-							<td>{{ product.quantity }}</td>
-							<td>{{ product.total_price }} €</td>
-							<td>{{ order.price }} €</td>
+							<td>{{ history.date_delivered|date }}</td>
+							<td>{{ history.team }}</td>
+							<td>{{ item.get_fullname }}</td>
+							<td>{{ history.provider }}{% if item.origin %} - {{ item.origin }}{% endif %}</td>
+							<td>{{ history.number|default:"" }}</td>
+							<td>{{ item.name }}</td>
+							<td>{{ item.packaging|default:"" }}</td>
+							<td>{{ item.reference|default:"" }}</td>
+							<td>{{ item.offer_nb|default:"" }}</td>
+							<td>{{ item.price }} €</td>
+							<td>{{ item.quantity }}</td>
+							<td>{{ item.total_price }} €</td>
+							<td>{{ history.price }} €</td>
 						</tr>
-					{% endfor %}
+					{% endwith %}
 				{% endfor %}
 			</tbody>
 		</table>
 	{% endif %}{% endif %}
-	{% pagination history %}
+	{% pagination objects %}
 {% else %}
 	<h2>Liste des commandes réceptionnées</h2>
 	<p>Aucun résultat.</p>
