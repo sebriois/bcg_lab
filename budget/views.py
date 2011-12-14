@@ -61,9 +61,21 @@ def new(request):
 		form = BudgetForm()
 	elif request.method == 'POST':
 		form = BudgetForm(data = request.POST)
-		
 		if form.is_valid():
-			form.save()
+			data = form.cleaned_data
+			for nature in ['fo','mi','sa','eq']:
+				if data[nature]:
+					budget = Budget.objects.create(
+						team = data['team'],
+						name = data['name'] + '-' + nature.upper(),
+						default_origin = data.get('origin',None),
+						budget_type = data['budget_type'],
+						default_nature = nature.upper(),
+						tva_code = data.get('tva_code',None),
+						domain = data.get('domain',None)
+					)
+					budget.credit(data[nature])
+			
 			info_msg(request, "Budget ajouté avec succès.")
 			return redirect('budgets')
 	else:

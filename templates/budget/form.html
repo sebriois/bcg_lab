@@ -9,11 +9,41 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url budget_new %}" method="post">{% csrf_token %}
+<form action="{% url budget_new %}" method="POST">{% csrf_token %}
 	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
 	<fieldset>
-		{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+		{% with form.team as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.name as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.default_origin as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.budget_type as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.tva_code as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.domain as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.fo as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.mi as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.to as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.tu as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
 	</fieldset>
 	<button type="submit" class="check">Valider</button>
+	<a href="{% url budgets %}" class="back">Retour</a>
 </form>
 {% endblock %}

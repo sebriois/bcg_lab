@@ -18,9 +18,6 @@ class Budget(models.Model):
 		verbose_name = "Budget"
 		verbose_name_plural = "Budgets"
 		ordering = ("team", "name")
-		permissions = (
-			('can_see_budgets', 'Voir les budgets'),
-		)
 	
 	def __unicode__(self):
 		return u"%s (dispo: %s)" % ( self.name, self.get_amount_left() )
@@ -46,7 +43,34 @@ class Budget(models.Model):
 				bl.team = self.team.name
 				bl.save()
 	
-
+	def credit(self, value):
+		bl = BudgetLine.objects.create(
+			team					= self.team.name,
+			budget_id			= self.id,
+			budget				= self.name,
+			nature				= self.default_nature,
+			budget_type 	= self.budget_type,
+			origin				= self.default_origin,
+			product_price	= value
+			quantity			= 1
+			credit				= value,
+			debit					= 0
+		)
+	
+	def debit(self, value):
+		bl = BudgetLine.objects.create(
+			team					= self.team.name,
+			budget_id			= self.id,
+			budget				= self.name,
+			nature				= self.default_nature,
+			budget_type 	= self.budget_type,
+			origin				= self.default_origin,
+			product_price	= value
+			quantity			= 1
+			credit				= 0,
+			debit					= value
+		)
+	
 
 class BudgetLine(models.Model):
 	team					= models.CharField(u"Equipe", max_length = 100)

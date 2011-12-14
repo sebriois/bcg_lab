@@ -14,6 +14,58 @@ class BudgetForm(forms.ModelForm):
 		exclude = ('is_active',)
 	
 
+class NewBudgetForm(forms.Form):
+	team = forms.ModelChoiceField(
+		label = u"Equipe",
+		queryset = Team.objects.all()
+	)
+	name = forms.CharField(
+		label = u"OTP",
+		max_length = 100
+	)
+	origin = forms.CharField(
+		label = u"Origine",
+		max_length = 30,
+		required = False
+	)
+	budget_type = forms.TypedChoiceField(
+		label = u"Tutelle",
+		choices = BUDGET_CHOICES,
+		coerce = int,
+		empty_value = None
+	)
+	tva_code = forms.CharField(
+		label = u"Code TVA",
+		max_length = 20,
+		required = False
+	)
+	domain = forms.CharField(
+		label = u"Domaine fonctionnel",
+		max_length = 100,
+		required = False
+	)
+	fo = forms.DecimalField(
+		label = u"FO",
+		min_value = 0,
+		required = False
+	)
+	mi = forms.DecimalField(
+		label = u"MI",
+		min_value = 0,
+		required = False
+	)
+	sa = forms.DecimalField(
+		label = u"SA",
+		min_value = 0,
+		required = False
+	)
+	eq = forms.DecimalField(
+		label = u"EQ",
+		min_value = 0,
+		required = False
+	)
+
+
 BUDGET_CHOICES = [(b.id, b.name) for b in Budget.objects.filter(is_active=True)]
 class BudgetLineForm(forms.ModelForm):
 	budget_id = forms.TypedChoiceField(
