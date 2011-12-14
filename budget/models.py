@@ -51,8 +51,8 @@ class Budget(models.Model):
 			nature				= self.default_nature,
 			budget_type 	= self.budget_type,
 			origin				= self.default_origin,
-			product_price	= value
-			quantity			= 1
+			product_price	= value,
+			quantity			= 1,
 			credit				= value,
 			debit					= 0
 		)
@@ -65,8 +65,8 @@ class Budget(models.Model):
 			nature				= self.default_nature,
 			budget_type 	= self.budget_type,
 			origin				= self.default_origin,
-			product_price	= value
-			quantity			= 1
+			product_price	= value,
+			quantity			= 1,
 			credit				= 0,
 			debit					= value
 		)
