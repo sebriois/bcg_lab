@@ -116,7 +116,7 @@ def order_detail(request, order_id):
 	
 	return direct_to_template(request, 'order/item.html', {
 		'order': order,
-		'budgets': budgets,
+		'budgets': budget_list,
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'next': order.get_absolute_url()
