@@ -20,6 +20,8 @@ from utils import *
 def home(request):
 	if in_team_secretary( request.user ) and not request.user.is_superuser:
 		return redirect('tab_orders')
+	elif request.user.has_perm('order.custom_validate'):
+		return redirect('tab_validation')
 	return redirect('info_index')
 
 def error(request):
