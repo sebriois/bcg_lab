@@ -29,7 +29,7 @@ def error(request):
 @POST_method
 def send_message(request):
   subject = "[Commandes LBCMCP] " + request.POST.get('subject', 'Nouveau message')
-  message = request.POST.get('message', None)
+  message = request.POST.get('message', '')
   emails = []
   for user_id in request.POST.get('to', None).split(','):
     user = User.objects.get(id = user_id)
@@ -37,10 +37,6 @@ def send_message(request):
       emails.append(user.email)
     else:
       warn_msg(request, "Le message n'a pas pu être envoyé à %s, faute d'adresse email valide." % user)
-  
-  if not message:
-    error_msg(request, "Veuillez saisir le texte du message.")
-    return redirect('.')
   
   default_from = request.user.email and request.user.email or settings.DEFAULT_FROM_EMAIL
   
