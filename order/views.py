@@ -270,7 +270,8 @@ def del_orderitem(request, orderitem_id):
 def order_delete(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	if order.status == 4:
-		BudgetLine.objects.filter(orderitem_id = item.id).delete()
+		BudgetLine.objects.filter(order_id = order.id).delete()
+	
 	if order.status == 0:
 		next_page = request.GET.get('next', 'tab_cart')
 	elif order.status == 1 and request.user.has_perm('order.custom_validate'):
