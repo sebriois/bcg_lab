@@ -38,7 +38,7 @@ def index(request):
 	return direct_to_template(request, 'product/index.html',{
 		'filter_form': form,
 		'products': paginate( request, product_list, 50 ),
-		'prev': request.META['HTTP_REFERER'] + urlencode(request.GET)
+		'url_args': urlencode(request.GET)
 	})
 
 
@@ -48,20 +48,20 @@ def item(request, product_id):
 	product = get_object_or_404(Product, id = product_id)
 	if request.method == 'GET':
 		form = ProductForm(instance = product, provider = product.provider)
-		prev_url = request.GET.get('prev_url',None)
+		url_args = request.GET.get('url_args',None)
 	elif request.method == 'POST':
 		data = request.POST.copy()
-		prev_url = data.pop('prev_url')
+		url_args = data.pop('url_args')
 		form = ProductForm(instance = product, data = data)
 		if form.is_valid():
 			form.save()
 			info_msg( request, u"Produit modifié avec succès." )
-			return redirect( prev_url and prev_url or 'product_index' )
+			return redirect( reverse('product_index') + url_args )
 	
 	return direct_to_template(request, 'product/item.html',{
 		'product': product,
 		'form': form,
-		'prev': prev_url
+		'url_args': url_args
 	})
 
 @login_required

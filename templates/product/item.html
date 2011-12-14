@@ -16,12 +16,12 @@
 {% block content %}
 <form action="{% url product_item product.id %}" method="post">{% csrf_token %}
 	<input type="hidden" name="provider" value="{{ product.provider.id }}" />
-	<input type="hidden" name="prev_url" value="{{prev}}" />
+	<input type="hidden" name="url_args" value="{{url_args}}" />
 	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
 	<fieldset>
 		{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
 	</fieldset>
 	<button type="submit" class="check">Valider</button>
-	<a href="{{prev}}" class="back">Retour</a>
+	<a href="{% url product_index %}?{{url_args}}" class="back">Retour</a>
 </form>
 {% endblock %}
