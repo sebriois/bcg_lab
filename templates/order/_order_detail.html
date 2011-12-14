@@ -140,12 +140,19 @@
 {% if order.status == 0 %}
 	<a href="{% url tab_cart %}" class="disk save-changes">Enregistrer les modifications</a>
 	<a href="{% url set_next_status order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
+	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 1 and user|has_perm:"order.custom_validate" %}
 	<a href="{% url tab_validation %}" class="disk save-changes">Enregistrer les modifications</a>
 	<a href="{% url set_next_status order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
+	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 2 and user|has_perm:"order.custom_goto_status_3" %}
 	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	<a href="{% url set_next_status order.id %}" class="next-status save-changes"><b>Pour saisie</b></a>
+	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
+{% else %}{% if order.status > 2 and user|has_perm:"order.custom_goto_status_4" %}
+	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
 {% else %}{% if order.status >= 1 %}
 	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>

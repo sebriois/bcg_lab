@@ -244,18 +244,23 @@ def del_orderitem(request, orderitem_id):
 	item = get_object_or_404( OrderItem, id = orderitem_id )
 	order = item.order_set.get()
 	info_msg( request, u"'%s' supprimé avec succès." % item.name )
-	item.delete()
 	
 	if order.status == 0:
 		next_page = request.GET.get('next', 'tab_cart')
 	elif order.status == 1 and request.user.has_perm('order.custom_validate'):
 		next_page = request.GET.get('next', 'tab_validation')
+	elif order.status == 4:
+		BudgetLine.objects.filter(orderitem_id = item.id).delete()
+		next_page = 'tab_orders'
 	else:
 		next_page = request.GET.get('next', order)
+	
+	item.delete()
 	
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
+		next_page = 'tab_orders' 
 	
 	return redirect( next_page )
 
@@ -264,10 +269,19 @@ def del_orderitem(request, orderitem_id):
 @transaction.commit_on_success
 def order_delete(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
+	if order.status == 4:
+		BudgetLine.objects.filter(orderitem_id = item.id).delete()
+	if order.status == 0:
+		next_page = request.GET.get('next', 'tab_cart')
+	elif order.status == 1 and request.user.has_perm('order.custom_validate'):
+		next_page = request.GET.get('next', 'tab_validation')
+	else:
+		next_page = 'tab_orders'
+	
 	order.delete()
 	
 	info_msg( request, "Commande supprimée avec succès.")
-	return redirect('tab_orders')
+	return redirect(next_page)
 
 
 @login_required
