@@ -185,14 +185,14 @@ class BudgetLineFilterForm(forms.Form):
 		required	= False
 	)
 	
-	date_created__gte = forms.DateField( 
+	date__gte = forms.DateField( 
 		label					= "Date d'enregistrement min",
 		input_formats = ["%d/%m/%Y"],
 		widget				= forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
 		required			= False
 	)
 	
-	date_created__lte = forms.DateField( 
+	date__lte = forms.DateField( 
 		label					= "Date d'enregistrement max",
 		input_formats = ["%d/%m/%Y"],
 		widget				= forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
