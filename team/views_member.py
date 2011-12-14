@@ -88,7 +88,7 @@ def new_member(request):
 			subject = "[Commandes LBCMCP] Demande d'ouverture de compte"
 			emails = []
 			for u in User.objects.all():
-				if u.member_set.filter(team = member.team) and u.has_perm('team.custom_activate_account') and u.email and u.email not in emails:
+				if u.teammember_set.filter(team = member.team) and u.has_perm('team.custom_activate_account') and u.email and u.email not in emails:
 					emails.append(u.email)
 			
 			if emails:
@@ -116,6 +116,8 @@ def toggle_active( request, user_id ):
 	user = get_object_or_404( User, id = user_id )
 	user.is_active = not user.is_active
 	user.save()
+	
+	if not user.email: return redirect('team_index')
 	
 	if user.is_active:
 		subject = "[Commandes LBCMCP] Votre compte vient d'être activé"
