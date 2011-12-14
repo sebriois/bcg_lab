@@ -83,10 +83,16 @@
 			<td>{{ order_item.total_price }} €</td>
 			{% if user|has_perm:"order.custom_goto_status_4" or user|has_perm:"order.custom_validate" or order.status <= 1 %}
 			<td>
-				{% if user|has_perm:"order.custom_goto_status_4" %}
-					<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
-				{% endif %}
+				{% if order.status <= 1 %}
+				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
 				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				{% else %}{% if order.status <= 2 and user|has_perm:"order.custom_validate" %}
+				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				{% else %}{% if order.status > 2 and user|has_perm:"order.custom_goto_status_4" %}
+				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				{% endif %}{% endif %}{% endif %}{% endif %}
 			</td>
 			{% endif %}
 		</tr>
