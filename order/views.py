@@ -16,7 +16,7 @@ from django.views.generic.simple import direct_to_template
 
 from provider.models import Provider
 from product.models import Product
-from budget.models import Budget
+from budget.models import Budget, BudgetLine
 from order.models import Order, OrderItem
 from order.forms import OrderItemForm, AddDebitForm, AddCreditForm
 
