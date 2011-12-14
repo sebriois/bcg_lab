@@ -18,42 +18,7 @@ from constants import *
 from utils import *
 
 @login_required
-@transaction.commit_on_success
 def index(request):
-	if request.method == 'GET':		return _product_list(request)
-	if request.method == 'POST':	return _product_creation(request)
-
-
-@login_required
-@transaction.commit_on_success
-def item(request, product_id):
-	product = get_object_or_404(Product, id = product_id)
-	if request.method == 'GET':			return _product_detail(request, product)
-	if request.method == 'POST':		return _product_update(request, product)
-	if request.method == 'DELETE':	return _product_delete(request, product)
-
-
-@login_required
-def new(request):
-	if "provider_id" in request.GET:
-		provider = get_object_or_404( Provider, id = request.GET.get("provider_id", None) )
-	else:
-		provider = None
-	
-	form = ProductForm( provider = provider )
-	return direct_to_template(request, 'product/form.html', {
-		'provider': provider,
-		'form': form
-	})
-
-
-@login_required
-def delete(request, product_id):
-	product = get_object_or_404(Product, id = product_id)
-	return direct_to_template(request, "product/delete.html", { 'product': product })
-
-#--- Private views
-def _product_list(request):
 	product_list = Product.objects.all()
 	product_choices = ";".join( [ unicode(p) for p in product_list ] )
 	
@@ -73,46 +38,68 @@ def _product_list(request):
 	return direct_to_template(request, 'product/index.html',{
 		'filter_form': form,
 		'products': paginate( request, product_list, 50 ),
-		'url_params': urlencode(request.GET)
+		'prev': request.META['http_referer'] + urlencode(request.GET)
 	})
 
-def _product_detail(request, product):
-	form = ProductForm(instance = product, provider = product.provider)
+
+@login_required
+@transaction.commit_on_success
+def item(request, product_id):
+	product = get_object_or_404(Product, id = product_id)
+	if request.method == 'GET':
+		form = ProductForm(instance = product, provider = product.provider)
+		prev_url = request.GET.get('prev_url',None)
+	elif request.method == 'POST':
+		data = request.POST.copy()
+		prev_url = data.pop('prev_url')
+		form = ProductForm(instance = product, data = data)
+		if form.is_valid():
+			form.save()
+			info_msg( request, u"Produit modifié avec succès." )
+			return redirect( prev_url and prev_url or 'product_index' )
+	
 	return direct_to_template(request, 'product/item.html',{
 		'product': product,
-		'form': form
+		'form': form,
+		'prev': prev_url
 	})
 
-def _product_creation(request):
-	if 'provider' in request.POST and request.POST['provider']:
-		provider = get_object_or_404( Provider, id = request.POST['provider'] )
-	else:
-		provider = None
+@login_required
+@transaction.commit_on_success
+def new(request):
+	if request.method == 'GET':
+		provider_id = request.GET.get('provider_id',None)
+		if provider_id:
+			provider = get_object_or_404( Provider, id = provider_id )
+			form = ProductForm( provider = provider )
+		else:
+			form = ProductForm()
+	elif request.method == 'POST':
+		if 'provider' in request.POST and request.POST['provider']:
+			provider = get_object_or_404( Provider, id = request.POST['provider'] )
+			form = ProductForm( provider = provider, data = request.POST )
+		else:
+			form = ProductForm( data = request.POST )
+		
+		if form.is_valid():
+			p = form.save()
+			info_msg( request, u"Produit ajouté avec succès." )
+			return redirect( reverse('product_index') + "?name=%s&connector=OR" % p.name )
 	
-	form = ProductForm( provider = provider, data = request.POST )
-	if form.is_valid():
-		p = form.save()
-		info_msg( request, u"Produit ajouté avec succès." )
-		return redirect( reverse('product_index') + "?name=%s&connector=OR" % p.name )
-	
-	return direct_to_template(request, 'product/form.html',{
+	return direct_to_template(request, 'product/form.html', {
 		'provider': provider,
 		'form': form
 	})
 
-def _product_update(request, product):
-	form = ProductForm(instance = product, data = request.POST)
-	if form.is_valid():
-		form.save()
-		info_msg( request, u"Produit modifié avec succès." )
+@login_required
+@transaction.commit_on_success
+def delete(request, product_id):
+	product = get_object_or_404(Product, id = product_id)
+	if request.method == 'GET':
+		return direct_to_template(request, "product/delete.html", {
+			'product': product
+		})
+	elif request.method == 'POST':
+		product.delete()
+		info_msg( request, u"Produit supprimé avec succès." )
 		return redirect( 'product_index' )
-	
-	return direct_to_template(request, 'product/item.html',{
-		'product': product,
-		'form': form
-	})
-
-def _product_delete(request, product):
-	product.delete()
-	info_msg( request, u"Produit supprimé avec succès." )
-	return redirect( 'product_index' )

@@ -1,41 +1,27 @@
-{% extends "base_main.html" %}
+{% extends "base_products.html" %}
 {% load filters %}
-
-{% block menu_product %}active{% endblock %}
-
-{% block nav_secondary %}
-<ul id="subnav">
-  <li>
-    <a href="{% url product_index %}">Liste des produits</a>
-  </li>
-</ul>
-{% endblock %}
+{% block product_list %}active{% endblock %}
 
 {% block header %}
-  <h1>Gestion des produits</h1>
-  <h2>Modification d'un produit</h2>
+<h1>Gestion des produits</h1>
+<h2>Modification d'un produit</h2>
 {% endblock %}
 
-{% if user|has_perm:"product.custom_delete_product" %}
 <div class="btn_wrapper">
   <a href="{% url product_delete product.id %}" class="btn_big">
     <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer ce produit
   </a>
 </div>
-{% endif %}
 
 {% block content %}
 <form action="{% url product_item product.id %}" method="post">{% csrf_token %}
-  <input type="hidden" name="method" value="PUT" />
-  <input type="hidden" name="provider" value="{{ product.provider.id }}" />
-  <p class="instructions">
-    <em>Les champs marqués d'une étoile sont obligatoires</em>
-  </p>
-  <fieldset>
-    {% for field in form %}
-        {% include "form_snippet.html"%}
-    {% endfor %}
-  </fieldset>
-  <button type="submit" class="check">Valider</button>
+	<input type="hidden" name="provider" value="{{ product.provider.id }}" />
+	<input type="hidden" name="prev_url" value="{{prev}}" />
+	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
+	<fieldset>
+		{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+	</fieldset>
+	<button type="submit" class="check">Valider</button>
+	<a href="{{prev}}" class="back">Retour</a>
 </form>
 {% endblock %}
