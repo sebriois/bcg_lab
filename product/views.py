@@ -38,7 +38,7 @@ def index(request):
 	return direct_to_template(request, 'product/index.html',{
 		'filter_form': form,
 		'products': paginate( request, product_list, 50 ),
-		'prev': request.META['http_referer'] + urlencode(request.GET)
+		'prev': request.META['HTTP_REFERER'] + urlencode(request.GET)
 	})
 
 
