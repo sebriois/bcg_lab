@@ -85,7 +85,7 @@
 				<td>{{ product.last_change|date }}</td>
 				<td style="white-space:nowrap">
 					<button id="{{product.id}}" class="plus addToCart">Panier</button>
-					<a href="{% url product_item product.id %}?url_args={{url_args}}" class="pencil">Editer</a>
+					<a href="{% url product_item product.id %}?url_args='{{url_args}}'" class="pencil">Editer</a>
 				</td>
 			</tr>
 		{% endfor %}

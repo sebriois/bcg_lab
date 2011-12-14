@@ -51,7 +51,7 @@ def item(request, product_id):
 	product = get_object_or_404(Product, id = product_id)
 	if request.method == 'GET':
 		form = ProductForm(instance = product, provider = product.provider)
-		url_args = request.GET.get('url_args',None)
+		url_args = request.GET['url_args']
 	elif request.method == 'POST':
 		data = request.POST.copy()
 		url_args = data.pop('url_args')
