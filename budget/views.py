@@ -44,6 +44,7 @@ def item(request, budget_id):
 		form = BudgetForm(data = request.POST, instance = budget)
 		if form.is_valid():
 			form.save()
+			budget.update_budgetlines()
 			info_msg(request, "Budget modifié avec succès.")
 			return redirect('budgets')
 	else:

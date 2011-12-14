@@ -37,11 +37,15 @@ class Budget(models.Model):
 		
 		return amount_left
 	
-	def update_budget_lines_team(self):
+	def update_budgetlines(self):
 		for bl in BudgetLine.objects.filter( budget_id = self.id ):
-			if bl.team != self.team.name:
-				bl.team = self.team.name
-				bl.save()
+			bl.team = self.team.name
+			bl.budget = self.name
+			bl.origin = self.default_origin
+			bl.budget_type = self.budget_type
+			bl.nature = self.default_nature
+			bl.is_active = self.is_active
+			bl.save()
 	
 	def credit(self, value):
 		bl = BudgetLine.objects.create(

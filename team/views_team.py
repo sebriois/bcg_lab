@@ -94,7 +94,7 @@ def _team_update(request, team):
 		
 		if name_before != team.name:
 			for budget in team.budget_set.all():
-				budget.update_budget_lines_team()
+				budget.update_budgetlines() # Will update bl.team
 			for history in History.objects.filter( team = name_before ):
 				history.team = team.name
 				history.save()
