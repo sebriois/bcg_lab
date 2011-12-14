@@ -27,16 +27,7 @@ class Budget(models.Model):
 		return ( 'budget_edit', [self.id] )
 	
 	def get_amount_left(self):
-		amount_left = 0
-		for line in BudgetLine.objects.filter( budget_id = self.id ):
-			amount_left += line.get_total()
-			# if line.credit:
-			# 	amount_left += line.product_price
-			# 
-			# if line.debit:
-			# 	amount_left -= line.product_price
-		
-		return amount_left
+		return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])
 	
 	def update_budgetlines(self):
 		for bl in BudgetLine.objects.filter( budget_id = self.id ):
@@ -108,11 +99,6 @@ class BudgetLine(models.Model):
 		amount_left = 0
 		for line in BudgetLine.objects.filter( budget_id = self.budget_id ):
 			amount_left += line.get_total()
-			# if line.credit:
-			# 	amount_left += line.product_price
-			# 
-			# if line.debit:
-			# 	amount_left -= line.product_price
 			
 			if line == self:
 				break
