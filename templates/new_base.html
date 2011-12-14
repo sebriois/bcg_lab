@@ -59,7 +59,7 @@
         <li class="{% block tab_preferences %}{% endblock %}">
           <a href="{% url preferences %}">Préférences</a>
         </li>
-        {% if user|has_perm:"team.custom_view_teams" %}
+        {% if user|has_perm:"team.custom_view_teams" or user|has_perm:"order.custom_validate" %}
           <li class="{% block tab_admin %}{% endblock %}">
             <a href="{% url team_index %}">Admin</a>
           </li>
