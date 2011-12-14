@@ -80,7 +80,7 @@
 				<td style="color:green">{{ budget_line.credit|default:"" }}</td>
 				<td style="color:red">{{ budget_line.debit|default:"" }}</td>
 				<td>{{ budget_line.quantity|default:1 }}</td>
-				<td>{{ budget_line.product_price|default:"" }}</td>
+				<td>{{ budget_line.get_total|default:"" }}</td>
 				<td><strong>{{ budget_line.get_amount_left }}</strong></td>
 				{% if user|has_perm:"budget.custom_edit_budget" %}
 					<td style="white-space:nowrap">

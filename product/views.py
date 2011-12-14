@@ -51,7 +51,7 @@ def item(request, product_id):
 	product = get_object_or_404(Product, id = product_id)
 	if request.method == 'GET':
 		form = ProductForm(instance = product, provider = product.provider)
-		url_args = request.GET['url_args']
+		url_args = urlencode(request.GET)
 	elif request.method == 'POST':
 		data = request.POST.copy()
 		url_args = data.pop('url_args')
@@ -59,7 +59,7 @@ def item(request, product_id):
 		if form.is_valid():
 			form.save()
 			info_msg( request, u"Produit modifié avec succès." )
-			return redirect( reverse('product_index') + url_args )
+			return redirect( reverse('product_index') + '?' + url_args[0] )
 	
 	return direct_to_template(request, 'product/item.html',{
 		'product': product,

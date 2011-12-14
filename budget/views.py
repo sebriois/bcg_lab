@@ -117,7 +117,7 @@ def credit(request, budget_id):
 		bl.debit				= 0
 		bl.save()
 		
-		info_msg(request, "Ligne de crédit ajoutée avec succès!")
+		info_msg(request, "Ligne de crédit ajoutée avec succès.")
 		return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
 	else:
 		return direct_to_template(request, 'budget/form_credit.html',{

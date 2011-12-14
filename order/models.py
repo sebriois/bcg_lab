@@ -37,7 +37,6 @@ class Order(models.Model):
 	def get_absolute_url(self):
 		return ( 'order_item', [self.id] )
 	
-	
 	def get_full_name(self):
 		return u"%s" % self.team
 	
@@ -45,7 +44,6 @@ class Order(models.Model):
 		if self.date_delivered:
 			 # TODO: raise an exception instead
 			return
-		
 		
 		item, created = self.items.get_or_create( 
 			product_id = product.id,
@@ -142,9 +140,7 @@ class OrderItem(models.Model):
 		if self.order_set.all().count() == 0:
 			# TODO: raise error instead
 			return
-		
 		order = self.order_set.get()
-		
 		bl = BudgetLine.objects.create(
 			team					= order.budget.team.name,
 			order_id			= order.id,
@@ -162,7 +158,6 @@ class OrderItem(models.Model):
 			reference			= self.reference,
 			quantity			= self.quantity
 		)
-		
 		if self.cost_type == DEBIT:
 			bl.credit = 0
 			bl.debit = self.price

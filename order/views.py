@@ -218,7 +218,6 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 @transaction.commit_on_success
 def add_debit(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
-	
 	next = request.POST.get('next', 'tab_orders')
 	form = AddDebitForm( data = request.POST )
 	if form.is_valid():
@@ -448,7 +447,8 @@ def _move_to_status_1(request, order):
 	if emails:
 		subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
 		template = loader.get_template('order/validation_email.txt')
-		message = template.render( Context({ 'order': order, 'url': reverse('tab_validation') }) )
+		context = Context({ 'order': order, 'url': reverse('tab_validation') })
+		message = template.render( context )
 		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 	else:
 		warn_msg(request, "Aucun email de validation n'a pu être \

@@ -106,16 +106,25 @@ class BudgetLine(models.Model):
 	def get_amount_left(self):
 		amount_left = 0
 		for line in BudgetLine.objects.filter( budget_id = self.budget_id ):
-			if line.credit:
-				amount_left += line.product_price
-			
-			if line.debit:
-				amount_left -= line.product_price
+			amount_left += line.get_total()
+			# if line.credit:
+			# 	amount_left += line.product_price
+			# 
+			# if line.debit:
+			# 	amount_left -= line.product_price
 			
 			if line == self:
 				break
 		
 		return amount_left
+	
+	def get_total(self):
+		# should equal product_price actually
+		if self.credit:
+			return self.credit * self.quantity
+		if self.debit:
+			return self.debit * self.quantity * -1
+		return self.product_price
 	
 	def update_budget_relation(self):
 		b = Budget.objects.get(id = self.budget_id)
