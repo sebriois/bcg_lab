@@ -10,7 +10,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.simple import direct_to_template
 
 from budget.models import Budget, BudgetLine
-from budget.forms import BudgetForm, CreditBudgetForm, DebitBudgetForm
+from budget.forms import BudgetForm, NewBudgetForm
+from budget.forms import CreditBudgetForm, DebitBudgetForm
 from budget.forms import TransferForm
 
 from utils import *
@@ -58,9 +59,9 @@ def item(request, budget_id):
 @transaction.commit_on_success
 def new(request):
 	if request.method == 'GET':
-		form = BudgetForm()
+		form = NewBudgetForm()
 	elif request.method == 'POST':
-		form = BudgetForm(data = request.POST)
+		form = NewBudgetForm(data = request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
 			for nature in ['fo','mi','sa','eq']:
