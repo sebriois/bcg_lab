@@ -86,7 +86,7 @@ def read_xls( header, data, input_excel ):
 			price = price.replace(" ","").replace(",",".").replace('€','')
 		try:
 			price = Decimal(price)
-		except InvalidOperation:
+		except:
 			errors.append( base_error + "Colonne %s/%s - ce prix n'est pas lisible: %s." % (price_idx+1,len(row),price))
 		
 		if price:
