@@ -45,7 +45,7 @@ def tab_services(request):
 			
 			order.items.add(order_item)
 			
-			return redirect('set_next_status', order_id = order.id)
+			return redirect('tab_cart')
 	
 	return direct_to_template(request, "tab_services.html", {
 		'form': form

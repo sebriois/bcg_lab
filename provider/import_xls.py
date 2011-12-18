@@ -89,7 +89,7 @@ def read_xls( header, data, input_excel ):
 			price = Decimal(price)
 		except:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'prix' - une valeur décimale est requise: %s." % price)
+			errors.append( base_error + u"Colonne 'prix' - une valeur décimale est requise. Valeur reçue: %s." % price)
 		
 		if price:
 			if price <= 0:
