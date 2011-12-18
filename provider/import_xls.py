@@ -38,7 +38,8 @@ def import_xls( request, provider_id ):
 			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
 			
 			if errors:
-				msg = "<br />".join(errors)
+				msg = "Les lignes suivantes seront ignorées lors de l'import:<br />"
+				msg += "<br />".join(errors)
 				warn_msg( request, msg )
 				# return redirect( reverse('import_products', args=[provider_id]) )
 			else:
@@ -89,7 +90,7 @@ def read_xls( header, data, input_excel ):
 			price = Decimal(price)
 		except:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'prix' - une valeur décimale est requise. Valeur reçue: %s." % price)
+			errors.append( base_error + u"Colonne 'prix' - impossible de lire une valeur décimale. Valeur reçue: '%s'." % price)
 		
 		if price:
 			if price <= 0:
