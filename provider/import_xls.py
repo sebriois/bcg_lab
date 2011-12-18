@@ -38,8 +38,8 @@ def import_xls( request, provider_id ):
 			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
 			
 			if errors:
-				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
-				error_msg( request, msg )
+				msg = "<br />".join(errors)
+				warn_msg( request, msg )
 				# return redirect( reverse('import_products', args=[provider_id]) )
 			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
@@ -130,15 +130,15 @@ votre navigateur)." )
 				head = head.lower().strip().replace(u'é', u'e')
 				header[head] = i
 			continue
-
+		
 		# Skip this line if not checked
 		if not num_line in kept_items: continue
-
+		
 		price = line[header['prix']]
 		if isinstance(price, str):
 			price = price.replace(" ","").replace(",",".").replace('€','')
 		price = Decimal(price)
-
+		
 		product, created = Product.objects.get_or_create(
 			provider = provider,
 			reference = line[header['reference']],
