@@ -40,7 +40,7 @@ def import_xls( request, provider_id ):
 			if errors:
 				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
 				error_msg( request, msg )
-				return redirect( reverse('import_products', args=[provider_id]) )
+				# return redirect( reverse('import_products', args=[provider_id]) )
 			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
 				return direct_to_template(request, 'provider/import_preview.html', {
@@ -75,8 +75,10 @@ def read_xls( header, data, input_excel ):
 		if price:
 			if price <= 0:
 				errors.append( base_error + "Colonne %s/%s - le prix est négatif ou nul, il doit être strictement positif." % (price_idx+1,len(row)) )
+				continue
 		else:
 			errors.append( base_error + "Colonne %s/%s - la colonne prix est vide." % (price_idx+1, len(row)) )
+			continue
 		
 		data.append( [col.value for col in row[0:6]] )
 	
@@ -96,7 +98,7 @@ votre navigateur)." )
 		return redirect( reverse('import_products', args=[provider_id]) )
 	
 	# Loads data from cookie - dumped as json when the file was imported
-	data = json.loads( request.session['import_data'] )
+	xls_data = json.loads( request.session['import_data'] )
 	kept_items = map(int, request.GET['items'].split(','))
 	
 	if request.GET['replace_all'] == 'on':
