@@ -37,7 +37,7 @@
 							{% else %}
 							<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" disabled="true" />
 							{% endif %}
-							- {{ forloop.parentloop.counter }}
+							- {{ forloop.parentloop.counter0 }}
 						</td>
 					{% else %}
 						<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
