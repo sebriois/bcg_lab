@@ -62,21 +62,21 @@ def read_xls( header, data, input_excel ):
 	
 	for row_idx in range(sheet.nrows):
 		row = sheet.row(row_idx)
-		is_valid = True
+		is_valid = 'true'
 		base_error = "Ligne %s - " % (row_idx + 1)
 		
 		# CHECK NAME
 		name_idx = header.index(u"désignation")
 		name = row[name_idx].value
 		if not name:
-			is_valid = False
+			is_valid = 'false'
 			errors.append( base_error + "Colonne %s/%s - la désignation est manquante." % (name_idx+1, len(row)))
 		
 		# CHECK REFERENCE
 		ref_idx = header.index(u"référence")
 		ref = row[ref_idx].value
 		if not ref:
-			is_valid = False
+			is_valid = 'false'
 			errors.append( base_error + "Colonne %s/%s - la référence est manquante." % (ref_idx+1, len(row)))
 		
 		# CHECK PRICE
@@ -88,15 +88,15 @@ def read_xls( header, data, input_excel ):
 		try:
 			price = Decimal(price)
 		except:
-			is_valid = False
+			is_valid = 'false'
 			errors.append( base_error + "Colonne %s/%s - ce prix n'est pas lisible: %s." % (price_idx+1,len(row),price))
 		
 		if price:
 			if price <= 0:
-				is_valid = False
+				is_valid = 'false'
 				errors.append( base_error + "Colonne %s/%s - le prix est négatif ou nul, il doit être strictement positif." % (price_idx+1,len(row)) )
 		else:
-			is_valid = False
+			is_valid = 'false'
 			errors.append( base_error + "Colonne %s/%s - la colonne prix est vide." % (price_idx+1, len(row)) )
 		
 		data.append( [is_valid] + [col.value for col in row[0:7]] )

@@ -32,10 +32,10 @@
 				{% for item in line %}
 					{% if forloop.counter == 1 %}
 						<td>
-							{% if item == True %}
+							{% if item == 'true' %}
 							<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" checked="checked" />
 							{% else %}
-							<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" enabled="disabled" />
+							<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" enable="false" />
 							{% endif %}
 						</td>
 					{% else %}
