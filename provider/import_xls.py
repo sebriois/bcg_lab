@@ -38,8 +38,8 @@ def import_xls( request, provider_id ):
 			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
 			
 			if errors:
-				msg = "Les lignes suivantes seront ignorées lors de l'import:<br />"
-				msg += "<br />".join(errors)
+				msg = u"Les lignes suivantes seront ignorées lors de l'import:<br />"
+				msg += u"<br />".join(errors)
 				warn_msg( request, msg )
 				# return redirect( reverse('import_products', args=[provider_id]) )
 			else:
