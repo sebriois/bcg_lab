@@ -829,6 +829,9 @@ table.list tbody tr.empty_row td {
 	border-right:0;
 	border-left:0;
 }
+table.list tr.disabled {
+	color:#ccc;
+}
 
 
 .user_suit	 { background: url('../img/icons/user_suit.png');		}

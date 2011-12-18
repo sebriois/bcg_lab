@@ -30,10 +30,16 @@
 		{% else %}
 			<tr class="{% cycle 'odd' 'even' %}">
 				<td>
+					{% if line.0 == True %}
 					<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" checked="checked" />
+					{% else %}
+					<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" enabled="disabled" />
+					{% endif %}
 				</td>
 				{% for item in line %}
-					<td>{{ item }}</td>
+					{% if forloop.counter > 1 %}
+					<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
+					{% endif %}
 				{% endfor %}
 			</tr>
 		{% endif %}
