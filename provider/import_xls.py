@@ -41,8 +41,8 @@ def import_xls( request, provider_id ):
 				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
 				error_msg( request, msg )
 				# return redirect( reverse('import_products', args=[provider_id]) )
-			
-			info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
+			else:
+				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
 			return direct_to_template(request, 'provider/import_preview.html', {
 				'data': data,
 				'provider': provider,
@@ -88,6 +88,7 @@ def read_xls( header, data, input_excel ):
 			price = Decimal(price)
 		except:
 			errors.append( base_error + "Colonne %s/%s - ce prix n'est pas lisible: %s." % (price_idx+1,len(row),price))
+			continue
 		
 		if price:
 			if price <= 0:
