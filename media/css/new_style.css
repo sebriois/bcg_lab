@@ -744,23 +744,6 @@ ul.brown_arrow li, ul.errorlist li {
 	font-weight:500;
 	padding-left: 10px;
 }
-ul.progression li {
-	text-indent: 25px;
-	border-bottom: 1px solid #eeebda;
-	height: 24px;
-	line-height: 24px;
-}
-ul.progression li.last {
-	border: 0px;
-}
-ul.progression li.in_progress {
-	background: url('../img/icons/arrow_right.png') no-repeat;
-	background-position: 0px 4px;
-}
-ul.progression li.done {
-	background: url('../img/icons/tick.png') no-repeat;
-	background-position: 0px 4px;
-}
 
 /* @end */
 

@@ -52,6 +52,7 @@ def item(request, issue_id):
 	})
 
 @login_required
+@transaction.commit_on_success
 def new(request):
 	return direct_to_template( request, "issues/new.html", {
 		'form': IssueForm()

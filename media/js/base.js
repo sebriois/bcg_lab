@@ -20,6 +20,10 @@ $(document).ready(function(){
     // Datepicker widget
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     
+    $( ".datepicker.minDate" ).datepicker({
+      dateFormat: 'dd/mm/yy',
+      minDate: $('.minDate').attr('min-date')
+    });
     $( ".datepicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
     $( ".datepicker.maxToday" ).datepicker({ maxDate: 'today' });
     
@@ -478,7 +482,7 @@ $(document).ready(function(){
         get_arg.push($(this).val());
       });
       
-      window.location.href = targetUrl + "?items=" + get_arg.join(",");
+      window.location.href = targetUrl + "&items=" + get_arg.join(",");
     });
     
     // 

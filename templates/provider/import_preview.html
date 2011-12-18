@@ -1,37 +1,42 @@
 {# PAGE FOURNISSEUR #}
 
-{% extends "main_custom.html" %}
+{% extends "base_provider.html" %}
 {% load filters %}
+{% block provider_list %}active{% endblock %}
 
-{% block menu_provider %}selected{% endblock %}
+{% block header %}
+<h1>Gestion des fournisseurs</h1>
+<h2>Résultat de l'importation et confirmation</h2>
+{% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
-  <div id="content_header">
-    <h2>Résultat de l'importation et confirmation</h2>
-  </div>
-  <a href="{% url perform_import_products provider.id %}" id="confirm_import" class="check">Valider l'import</a>
-  <a href="{% url import_products provider.id %}" class="back noloading">Retour page import</a>
-  <table class="list">
-    {% for line in data %}
-      {% if forloop.counter == 1 %}
-        <thead>
-          <th></th>
-          {% for head in line %}
-            <th>{{ head }}</th>
-          {% endfor %}
-        </thead>
-      {% else %}
-        <tr>
-          <td>
-            <input type="checkbox" class="imported_item" value="{{forloop.counter0}}" checked="checked" />
-          </td>
-          {% for item in line %}
-            <td>{{ item }}</td>
-          {% endfor %}
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </table>
-</div>
+<a href="{% url perform_import_products provider.id %}?replace_all={{replace_all}}" id="confirm_import" class="check">
+	Valider l'import
+</a>
+<a href="{% url import_products provider.id %}" class="back">
+	Retour page import
+</a>
+<br /><br />
+
+<table class="list">
+	{% for line in data %}
+		{% if forloop.counter == 1 %}
+			<thead>
+				<th></th>
+				{% for head in line %}
+				<th>{{ head }}</th>
+				{% endfor %}
+			</thead>
+		{% else %}
+			<tr class="{% cycle 'odd' 'even' %}">
+				<td>
+					<input type="checkbox" class="imported_item" value="{{forloop.counter0}}" checked="checked" />
+				</td>
+				{% for item in line %}
+					<td>{{ item }}</td>
+				{% endfor %}
+			</tr>
+		{% endif %}
+	{% endfor %}
+</table>
 {% endblock %}

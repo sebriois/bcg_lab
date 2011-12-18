@@ -1,58 +1,39 @@
-{# PAGE FOURNISSEUR #}
-
-{% extends "main_custom.html" %}
+{% extends "base_provider.html" %}
 {% load filters %}
+{% block provider_list %}active{% endblock %}
 
-{% block menu_provider %}selected{% endblock %}
+{% block header %}
+	<h1>Gestion des fournisseurs</h1>
+	<h2>Mise à jour des produits du fournisseur {{ provider.name }}</h2>
+{% endblock %}
 
 {% block content %}
-<div id="content" style="min-height:0">
-  <div id="content_header">
-    <h2>Mise à jour des produits du fournisseur {{ provider.name }}</h2>
-  </div>
-  <br />
-  
-  <h3>Informations</h3>
-  <ul>
-    <li>Les produits actuels seront remplacés par les données du fichier importé.</li>
-    <li>Un tableau résumant les données importées s'affichera avant la validation finale.</li>
-  </ul>
-  
-  <h3>Consignes d'utilisation</h3>
-  <ul>
-    <li>
-      Le fichier importé doit être au format <strong>CSV</strong>. Dans le fichier, 
-      le seul délimiteur de colonnes accepté est le <strong>point-virgule</strong>.
-    </li>
-  </ul>
-  
-  <h3>Import</h3>
-  <form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data" style="padding-top:0">{% csrf_token %}
-    <h3>A) Sélectionnez le fichier à importer</h3>
-    {% with form.csv_file as field %}
-      <div class="form-row{% if field.errors %} error {% endif %}">
-        {% if field.errors %}{{ field.errors }}{% endif %}
-        <div class="cleaner"></div>
-        {{ field }}
-        {% if field.help_text %}<p class="help">{{ field.help_text|safe }}</p>{% endif %}
-        <div class="cleaner"></div>
-      </div>
-    {% endwith %}
-    <h3>B) Veuillez ordonner (par glisser-déposer) les colonnes comme dans votre fichier</h3>
-    <ul id="sortable">
-    	<li class="ui-state-default">Désignation*</li>
-    	<li class="ui-state-default">Référence*</li>
-    	<li class="ui-state-default">Prix*</li>
-    	<li class="ui-state-default">Conditionnement</li>
-    	<li class="ui-state-default">N° d'offre</li>
-    	<li class="ui-state-default">Nomenclature</li>
-    	<li class="ui-state-default">Fournisseur d'origine</li>
-    </ul>
-    <div class="cleaner"></div>
-    <br />
-    <input type="hidden" name="column_order" value="" />
-    <button type="submit" class="check csv-import">Valider</button>
-    <a href="{% url provider_index %}" class="back">Annuler</a>
-  </form>
-</div>
+<form action="{% url import_products provider.id %}" method="post" enctype="multipart/form-data" style="padding-top:0">{% csrf_token %}
+	<p class="instructions">
+		Un tableau résumant les données importées s'affichera avant la validation finale.
+		<br />Le fichier importé doit être au format <strong>XLS</strong>.
+	</p>
+	<h3>A) Sélectionnez le fichier à importer</h3>
+	<fieldset>
+		{% for field in form %}
+			{% include "form_snippet.html" %}
+		{% endfor %}
+	</fieldset>
+	
+	<h3>B) Veuillez ordonner (par glisser-déposer) les colonnes comme dans votre fichier</h3>
+	<fieldset>
+		<ul id="sortable">
+			<li class="ui-state-default">Désignation*</li>
+			<li class="ui-state-default">Référence*</li>
+			<li class="ui-state-default">Prix*</li>
+			<li class="ui-state-default">Conditionnement</li>
+			<li class="ui-state-default">N° d'offre</li>
+			<li class="ui-state-default">Nomenclature</li>
+			<li class="ui-state-default">Fournisseur d'origine</li>
+		</ul>
+	</fieldset>
+	<input type="hidden" name="column_order" value="" />
+	<button type="submit" class="check csv-import">Valider</button>
+	<a href="{% url provider_index %}" class="back">Retour</a>
+</form>
 {% endblock %}

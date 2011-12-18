@@ -528,8 +528,11 @@ def _move_to_status_5(request, order):
 	try:
 		delivery_date = request.GET.get('delivery_date', None)
 		delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )
+		if delivery_date < order.date_created:
+			error_msg(request, u"Veuillez saisir une date de livraison supérieure à la date de création de la commande.")
+			return redirect(order)
 	except:
-		error_msg(request, "Veuillez saisir une date valide (format jj/mm/aaaa).")
+		error_msg(request, u"Veuillez saisir une date valide (format jj/mm/aaaa).")
 		return redirect( 'tab_orders' )
 	
 	order.date_delivered = delivery_date

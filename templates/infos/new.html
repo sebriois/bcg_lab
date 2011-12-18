@@ -1,0 +1,23 @@
+{% extends "base_main.html" %}
+{% load filters %}
+
+{% block menu_home %}active{% endblock %}
+
+{% block header %}
+<h1>Accueil</h1>
+<h2>Informations</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url info_new %}" method="POST">{% csrf_token %}
+	<h3>Nouvelle information</h3>
+	<fieldset>
+  {% for field in form %}
+    {% include "form_snippet.html"%}
+  {% endfor %}
+	</fieldset>
+  
+  <button type="submit" class="check">Valider</button>
+	<a href="{% url info_index %}" class="back">Retour</a>
+</form>	
+{% endblock %}

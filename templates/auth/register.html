@@ -3,42 +3,50 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Gestion des commandes - Enregistrement</title>
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/login.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/form.css" type="text/css" />
-    <link rel="stylesheet" href="{{ MEDIA_URL }}css/redmond/jquery-ui-1.8.12.custom.css" type="text/css" />
-    
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.5.1.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.12.custom.min.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
-    
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Commandes LBCMCP - login</title>
+		<link rel="stylesheet" href="{{ MEDIA_URL }}css/new_login.css" type="text/css" />
+		<link rel="stylesheet" href="{{ MEDIA_URL }}css/humanity/jquery-ui-1.8.16.custom.css" type="text/css" />
+		
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.6.4.min.js"></script>
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.16.custom.min.js"></script>
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
+		
+		<script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
 </head>
 
 <body>
 
 <div id="login-messages">
-  {% include "block_messages.html" %}
-  {{ form.non_field_errors }}
+	{% include "block_messages.html" %}
+	{{ form.non_field_errors }}
 </div>
 
-<div id="header">
-    <h2>Gestion des commandes LBCMCP<br />Enregistrement</h2>
+<!-- start: wrapper -->
+<div id="wrapper">
+	<div id="login">
+		<div id="header"><h1>Gestion des commandes LBCMCP</h1></div>
+		<div id="in_login">
+			<div id="login_subhead">Création d'un nouveau compte</div>
+			<form method="POST" action="{% url new_user %}" class="large_labels">{% csrf_token %}
+				<fieldset>
+					<label for="username">{{ form.username.label }}*</label>
+					{{ form.username }}
+					<div class="cleaner"></div>
+					<label for="password1">{{ form.password1.label }}*</label>
+					{{ form.password1 }}
+					<div class="cleaner"></div>
+					<label for="password2">{{ form.password2.label }}*</label>
+					{{ form.password2 }}
+				</fieldset>
+				<button type="submit" class="button margin-left">Continuer &rarr;</button>
+			</form>
+		</div>
+		<div id="footer">
+			<a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
+		</div>
+	</div>
 </div>
-
-<div id="new_account">
-    <div id="login">
-        <form method="POST" action="{% url new_user %}" name="login" class="change_password">{% csrf_token %}
-            {% for field in form %}
-              {% include "form_snippet.html" %}
-            {% endfor %}
-            <button type="submit" class="button">Continuer &rarr;</button>
-        </form>
-        <div id="register">
-          <a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
-        </div>
-    </div>
-</div>
+<!-- end: wrapper -->
 </body>
 </html>

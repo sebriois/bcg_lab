@@ -15,7 +15,7 @@ def warn_msg( request, message ):
 	return messages.add_message( request, messages.WARNING, message )
 
 def in_team_secretary(user):
-	return user.has_perm('order.custom_goto_status_4')
+	return user.has_perm('order.custom_goto_status_4') and not user.is_superuser
 
 def GET_method(view):
 	"""
@@ -35,19 +35,6 @@ def POST_method(view):
 	"""
 	def _wrapped_view( request, *args, **kwargs ):
 		if not request.method == 'POST':
-			error_msg( request, "This request method (%s) is not handled on this page" % request.method )
-			return redirect( 'error' )
-		return view(request, *args, **kwargs)
-	
-	return _wrapped_view
-	
-
-def PUT_method(view):
-	"""
-	Decorator that checks whether the view is called using the PUT method
-	"""
-	def _wrapped_view( request, *args, **kwargs ):
-		if not request.method == 'PUT':
 			error_msg( request, "This request method (%s) is not handled on this page" % request.method )
 			return redirect( 'error' )
 		return view(request, *args, **kwargs)

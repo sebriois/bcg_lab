@@ -14,12 +14,23 @@ def has_perms(user, perms):
 	return user.has_perms(perms.split(";"))
 
 @register.filter
+def can_edit(user, order):
+	if order.status <= 1:
+		return True
+	
+	if order.status <= 2 and user.has_perm("order.custom_validate"):
+		return True
+	
+	if user.has_perm("order.custom_goto_status_4"):
+		return True
+
+@register.filter
 def total_price(cart, provider):
 	return cart.total_price(provider)
 
 @register.filter
 def in_team_secretary(user):
-	return user.has_perm('order.custom_goto_status_4')
+	return user.has_perm('order.custom_goto_status_4') and not user.is_superuser
 
 @register.filter
 def is_in_charge(product, user):

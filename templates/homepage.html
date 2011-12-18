@@ -4,50 +4,40 @@
 {% block menu_home %}active{% endblock %}
 
 {% block header %}
-  <h1>Informations</h1>
+<div class="btn_wrapper">
+	<a href="{% url info_new %}" class="btn_medium">
+		<img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une info
+	</a>
+</div>
+<h1>Accueil</h1>
+<h2>Informations</h2>
 {% endblock %}
 
 {% block content %}
-  <div id="left">
-    <table class="list">
-      <thead>
-        <th>Date</th>
-        <th>Expiration</th>
-        <th>Information</th>
-        <th></th>
-      </thead>
-      <tbody>
-        {% for info in infos %}
-          {% if info.has_expired %}
-            <tr class="expired">
-          {% else %}{% if info.soon_expired %}
-            <tr class="soon_expired">
-          {% else %}
-            <tr>
-          {% endif %}{% endif %}
-            <td>{{ info.date_created|date }}</td>
-            <td>{{ info.expiry|date }}</td>
-            <td>{{ info.text|safe }}</td>
-            <td>
-              <a href="{% url info_delete info.id %}" class="trash no-text"></a>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  
-  <div id="right">
-    <h5>Ajouter une info</h5>
-    <div class="right_wrapper">
-      <form action="{% url info_index %}" method="POST">{% csrf_token %}
-        {% for field in info_form %}
-          {% include "form_snippet.html"%}
-        {% endfor %}
-        
-        <button type="submit" class="check">Valider</button>
-      </form>
-    </div>
-  </div>
-
+<table class="list">
+	<thead>
+		<th>Date</th>
+		<th>Expiration</th>
+		<th>Information</th>
+		<th></th>
+	</thead>
+	<tbody>
+		{% for info in infos %}
+			{% if info.has_expired %}
+				<tr class="expired">
+			{% else %}{% if info.soon_expired %}
+				<tr class="soon_expired">
+			{% else %}
+				<tr>
+			{% endif %}{% endif %}
+				<td>{{ info.date_created|date }}</td>
+				<td>{{ info.expiry|date }}</td>
+				<td>{{ info.text|safe }}</td>
+				<td>
+					<a href="{% url info_delete info.id %}" class="trash no-text"></a>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
 {% endblock %}

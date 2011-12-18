@@ -56,14 +56,11 @@
 						{% else %}
 							<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status sifac">Saisie SIFAC</a>
 						{% endif %}
+					{% else %}{% if order.status == 4 %}
+						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status">Réception</a>
 					{% else %}
 						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="pencil">Voir détail</a>
-						{% if order.status == 4 %}
-							<a href="{% url set_next_status order.id %}" class="next-status setDeliveryDate">
-								Commande réceptionnée
-							</a>
-						{% endif %}
-					{% endif %}
+					{% endif %}{% endif %}
 				</td>
 			</tr>
 			{% endfor %}
@@ -79,15 +76,6 @@
 {#			DIALOGS				#}
 {#										#}
 {# ################## #}
-
-<div id="setDeliveryDate" class="dialog" title="Date de livraison">
-	<div class="form-row">
-		<label for="delivery_date">Date de livraison (jj/mm/aaaa):</label>
-		<div class="cleaner"></div>
-		<input type="text" name="delivery_date" class="datepicker" />
-		<div class="cleaner"></div>
-	</div>
-</div>
 
 <div id="setOrderNb" class="dialog" title="Saisie du N° de commande">
 	<div class="form-row">

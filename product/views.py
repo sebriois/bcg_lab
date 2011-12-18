@@ -20,7 +20,7 @@ from utils import *
 @login_required
 def index(request):
 	product_list = Product.objects.all()
-	product_choices = ";".join( [ unicode(p) for p in product_list ] )
+	product_choices = ";".join( list(set([ unicode(p) for p in product_list ])) )
 	
 	form = ProductFilterForm(
 		data = request.GET,
@@ -57,8 +57,9 @@ def item(request, product_id):
 		url_args = data.pop('url_args')
 		form = ProductForm(instance = product, data = data)
 		if form.is_valid():
-			form.save()
-			info_msg( request, u"Produit modifié avec succès." )
+			if form.has_changed():
+				form.save()
+				info_msg( request, u"Produit modifié avec succès." )
 			return redirect( reverse('product_index') + '?' + url_args[0] )
 	
 	return direct_to_template(request, 'product/item.html',{
@@ -76,12 +77,14 @@ def new(request):
 			provider = get_object_or_404( Provider, id = provider_id )
 			form = ProductForm( provider = provider )
 		else:
+			provider = None
 			form = ProductForm()
 	elif request.method == 'POST':
 		if 'provider' in request.POST and request.POST['provider']:
 			provider = get_object_or_404( Provider, id = request.POST['provider'] )
 			form = ProductForm( provider = provider, data = request.POST )
 		else:
+			provider = None
 			form = ProductForm( data = request.POST )
 		
 		if form.is_valid():

@@ -12,3 +12,12 @@
 <div id="confirmDelCart" class="dialog" title="Confirmation requise">
   Êtes-vous sûr de vouloir retirer cet article ?
 </div>
+
+<div id="setDeliveryDate" class="dialog" title="Date de livraison">
+	<label>Date de livraison (jj/mm/aaaa):</label>
+	{% if order.date_created %}
+		<input type="text" name="delivery_date" class="datepicker minDate" min-date="{{order.date_created|date}}"/>
+	{% else %}
+		<input type="text" name="delivery_date" class="datepicker" />
+	{% endif %}
+</div>
