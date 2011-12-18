@@ -57,7 +57,7 @@
 							<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status sifac">Saisie SIFAC</a>
 						{% endif %}
 					{% else %}{% if order.status == 4 %}
-						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status">Réception</a>
+						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status"><b>A réceptionner</b></a>
 					{% else %}
 						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="pencil">Voir détail</a>
 					{% endif %}{% endif %}
