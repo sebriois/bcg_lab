@@ -1,2 +1,0 @@
-designation;reference;prix;conditionnement;offre;nomenclature{% for p in products %}
-{{p.name}};{{p.reference}};{{p.price}};{{p.packaging}};{{p.offer_nb}};{{p.nomenclature}}{% endfor %}
