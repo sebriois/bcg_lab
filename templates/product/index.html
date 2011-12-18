@@ -98,7 +98,7 @@
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
 	<form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
-		<input type="hidden" name="url_params" value="{{url_params}}" />
+		<input type="hidden" name="url_params" value="{{url_args}}" />
 		<input type="hidden" name="product_id" value="" />
 		<div class="form-row">
 			<div id="qty-error-msg"></div>

@@ -339,7 +339,6 @@ $(document).ready(function(){
           if ( intRegex.test(qty) && qty > 0 ) {
             $("#qty-error-msg").text('');
             $( this ).dialog( "close" );
-            $('#loadingDialog').dialog('open');
             $('#addToCart.dialog form').submit();
           }
           else {
