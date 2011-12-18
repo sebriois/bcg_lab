@@ -4,7 +4,7 @@
 	<p>Equipe: {{ order.team }}</p>
 	<p>Date: {{ order.date_created|date }}</p>
 	<p>Statut: {{ order.get_status_display }}</p>
-	{% if user|has_perm:"order.custom_edit_number" and order.status > 2 %}
+	{% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
 	<strong>Commande n°</strong>
 	<input type="text" id="order_number"
 		url="{% url set_order_number order.id %}"
@@ -15,7 +15,7 @@
 	<p>Commande n°{{ order.number }}</p>
 	{% endif %}{% endif %}
 	
-	{% if user|has_perm:"order.custom_edit_order_budget" and order.status >= 1 %}
+	{% if order.status >= 1 and user|can_edit:order %}
 		{% if order.status < 5 and not order.provider.is_local %}
 			<p>
 				<strong>Budget à imputer:</strong>
@@ -149,13 +149,14 @@
 	{% if user|has_perm:"order.custom_goto_status_3" %}
 		<a href="{% url set_next_status order.id %}" class="next-status save-changes"><b>Pour saisie</b></a>
 	{% endif %}
-{% else %}{% if order.status == 4 %}
-	<a href="{% url set_next_status order.id %}" class="next-status setDeliveryDate">
-		Commande réceptionnée
-	</a>
-{% else %}{% if order.status > 2 and user|has_perm:"order.custom_goto_status_4" %}
-	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+{% else %}{% if order.status > 2 %}
+	{% if user|has_perm:"order.custom_goto_status_4" %}
+		<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+	{% endif %}
+	{% if order.status == 4 %}
+	<a href="{% url set_next_status order.id %}" class="next-status setDeliveryDate">Commande réceptionnée</a>
+	{% endif %}
 {% endif %}{% endif %}{% endif %}{% endif %}
 {% if order.status > 1 %}
 	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
