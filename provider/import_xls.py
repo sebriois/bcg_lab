@@ -65,21 +65,21 @@ def read_xls( header, data, input_excel ):
 		base_error = "Ligne %s - " % (row_idx + 1)
 		
 		# CHECK NAME
-		name_idx = header.index(u"Désignation")
+		name_idx = header.index(u"désignation")
 		name = row[name_idx].value
 		if not name:
 			errors.append( base_error + "Colonne %s/%s - la désignation est manquante." % (name_idx+1, len(row)))
 			continue
 		
 		# CHECK REFERENCE
-		ref_idx = header.index(u"Référence")
+		ref_idx = header.index(u"référence")
 		ref = row[ref_idx].value
 		if not name:
 			errors.append( base_error + "Colonne %s/%s - la référence est manquante." % (ref_idx+1, len(row)))
 			continue
 		
 		# CHECK PRICE
-		price_idx = header.index(u"Prix")
+		price_idx = header.index(u"prix")
 		price = row[price_idx].value
 		
 		if isinstance(price, str):
