@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from provider.models import Provider
 
 @login_required
-def export_csv( request, provider_id ):
+def export_xls( request, provider_id ):
 	provider = get_object_or_404( Provider, id = provider_id )
 	
 	xls = xlwt.Workbook()
