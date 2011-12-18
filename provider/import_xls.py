@@ -41,13 +41,13 @@ def import_xls( request, provider_id ):
 				msg = "Veuillez corriger les erreurs suivantes:<br />" + "<br />".join(errors)
 				error_msg( request, msg )
 				# return redirect( reverse('import_products', args=[provider_id]) )
-			else:
-				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
-				return direct_to_template(request, 'provider/import_preview.html', {
-					'data': data,
-					'provider': provider,
-					'replace_all': request.POST.get('replace_all',False)
-				})
+			
+			info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
+			return direct_to_template(request, 'provider/import_preview.html', {
+				'data': data,
+				'provider': provider,
+				'replace_all': request.POST.get('replace_all',False)
+			})
 	
 	return direct_to_template(request, 'provider/import.html', {
 		'form': form,
