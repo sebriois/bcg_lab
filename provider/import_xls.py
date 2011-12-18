@@ -64,6 +64,20 @@ def read_xls( header, data, input_excel ):
 		row = sheet.row(row_idx)
 		base_error = "Ligne %s - " % (row_idx + 1)
 		
+		# CHECK NAME
+		name_idx = header.index('designation')
+		name = row[name_idx].value
+		if not name:
+			errors.append( base_error + "Colonne %s/%s - la désignation est manquante." % (name_idx+1, len(row)))
+			continue
+		
+		# CHECK REFERENCE
+		ref_idx = header.index('reference')
+		ref = row[ref_idx].value
+		if not name:
+			errors.append( base_error + "Colonne %s/%s - la référence est manquante." % (ref_idx+1, len(row)))
+			continue
+		
 		# CHECK PRICE
 		price_idx = header.index('prix')
 		price = row[price_idx].value
