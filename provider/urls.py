@@ -1,7 +1,6 @@
 from django.conf.urls.defaults import *
 
 from provider.views import index, item, delete, new
-from provider.csv_import import export_csv
 from provider.import_xls import import_xls, do_import
 from provider.export_xls import export_xls
 
