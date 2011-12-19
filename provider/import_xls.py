@@ -31,7 +31,7 @@ def import_xls( request, provider_id ):
 		if form.is_valid():
 			header, data = [], []
 			for i, column in enumerate(request.POST['column_order'].split(';')):
-				header.append( column.lower().replace('*','').replace('é','e') )
+				header.append( column.lower().replace('*','').replace(u"é",'e') )
 			data.append(tuple(header))
 			
 			errors = read_xls( header, data, request.FILES['xls_file'] )
