@@ -30,8 +30,8 @@ def import_xls( request, provider_id ):
 		
 		if form.is_valid():
 			header, data = [], []
-			for i, column in enumerate(request.POST['column_order'].split(';')):
-				header.append( column.lower().replace('*','').replace(u"é",'e') )
+			head_str = request.POST['column_order'].lower().replace('*','').replace(u"é",'e')
+			header = head_str.split(';')
 			data.append(tuple(header))
 			errors = read_xls( header, data, request.FILES['xls_file'] )
 			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
