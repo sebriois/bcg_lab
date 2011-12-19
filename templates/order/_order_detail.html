@@ -136,9 +136,12 @@
 	<a href="{% url set_next_status order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
 	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 1 %}
-	<a href="{% url tab_validation %}" class="disk save-changes">Enregistrer les modifications</a>
 	{% if user|has_perm:"order.custom_validate" %}
+	<a href="{% url tab_validation %}" class="disk save-changes">Enregistrer les modifications</a>
 	<a href="{% url set_next_status order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
+	{% else %}
+	<a href="{% url order.get_absolute_url %}" class="disk save-changes">Enregistrer les modifications</a>
+	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
 	{% endif %}
 	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 2 %}
