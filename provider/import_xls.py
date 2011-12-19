@@ -29,12 +29,16 @@ def import_xls( request, provider_id ):
 		form = ImportForm(data = request.POST, files = request.FILES)
 		
 		if form.is_valid():
-			header, data = [], []
 			head_str = request.POST['column_order'].lower().replace('*','').replace(u"é",'e')
 			header = head_str.split(';')
-			data.append(tuple(header))
+			data = []
+			
 			errors = read_xls( header, data, request.FILES['xls_file'] )
-			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
+			
+			request.session['import_data'] = json.dumps({
+				'header': header,
+				'data': data
+			}).encode('utf8')
 			
 			if errors:
 				msg = u"Les lignes suivantes seront ignorées lors de l'import:<br />"
@@ -44,6 +48,7 @@ def import_xls( request, provider_id ):
 			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
 			return direct_to_template(request, 'provider/import_preview.html', {
+				'header': header,
 				'data': data,
 				'provider': provider,
 				'replace_all': request.POST.get('replace_all',False)
@@ -99,7 +104,8 @@ def read_xls( header, data, input_excel ):
 			is_valid = 'false'
 			errors.append( base_error + u"Colonne 'prix' - la colonne prix est vide." )
 		
-		data.append( [is_valid] + [col.value for col in row[0:7]] )
+		row = [is_valid] + [col.value for col in row[0:6]]
+		data.append( row )
 	
 	return errors
 
@@ -123,21 +129,19 @@ votre navigateur)." )
 	if request.GET['replace_all'] == 'on':
 		provider.product_set.all().delete()
 	
-	for num_line, line in enumerate(xls_data['data']):
-		if num_line == 0:
-			header = line
-			continue
+	header = xls_data['header']
+	name_idx = header.index(u'designation') + 1
+	ref_idx = header.index(u'reference') + 1
+	price_idx = header.index(u'prix') + 1
+	pack_idx = header.index(u'conditionnement') + 1
+	offer_idx = header.index(u"n° d'offre") + 1
+	nom_idx = header.index(u'nomenclature') + 1
+	origin_idx = header.index(u"fournisseur d'origine") + 1
+	
+	for i in kept_items:
+		if xls_data['data'][0] == 'false': continue # ie. is_valid = false, invalid line
 		
-		# Skip this line if not checked
-		if not num_line in kept_items: continue
-		
-		name_idx = header.index('designation')
-		ref_idx = header.index('reference')
-		price_idx = header.index('prix')
-		pack_idx = header.index('conditionnement')
-		offer_idx = header.index(u"n° d'offre")
-		nom_idx = header.index('nomenclature')
-		origin_idx = header.index(u"fournisseur d'origine")
+		line = xls_data['data'][i]
 		
 		price = line[price_idx]
 		if isinstance(price, str):

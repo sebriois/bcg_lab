@@ -19,32 +19,31 @@
 <br /><br />
 
 <table class="list">
+	<thead>
+		<th></th>
+		{% for head in header %}
+		<th>{{ head }}</th>
+		{% endfor %}
+	</thead>
+	<tbody>
 	{% for line in data %}
-		{% if forloop.counter == 1 %}
-			<thead>
-				<th></th>
-				{% for head in line %}
-				<th>{{ head }}</th>
-				{% endfor %}
-			</thead>
-		{% else %}
-			<tr class="{% cycle 'odd' 'even' %}">
-				{% for item in line %}
-					{% if forloop.counter == 1 %}
-						<td>
-							{% if item == 'true' %}
-							<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" checked="checked" />
-							{% else %}
-							<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" disabled="true" />
-							{% endif %}
-							- {{ forloop.parentloop.counter0 }}
-						</td>
-					{% else %}
-						<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
-					{% endif %}
-				{% endfor %}
-			</tr>
-		{% endif %}
+	<tr class="{% cycle 'odd' 'even' %}">
+		{% for item in line %}
+			{% if forloop.counter == 1 %}
+			<td>
+				{% if item == 'true' %}
+				<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" checked="checked" />
+				{% else %}
+				<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" disabled="true" />
+				{% endif %}
+				- {{ forloop.parentloop.counter0 }}
+			</td>
+			{% else %}
+			<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
+			{% endif %}
+		{% endfor %}
+	</tr>
 	{% endfor %}
+	</tbody>
 </table>
 {% endblock %}
