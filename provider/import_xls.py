@@ -31,8 +31,8 @@ def import_xls( request, provider_id ):
 		if form.is_valid():
 			header, data = [], []
 			for i, column in enumerate(request.POST['column_order'].split(';')):
-				header.append( column.lower().replace('*','') )
-			data.append(header)
+				header.append( column.lower().replace('*','').replace('é','e') )
+			data.append(tuple(header))
 			
 			errors = read_xls( header, data, request.FILES['xls_file'] )
 			request.session['import_data'] = json.dumps({ 'data': data }).encode('utf8')
@@ -124,45 +124,50 @@ votre navigateur)." )
 	if request.GET['replace_all'] == 'on':
 		provider.product_set.all().delete()
 	
-	header = {}
 	for num_line, line in enumerate(xls_data['data']):
 		if num_line == 0:
-			for i, head in enumerate(line):
-				head = head.lower().strip().replace(u'é', u'e')
-				header[head] = i
+			header = line
 			continue
 		
 		# Skip this line if not checked
 		if not num_line in kept_items: continue
 		
-		price = line[header['prix']]
+		name_idx = header.index('designation')
+		ref_idx = header.index('reference')
+		price_idx = header.index('prix')
+		pack_idx = header.index('conditionnement')
+		offer_idx = header.index(u"n° d'offre")
+		nom_idx = header.index('nomenclature')
+		origin_idx = header.index(u"fournisseur d'origine")
+		
+		price = line[price_idx]
 		if isinstance(price, str):
 			price = price.replace(" ","").replace(",",".").replace('€','')
 		price = Decimal(price)
 		
 		product, created = Product.objects.get_or_create(
 			provider = provider,
-			reference = line[header['reference']],
+			reference = line[ref_idx],
 			defaults = {
-				'name' : line[header['designation']],
+				'name' : line[name_idx],
 				'price' : price
 			}
 		)
 		
-		if len(line) > header['conditionnement'] and line[header['conditionnement']]:
-			product.packaging = line[header['conditionnement']]
+		if len(line) > pack_idx and line[pack_idx]:
+			product.packaging = line[pack_idx]
 		
-		if len(line) > header[u"n° d'offre"] and line[header[u"n° d'offre"]]:
-			product.offer_nb = line[header[u"n° d'offre"]]
+		if len(line) > offer_idx and line[offer_idx]:
+			product.offer_nb = line[offer_idx]
 		
-		if len(line) > header['nomenclature'] and line[header['nomenclature']]:
-			product.nomenclature = line[header['nomenclature']]
+		if len(line) > nom_idx and line[nom_idx]:
+			product.nomenclature = line[nom_idx]
 		
-		if len(line) > header["fournisseur d'origine"] and line[header["fournisseur d'origine"]]:
-			product.origin = line[header["fournisseur d'origine"]]
+		if len(line) > origin_idx and line[origin_idx]:
+			product.origin = line[origin_idx]
 		
 		if not created:
-			product.name = line[header['designation']]
+			product.name = line[name_idx]
 			product.price = price
 		
 		product.save()
