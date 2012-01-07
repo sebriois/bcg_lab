@@ -77,8 +77,14 @@ def tab_validation( request ):
 	teams = get_teams( request.user )
 	
 	# ORDERS THAT CAN BE SEEN
+	see_all_teams = 'see_all_teams' in request.GET and request.GET['see_all_teams'] == '1'
+	
 	if request.user.has_perms(['team.custom_view_teams','order.custom_validate']):
 		order_list = Order.objects.filter( status = 1 ).order_by('-date_created')
+		if see_all_teams:
+			order_list = order_list.exclude(team__in = teams)
+		else:
+			order_list = order_list.filter(team__in = teams)
 	elif request.user.has_perm('order.custom_validate'):
 		order_list = Order.objects.filter( team__in = teams, status = 1 ).order_by('-date_created')
 	else:
@@ -98,6 +104,7 @@ def tab_validation( request ):
 		'budgets': budget_list,
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
+		'see_all_teams': see_all_teams,
 		'next': 'tab_validation'
 	})
 
@@ -462,7 +469,7 @@ def _move_to_status_1(request, order):
 	if emails:
 		subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
 		template = loader.get_template('order/validation_email.txt')
-		context = Context({ 'order': order, 'url': reverse('tab_validation') })
+		context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
 		message = template.render( context )
 		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 	else:

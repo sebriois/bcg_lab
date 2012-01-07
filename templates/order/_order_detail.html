@@ -1,7 +1,11 @@
 {% load filters %}
 
 <div style="float:left;width:49%;height:100px;">
-	<p>Equipe: {{ order.team }}</p>
+	{% if user|has_perms:"order.custom_validate;team.custom_view_teams" %}
+		<p style="font-size:14px;">Equipe: <b>{{ order.team }}</b></p>
+	{% else %}
+		<p>Equipe: {{ order.team }}</p>
+	{% endif %}
 	<p>Date: {{ order.date_created|date }}</p>
 	<p>Statut: {{ order.get_status_display }}</p>
 	{% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
@@ -20,6 +24,7 @@
 			<p>
 				<strong>Budget à imputer:</strong>
 				<select id="select-budget" url="{% url order_budget order.id %}">
+					<option value="0">A définir par la gestionnaire</option>
 					{% for budget in budgets %}
 					<option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
 						{{budget}}

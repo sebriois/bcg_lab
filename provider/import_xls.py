@@ -44,7 +44,6 @@ def import_xls( request, provider_id ):
 				msg = u"Les lignes suivantes seront ignorées lors de l'import:<br />"
 				msg += u"<br />".join(errors)
 				warn_msg( request, msg )
-				# return redirect( reverse('import_products', args=[provider_id]) )
 			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
 			return direct_to_template(request, 'provider/import_preview.html', {

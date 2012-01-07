@@ -33,10 +33,20 @@ ISSUE_STATUS_CHOICES = (
 CATEGORY_CHOICES = (
 	(0, u""),
 	(1, u"Produit chimique"),
+	(2, u"Produit biologique"),
+	(3, u"Produit radioactif")
 )
 
 SUBCATEGORY_CHOICES = (
 	(0, u""),
+	(1, u"alcool"),
+	(2, u"solvant"),
+	(3, u"acide"),
+	(4, u"base"),
+	(5, u"cellules"),
+	(6, u"virus"),
+	(7, u"bacteries"),
+	(8, u"echantillon de patient")
 )
 
 
@@ -53,5 +63,4 @@ COST_TYPE_CHOICES = (
 )
 
 EMAIL_MAGASIN = 'escaffit@cict.fr'
-
 EMPTY_SEL = [("","---------")]

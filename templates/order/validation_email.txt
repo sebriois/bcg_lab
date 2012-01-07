@@ -16,4 +16,4 @@ Une nouvelle commande est en attente de validation:
 {% endfor %}
 * Total commande: {{ order.price }} €
 
-Pour valider cette commande, cliquez-ici: http://lbcmcp-orders.ups-tlse.fr/{{ url }}
+Pour valider cette commande, cliquez-ici: {{ url }}
