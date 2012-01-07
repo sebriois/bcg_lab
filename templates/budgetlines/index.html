@@ -51,7 +51,7 @@
 		<th>qté</th>
 		<th>Total</th>
 		<th>Dispo</th>
-		{% if user|in_team_secretary %}<th></th>{% endif %}
+		{% if user|has_perm:"budget.custom_edit_budget" %}<th></th>{% endif %}
 	</thead>
 	<tbody>
 		{% for budget in budget_list %}

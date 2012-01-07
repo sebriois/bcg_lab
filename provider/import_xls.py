@@ -74,14 +74,14 @@ def read_xls( header, data, input_excel ):
 		name = row[name_idx].value
 		if not name:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'désignation' - la désignation est manquante." % (name_idx+1, len(row)))
+			errors.append( base_error + u"Colonne 'désignation' - la désignation est manquante." )
 		
 		# CHECK REFERENCE
 		ref_idx = header.index(u"reference")
 		ref = row[ref_idx].value
 		if not ref:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'référence' - la référence est manquante." % (ref_idx+1, len(row)))
+			errors.append( base_error + u"Colonne 'référence' - la référence est manquante." )
 		
 		# CHECK PRICE
 		price_idx = header.index(u"prix")
