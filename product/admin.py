@@ -1,5 +1,13 @@
 from django.contrib import admin
-from product.models import Product
+from product.models import Product, ProductType, ProductSubType
+
+class ProductTypeAdmin(admin.ModelAdmin):
+	list_display = ("name",)
+admin.site.register(ProductType, ProductTypeAdmin)
+
+class ProductSubTypeAdmin(admin.ModelAdmin):
+	list_display = ("name","category")
+admin.site.register(ProductSubType, ProductSubTypeAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
   date_hierarchy = 'last_change'

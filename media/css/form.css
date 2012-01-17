@@ -102,7 +102,7 @@ form.change_password div.form-row label	 {
  *
  */
 
-form select#select-budget {
+form.transfer select, form select#select-budget {
 	float: none;
 	display: inline;
 	background: #f2f7ff;

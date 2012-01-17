@@ -6,20 +6,23 @@ from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
 
 from history.models import History
-from history.forms import HistoryFilterForm
+from history.forms import HistoryFilterForm, BudgetHistoryFilterForm
 from order.models import OrderItem
+from budget.models import Budget, BudgetLine
 
 from constants import *
 from utils import *
 
 @login_required
-def index(request):
+def history_orders(request):
 	# Get initial history_list
 	if request.user.has_perm('team.custom_view_teams'):
 		history_list = History.objects.all()
 	else:
-		team_names = [t.name for t in get_teams(request.user)]
-		history_list = History.objects.filter( team__in = team_names )
+		history_list = History.objects.filter(
+			Q(items__username = request.user.username) |
+			Q(team__in = [t.name for t in get_teams(request.user)])
+		)
 	
 	# Filter history_list depending on received GET data
 	form = HistoryFilterForm( user = request.user, data = request.GET )
@@ -37,9 +40,18 @@ def index(request):
 	
 	search_name = request.GET.get("items__name",None)
 	search_ref = request.GET.get("items__reference",None)
-	if search_name or search_ref:
+	search_type = request.GET.get("items__category",None)
+	search_subtype = request.GET.get("items__sub_category",None)
+	
+	if search_name or search_ref or search_type or search_subtype:
 		display = "by_product"
 		items_id = []
+		
+		# Q_obj = Q()
+		# Q_obj.connector = request.GET['connector']
+		
+		
+		
 		for h in history_list:
 			for item in h.items.all():
 				if item.id in items_id: continue
@@ -75,3 +87,37 @@ def item(request, item_id):
 	return direct_to_template( request, 'history/item.html', {
 		'history': item
 	})
+
+@login_required
+def history_budgets(request):
+	if request.user.has_perms(['team.custom_view_teams','budget.custom_view_budget']):
+		budget_lines = BudgetLine.objects.filter( is_active = False )
+	elif request.user.has_perm('budget.custom_view_budget'):
+		budget_lines = BudgetLine.objects.filter(
+			is_active = False,
+			team__in = [t.name for t in get_teams(request.user)]
+		)
+	else:
+		not_allowed_msg(request)
+		return redirect('home')
+	
+	# 
+	# Filter history_list depending on received GET data
+	form = BudgetHistoryFilterForm( user = request.user, data = request.GET )
+	if len(request.GET.keys()) > 0 and form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		budget_lines = budget_lines.filter( Q_obj )
+	
+	return direct_to_template( request, 'history/budgets.html', {
+		'filter_form': form,
+		'objects': paginate( request, budget_lines.order_by('-date') )
+	})
+

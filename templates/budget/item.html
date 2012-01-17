@@ -1,20 +1,57 @@
-{% extends "main_custom.html" %}
+{% extends "base_budgets.html" %}
+{% load paginator filters %}
+
+{% block menu_budget_new %}active{% endblock %}
+
+{% block header %}
+<h1>Gestion des budgets</h1>
+<h2>Edition d'un budget</h2>
+{% endblock %}
 
 {% block content %}
-
-<div id="content" style="min-height:0">
-  <div id="content_header"><h2>Modification d'un budget</h2></div>
-  
-  <form action="{% url budget_edit budget.id %}" method="POST">{% csrf_token %}
-      <p class="instructions">
-        <em>Les champs marqués d'une étoile sont obligatoires</em>
-      </p>
-      {% for field in form %}
-          {% include "form_snippet.html"%}
-      {% endfor %}
-      <button type="submit" class="check button">Valider</button>
-  </form>
-  
-  <div class="cleaner"></div>
-</div>
+<form action="{{ budget.get_absolute_url }}" method="POST">{% csrf_token %}
+	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
+	<h3>Informations générales</h3>
+	<fieldset>
+		{% with form.team as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.name as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.default_origin as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.budget_type as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.tva_code as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.domain as field %}
+		{% include "form_snippet.html"%}
+		{% endwith %}
+	</fieldset>
+	
+	{% if not budget.default_nature %}
+		<h3>Attribution des montants</h3>
+		<fieldset>
+			<p style="font-size:16px">MONTANT DISPONIBLE POUR REDISTRIBUTION: <b>{{ budget.get_amount_left }}</b></p>
+			{% with form.fo as field %}
+			{% include "form_snippet.html"%}
+			{% endwith %}
+			{% with form.mi as field %}
+			{% include "form_snippet.html"%}
+			{% endwith %}
+			{% with form.sa as field %}
+			{% include "form_snippet.html"%}
+			{% endwith %}
+			{% with form.eq as field %}
+			{% include "form_snippet.html"%}
+			{% endwith %}
+		</fieldset>
+	{% endif %}
+	<button type="submit" class="check">Valider</button>
+	<a href="{% url budgets %}" class="back">Retour</a>
+</form>
 {% endblock %}

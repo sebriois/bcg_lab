@@ -4,7 +4,7 @@
 		<h4>Recherche de commandes réceptionnées</h4>
 </div>
 <div class="bar_content">
-	<form action="{% url history %}" method="GET">{% csrf_token %}
+	<form action="{% url history_orders %}" method="GET">{% csrf_token %}
 		<strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
 		<div class="cleaner"></div>
 		<table>
@@ -12,6 +12,9 @@
 				<td>Equipe:</td>
 				<td>{{ filter_form.team }}</td>
 				<td width="10%"></td>
+				<td>N° de commande:</td>
+				<td>{{ filter_form.number }}</td>
+				<td width="5%"></td>
 				<td>Date de réception (min/max):</td>
 				<td>{{ filter_form.date_delivered__gte }}</td>
 				<td>{{ filter_form.date_delivered__lte }}</td>
@@ -22,6 +25,9 @@
 				<td width="5%"></td>
 				<td>Fournisseur d'origine:</td>
 				<td>{{ filter_form.items__origin }}</td>
+				<td width="5%"></td>
+				<td>Type:</td>
+				<td>{{ filter_form.items__category }}</td>
 			</tr>
 			<tr>
 				<td>Désignation:</td>
@@ -29,11 +35,14 @@
 				<td width="5%"></td>
 				<td>Référence:</td>
 				<td>{{ filter_form.items__reference }}</td>
+				<td width="5%"></td>
+				<td>Sous-type:</td>
+				<td>{{ filter_form.items__sub_category }}</td>
 			</tr>
 		</table>
 		<div class="cleaner"></div>
 		<button type="submit" class="all">Chercher</button>
-		<a href="{% url history %}" class="refresh">Liste globale</a>
+		<a href="{% url history_orders %}" class="refresh">Liste globale</a>
 	</form>
 </div>
 <div class="cleaner"></div>

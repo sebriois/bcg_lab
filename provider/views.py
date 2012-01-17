@@ -35,9 +35,15 @@ def item(request, provider_id):
 	if request.method == 'GET':
 		form = ProviderForm(instance = provider)
 	elif request.method == 'POST':
-		form = ProviderForm(instance = provider, data = request.REQUEST)
+		form = ProviderForm(instance = provider, data = request.POST)
 		if form.is_valid():
 			form.save()
+			
+			for product in provider.product_set.all():
+				if not product.origin: product.origin = provider.name
+				product.provider = provider.reseller
+				product.save()
+			
 			info_msg( request, u"Fournisseur modifié avec succès." )
 			return redirect( 'provider_index' )
 	

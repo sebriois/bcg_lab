@@ -8,7 +8,7 @@
 	<li class="{% block menu_team %}{% endblock %}">
 		<a href="{% url team_index %}">Equipes</a>
 	</li>
-	{% if user.is_superuser %}
+	{% if user|has_perm:"team.custom_add_group" %}
 	<li class="{% block menu_group %}{% endblock %}">
 		<a href="{% url group_index %}">Groupes d'utilisateur</a>
 	</li>

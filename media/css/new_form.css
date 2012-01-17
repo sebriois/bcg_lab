@@ -181,13 +181,17 @@ form select.error, form input.error{
 	margin-bottom:5px;
 }*/
 
-form select#select-budget {
+form.transfer select, form select#select-budget {
 	float: none;
 	display: inline;
 	width: 400px;
 	font-size: 14px;
 	font-weight: bold;
 	padding: 0;
+}
+
+form.transfer select {
+	width: auto;
 }
 
 /* START WIZARD FORM */

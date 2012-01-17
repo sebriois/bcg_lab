@@ -13,6 +13,12 @@
 {% if objects.object_list %}
 	<h2>Liste des commandes réceptionnées - Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.</h2>
 	
+	{% if display == "by_order" %}
+		<p>Montant commandes cumulé: </p>
+	{% else %}{% if display == "by_product" %}
+		<p>Prix total cumulé: </p>
+	{% endif %}{% endif %}
+	
 	{% pagination objects %}
 	{% if display == "by_order" %}
 		<table class="list">
@@ -21,7 +27,7 @@
 				<th>Equipe</th>
 				<th>Fournisseur</th>
 				<th>N°cmde</th>
-				<th>Montant</th>
+				<th>Montant cde</th>
 				{% if user|has_perm:"budget.custom_view_budget" %}
 				<th>Budget</th>
 				{% endif %}
@@ -60,7 +66,7 @@
 				<th>Prix unitaire</th>
 				<th>Quantité</th>
 				<th>Prix total</th>
-				<th>Montant cmde</th>
+				<th>Montant cde</th>
 			</thead>
 			<tbody>
 				{% for item in objects.object_list %}

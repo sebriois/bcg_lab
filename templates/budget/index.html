@@ -32,7 +32,7 @@
 				<td>{{ budget.name }}</td>
 				<td>{{ budget.default_origin }}</td>
 				<td>{{ budget.get_budget_type_display }}</td>
-				<td>{{ budget.default_nature }}</td>
+				<td>{{ budget.default_nature|default:"Toutes" }}</td>
 				<td>{{ budget.get_amount_left }}</td>
 				<td>
 					<a href="{% url budgetlines %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
@@ -41,7 +41,7 @@
 					<a href="{% url credit_budget budget.id %}" class="plus">Créditer</a>
 					<a href="{% url debit_budget budget.id %}" class="minus">Débiter</a>
 					{% endif %}
-					{% if user|has_perm:"budget.custom_archive_budget" %}
+					{% if user|has_perm:"budget.custom_edit_budget" %}
 					<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Archiver</a>
 					{% endif %}
 				</td>

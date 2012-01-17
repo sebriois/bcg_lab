@@ -3,25 +3,37 @@
 {% block product_list %}active{% endblock %}
 
 {% block header %}
-<h1>Gestion des produits</h1>
-<h2>Modification d'un produit</h2>
-{% endblock %}
-
 <div class="btn_wrapper">
   <a href="{% url product_delete product.id %}" class="btn_big">
     <img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer ce produit
   </a>
 </div>
+<div class="btn_wrapper">
+  <a href="{% url attachment_new %}?object_id={{product.id}}&content_type={{product_type}}&next={% url product_item product.id %}" class="btn_big">
+    <img src="{{ MEDIA_URL }}img/icons/attach.png" />Ajouter une pièce jointe
+  </a>
+</div>
+<h1>Gestion des produits</h1>
+<h2>Modification d'un produit</h2>
+{% endblock %}
 
 {% block content %}
+<h3>Fichiers attachés</h3>
+
+{% with product as object %}
+	{% include "attachments/show.html" %}
+{% endwith %}
+
 <form action="{% url product_item product.id %}" method="post">{% csrf_token %}
 	<input type="hidden" name="provider" value="{{ product.provider.id }}" />
 	<input type="hidden" name="url_args" value="{{url_args}}" />
 	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
+	<h3>Edition</h3>
 	<fieldset>
 		{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
 	</fieldset>
 	<button type="submit" class="check">Valider</button>
 	<a href="{% url product_index %}?{{url_args}}" class="back">Retour</a>
 </form>
+
 {% endblock %}

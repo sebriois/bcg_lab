@@ -1,4 +1,5 @@
 # encoding: utf-8
+from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -21,8 +22,8 @@ def tab_services(request):
 	elif request.method == 'POST':
 		data = request.POST.copy()
 		
-		if not in_team_secretary( request.user ):
-			data.update({ 'team': member.team.id })
+		if not request.user.has_perm('order.custom_order_any_team') and not request.user.has_perm('custom_goto_status_4'):
+			data['team'] = member.team.id
 		
 		form = ServiceForm( member = member, data = data )
 		if form.is_valid():
@@ -37,7 +38,7 @@ def tab_services(request):
 			order_item = OrderItem.objects.create(
 				username				= request.user.username,
 				name						= data['name'],
-				price						= data['cost'],
+				price						= Decimal(data['cost'].replace(',','.')),
 				cost_type				= DEBIT,
 				quantity				= data['quantity'],
 				is_confidential	= data['confidential']

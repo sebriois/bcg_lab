@@ -24,7 +24,7 @@
 					{% if provider.reseller %}
 						{{ provider.name }} ({{ provider.product_set.all.count }} produits)
 						- Revendeur: 
-						<a href="{% url product_index %}?provider={{provider.reseller.id}}" class="table_go">
+						<a href="{% url product_index %}?provider={{provider.reseller.id}}&connector=OR" class="table_go">
 							{{ provider.reseller.name }}
 						</a>
 					{% else %}

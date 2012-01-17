@@ -1,5 +1,6 @@
 # coding: utf-8
 from datetime import datetime, date
+from decimal import Decimal
 
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
@@ -7,12 +8,14 @@ from django.core.urlresolvers import reverse
 from django.db.models.query import Q
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.views.generic.simple import direct_to_template
 
 from provider.models import Provider
 from product.models import Product
-from product.forms import ProductForm, ProductFilterForm
+from product.forms import ProductForm, ProductFilterForm, EditListForm
 from order.models import Order, OrderItem
+from attachments.models import Attachment
 
 from constants import *
 from utils import *
@@ -26,17 +29,23 @@ def index(request):
 		data = request.GET,
 		product_choices = product_choices
 	)
-	if len(request.GET.keys()) > 0 and form.is_valid():
-		data = form.cleaned_data
-		for key, value in data.items():
-			if not value:
-				del data[key]
+	if len(request.GET.keys()) > 0:
+		if form.is_valid():
+			data = form.cleaned_data
+			for key, value in data.items():
+				if not value:
+					del data[key]
 		
-		Q_obj = Q()
-		Q_obj.connector = data.pop("connector")
-		Q_obj.children  = data.items()
+			if 'id__in' in request.GET:
+				data['id__in'] = request.GET['id__in'].split(',')
 		
-		product_list = product_list.filter( Q_obj )
+			Q_obj = Q()
+			Q_obj.connector = data.pop("connector")
+			Q_obj.children  = data.items()
+		
+			product_list = product_list.filter( Q_obj )
+		else:
+			error_msg(request, "Recherche non valide")
 	
 	return direct_to_template(request, 'product/index.html',{
 		'filter_form': form,
@@ -62,8 +71,10 @@ def item(request, product_id):
 				info_msg( request, u"Produit modifié avec succès." )
 			return redirect( reverse('product_index') + '?' + url_args[0] )
 	
+	product_type = ContentType.objects.get_for_model(Product)
 	return direct_to_template(request, 'product/item.html',{
 		'product': product,
+		'product_type': product_type.id,
 		'form': form,
 		'url_args': url_args
 	})
@@ -90,7 +101,7 @@ def new(request):
 		if form.is_valid():
 			p = form.save()
 			info_msg( request, u"Produit ajouté avec succès." )
-			return redirect( reverse('product_index') + "?name=%s&connector=OR" % p.name )
+			return redirect( reverse('product_index') + "?reference=%s&connector=OR" % p.reference )
 	
 	return direct_to_template(request, 'product/form.html', {
 		'provider': provider,
@@ -109,3 +120,73 @@ def delete(request, product_id):
 		product.delete()
 		info_msg( request, u"Produit supprimé avec succès." )
 		return redirect( 'product_index' )
+
+@login_required
+@transaction.commit_on_success
+def edit_list(request):
+	if request.method == 'GET':
+		product_list = Product.objects.all()
+		product_choices = ";".join( list(set([ unicode(p) for p in product_list ])) )
+	
+		form = ProductFilterForm(
+			data = request.GET,
+			product_choices = product_choices
+		)
+		if len(request.GET.keys()) > 0 and form.is_valid():
+			data = form.cleaned_data
+			for key, value in data.items():
+				if not value:
+					del data[key]
+			
+			if 'id__in' in request.GET:
+				data['id__in'] = request.GET['id__in'].split(',')
+			
+			Q_obj = Q()
+			Q_obj.connector = data.pop("connector")
+			Q_obj.children  = data.items()
+		
+			product_list = product_list.filter( Q_obj )
+		else:
+			product_list = Product.objects.none()
+		
+		return direct_to_template(request, 'product/edit_list.html',{
+			'filter_form': form,
+			'edit_form': EditListForm(),
+			'products': product_list,
+			'url_args': urlencode(request.GET)
+		})
+	
+	if request.method == 'POST':
+		data = request.POST
+		form = EditListForm( data = data )
+		if form.is_valid():
+			clean_data = form.cleaned_data
+			percent_raise = clean_data.get('percent_raise', None)
+			category = clean_data.get('category', None)
+			sub_category = clean_data.get('sub_category', None)
+			nomenclature = clean_data.get('nomenclature', None)
+			delete_all = 'confirm_delete' in data
+			
+			for product_id in data['product_ids'].split(','):
+				product = Product.objects.get( id = int(product_id) )
+				if delete_all:
+					product.delete()
+					continue
+				
+				if category: product.category = category
+				if sub_category: product.sub_category = sub_category
+				if nomenclature: product.nomenclature = nomenclature.strip()
+				if percent_raise:
+					product.price = product.price * Decimal(1 + percent_raise / 100)
+				product.save()
+			
+			if delete_all:
+				info_msg( request, "Produits supprimés avec succès.")
+				return redirect('product_index')
+			else:
+				info_msg( request, "Liste de produits mise à jour avec succès." )
+				return redirect( reverse('product_index') + '?connector=OR&id__in=' + data['product_ids'] )
+		else:
+			error_msg( request, "Le formulaire n'est pas valide.")
+			return redirect('product_edit_list')
+	

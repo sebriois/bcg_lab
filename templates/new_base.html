@@ -54,12 +54,12 @@
           </li>
         {% endif %}
         <li class="{% block menu_history %}{% endblock %}">
-          <a href="{% url history %}">Historique</a>
+          <a href="{% url history_orders %}">Historique</a>
         </li>
         <li class="{% block tab_preferences %}{% endblock %}">
           <a href="{% url preferences %}">Préférences</a>
         </li>
-        {% if user|has_perm:"team.custom_view_teams" or user|has_perm:"order.custom_validate" %}
+        {% if user|has_perm:"team.custom_view_teams" or user|has_perm:"order.custom_validate" or user|has_perm:"team.custom_add_group" %}
           <li class="{% block tab_admin %}{% endblock %}">
             <a href="{% url team_index %}">Admin</a>
           </li>

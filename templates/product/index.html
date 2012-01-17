@@ -20,7 +20,7 @@
 				<td>{{ filter_form.provider }}</td>
 				<td width="5%"></td>
 				<td>Produit:</td>
-				<td>{{ filter_form.name }}</td>
+				<td>{{ filter_form.name__icontains }}</td>
 				<td width="5%"></td>
 				<td>Référence:</td>
 				<td>{{ filter_form.reference }}</td>
@@ -51,9 +51,16 @@
 {# START: Product list #}
 <div class="btn_wrapper">
 	<a href="{% url tab_cart %}" class="btn_medium">
-		<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />VOIR PANIER
+		<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
 	</a>
 </div>
+{% if url_args|length > 0 %}
+<div class="btn_wrapper">
+	<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
+		<img src="{{ MEDIA_URL }}img/icons/pencil.png" />Editer cette liste de produits
+	</a>
+</div>
+{% endif %}
 
 <h2>Liste des produits - Page {{ products.number }} sur {{ products.paginator.num_pages }}.</h2>
 

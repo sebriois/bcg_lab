@@ -79,6 +79,9 @@ $(document).ready(function(){
         $('div#order-buttons').hide();
       }
     });
+    $('input[name="edit_all"]').click(function(){
+      $('input.edited_item').prop( "checked", $('input[name="edit_all"]').is(':checked') );
+    });
     
     // 
     // BUTTONS STYLE
@@ -156,6 +159,10 @@ $(document).ready(function(){
     $(".folder-collapsed").not(".no-button").button({
       icons: { primary: "ui-icon-folder-collapsed" }
     });
+    $(".document").not(".no-button").button({
+      icons: { primary: "ui-icon-document" }
+    });
+    
     $(".no-text").not(".no-button").button({
       text: false
     });
@@ -353,6 +360,16 @@ $(document).ready(function(){
       }
     });
     
+    // 
+    // PRODUCT PAGE - edit list
+    // 
+    $(".confirm_edit").click(function(e){
+      var get_arg = [];
+      $('.edited_item:checked').each(function(i){
+        get_arg.push($(this).val());
+      });
+      $('input[name="product_ids"]').attr('value',get_arg.join(","));
+    });
     
     // 
     // CART PAGE - Set quantity dialog
@@ -518,6 +535,21 @@ $(document).ready(function(){
     $('.save-changes').click(function(){
       var parent = $(this).parents('.order')[0];
       
+      // SAVE TEAM
+      if( $('#select-team', parent).length > 0 ) {
+        $.ajax({
+          url: $('#select-team', parent).attr('url'),
+          async: false,
+          data: {
+            'team_id': $('#select-team', parent).val()
+          },
+          error: function(jqXHR, textStatus, errorThrown){
+            alert('pb equipe');
+            alert(jqXHR.responseText);
+          }
+        });
+      }
+      
       // SAVE BUDGET
       if( $('#select-budget', parent).length > 0 ) {
         $.ajax({
@@ -527,7 +559,6 @@ $(document).ready(function(){
             'budget_id': $('#select-budget', parent).val()
           },
           error: function(jqXHR, textStatus, errorThrown){
-            $('#loadingDialog').dialog('close');
             alert(jqXHR.responseText);
           }
         });
@@ -546,7 +577,6 @@ $(document).ready(function(){
             'quantity': qty
           },
           error: function(jqXHR, textStatus, errorThrown){
-            $('#loadingDialog').dialog('close');
             alert(jqXHR.responseText);
           }
         });
@@ -563,7 +593,6 @@ $(document).ready(function(){
             'notes': notes
           },  
           error: function(jqXHR, textStatus, errorThrown){
-            $('#loadingDialog').dialog('close');
             alert(jqXHR.responseText);
           }
         });
@@ -581,7 +610,6 @@ $(document).ready(function(){
             'number': number
           },
           error: function(jqXHR, textStatus, errorThrown){
-            $('#loadingDialog').dialog('close');
             alert(jqXHR.responseText);
           }
         });

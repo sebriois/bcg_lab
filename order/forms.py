@@ -43,11 +43,14 @@ class AddDebitForm(forms.ModelForm):
 	
 
 class ServiceForm(forms.Form):
-	team = forms.ModelChoiceField( label = u"Equipe", queryset = Team.objects.all() )
+	team = forms.ModelChoiceField(
+		label = u"Equipe",
+		queryset = Team.objects.all()
+	)
 	provider = forms.ModelChoiceField(
 		label = u"Type de service", 
 		queryset = Provider.objects.filter(is_service = True),
-		empty_label = None
+		required = True
 	)
 	name = forms.CharField( label = u"Désignation" )
 	cost = forms.CharField( label = u"Montant" )
@@ -57,7 +60,7 @@ class ServiceForm(forms.Form):
 	def __init__(self, member, *args, **kwargs):
 		super( ServiceForm, self ).__init__( *args, **kwargs )
 		
-		if not in_team_secretary(member.user):
+		if not member.user.has_perm("order.custom_order_any_team"):
 			self.fields['team'].initial = member.team
 			self.fields['team'].widget.attrs.update({ 'disabled': 'disabled' })
 	

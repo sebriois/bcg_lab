@@ -3,9 +3,6 @@
 	margin: 0;
 	padding: 0;
 }
-ul {
-	list-style-type: none;
-}
 body {
 	background: #fdfdfb url('../img/new_layout/bg-body.gif') repeat-x;
 	font: 12px/1.5 Trebuchet MS,Tahoma,Verdana,"Lucida Grande",Helvetica,Arial,sans-serif;
@@ -44,6 +41,12 @@ h5 {
 
 em {
 	color: #51473d;
+}
+ul {
+	list-style-type: none;
+}
+ol {
+	padding-left: 20px;
 }
 /* @end */
 
@@ -1086,7 +1089,7 @@ div.order h3 {
 div.order textarea {
 	padding: 5px;
 	border: 1px solid #e0dcc9;
-	min-width: 500px;
+	min-width: 300px;
 	max-width: 600px;
 	min-height: 50px;
 	max-height: 50px;

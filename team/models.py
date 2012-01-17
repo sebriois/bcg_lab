@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Group
 class Team(models.Model):
 	name = models.CharField(u"Nom", max_length=100)
 	fullname = models.CharField(u"Nom complet", max_length=100)
+	shortname = models.CharField(u"Abréviation", max_length=10)
 	is_active = models.BooleanField(u"Actif?", default = True)
 	
 	class Meta:
@@ -13,7 +14,7 @@ class Team(models.Model):
 		ordering = ('name',)
 	
 	def __unicode__(self):
-		return u"%s" % self.fullname and self.fullname or self.name
+		return u"%s" % (self.fullname and self.fullname or self.name)
 	
 	def get_members(self):
 		return self.teammember_set

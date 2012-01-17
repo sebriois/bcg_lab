@@ -1,0 +1,20 @@
+{% extends "base_main.html" %}
+{% load filters %}
+
+{% block content %}
+	<form action="{% url attachment_new %}" method="post" enctype="multipart/form-data">{% csrf_token %}
+		<input type="hidden" name="content_type" value="{{content_type}}" />
+		<input type="hidden" name="object_id" value="{{object_id}}" />
+		<input type="hidden" name="next" value='{{ next|default:"home" }}' />
+		
+		<h3>Ajout d'une pièce jointe</h3>
+		<p class="instructions">
+			<em>Les champs marqués d'une étoile sont obligatoires</em>
+		</p>
+		<fieldset>
+			{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+		</fieldset>
+		<button type="submit" class="check">Valider</button>
+		<a href="{{ next }}" class="back">Retour</a>
+	</form>
+{% endblock %}

@@ -68,7 +68,7 @@
 				{% endif %}
 				<td>{{ budget_line.number|default:"" }}</td>
 				<td>{{ budget_line.date|date }}</td>
-				<td>{{ budget_line.nature }}</td>
+				<td>{{ budget_line.nature|default:"Toutes" }}</td>
 				<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
 				<td>{{ budget_line.origin|default:"" }}</td>
 				<td>{{ budget_line.provider|default:"" }}</td>

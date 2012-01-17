@@ -1,15 +1,20 @@
-{% extends "main_classic.html" %}
+{% extends "base_admin.html" %}
+{% block menu_team %}active{% endblock %}
 
-{% block header %}Nouvelle équipe{% endblock %}
+{% block header %}
+<h1>Administration</h1>
+<h2>Ajout d'une nouvelle équipe</h2>
+{% endblock %}
 
 {% block content %}
 <form action="{% url team_index %}" method="post">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>
-    {% for field in form %}
-        {% include "form_snippet.html"%}
-    {% endfor %}
-    <button type="submit" class="button">Valider</button>
+		<fieldset>
+			{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+		</fieldset>
+    <button type="submit" class="check">Valider</button>
+    <a href="{% url team_index %}" class="back">Retour</a>
 </form>
 {% endblock %}

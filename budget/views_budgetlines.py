@@ -1,8 +1,8 @@
 # coding: utf-8
 from datetime import date
 from decimal import Decimal
-import urllib
 
+from django.utils.http import urlencode
 from django.db import transaction
 from django.db.models.query import Q
 from django.contrib.auth.decorators import login_required
@@ -55,7 +55,7 @@ def index(request):
 		'budget': budget,
 		'budget_lines' : budget_lines,
 		'filter_form': form,
-		'search_args': urllib.urlencode(request.GET)
+		'search_args': urlencode(request.GET)
 	})
 
 
@@ -69,7 +69,8 @@ def item(request, bl_id):
 		form = BudgetLineForm( instance = bl )
 	
 	elif request.method == 'POST':
-		data = request.POST
+		data = request.POST.copy()
+		data['budget_id'] = data['budget']
 		form = BudgetLineForm( instance = bl, data = data )
 		if form.is_valid():
 			bl = form.save( commit = False )
@@ -85,12 +86,12 @@ def item(request, bl_id):
 				bl.debit = Decimal(data["cost"])
 				bl.product_price = bl.debit * bl.quantity
 			bl.save()
-			return redirect( reverse('budgetlines') + "?budget_name=%s" % bl.budget )
+			return redirect( reverse('budgetlines') + "?budget_id=%s&connector=OR" % data['budget_id'] )
 	
 	return direct_to_template( request, 'budgetlines/item.html', {
 		'form': form,
 		'bl': bl,
-		'search_args': urllib.urlencode(request.GET)
+		'search_args': urlencode(request.GET)
 	})
 
 
@@ -101,10 +102,6 @@ def delete(request, bl_id):
 	budget_name = bl.budget
 	bl.delete()
 	return redirect( reverse('budgetlines') + "?budget_name=%s" % budget_name )
-
-@login_required
-def history(request):
-	return direct_to_template( request, 'history/budgets.html')
 
 
 	# @GET_method

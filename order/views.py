@@ -26,9 +26,10 @@ from utils import *
 @login_required
 @GET_method
 def tab_cart(request):
-	orders = Order.objects.filter(
-		team__in = get_teams(request.user),
-		status = 0
+	orders = Order.objects.filter(status = 0)
+	orders = orders.filter(
+		Q(items__username = request.user.username) |
+		Q(team__in = get_teams(request.user))
 	)
 	if not request.user.has_perm('budget.custom_view_budget'):
 		orders = orders.filter(
@@ -40,6 +41,7 @@ def tab_cart(request):
 		'order_list': orders.order_by('provider__name'),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
+		'team_choices': [(team.id,team.name) for team in Team.objects.all()],
 		'next': 'tab_cart'
 	})
 
@@ -53,9 +55,10 @@ def tab_orders(request):
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter(status__in = [2,3,4])
 	else:
-		order_list = Order.objects.filter(
-			team__in = get_teams( request.user ),
-			status__in = [1,2,3,4]
+		order_list = Order.objects.filter(status__in = [1,2,3,4])
+		order_list = order_list.filter(
+			Q(items__username = request.user.username) |
+			Q(team__in = get_teams(request.user))
 		)
 	
 	# Exclude confidential orders
@@ -325,6 +328,23 @@ def set_delivered(request, order_id):
 					#################
 					# AJAX REQUESTS #
 					#################
+
+@login_required
+@transaction.commit_on_success
+@GET_method
+def set_team(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	team_id = request.GET.get("team_id", None)
+	if not team_id:
+		return HttpResponseServerError('team_id is missing.')
+	
+	order = get_object_or_404( Order, id = order_id )
+	order.team = get_object_or_404( Team, id = int(team_id) )
+	order.save()
+	return HttpResponse('ok')
 
 @login_required
 @GET_method

@@ -6,7 +6,7 @@
 {% block nav_secondary %}
 <ul id="subnav">
   <li class="{% block history_orders %}{% endblock %}">
-    <a href="{% url history %}">Historique commandes</a>
+    <a href="{% url history_orders %}">Historique commandes</a>
   </li>
   {% if user|has_perm:"budget.custom_history_budget" %}
     <li class="{% block history_budgets %}{% endblock %}">

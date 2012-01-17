@@ -9,39 +9,10 @@ from utils import *
 from constants import *
 
 class BudgetForm(forms.ModelForm):
-	class Meta:
-		model = Budget
-		exclude = ('is_active',)
-	
-
-class NewBudgetForm(forms.Form):
-	team = forms.ModelChoiceField(
-		label = u"Equipe",
-		queryset = Team.objects.all()
-	)
-	name = forms.CharField(
-		label = u"OTP",
-		max_length = 100
-	)
-	origin = forms.CharField(
-		label = u"Origine",
-		max_length = 30,
-		required = False
-	)
-	budget_type = forms.TypedChoiceField(
-		label = u"Tutelle",
-		choices = BUDGET_CHOICES,
-		coerce = int,
-		empty_value = None
-	)
-	tva_code = forms.CharField(
-		label = u"Code TVA",
-		max_length = 20,
-		required = False
-	)
-	domain = forms.CharField(
-		label = u"Domaine fonctionnel",
-		max_length = 100,
+	all_natures = forms.DecimalField(
+		label = u"Toute nature",
+		help_text = u"(Pas d'attribution par nature)",
+		min_value = 0,
 		required = False
 	)
 	fo = forms.DecimalField(
@@ -64,32 +35,31 @@ class NewBudgetForm(forms.Form):
 		min_value = 0,
 		required = False
 	)
+	
+	class Meta:
+		model = Budget
+		exclude = ('is_active','default_nature')
 
 
-BUDGET_CHOICES = [(b.id, b.name) for b in Budget.objects.filter(is_active=True)]
 class BudgetLineForm(forms.ModelForm):
-	budget_id = forms.TypedChoiceField(
+	budget = forms.ModelChoiceField( 
 		label = u"Budget",
-		choices = BUDGET_CHOICES,
-		coerce = int,
-		required = True,
-		empty_value = None
+		queryset = Budget.objects.filter(is_active=True),
+		required = True
 	)
 	
 	class Meta:
 		model = BudgetLine
-		fields = ('budget_id','provider','number','offer','product','reference','quantity')
-	
+		fields = ('provider','number','offer','product','reference','quantity')
 	
 	def __init__( self, *args, **kwargs ):
 		super( BudgetLineForm, self ).__init__( *args, **kwargs )
-		
 		if self.instance:
 			if self.instance.credit:
 				initial_cost = self.instance.credit
 			elif self.instance.debit:
 				initial_cost = self.instance.debit
-			self.fields['budget_id'].initial = Budget.objects.get(id = self.instance.budget_id)
+			self.fields['budget'].initial = Budget.objects.get(id = self.instance.budget_id)
 		else:
 			initial_cost = 0
 		
@@ -127,6 +97,7 @@ class CreditBudgetForm(forms.ModelForm):
 	
 
 class TransferForm(forms.Form):
+	title = forms.CharField( label = u"Désignation", max_length = 100, required = False )
 	budget1 = forms.ModelChoiceField( label = u"Débiter", queryset = Budget.objects.filter(is_active = True) )
 	budget2 = forms.ModelChoiceField( label = u"Créditer", queryset = Budget.objects.filter(is_active = True) )
 	amount = forms.DecimalField( label = u"Montant" )

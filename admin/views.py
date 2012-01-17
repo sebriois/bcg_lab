@@ -8,6 +8,7 @@ from django.db import transaction
 from admin.forms import GroupForm
 from utils import *
 
+@login_required
 @transaction.commit_on_success
 def group_index(request):
 	if request.method == 'GET':
@@ -36,7 +37,7 @@ def group_index(request):
 				'form': form
 			})
 
-
+@login_required
 @transaction.commit_on_success
 def group_item(request, group_id):
 	group = get_object_or_404( Group, id = group_id )
@@ -71,7 +72,20 @@ def group_item(request, group_id):
 		'group': group
 	})
 
+@login_required
 def group_new(request):
 	return direct_to_template( request, 'admin/group_new.html', {
 		'form': GroupForm()
 	})
+
+@login_required
+@transaction.commit_on_success
+def group_delete(request, group_id):
+	group = get_object_or_404( Group, id = group_id )
+	group.delete()
+	
+	info_msg( request, "Groupe supprimé avec succès.")
+	
+	return redirect('group_index')
+
+	

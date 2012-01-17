@@ -1,5 +1,6 @@
 # encoding: utf8
 from django import template
+from django.contrib.contenttypes.models import ContentType
 
 from utils import get_teams
 
@@ -56,3 +57,7 @@ def has_multiple_teams(user):
 @register.filter
 def asId(objects):
 	return [o.id for o in objects]
+
+@register.filter
+def get_content_type( my_object ):
+	return ContentType.objects.get_for_model( my_object ).id

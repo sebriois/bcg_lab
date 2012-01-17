@@ -2,9 +2,9 @@
 from django import forms
 from django.forms import widgets
 
-from product.models import Product
+from product.models import Product, ProductType, ProductSubType
 from provider.models import Provider
-from constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
+from constants import *
 
 class ProductForm(forms.ModelForm):
 	class Meta:
@@ -31,9 +31,6 @@ class ProductForm(forms.ModelForm):
 		return expiry
 
 class ProductFilterForm(forms.Form):
-	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
-	REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
-	
 	connector = forms.TypedChoiceField(
 		choices 		= [("OR", u"l'une des"), ("AND",u"toutes les")],
 		initial 		= "AND",
@@ -46,7 +43,7 @@ class ProductFilterForm(forms.Form):
 		queryset	= Provider.objects.exclude(is_service = True),
 		required	= False
 	)
-	name = forms.CharField(
+	name__icontains = forms.CharField(
 		label			= u"Produit",
 		widget		= forms.TextInput( attrs = { 'class' : 'autocomplete' }),
 								# autocomplete choices are set below, in __init__ method
@@ -57,7 +54,7 @@ class ProductFilterForm(forms.Form):
 		label			= u"Référence",
 		widget		= forms.TextInput( attrs = {
 			'class' : 'autocomplete',
-			'choices': REFERENCE_CHOICES
+			'choices': EMPTY_SEL
 		}),
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
@@ -66,7 +63,7 @@ class ProductFilterForm(forms.Form):
 		label			= u"Fournisseur d'origine",
 		widget		= forms.TextInput( attrs = {
 			'class' : 'autocomplete',
-			'choices': ORIGIN_CHOICES
+			'choices': EMPTY_SEL
 		}),
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
@@ -75,21 +72,49 @@ class ProductFilterForm(forms.Form):
 		label			= u"Nomenclature",
 		required	= False
 	)
-	category = forms.TypedChoiceField(
+	category = forms.ModelChoiceField(
 		label			= u"Type",
-		choices		= CATEGORY_CHOICES,
-		coerce		= int,
+		queryset	= ProductType.objects.all(),
 		required	= False
 	)
-	sub_category = forms.TypedChoiceField(
-		label			= u"Sous-Type",
-		choices		= SUBCATEGORY_CHOICES,
-		coerce		= int,
+	sub_category = forms.ModelChoiceField(
+		label			= u"Sous-type",
+		queryset	= ProductSubType.objects.all(),
 		required	= False
 	)
 	
 	def __init__(self, product_choices, *args, **kwargs):
 		super( ProductFilterForm, self ).__init__( *args, **kwargs )
-		self.fields['name'].widget.attrs.update({'choices': product_choices})
+		self.fields['name__icontains'].widget.attrs.update({'choices': product_choices})
+		
+		ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
+		self.fields['origin'].widget.attrs.update({'choices': ORIGIN_CHOICES})
+		
+		REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
+		self.fields['reference'].widget.attrs.update({'choices': REFERENCE_CHOICES})
 	
 
+class EditListForm(forms.Form):
+	category = forms.ModelChoiceField(
+		label = u"Type",
+		queryset = ProductType.objects.all(),
+		required = False,
+		empty_label = 'Aucun'
+	)
+	sub_category = forms.ModelChoiceField(
+		label = u"Sous-type",
+		queryset = ProductSubType.objects.all(),
+		required = False,
+		empty_label = 'Aucun'
+	)
+	nomenclature = forms.CharField(
+		label = "Nomenclature",
+		required = False
+	)
+	percent_raise = forms.DecimalField(
+		label = "Augmentation du prix (%)",
+		min_value = 0,
+		max_value = 100,
+		required = False
+	)
+	

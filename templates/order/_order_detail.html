@@ -1,11 +1,27 @@
 {% load filters %}
 
-<div style="float:left;width:49%;height:100px;">
-	{% if user|has_perms:"order.custom_validate;team.custom_view_teams" %}
+<div style="float:left;">
+	<h3>Infos:</h3>
+	
+	{% if order.status == 0 and user|has_perm:"order.custom_order_any_team" %}
+		<p>
+			Equipe:
+			<select id="select-team" url="{% url order_team order.id %}">
+				{% for team_id, team_name in team_choices %}
+					{% if team_id == order.team.id %}
+						<option selected="selected" value="{{ team_id }}">{{ team_name }}</option>
+					{% else %}
+						<option value="{{ team_id }}">{{ team_name }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+		</p>
+	{% else %}{% if user|has_perms:"order.custom_validate;team.custom_view_teams" %}
 		<p style="font-size:14px;">Equipe: <b>{{ order.team }}</b></p>
 	{% else %}
 		<p>Equipe: {{ order.team }}</p>
-	{% endif %}
+	{% endif %}{% endif %}
+	
 	<p>Date: {{ order.date_created|date }}</p>
 	<p>Statut: {{ order.get_status_display }}</p>
 	{% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
@@ -42,12 +58,30 @@
 	{% endif %}
 </div>
 
-<div style="float:left">
-	<h4>Commentaires</h4>
+<div style="float:left;margin-left:20px;margin-right:20px;">
+	<h3>Pièces jointes:</h3>
+	{% with order as object %}
+		{% include "attachments/show.html" %}
+	{% endwith %}
+	{% if order.status == 0 %}
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_cart" class="document">Ajouter une pièce jointe</a>
+	{% else %}{% if order.status == 1 %}
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_validation" class="document">Ajouter une pièce jointe</a>
+	{% else %}{% if order.status == 2 %}
+		{% if user|has_perm:"order.custom_goto_status_3" or user|has_perm:"order.custom_validate" %}
+			<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">Ajouter une pièce jointe</a>
+		{% endif %}
+	{% else %}{% if order.status > 2 and user|has_perm:"order.custom_goto_status_4" %}
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">Ajouter une pièce jointe</a>
+	{% endif %}{% endif %}{% endif %}{% endif %}
+</div>
+
+<div style="float:left;">
+	<h3>Commentaires:</h3>
 	<textarea url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
 </div>
 
-<div class="cleaner"></div>
+<div class="cleaner" style="margin-bottom:20px;"></div>
 
 {# ############### #}
 {#                 #}

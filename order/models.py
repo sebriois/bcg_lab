@@ -3,11 +3,13 @@ from datetime import datetime, date
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
 
 from product.models import Product
 from provider.models import Provider
 from budget.models import Budget, BudgetLine
 from team.models import Team, TeamMember
+from attachments.models import Attachment
 
 from constants import *
 
@@ -23,6 +25,7 @@ class Order(models.Model):
 	date_created		= models.DateTimeField(u"Date de création", auto_now_add = True)
 	date_delivered	= models.DateTimeField(u"Date de livraison", null = True, blank = True)
 	last_change			= models.DateTimeField(u"Dernière modification", auto_now = True)
+	attachments			= generic.GenericRelation( Attachment )
 	
 	class Meta:
 		verbose_name = "Commande"
@@ -48,18 +51,24 @@ class Order(models.Model):
 		item, created = self.items.get_or_create( 
 			product_id = product.id,
 			defaults = {
-				'cost_type':		DEBIT,
-				'name':					product.origin and "%s - %s" % (product.origin,product.name) or product.name,
-				'provider':			product.provider.name,
-				'origin':				product.origin,
-				'packaging':		product.packaging,
-				'reference':		product.reference,
-				'price':				product.price,
-				'offer_nb':			product.offer_nb,
-				'nomenclature': product.nomenclature,
-				'quantity':			quantity
+				'cost_type':				DEBIT,
+				'name':							product.origin and "%s - %s" % (product.origin,product.name) or product.name,
+				'provider':					product.provider.name,
+				'origin':						product.origin,
+				'packaging':				product.packaging,
+				'reference':				product.reference,
+				'price':						product.price,
+				'offer_nb':					product.offer_nb,
+				'nomenclature': 		product.nomenclature,
+				'quantity':					quantity
 			}
 		)
+		
+		if product.category:
+			item.category = product.category.name
+		if product.sub_category:
+			item.sub_category = product.sub_category.name
+		item.save()
 		
 		if not created:
 			item.quantity += int(quantity)
@@ -108,6 +117,8 @@ class OrderItem(models.Model):
 	packaging				= models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
 	reference				= models.CharField( u'Référence', max_length = 100, blank = True, null = True )
 	offer_nb				= models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
+	category				= models.CharField( u'Type', max_length = 100, blank = True, null = True )
+	sub_category		= models.CharField( u'Sous-type', max_length = 100, blank = True, null = True )
 	nomenclature		= models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
 	price						= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
 	cost_type				= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )

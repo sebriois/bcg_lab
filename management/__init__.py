@@ -41,7 +41,8 @@ def create_custom_order_permission(sender, **kwargs):
 		('custom_edit_number', u"Modifier le n°commande"),
 		('custom_edit_order_budget', u"Modifier l'imputation"),
 		('custom_goto_status_3', u"Transmettre pour saisie SIFAC/XLAB"),
-		('custom_goto_status_4', u"Effectuer une saisie SIFAC/XLAB")
+		('custom_goto_status_4', u"Effectuer une saisie SIFAC/XLAB"),
+		('custom_order_any_team', u"Commander pour toutes les équipes")
 	))
 
 
@@ -58,7 +59,8 @@ def create_custom_team_permissions(sender, **kwargs):
 	make_permissions( u"team", (
 		('custom_view_teams', u"Voir toutes les équipes"),
 		('custom_edit_member', u"Editer un membre d'équipe"),
-		('custom_activate_account', u"Activer un nouveau compte")
+		('custom_activate_account', u"Activer un nouveau compte"),
+		('custom_add_group', u"Créer un groupe utilisateur")
 	))
 
 post_syncdb.connect(create_custom_order_permission, sender=order.models)
