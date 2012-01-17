@@ -1036,6 +1036,16 @@ button.btn_small img, button.btn_medium img, button.btn_big img {
 /* END PAGINATOR */
 
 /* MISC */
+
+table.list tbody tr.has_problem td {
+	color: #e2350d;
+}
+
+table.list tbody tr.is_urgent {
+	background: #ffe7dc
+}
+
+
 p.help {
 	clear:both;
 	color:#51473d;

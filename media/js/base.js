@@ -582,6 +582,29 @@ $(document).ready(function(){
         });
       });
       
+      // SAVE URGENT & PROBLEM
+      var is_urgent = $('#is_urgent', parent).is(':checked');
+      var has_problem = $('#has_problem', parent).is(':checked');
+      var url_urgent = $('#is_urgent', parent).attr('url');
+      var url_problem = $('#has_problem', parent).attr('url');
+      
+      $.ajax({
+        url: url_urgent,
+        async: false,
+        data: { 'is_urgent': is_urgent },
+        error: function(jqXHR, textStatus, errorThrown){
+          alert(jqXHR.responseText);
+        }
+      });
+      $.ajax({
+        url: url_problem,
+        async: false,
+        data: { 'has_problem': has_problem },
+        error: function(jqXHR, textStatus, errorThrown){
+          alert(jqXHR.responseText);
+        }
+      });
+      
       // SAVE ORDER NOTES
       var url_notes = $('textarea', parent).attr('url');
       var notes = $('textarea', parent).val();
@@ -591,7 +614,7 @@ $(document).ready(function(){
           async: false,
           data: {
             'notes': notes
-          },  
+          },
           error: function(jqXHR, textStatus, errorThrown){
             alert(jqXHR.responseText);
           }

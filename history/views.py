@@ -47,37 +47,42 @@ def history_orders(request):
 		display = "by_product"
 		items_id = []
 		
-		# Q_obj = Q()
-		# Q_obj.connector = request.GET['connector']
+		search_dict = {}
+		if search_name:
+			search_dict['name'] = search_name
+		if search_ref:
+			search_dict['reference'] = search_ref
+		if search_type:
+			search_dict['category'] = search_type
+		if search_subtype:
+			search_dict['sub_category'] = search_subtype
 		
-		
+		Q_obj = Q()
+		Q_obj.connector = request.GET['connector']
+		Q_obj.children = search_dict.items()
 		
 		for h in history_list:
-			for item in h.items.all():
-				if item.id in items_id: continue
-				if request.GET['connector'] == 'AND':
-					if search_name and search_ref:
-						if item.name == search_name and item.reference == search_ref:
-							items_id.append( item.id )
-					elif search_name and item.name == search_name:
+			if request.GET['connector'] == 'OR':
+				# FIXME: TIME CONSUMING
+				for item in h.items.exclude( id__in = items_id ):
+					items_id.append(item.id)
+			elif request.GET['connector'] == 'AND':
+				for item in h.items.filter( Q_obj ):
+					if not item.id in items_id:
 						items_id.append( item.id )
-					elif search_ref and item.reference == search_ref:
-						items_id.append( item.id )
-				elif request.GET['connector'] == 'OR':
-					if search_name and item.name == search_name:
-						items_id.append( item.id )
-						continue
-					if search_ref and item.reference == search_ref:
-						items_id.append( item.id )
-		objects = OrderItem.objects.filter( id__in = items_id )
+		objects = OrderItem.objects.filter( id__in = items_id ).distinct()
+		objects = objects.order_by('-history__date_delivered')
+		total = sum( [item.total_price() for item in objects] )
 	else:
 		display = "by_order"
 		objects = history_list
+		total = sum( [history.price for history in history_list] )
 	
 	return direct_to_template( request, "history/orders.html", {
 		'filter_form': form,
 		'objects': paginate( request, objects ),
-		'display': display
+		'display': display,
+		'total': total
 	})
 
 @login_required
@@ -118,6 +123,6 @@ def history_budgets(request):
 	
 	return direct_to_template( request, 'history/budgets.html', {
 		'filter_form': form,
-		'objects': paginate( request, budget_lines.order_by('-date') )
+		'objects': paginate( request, budget_lines )
 	})
 

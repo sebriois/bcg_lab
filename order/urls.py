@@ -6,6 +6,7 @@ from order.views import add_orderitem, del_orderitem
 from order.views import add_credit, add_debit
 from order.views import cart_add, set_item_quantity
 from order.views import set_notes, set_number, set_team
+from order.views import set_is_urgent, set_has_problem
 
 from order.views import tab_cart, tab_orders, tab_validation
 
@@ -17,6 +18,8 @@ urlpatterns = patterns('',
   url(r'^(?P<order_id>\d+)/set-team/$', set_team, name="order_team"),
   url(r'^(?P<order_id>\d+)/set-budget/$', set_budget, name="order_budget"),
   url(r'^(?P<order_id>\d+)/set-notes/$', set_notes, name="set_order_notes"),
+  url(r'^(?P<order_id>\d+)/toggle-urgent/$', set_is_urgent, name="set_is_urgent"),
+  url(r'^(?P<order_id>\d+)/toggle-problem/$', set_has_problem, name="set_has_problem"),
   url(r'^(?P<order_id>\d+)/set-number/$', set_number, name="set_order_number"),
   url(r'^(?P<order_id>\d+)/add-credit/$', add_credit, name="add_credit"),
   url(r'^(?P<order_id>\d+)/add-debit/$', add_debit, name="add_debit"),

@@ -432,6 +432,7 @@ ul#sortable li {
 
 
 /* @group MISC */
+
 #loadingDialog {
   background: url('../img/layout/wait.gif') no-repeat center;
   min-height: 30px;

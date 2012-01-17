@@ -143,7 +143,7 @@ class BudgetHistoryFilterForm(forms.Form):
 		choices		= EMPTY_SEL,
 		required	= False
 	)
-
+	
 	nature = forms.ChoiceField(
 		label			= "Nature",
 		choices		= EMPTY_SEL + NATURE_CHOICES,

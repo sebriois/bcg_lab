@@ -78,6 +78,12 @@
 
 <div style="float:left;">
 	<h3>Commentaires:</h3>
+	<input type="checkbox" id="is_urgent" url="{% url set_is_urgent order.id %}" {% if order.is_urgent %}checked="checked"{% endif %}>
+	<label for="is_urgent">Commande urgente</label>
+	
+	<input type="checkbox" id="has_problem" url="{% url set_has_problem order.id %}"  {% if order.has_problem %}checked="checked"{% endif %} style="margin-left:15px">
+	<label for="has_problem">Problème</label> !<br />
+	
 	<textarea url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
 </div>
 

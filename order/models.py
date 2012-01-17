@@ -22,6 +22,8 @@ class Order(models.Model):
 	items						= models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
 	notes						= models.TextField( u"Commentaires", null = True, blank = True )
 	is_confidential	= models.BooleanField( u"Confidentielle?", default = False )
+	is_urgent				= models.BooleanField( u"Urgente?", default = False )
+	has_problem			= models.BooleanField( u"Problème?", default = False )
 	date_created		= models.DateTimeField(u"Date de création", auto_now_add = True)
 	date_delivered	= models.DateTimeField(u"Date de livraison", null = True, blank = True)
 	last_change			= models.DateTimeField(u"Dernière modification", auto_now = True)
@@ -209,7 +211,6 @@ class OrderItem(models.Model):
 			product.save()
 		
 	
-
 
 class OrderComplement(models.Model):
 	name = models.CharField( u"Nom du complément", max_length = 50 )

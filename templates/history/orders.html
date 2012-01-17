@@ -14,9 +14,9 @@
 	<h2>Liste des commandes réceptionnées - Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.</h2>
 	
 	{% if display == "by_order" %}
-		<p>Montant commandes cumulé: </p>
+		<p style="font-size:16px">Montant commandes cumulé: {{ total }}€</p>
 	{% else %}{% if display == "by_product" %}
-		<p>Prix total cumulé: </p>
+		<p style="font-size:16px">Prix total cumulé: {{ total }}€</p>
 	{% endif %}{% endif %}
 	
 	{% pagination objects %}

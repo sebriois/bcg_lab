@@ -20,7 +20,7 @@ class History(models.Model):
 	class Meta:
 		verbose_name = "Historique"
 		verbose_name_plural = "Historique"
-		ordering = ('date_delivered',)
+		ordering = ('-date_delivered',)
 	
 	def __unicode__(self):
 		d = datetime.strftime( self.date_created, "%d/%m/%Y %Hh%M" )

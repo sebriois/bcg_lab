@@ -416,6 +416,33 @@ def set_budget(request, order_id):
 @login_required
 @GET_method
 @transaction.commit_on_success
+def set_is_urgent(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	order = get_object_or_404( Order, id = order_id )
+	order.is_urgent = request.GET['is_urgent'] == 'true'
+	order.save()
+	return HttpResponse('ok')
+
+@login_required
+@GET_method
+@transaction.commit_on_success
+def set_has_problem(request, order_id):
+	if not request.is_ajax():
+		error_msg(request, 'Method %s not allowed at this URL' % request.method )
+		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
+	
+	order = get_object_or_404( Order, id = order_id )
+	order.has_problem = request.GET['has_problem'] == 'true'
+	order.save()
+	return HttpResponse('ok')
+
+
+@login_required
+@GET_method
+@transaction.commit_on_success
 def set_item_quantity(request):
 	if not request.is_ajax():
 		error_msg(request, 'Method %s not allowed at this URL' % request.method )
