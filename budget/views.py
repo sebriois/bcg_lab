@@ -43,16 +43,16 @@ def item(request, budget_id):
 	elif request.method == 'POST':
 		form = BudgetForm(data = request.POST, instance = budget)
 		if form.is_valid():
-			budget = form.save()
-			budget.update_budgetlines()
 			data = form.cleaned_data
+			form.save()
+			budget.update_budgetlines()
 			
-			sum_natures = sum([data[n] for n in ['fo','mi','sa','eq']])
+			sum_natures = sum([data.get(n,0) for n in ['fo','mi','sa','eq']])
 			if sum_natures > budget.get_amount_left():
-				error_msg( request, u"Montant disponible insuffisant." )
+				error_msg( request, u"Montant disponible insuffisant pour cette répartition." )
 			else:
 				for nature in ['fo','mi','sa','eq']:
-					if data[nature]:
+					if data[nature] or data[nature] == 0:
 						sub_budget, created = Budget.objects.get_or_create(
 							team = budget.team,
 							name = "%s - %s" % (budget.name, nature.upper()),
@@ -62,13 +62,14 @@ def item(request, budget_id):
 							domain = budget.domain,
 							default_nature = nature.upper()
 						)
-						bl = sub_budget.credit( data[nature] )
-						bl.product = u"Répartition"
-						bl.save()
+						if data[nature] > 0:
+							bl = sub_budget.credit( data[nature] )
+							bl.product = u"Répartition"
+							bl.save()
 						
-						bl = budget.debit( data[nature] )
-						bl.product = u"Répartition vers %s" % nature.upper()
-						bl.save()
+							bl = budget.debit( data[nature] )
+							bl.product = u"Répartition vers %s" % nature.upper()
+							bl.save()
 				
 				# if budget.get_amount_left() == 0:
 				# 	budget.is_active = False
