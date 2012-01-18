@@ -47,7 +47,11 @@ def item(request, budget_id):
 			form.save()
 			budget.update_budgetlines()
 			
-			sum_natures = sum([data.get(n,0) for n in ['fo','mi','sa','eq']])
+			sum_natures = 0
+			for n in ['fo','mi','sa','eq']:
+				if n in data and data[n]:
+					sum_natures += data[n]
+			
 			if sum_natures > budget.get_amount_left():
 				error_msg( request, u"Montant disponible insuffisant pour cette répartition." )
 			else:
