@@ -47,11 +47,7 @@ def item(request, budget_id):
 			budget.update_budgetlines()
 			data = form.cleaned_data
 			
-			sum_natures = 0
-			for nature in ['fo','mi','sa','eq']:
-				if data[nature]:
-					sum_natures += data[nature]
-			
+			sum_natures = sum([data[n] for n in ['fo','mi','sa','eq']])
 			if sum_natures > budget.get_amount_left():
 				error_msg( request, u"Montant disponible insuffisant." )
 			else:

@@ -30,7 +30,7 @@ def tab_cart(request):
 	orders = orders.filter(
 		Q(items__username = request.user.username) |
 		Q(team__in = get_teams(request.user))
-	)
+	).distinct()
 	if not request.user.has_perm('budget.custom_view_budget'):
 		orders = orders.filter(
 			Q(items__is_confidential = False) |
@@ -38,7 +38,7 @@ def tab_cart(request):
 		).distinct()
 	
 	return direct_to_template(request, "tab_cart.html", { 
-		'order_list': orders.order_by('provider__name'),
+		'order_list': orders.distinct().order_by('provider__name'),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'team_choices': [(team.id,team.name) for team in Team.objects.all()],
