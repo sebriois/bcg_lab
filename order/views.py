@@ -69,7 +69,7 @@ def tab_orders(request):
 		).distinct()
 	
 	return direct_to_template( request, "order/index.html", {
-		'orders': paginate( request, order_list ),
+		'orders': paginate( request, order_list.distinct() ),
 		'next': 'tab_orders'
 	})
 
@@ -103,7 +103,7 @@ def tab_validation( request ):
 		budget_list = Budget.objects.none()
 	
 	return direct_to_template( request, 'tab_validation.html', {
-		'orders': paginate( request, order_list ),
+		'orders': paginate( request, order_list.distinct() ),
 		'budgets': budget_list,
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
