@@ -80,7 +80,7 @@ def history_orders(request):
 	
 	return direct_to_template( request, "history/orders.html", {
 		'filter_form': form,
-		'objects': paginate( request, objects ),
+		'objects': paginate( request, objects.distinct() ),
 		'display': display,
 		'total': total
 	})
@@ -123,6 +123,6 @@ def history_budgets(request):
 	
 	return direct_to_template( request, 'history/budgets.html', {
 		'filter_form': form,
-		'objects': paginate( request, budget_lines )
+		'objects': paginate( request, budget_lines.distinct() )
 	})
 
