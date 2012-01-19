@@ -403,8 +403,17 @@ def set_budget(request, order_id):
 	budget_id = int(budget_id)
 	
 	if budget_id > 0:
-		budget = get_object_or_404( Budget, id = budget_id )
-		order.budget = budget
+		new_budget = get_object_or_404( Budget, id = budget_id )
+		if order.budget and order.budget.id != new_budget.id:
+			for bl in BudgetLine.objects.filter( order_id = order.id ):
+				bl.budget_id = new_budget.id
+				bl.budget = new_budget.name
+				bl.origin = new_budget.default_origin
+				bl.budget_type = new_budget.budget_type
+				bl.nature = new_budget.default_nature
+				bl.save()
+		
+		order.budget = new_budget
 	
 	if budget_id == 0:
 		# bugdet will be set by secretary
