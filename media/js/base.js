@@ -47,38 +47,46 @@ $(document).ready(function(){
         return false;
     });
     
+    // FRAIS / REMISES
     var creditFormIsHidden=true;
     var debitFormIsHidden=true;
+    
     $('button#credit').click(function(){
-      $('#credit_form').toggle();
+      var parent = $(this).parents('.order')[0];
+      $('#credit_form', parent).toggle();
       
       creditFormIsHidden = !creditFormIsHidden;
       if(debitFormIsHidden==false){
-        $('#debit_form').hide();
+        $('#debit_form', parent).hide();
         debitFormIsHidden=true;
       }
       
       if(creditFormIsHidden==true && debitFormIsHidden==true){
-        $('div#order-buttons').show();
+        $('div#order-buttons', parent).show();
       } else {
-        $('div#order-buttons').hide();
+        $('div#order-buttons', parent).hide();
       }
     });
+    
     $('button#debit').click(function(){
-      $('#debit_form').toggle();
+      var parent = $(this).parents('.order')[0];
+      $('#debit_form', parent).toggle();
       
       debitFormIsHidden = !debitFormIsHidden;
       if(creditFormIsHidden==false){
-        $('#credit_form').hide();
+        $('#credit_form', parent).hide();
         creditFormIsHidden=true;
       }
       
       if(creditFormIsHidden==true && debitFormIsHidden==true){
-        $('div#order-buttons').show();
+        $('div#order-buttons', parent).show();
       } else {
-        $('div#order-buttons').hide();
+        $('div#order-buttons', parent).hide();
       }
     });
+    
+    
+    // PRODUCT EDIT ALL
     $('input[name="edit_all"]').click(function(){
       $('input.edited_item').prop( "checked", $('input[name="edit_all"]').is(':checked') );
     });
