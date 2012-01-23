@@ -1,3 +1,16 @@
-Détail de la commande:{% for item in order.items.all %}
-* {{ item.name }} - qté: {{ item.quantity }}
+* Equipe: {{ order.get_full_name }}
+* Date: {{ order.date_created|date }}
+* Fournisseur: {{ order.provider.name }}{% if order.notes %}
+* Commentaire: {{ order.notes|safe }}{% endif %}
+* Détail:
+{% for order_item in order.items.all %}
+  - Utilisateur: {{ order_item.get_fullname }}
+  - Produit: {{ order_item.name}}
+  - Conditionnement: {{ order_item.packaging }}
+  - Référence: {{ order_item.reference }}
+  - N° offre: {{ order_item.offer_nb }}
+  - Montant: {{ order_item.price }}€
+  - Quantité: {{ order_item.quantity }}
+  - Prix total: {{ order_item.total_price }}€
 {% endfor %}
+* Total commande: {{ order.price }} €
