@@ -564,12 +564,11 @@ def _move_to_status_2(request, order):
 			if not item.username in usernames:
 				usernames.append( item.username )
 		
-		for tm in TeamMember.objects.filter( user__username__in = usernames ):
-			if tm.send_on_validation and tm.user.email:
-				subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
-				template = loader.get_template("email_on_validation.txt")
-				message = template.render( Context({ 'order': order }) )
-				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+		for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_validation = True, user__email__isnull = False ):
+			subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
+			template = loader.get_template("email_order_detail.txt")
+			message = template.render( Context({ 'order': order }) )
+			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
 		
 		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect( request.GET.get('next','tab_validation') )
@@ -602,6 +601,17 @@ def _move_to_status_4(request, order):
 	order.status = 4
 	order.save()
 	order.create_budget_line()
+	
+	usernames = []
+	for item in order.items.all():
+		if not item.username in usernames:
+			usernames.append( item.username )
+	
+	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
+		subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
+		template = loader.get_template("email_order_detail.txt")
+		message = template.render( Context({ 'order': order }) )
+		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect('tab_orders')
