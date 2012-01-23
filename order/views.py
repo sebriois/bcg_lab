@@ -50,8 +50,11 @@ def tab_cart(request):
 def tab_orders(request):
 	if request.user.has_perm('order.custom_goto_status_4') and not request.user.is_superuser:
 		order_list = Order.objects.filter(
-			status__in = [2,3,4]
-		).order_by('-status','last_change')
+			Q( status__in = [2,3,4] ) |
+			Q( status = 1, team = get_teams( request.user )[0] ) |
+			Q( status = 1, items__username = request.user.username )
+		).distinct()
+		order_list.order_by('-status','last_change')
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter(status__in = [2,3,4])
 	else:
