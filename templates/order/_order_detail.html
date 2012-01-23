@@ -64,16 +64,18 @@
 		{% include "attachments/show.html" %}
 	{% endwith %}
 	{% if order.status == 0 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_cart" class="document">Ajouter une pièce jointe</a>
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_cart" class="document">
+			Ajouter une pièce jointe
+		</a>
 	{% else %}{% if order.status == 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_validation" class="document">Ajouter une pièce jointe</a>
-	{% else %}{% if order.status == 2 %}
-		{% if user|has_perm:"order.custom_goto_status_3" or user|has_perm:"order.custom_validate" %}
-			<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">Ajouter une pièce jointe</a>
-		{% endif %}
-	{% else %}{% if order.status > 2 and user|has_perm:"order.custom_goto_status_4" %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">Ajouter une pièce jointe</a>
-	{% endif %}{% endif %}{% endif %}{% endif %}
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next=tab_validation" class="document">
+			Ajouter une pièce jointe
+		</a>
+	{% else %}{% if order.status > 2 %}
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">
+			Ajouter une pièce jointe
+		</a>
+	{% endif %}{% endif %}{% endif %}
 </div>
 
 <div style="float:left;">
