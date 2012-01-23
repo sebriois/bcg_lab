@@ -16,6 +16,7 @@ class History(models.Model):
 	date_delivered	= models.DateTimeField(u"Date de réception")
 	date_created		= models.DateTimeField(u"Date", auto_now_add = True)
 	items						= models.ManyToManyField( OrderItem, verbose_name = "Produits" )
+	attachments			= generic.GenericRelation( Attachment )
 	
 	class Meta:
 		verbose_name = "Historique"

@@ -103,6 +103,9 @@ class Order(models.Model):
 			price						= self.price(),
 			date_delivered	= self.date_delivered and self.date_delivered or datetime.now()
 		)
+		for attachment in self.attachments.all():
+			attachment.content_object = history
+			attachment.save()
 		
 		for item in self.items.all():
 			history.items.add( item )
