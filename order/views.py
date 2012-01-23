@@ -372,10 +372,15 @@ def set_number(request, order_id):
 		error_msg(request, 'Method %s not allowed at this URL' % request.method )
 		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
 	
-	order = get_object_or_404( Order, id = order_id )
-	url_args = "number=%s" % request.GET.get('number', '')
+	number = request.GET.get("number", None)
+	if not number:
+		return HttpResponseServerError('number is missing.')
 	
-	return redirect( reverse("set_next_status",args=[order.id]) + "?" + url_args )
+	order = get_object_or_404( Order, id = order_id )
+	order.number = number
+	order.save()
+	
+	return HttpResponse('ok')
 
 @login_required
 @GET_method
@@ -572,9 +577,7 @@ def _move_to_status_3(request, order):
 	
 
 def _move_to_status_4(request, order):
-	number = request.GET.get('number', None)
-	
-	if not number:
+	if not order.number:
 		if order.budget.budget_type == 0: # ie. CNRS
 			msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
 			
@@ -584,7 +587,6 @@ def _move_to_status_4(request, order):
 		error_msg(request, msg)
 		return redirect( order.get_absolute_url() )
 	
-	order.number = number
 	order.status = 4
 	order.save()
 	order.create_budget_line()
@@ -597,7 +599,7 @@ def _move_to_status_4(request, order):
 	emails = []
 	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
 		emails.append( tm.user.email )
-		
+	
 	subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
 	template = loader.get_template("email_order_detail.txt")
 	message = template.render( Context({ 'order': order }) )

@@ -201,7 +201,7 @@
 	{% endif %}
 {% else %}{% if order.status > 2 %}
 	{% if user|has_perm:"order.custom_goto_status_4" %}
-		<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+		<a href="{% url set_next_status order.id %}" class="disk save-changes">Enregistrer les modifications</a>
 		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	{% endif %}
 	{% if order.status == 4 %}
