@@ -65,15 +65,6 @@ def history_orders(request):
 			for item in h.items.filter( Q_obj ):
 				if not item.id in items_id:
 					items_id.append( item.id )
-
-			# if request.GET['connector'] == 'OR':
-			# 	# FIXME: TIME CONSUMING
-			# 	for item in h.items.exclude( id__in = items_id ):
-			# 		items_id.append(item.id)
-			# elif request.GET['connector'] == 'AND':
-			# 	for item in h.items.filter( Q_obj ):
-			# 		if not item.id in items_id:
-			# 			items_id.append( item.id )
 		
 		objects = OrderItem.objects.filter( id__in = items_id ).distinct()
 		objects = objects.order_by('-history__date_delivered')

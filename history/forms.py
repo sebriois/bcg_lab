@@ -11,9 +11,6 @@ from utils import *
 from constants import *
 
 class HistoryFilterForm(forms.Form):
-	PROVIDER_CHOICES = [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
-	ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
-	
 	connector = forms.TypedChoiceField(
 		choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
 		initial = "AND",
@@ -38,6 +35,12 @@ class HistoryFilterForm(forms.Form):
 		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
+	items__origin = forms.CharField(
+		label			= u"Fournisseur d'origine",
+		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		required 	= False
+	)
+	
 	items__category = forms.ChoiceField(
 		label		= "Type",
 		choices = EMPTY_SEL,
@@ -48,19 +51,10 @@ class HistoryFilterForm(forms.Form):
 		choices = EMPTY_SEL,
 		required = False
 	)
-	items__origin = forms.CharField(
-		label			= u"Fournisseur d'origine",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': ORIGIN_CHOICES
-		}),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
-		required 	= False
-	)
 	
-	provider = forms.ChoiceField(
-		label			= "Fournisseur",
-		choices		= EMPTY_SEL + PROVIDER_CHOICES,
+	provider = forms.ModelChoiceField( 
+		label			= u"Fournisseur",
+		queryset	= Provider.objects.exclude(is_service = True),
 		required	= False
 	)
 	number = forms.CharField(
@@ -93,12 +87,15 @@ class HistoryFilterForm(forms.Form):
 		team_choices = [(name,name) for name in teams]
 		name_choices = []
 		ref_choices = []
+		origin_choices = []
 		for h in History.objects.filter( team__in = teams ):
 			for i in h.items.all():
 				if i.name and not i.name in name_choices:
 					name_choices.append(i.name)
 				if i.reference and not i.reference in ref_choices:
 					ref_choices.append(i.reference)
+				if i.origin and i.origin != '' and not i.origin in origin_choices:
+					origin_choices.append( i.origin )
 		
 		self.fields['team'].choices = EMPTY_SEL + team_choices
 		self.fields['items__reference'].widget = forms.TextInput( attrs={
@@ -109,6 +106,11 @@ class HistoryFilterForm(forms.Form):
 			'class' : 'autocomplete',
 			'choices': ";".join(name_choices)
 		})
+		self.fields['items__origin'].widget = forms.TextInput( attrs={
+			'class' : 'autocomplete',
+			'choices': ";".join(origin_choices)
+		})
+		
 		categories = list(set(OrderItem.objects.values_list('category', flat = True).order_by('category')))
 		sub_categories = list(set(OrderItem.objects.values_list('sub_category', flat = True).order_by('sub_category')))
 		self.fields['items__category'].choices = EMPTY_SEL + [(c,c) for c in categories]
