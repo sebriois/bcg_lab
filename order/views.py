@@ -607,11 +607,14 @@ def _move_to_status_4(request, order):
 		if not item.username in usernames:
 			usernames.append( item.username )
 	
+	emails = []
 	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
-		subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
-		template = loader.get_template("email_order_detail.txt")
-		message = template.render( Context({ 'order': order }) )
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+		emails.append( tm.user.email )
+		
+	subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
+	template = loader.get_template("email_order_detail.txt")
+	message = template.render( Context({ 'order': order }) )
+	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect('tab_orders')
