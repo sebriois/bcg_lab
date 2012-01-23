@@ -38,7 +38,7 @@ def new(request):
 		'form': form,
 		'content_type': content_type,
 		'object_id': object_id,
-		'next': reverse(next)
+		'next': next
 	})
 
 @login_required
