@@ -1,7 +1,9 @@
 # -*- encoding: utf8 -*-
 from datetime import datetime, date
 from django.db import models
+from django.contrib.contenttypes import generic
 from order.models import OrderItem
+from attachments.models import Attachment
 
 class History(models.Model):
 	"""
