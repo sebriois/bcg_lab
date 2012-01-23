@@ -61,3 +61,10 @@ def asId(objects):
 @register.filter
 def get_content_type( my_object ):
 	return ContentType.objects.get_for_model( my_object ).id
+
+@register.filter
+def isinstance( my_object, my_type ):
+	app_label, model = my_type.split('.')
+	my_ct_id = ContentType.objects.get( model = model.lower(), app_label = app_label ).id
+	obj_ct_id = ContentType.objects.get_for_model( my_object ).id
+	return my_ct_id == obj_ct_id

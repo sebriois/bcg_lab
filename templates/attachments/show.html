@@ -4,7 +4,9 @@
 		<td style="padding-right:5px">{{ attachment.filename }}</td>
 		<td>
 			<a href="{{ MEDIA_URL }}{{attachment.attached_file}}" class="zoomin no-text"></a>
-			<a href="{% url attachment_delete attachment.id %}?next={{next}}" class="trash no-text"></a>
+			{% if not object|isinstance:"history.history" %}
+				<a href="{% url attachment_delete attachment.id %}?next={{next}}" class="trash no-text"></a>
+			{% endif %}
 		</td>
 	</tr>
 	{% endfor %}
