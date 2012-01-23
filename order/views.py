@@ -547,9 +547,8 @@ def _move_to_status_2(request, order):
 		message = template.render( Context({ 'order': order }) )
 		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
 		
-		order.status = 5
-		order.save()
 		order.save_to_history()
+		order.delete()
 		
 		info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 	else:
@@ -605,11 +604,9 @@ def _move_to_status_5(request, order):
 		error_msg(request, u"Veuillez saisir une date valide (format jj/mm/aaaa).")
 		return redirect( 'tab_orders' )
 	
-	order.date_delivered = delivery_date
-	order.status = 5
-	order.save()
-	order.save_to_history()
-	# TODO: make a CRON job to weekly remove received orders
+	order.save_to_history( delivery_date )
+	order.delete()
+	
 	return redirect('tab_orders')
 
 

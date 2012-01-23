@@ -92,7 +92,7 @@ class Order(models.Model):
 		for item in self.items.all():
 			item.update_budget_line()
 	
-	def save_to_history(self):
+	def save_to_history(self, date_delivered = datetime.now()):
 		from history.models import History
 		
 		history = History.objects.create(
@@ -101,7 +101,7 @@ class Order(models.Model):
 			budget					= self.budget and self.budget.name or "",
 			number					= self.number,
 			price						= self.price(),
-			date_delivered	= self.date_delivered and self.date_delivered or datetime.now()
+			date_delivered	= date_delivered
 		)
 		for attachment in self.attachments.all():
 			attachment.content_object = history

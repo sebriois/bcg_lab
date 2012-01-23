@@ -33,6 +33,8 @@ def new(request):
 			attachment.save()
 			info_msg( request, "Pièce jointe ajoutée avec succès." )
 			return redirect( next )
+		else:
+			content_type = content_type.id
 	
 	return direct_to_template( request, "attachments/form.html", {
 		'form': form,
