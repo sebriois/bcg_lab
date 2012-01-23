@@ -71,7 +71,7 @@
 		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document">
 			Ajouter une pièce jointe
 		</a>
-	{% else %}{% if order.status > 2 %}
+	{% else %}{% if order.status > 1 %}
 		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">
 			Ajouter une pièce jointe
 		</a>
