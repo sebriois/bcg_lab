@@ -9,6 +9,10 @@
 {% endblock %}
 
 {% block content %}
+{% with history as object %}
+	{% include "attachments/show.html" %}
+{% endwith %}
+
 <table class="list">
   <thead>
     <th>Utilisateur</th>
