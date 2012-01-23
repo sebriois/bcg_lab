@@ -373,22 +373,9 @@ def set_number(request, order_id):
 		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
 	
 	order = get_object_or_404( Order, id = order_id )
+	url_args = "number=%s" % request.GET.get('number', '')
 	
-	if 'number' in request.GET:
-		order.number = request.GET['number']
-		
-		if order.status == 3:
-			order.status = 4
-			order.save()
-			order.create_budget_line()
-		else:
-			order.save()
-			order.update_budget_lines()
-		
-		return HttpResponse(order.number)
-	
-	return HttpResponseServerError('order number is missing.')
-	
+	return redirect( reverse("set_next_status",args=[order.id]) + "?" + url_args )
 
 @login_required
 @GET_method
@@ -595,7 +582,7 @@ def _move_to_status_4(request, order):
 			msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
 		
 		error_msg(request, msg)
-		return redirect( 'tab_orders' )
+		return redirect( order.get_absolute_url() )
 	
 	order.number = number
 	order.status = 4
