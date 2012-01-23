@@ -60,7 +60,8 @@ def create_custom_team_permissions(sender, **kwargs):
 		('custom_view_teams', u"Voir toutes les équipes"),
 		('custom_edit_member', u"Editer un membre d'équipe"),
 		('custom_activate_account', u"Activer un nouveau compte"),
-		('custom_add_group', u"Créer un groupe utilisateur")
+		('custom_add_group', u"Créer un groupe utilisateur"),
+		('custom_add_team', u"Créer une équipe")
 	))
 
 post_syncdb.connect(create_custom_order_permission, sender=order.models)
