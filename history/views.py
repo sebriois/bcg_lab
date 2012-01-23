@@ -45,7 +45,6 @@ def history_orders(request):
 	
 	if search_name or search_ref or search_type or search_subtype:
 		display = "by_product"
-		items_id = []
 		
 		search_dict = {}
 		if search_name:
@@ -61,6 +60,7 @@ def history_orders(request):
 		Q_obj.connector = request.GET['connector']
 		Q_obj.children = search_dict.items()
 		
+		items_id = []
 		for h in history_list:
 			if request.GET['connector'] == 'OR':
 				# FIXME: TIME CONSUMING
@@ -70,13 +70,14 @@ def history_orders(request):
 				for item in h.items.filter( Q_obj ):
 					if not item.id in items_id:
 						items_id.append( item.id )
+		
 		objects = OrderItem.objects.filter( id__in = items_id ).distinct()
 		objects = objects.order_by('-history__date_delivered')
 		total = sum( [item.total_price() for item in objects] )
 	else:
 		display = "by_order"
 		objects = history_list
-		total = sum( [history.price for history in history_list] )
+		total = sum( [history.price for history in history_list.distinct()] )
 	
 	return direct_to_template( request, "history/orders.html", {
 		'filter_form': form,
