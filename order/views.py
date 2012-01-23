@@ -558,6 +558,19 @@ def _move_to_status_2(request, order):
 		
 		order.status = 2
 		order.save()
+		
+		usernames = []
+		for item in order.items.all():
+			if not item.username in usernames:
+				usernames.append( item.username )
+		
+		for tm in TeamMember.objects.filter( user__username__in = usernames ):
+			if tm.send_on_validation and tm.user.email:
+				subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
+				template = loader.get_template("email_on_validation.txt")
+				message = template.render( Context({ 'order': order }) )
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+		
 		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect( request.GET.get('next','tab_validation') )
 
@@ -607,6 +620,7 @@ def _move_to_status_5(request, order):
 	order.save_to_history( delivery_date )
 	order.delete()
 	
+	info_msg( request, "La commande a été enregistrée dans l'historique.")
 	return redirect('tab_orders')
 
 
