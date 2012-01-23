@@ -560,11 +560,15 @@ def _move_to_status_2(request, order):
 	return redirect( request.GET.get('next','tab_validation') )
 
 def _move_to_status_3(request, order):
-	order.status = 3
-	order.save()
+	if order.budget:
+		order.status = 3
+		order.save()
+		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+		return redirect('tab_orders')
+	else:
+		error_msg(request, "Veuillez choisir un budget à imputer")
+		return redirect( order.get_absolute_url() )
 	
-	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-	return redirect('tab_orders')
 
 def _move_to_status_4(request, order):
 	number = request.GET.get('number', None)
