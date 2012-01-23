@@ -160,12 +160,12 @@ class BudgetHistoryFilterForm(forms.Form):
 		required 	= False
 	)
 	
-	provider = forms.ModelChoiceField( 
-		label			= u"Fournisseur",
-		queryset	= Provider.objects.exclude(is_service = True),
+	provider = forms.ChoiceField(
+		label			= "Fournisseur",
+		choices		= EMPTY_SEL,
 		required	= False
 	)
-
+	
 	date__gte = forms.DateField( 
 		label					= "Date d'enregistrement min",
 		input_formats = ["%d/%m/%Y"],
@@ -208,9 +208,9 @@ class BudgetHistoryFilterForm(forms.Form):
 			'class' : 'autocomplete',
 			'choices': ";".join(number_choices)
 		})
-		
+		self.fields['provider'].choices = EMPTY_SEL + [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
 		NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))
-		self.fields['nature'].choices = EMPTY_SEL + NATURE_CHOICES
+		self.fields['nature'].choices = EMPTY_SEL + [(n,n) for n in NATURE_CHOICES]
 
 
 

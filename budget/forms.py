@@ -104,9 +104,6 @@ class TransferForm(forms.Form):
 
 
 class BudgetLineFilterForm(forms.Form):
-	PROVIDER_CHOICES = [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
-	NATURE_CHOICES = list(set([(b.default_nature,b.default_nature) for b in Budget.objects.all()]))
-	
 	connector = forms.TypedChoiceField(
 		choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
 		initial = "AND",
@@ -135,7 +132,7 @@ class BudgetLineFilterForm(forms.Form):
 	
 	nature = forms.ChoiceField(
 		label			= "Nature",
-		choices		= EMPTY_SEL + NATURE_CHOICES,
+		choices		= EMPTY_SEL,
 		required	= False
 	)
 	
@@ -152,7 +149,7 @@ class BudgetLineFilterForm(forms.Form):
 	
 	provider = forms.ChoiceField(
 		label			= "Fournisseur",
-		choices		= EMPTY_SEL + PROVIDER_CHOICES,
+		choices		= EMPTY_SEL,
 		required	= False
 	)
 	
@@ -198,6 +195,8 @@ class BudgetLineFilterForm(forms.Form):
 			'class' : 'autocomplete',
 			'choices': ";".join(number_choices)
 		})
-	
+		self.fields['provider'].choices = EMPTY_SEL + [(p.name, p.name) for p in Provider.objects.exclude(is_service = True)]
+		NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))
+		self.fields['nature'].choices = EMPTY_SEL + [(n,n) for n in NATURE_CHOICES]
 
 
