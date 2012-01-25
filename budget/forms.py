@@ -153,6 +153,11 @@ class BudgetLineFilterForm(forms.Form):
 		required	= False
 	)
 	
+	origin = forms.CharField(
+		label			= "Origine (Code)",
+		required	= False
+	)
+	
 	date__gte = forms.DateField( 
 		label					= "Date d'enregistrement min",
 		input_formats = ["%d/%m/%Y"],

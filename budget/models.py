@@ -6,8 +6,8 @@ from constants import BUDGET_CHOICES
 
 class Budget(models.Model):
 	team = models.ForeignKey(Team, verbose_name="Equipe")
-	name = models.CharField(u"OTP", max_length=100, unique = True)
-	default_origin = models.CharField(u"Origine", max_length=30, null = True, blank = True)
+	name = models.CharField(u"Origine de crédit (Nom)", max_length=100, unique = True)
+	default_origin = models.CharField(u"Origine de crédit (Code)", max_length=30, null = True, blank = False)
 	budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
 	default_nature = models.CharField(u"Nature", max_length=20, null = True, blank = True)
 	tva_code = models.CharField(u"Code TVA", max_length=20, null = True, blank = True )

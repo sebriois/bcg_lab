@@ -106,7 +106,7 @@ def new(request):
 			
 			if data['all_natures'] or data["all_natures"] == 0:
 				budget = form.save( commit = False )
-				budget.name = "[%s] %s" % (budget.team.shortname, budget.name)
+				budget.name = "[%s] %s [%s]" % (budget.team.shortname, budget.name, budget.default_origin)
 				budget.save()
 				
 				if data['all_natures'] > 0:
@@ -118,7 +118,7 @@ def new(request):
 					if data[nature] or data[nature] == 0:
 						budget = Budget.objects.create(
 							team = data['team'],
-							name = "[%s] %s - %s" % (data['team'].shortname, data['name'], nature.upper()),
+							name = "[%s] %s [%s] - %s" % (data['team'].shortname, data['name'], data['default_origin'], nature.upper()),
 							default_origin = data['default_origin'],
 							budget_type = data['budget_type'],
 							tva_code = data['tva_code'],

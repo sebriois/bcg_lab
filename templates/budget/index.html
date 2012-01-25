@@ -19,7 +19,6 @@
 		<thead>
 			<th>Equipe</th>
 			<th>Nom</th>
-			<th>Origine</th>
 			<th>Tutelle</th>
 			<th>Nature</th>
 			<th>Montant disponible</th>
@@ -30,7 +29,6 @@
 			<tr class="{% cycle 'even' 'odd' %}">
 				<td>{{ budget.team }}</td>
 				<td>{{ budget.name }}</td>
-				<td>{{ budget.default_origin }}</td>
 				<td>{{ budget.get_budget_type_display }}</td>
 				<td>{{ budget.default_nature|default:"Toutes" }}</td>
 				<td>{{ budget.get_amount_left }}</td>
