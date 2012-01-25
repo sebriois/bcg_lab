@@ -29,7 +29,6 @@ def item(request, team_id):
 	if request.method == 'POST': return _team_update(request, team)
 
 @login_required
-@superuser_required
 def new(request):
 	return direct_to_template(request, 'team/form.html', {
 		'form': TeamForm()
