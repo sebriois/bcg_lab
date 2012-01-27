@@ -107,7 +107,7 @@ def tab_validation( request ):
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list.distinct() ),
-		'budgets': budget_list,
+		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'see_all_teams': see_all_teams,
@@ -127,9 +127,12 @@ def order_detail(request, order_id):
 	else:
 		budget_list = Budget.objects.none()
 	
+	if not order.provider.is_service:
+		budget_list = budget_list.filter(Q(default_nature__isnull = True)|Q(default_nature='FO'))
+	
 	return direct_to_template(request, 'order/item.html', {
 		'order': order,
-		'budgets': budget_list,
+		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'next': order.get_absolute_url()

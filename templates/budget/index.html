@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-{% if budgets.object_list %}
+{% if budgets %}
 	<table class="list">
 		<thead>
 			<th>Equipe</th>
@@ -25,7 +25,7 @@
 			<th>Action</th>
 		</thead>
 		<tbody>
-			{% for budget in budgets.object_list %}
+			{% for budget in budgets %}
 			<tr class="{% cycle 'even' 'odd' %}">
 				<td>{{ budget.team }}</td>
 				<td>{{ budget.name }}</td>
@@ -47,6 +47,8 @@
 			{% endfor %}
 		</tbody>
 	</table>
+{% else %}
+<p>Aucun budget.</p>
 {% endif %}
 
 <div id="confirm" class="dialog" title="Confirmer l'archivage">

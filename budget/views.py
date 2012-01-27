@@ -30,7 +30,7 @@ def index(request):
 		return redirect('home')
 
 	return direct_to_template(request, 'budget/index.html',{
-		'budgets': paginate( request, budget_list )
+		'budgets': budget_list
 	})
 
 @login_required

@@ -10,6 +10,11 @@ class ProviderForm(forms.ModelForm):
 		model = Provider
 		exclude = ('is_local','is_service')
 	
+	def __init__( self, provider = None, *args, **kwargs ):
+		super( ProviderForm, self ).__init__( *args, **kwargs )
+		
+		self.fields['reseller'].queryset = Provider.objects.exclude(is_service = True).exclude(is_local = True)
+	
 
 
 class ImportForm(forms.Form):
