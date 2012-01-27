@@ -18,14 +18,15 @@ def index(request):
 			'provider_list': Provider.objects.filter(is_service = False)
 		})
 	elif request.method == 'POST':
-		form = ProviderForm(request.POST)
+		form = ProviderForm(data = request.POST)
 		if form.is_valid():
 			form.save()
 			info_msg( request, u"Fournisseur ajouté avec succès." )
 			return redirect( 'provider_index' )
 		else:
+			error_msg(request, "Impossible de créer le fournisseur.")
 			return direct_to_template(request, 'provider/form.html',{
-					'form': form
+				'form': form
 			})
 
 @login_required
