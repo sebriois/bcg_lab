@@ -123,12 +123,19 @@ def order_detail(request, order_id):
 	if request.user.has_perms(['team.custom_view_teams','budget.custom_view_budget']):
 		budget_list = Budget.objects.filter(is_active = True)
 	elif request.user.has_perm('budget.custom_view_budget'):
-		budget_list = Budget.objects.filter(team__in = get_teams(request.user), is_active = True)
+		budget_list = Budget.objects.filter(
+			team__in = get_teams(request.user),
+			is_active = True
+		)
 	else:
 		budget_list = Budget.objects.none()
 	
 	if not order.provider.is_service:
-		budget_list = budget_list.filter(Q(default_nature__isnull = True)|Q(default_nature='FO'))
+		budget_list = budget_list.filter(
+			Q(default_nature__isnull = True) |
+			Q(default_nature='FO') |
+			Q(default_nature='')
+		)
 	
 	return direct_to_template(request, 'order/item.html', {
 		'order': order,
