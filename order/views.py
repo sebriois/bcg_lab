@@ -57,14 +57,14 @@ def tab_orders(request):
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter(
 			status__in = [2,3,4]
-		).order_by('date_created','provider','status').distinct()
+		).distinct()
 		
 	else:
 		order_list = Order.objects.filter(status__in = [1,2,3,4])
 		order_list = order_list.filter(
 			Q(items__username = request.user.username) |
 			Q(team__in = get_teams(request.user))
-		).order_by('date_created','provider','status').distinct()
+		).distinct()
 	
 	# Exclude confidential orders
 	if not request.user.has_perm('budget.custom_view_budget'):

@@ -32,6 +32,7 @@ class Order(models.Model):
 	class Meta:
 		verbose_name = "Commande"
 		verbose_name_plural = "Commandes"
+		ordering = ('date_created','provider','status')
 	
 	def __unicode__(self):
 		d = datetime.strftime( self.date_created, "%d/%m/%Y %Hh%M" )
