@@ -56,13 +56,13 @@ def tab_orders(request):
 		).distinct()
 		order_list.order_by('-status','last_change')
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
-		order_list = Order.objects.filter(status__in = [2,3,4])
+		order_list = Order.objects.filter(status__in = [2,3,4]).distinct()
 	else:
 		order_list = Order.objects.filter(status__in = [1,2,3,4])
 		order_list = order_list.filter(
 			Q(items__username = request.user.username) |
 			Q(team__in = get_teams(request.user))
-		)
+		).distinct()
 	
 	# Exclude confidential orders
 	if not request.user.has_perm('budget.custom_view_budget'):
@@ -72,7 +72,7 @@ def tab_orders(request):
 		).distinct()
 	
 	return direct_to_template( request, "order/index.html", {
-		'orders': paginate( request, order_list.distinct() ),
+		'orders': paginate( request, order_list ),
 		'next': 'tab_orders'
 	})
 
