@@ -114,7 +114,7 @@ def read_xls( header, data, input_excel ):
 			elif colIdx == header.index(u"conditionnement"):
 				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
 			elif colIdx == price_idx:
-				new_row.append( col.strip().replace(",",".").replace('€','') )
+				new_row.append( col.strip().replace(",",".").replace(u'€','') )
 			else:
 				new_row.append( col )
 		data.append( new_row )
