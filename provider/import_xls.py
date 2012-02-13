@@ -105,7 +105,7 @@ def read_xls( header, data, input_excel ):
 		
 		new_row = [is_valid]
 		for colIdx, col in enumerate(row[0:6]):
-			col = str(col.value)
+			col = unicode(col.value)
 			
 			if colIdx == ref_idx:
 				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
