@@ -103,8 +103,21 @@ def read_xls( header, data, input_excel ):
 			is_valid = 'false'
 			errors.append( base_error + u"Colonne 'prix' - la colonne prix est vide." )
 		
-		row = [is_valid] + [col.value for col in row[0:6]]
-		data.append( row )
+		new_row = [is_valid]
+		for colIdx, col in enumerate(row[0:6]):
+			col = str(col.value)
+			
+			if colIdx == ref_idx:
+				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			elif colIdx == header.index(u"n° d'offre"):
+				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			elif colIdx == header.index(u"conditionnement"):
+				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			elif colIdx == price_idx:
+				new_row.append( col.strip().replace(",",".").replace('€','') )
+			else:
+				new_row.append( col )
+		data.append( new_row )
 	
 	return errors
 
