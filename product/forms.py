@@ -112,10 +112,29 @@ class EditListForm(forms.Form):
 		label = "Nomenclature",
 		required = False
 	)
+	offer_nb = forms.CharField(
+		label = "Offre",
+		required = False
+	)
+	expiry = forms.DateField(
+		label = "Date d'expiration",
+		input_formats = ["%d/%m/%Y"],
+		widget				= forms.TextInput( attrs = { 'class' : 'datepicker' }),
+		required = False
+	)
 	percent_raise = forms.DecimalField(
 		label = "Augmentation du prix (%)",
 		min_value = 0,
 		max_value = 100,
 		required = False
 	)
+	
+	def clean_expiry(self):
+		offer_nb = self.data.get('offer_nb', None)
+		expiry = self.cleaned_data.get('expiry', None)
+		
+		if offer_nb and not expiry:
+			raise forms.ValidationError(u"Veuillez donner une date d'expiration pour cette offre.")
+		
+		return expiry
 	

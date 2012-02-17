@@ -233,7 +233,6 @@ ul#secondary_navigation li a:hover {
 
 #header ul#navigation {
 	height: 30px;
-	margin-bottom: 2px;
 	list-style: none;
 }
 	#header ul#navigation li {
@@ -1037,14 +1036,10 @@ button.btn_small img, button.btn_medium img, button.btn_big img {
 
 /* MISC */
 
-table.list tbody tr.has_problem td {
-	color: #e2350d;
-}
-
-table.list tbody tr.is_urgent {
-	background: #ffe7dc
-}
-
+table.list tbody tr.has_problem td { background: #ffe7dc; color: #e2350d; }
+table.list tbody tr.is_urgent { background: #fff6e0; color: #f9a900; }
+table.list tbody tr.expired { color:#E2350D; }
+table.list tbody tr.soon_expired { color: #f9a900; }
 
 p.help {
 	clear:both;

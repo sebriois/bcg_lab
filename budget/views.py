@@ -28,7 +28,7 @@ def index(request):
 	else:
 		not_allowed_msg(request)
 		return redirect('home')
-
+	
 	return direct_to_template(request, 'budget/index.html',{
 		'budgets': budget_list
 	})
@@ -224,17 +224,20 @@ def transfer(request):
 		form = TransferForm( data = request.POST )
 		if form.is_valid():
 			data = form.cleaned_data
-			title = data.get('title',None)
+			title1 = data.get('title1',None)
+			title2 = data.get('title2',None)
 			budget1 = data['budget1']
 			budget2 = data['budget2']
 			amount	= data['amount']
 			
 			bl = budget1.debit( amount )
-			bl.product = title and title or u"Virement vers %s" % budget2.name
+			bl.product = u"Virement vers %s" % budget2.name
+			if title1: bl.offer = title1
 			bl.save()
 			
 			bl = budget2.credit( amount )
-			bl.product = title and title or u"Virement reçu de %s" % budget1.name
+			bl.product = u"Virement reçu de %s" % budget1.name
+			if title2: bl.offer = title2
 			bl.save()
 			return redirect('budgets')
 			

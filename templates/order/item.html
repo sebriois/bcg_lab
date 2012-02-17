@@ -1,7 +1,15 @@
 {% extends "base_orders.html" %}
+{% load filters %}
 
 {% block menu_order %}active{% endblock %}
 {% block header %}
+{% if order.status == 3 and user|has_perm:"order.custom_goto_status_4" and order.budget.budget_type == 1 %}
+	<div class="btn_wrapper">
+		<a href="{% url order_export_xls order.id %}" class="btn_medium">
+			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
+		</a>
+	</div>
+{% endif %}
 <h1>Gestion des commandes</h1>
 <h2>Commandes en cours</h2>
 {% endblock %}

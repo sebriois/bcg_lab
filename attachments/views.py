@@ -21,20 +21,16 @@ def new(request):
 		next = request.GET['next']
 	elif request.method == 'POST':
 		data = request.POST
-		content_type = ContentType.objects.get(id = data['content_type'])
-		object_id = data['object_id']
 		next = data['next']
 		
 		form = AttachmentForm( data = data, files = request.FILES )
 		if form.is_valid():
-			attachment = form.save( commit = False )
-			attachment.content_type = content_type
-			attachment.object_id = object_id
-			attachment.save()
+			form.save()
 			info_msg( request, "Pièce jointe ajoutée avec succès." )
 			return redirect( next )
 		else:
-			content_type = content_type.id
+			content_type = data['content_type']
+			object_id = data['object_id']
 	
 	return direct_to_template( request, "attachments/form.html", {
 		'form': form,

@@ -1,6 +1,7 @@
 # encoding: utf-8
 from datetime import datetime, date
 from decimal import Decimal
+import xlwt
 
 from django.db.models.query import Q
 from django.db import transaction
@@ -147,6 +148,36 @@ def order_detail(request, order_id):
 		'next': order.get_absolute_url()
 	})
 
+
+@login_required
+@GET_method
+def order_export(request, order_id):
+	order = get_object_or_404( Order, id = order_id )
+	
+	xls = xlwt.Workbook()
+	sheet = xls.add_sheet('Commande %s' % order.provider.name)
+	
+	row = 0
+	for order_item in order.items.all():
+		if order_item.reference:
+			lo = 0
+			hi = 40 - len(" #") - len( order_item.reference )
+			title = u"%s #%s" % ( order_item.name[lo:hi], order_item.reference )
+		else:
+			lo, hi = 0, 40
+			title = order_item.name[lo:hi]
+		sheet.write(row, 0, title)
+		sheet.write(row, 1, order_item.quantity)
+		sheet.write(row, 4, order_item.price)
+		row += 1
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=commande %s.xls' % order.provider.name
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	xls.save(response)
+	
+	return response
+	
 
 @login_required
 @transaction.commit_on_success

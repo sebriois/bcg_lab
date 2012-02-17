@@ -4,44 +4,90 @@
 {% block history_orders %}active{% endblock %}
 
 {% block header %}
-  <h1>Historique commandes</h1>
-  <h2>Détail commande {{ history.provider }} réceptionnée le {{ history.date_delivered|date }}</h2>
+<h1>Historique commandes</h1>
+<h2>Détail d'une commande</h2>
 {% endblock %}
 
 {% block content %}
-{% with history as object %}
-	{% include "attachments/show.html" %}
-{% endwith %}
+<h2 class="order-title">Fournisseur: {{ history.provider }} - Réceptionnée le {{ history.date_delivered|date }}</h2>
+<div class="order">
+	<div style="float:left;">
+		<h3>Infos:</h3>
+		<p style="font-size:14px;">Equipe: <b>{{ history.team }}</b></p>
+		<p>Date de création: {{ history.date_created|date }}</p>
+		<p>Date de réception: {{ history.date_delivered|date }}</p>
+		<p>Commande n°: {{ history.number }}</p>
+		{% if user|has_perm:"order.custom_can_validate" or user|has_perm:"order.custom_goto_status_4" %}
+			<p>Budget imputé: {{ history.budget }}</p>
+		{% endif %}
+	</div>
+	
+	{% if history.attachments.all.count > 0 %}
+	<div style="float:left;margin-left:20px;">
+		<h3>Pièces jointes:</h3>
+		{% with history as object %}
+			{% include "attachments/show.html" %}
+		{% endwith %}
+	</div>	
+	{% endif %}
+	
+	<div style="float:left;margin-left:20px;">
+		<h3>Commentaires:</h3>
+		<textarea>{{ history.get_notes|default:"" }}</textarea>
+	</div>
+	
+	<div class="cleaner" style="margin-bottom:20px;"></div>
 
-<table class="list">
-  <thead>
-    <th>Utilisateur</th>
-    <th>Produit</th>
-    <th>Conditionnement</th>
-    <th>Référence</th>
-    <th>N° Offre</th>
-    <th>Prix unitaire</th>
-    <th>Quantité</th>
-    <th>Prix total</th>
-  </thead>
-  
-  <tbody>
-    {% for item in history.items.all %}
-      <tr class="{% cycle 'odd' 'even' %}">
-        <td>{{ item.get_fullname }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.packaging|default:"" }}</td>
-        <td>{{ item.reference|default:"" }}</td>
-        <td>{{ item.offer_nb|default:"" }}</td>
-        <td>{{ item.price }} €</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.total_price }} €</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+	{# ############### #}
+	{#                 #}
+	{#   ORDER ITEMS   #}
+	{#                 #}
+	{# ############### #}
 
-<p><strong>PRIX TOTAL COMMANDE: {{ history.price }} € </strong></p>
-<br />
+	<table class="list">
+		<thead>
+			<th>Utilisateur</th>
+			<th>Produit</th>
+			<th>Condt</th>
+			<th>Réf</th>
+			<th>N° Offre</th>
+			<th>Prix unitaire</th>
+			<th>Quantité</th>
+			<th>Prix total</th>
+			{% if user|can_edit:order %}
+			<th>Action</th>
+			{% endif %}
+		</thead>
+		<tbody>
+			{% for order_item in history.items.all %}
+			<tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
+				<td>{{ order_item.get_fullname }}</td>
+				<td>{{ order_item.name }}</td>
+				<td>{{ order_item.packaging|default:"" }}</td>
+				<td>{{ order_item.reference|default:"" }}</td>
+				<td>{{ order_item.offer_nb|default:"" }}</td>
+				<td>{{ order_item.price }} €</td>
+				{% if user|can_edit:order %}
+				<td id="setQuantity">
+					<input type="text" url="{% url set_item_quantity %}" value="{{ order_item.quantity }}" style="width:15px;" />
+				</td>
+				{% else %}
+				<td>{{ order_item.quantity }}</td>
+				{% endif %}
+				<td>{{ order_item.total_price }} €</td>
+				{% if user|can_edit:order %}
+				<td>
+					<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+					<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<br />
+	<p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ history.price }} €</b></p>
+</div>
+
 <a href="{% url history_orders %}" class="back">Retour</a>
 {% endblock %}

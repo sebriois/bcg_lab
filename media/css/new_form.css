@@ -181,6 +181,13 @@ form select.error, form input.error{
 	margin-bottom:5px;
 }*/
 
+
+#addToCart form label {
+	width: auto;
+	background: none;
+	border: 0;
+}
+
 form.transfer select, form select#select-budget {
 	float: none;
 	display: inline;
@@ -220,3 +227,18 @@ form.transfer select {
 	padding: 5px;
 }
 /* END WIZARD FORM */
+
+form.search input {
+	border: 1px solid #625B52;
+}
+
+form.search input[type="submit"] {
+	background: #645d54 url('../img/icons/search.png') no-repeat center;
+	margin:0;
+	margin-left: 10px;
+	height: 31px !important;
+	width: 70px;
+}
+form.search input[type="submit"]:hover {
+	background-color: #756c62;
+}

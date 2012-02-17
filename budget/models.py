@@ -95,7 +95,7 @@ class BudgetLine(models.Model):
 	class Meta:
 		verbose_name = "Ligne budgétaire"
 		verbose_name = "Lignes budgétaires"
-		ordering = ("team", "budget_id", "date", "-order_id")
+		ordering = ("team", "budget", "date", "-order_id")
 	
 	def get_amount_left(self):
 		amount_left = 0

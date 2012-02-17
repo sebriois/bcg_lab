@@ -158,6 +158,9 @@ def edit_list(request):
 	
 	if request.method == 'POST':
 		data = request.POST
+		product_list = Product.objects.filter( id__in = data['product_ids'].split(',') )
+		url_args = data['url_args']
+		
 		form = EditListForm( data = data )
 		if form.is_valid():
 			clean_data = form.cleaned_data
@@ -165,10 +168,11 @@ def edit_list(request):
 			category = clean_data.get('category', None)
 			sub_category = clean_data.get('sub_category', None)
 			nomenclature = clean_data.get('nomenclature', None)
+			offer_nb = clean_data.get('offer_nb',None)
+			expiry = clean_data.get('expiry',None)
 			delete_all = 'confirm_delete' in data
 			
-			for product_id in data['product_ids'].split(','):
-				product = Product.objects.get( id = int(product_id) )
+			for product in product_list:
 				if delete_all:
 					product.delete()
 					continue
@@ -178,6 +182,8 @@ def edit_list(request):
 				if nomenclature: product.nomenclature = nomenclature.strip()
 				if percent_raise:
 					product.price = product.price * Decimal(1 + percent_raise / 100)
+				if offer_nb: product.offer_nb = offer_nb
+				if expiry: product.expiry = expiry
 				product.save()
 			
 			if delete_all:
@@ -187,6 +193,9 @@ def edit_list(request):
 				info_msg( request, "Liste de produits mise à jour avec succès." )
 				return redirect( reverse('product_index') + '?connector=OR&id__in=' + data['product_ids'] )
 		else:
-			error_msg( request, "Le formulaire n'est pas valide.")
-			return redirect('product_edit_list')
+			return direct_to_template(request, 'product/edit_list.html', {
+				'edit_form': form,
+				'products': product_list,
+				'url_args': url_args
+			})
 	

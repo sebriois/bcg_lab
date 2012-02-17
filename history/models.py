@@ -2,7 +2,7 @@
 from datetime import datetime, date
 from django.db import models
 from django.contrib.contenttypes import generic
-from order.models import OrderItem
+from order.models import Order, OrderItem
 from attachments.models import Attachment
 
 class History(models.Model):
@@ -32,4 +32,7 @@ class History(models.Model):
 	@models.permalink
 	def get_absolute_url(self):
 		return ( 'history_detail', [self.id] )
+	
+	def get_notes(self):
+		return Order.objects.get( number = self.number ).notes
 	

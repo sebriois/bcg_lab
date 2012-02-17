@@ -104,16 +104,18 @@
 {# END: Product list #}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
+	<div class="show_expired_warning">
+		ATTENTION: l'offre sur ce produit a atteint sa date d'expiration
+		<br /><br />
+	</div>	
+	<div class="cleaner"></div>
 	<form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
 		<input type="hidden" name="url_params" value="{{url_args}}" />
 		<input type="hidden" name="product_id" value="" />
-		<div class="form-row">
-			<div id="qty-error-msg"></div>
-			<label for="quantity">Quantité</label>
-			<div class="cleaner"></div>
-			<input type="text" name="quantity" value="" />
-			<div class="cleaner"></div>
-		</div>
+		<div id="qty-error-msg"></div>
+		<label for="quantity">Quantité:</label>
+		<input type="text" name="quantity" value="" />
+		<div class="cleaner"></div>
 	</form>
 </div>
 

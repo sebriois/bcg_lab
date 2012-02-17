@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from order.views import order_detail, orderitem_detail, order_delete
+from order.views import order_detail, orderitem_detail, order_delete, order_export
 from order.views import set_delivered, set_budget, set_next_status
 from order.views import add_orderitem, del_orderitem
 from order.views import add_credit, add_debit
@@ -17,9 +17,10 @@ urlpatterns = patterns('',
   url(r'^(?P<order_id>\d+)/set-team/$', set_team, name="order_team"),
   url(r'^(?P<order_id>\d+)/set-budget/$', set_budget, name="order_budget"),
   url(r'^(?P<order_id>\d+)/set-notes/$', set_notes, name="set_order_notes"),
+  url(r'^(?P<order_id>\d+)/set-number/$', set_number, name="set_order_number"),
   url(r'^(?P<order_id>\d+)/toggle-urgent/$', set_is_urgent, name="set_is_urgent"),
   url(r'^(?P<order_id>\d+)/toggle-problem/$', set_has_problem, name="set_has_problem"),
-  url(r'^(?P<order_id>\d+)/set-number/$', set_number, name="set_order_number"),
+  url(r'^(?P<order_id>\d+)/view-in-excel/$', order_export, name="order_export_xls"),
   url(r'^(?P<order_id>\d+)/add-credit/$', add_credit, name="add_credit"),
   url(r'^(?P<order_id>\d+)/add-debit/$', add_debit, name="add_debit"),
   url(r'^(?P<order_id>\d+)/add-item/$', add_orderitem, name="add_orderitem"),

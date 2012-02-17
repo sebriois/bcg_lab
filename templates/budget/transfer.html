@@ -2,21 +2,39 @@
 {% block menu_budget_transfer %}active{% endblock %}
 
 {% block header %}
-  <h1>Gestion des budgets</h1>
-  <h2>Virement inter-budgets</h2>
+	<h1>Gestion des budgets</h1>
+	<h2>Virement inter-budgets</h2>
 {% endblock %}
 
 {% block content %}
 <form action="{% url budget_transfer %}" class="transfer" method="post">{% csrf_token %}
-    <p class="instructions">
-      <em>Les champs marqués d'une étoile sont obligatoires</em>
-    </p>
-    <fieldset>
-      {% for field in form %}
-          {% include "form_snippet.html"%}
-      {% endfor %}
-    </fieldset>
-    
-    <button type="submit" class="check">Valider</button>
+	<p class="instructions">
+		<em>Les champs marqués d'une étoile sont obligatoires</em>
+	</p>
+	<h3>Débit</h3>
+	<fieldset>
+		{% with form.title1 as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.budget1 as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+	</fieldset>
+	<h3>Crédit</h3>
+	<fieldset>
+		{% with form.title2 as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+		{% with form.budget2 as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+	</fieldset>
+	<h3>Montant à débiter/créditer</h3>
+	<fieldset>
+		{% with form.amount as field %}
+			{% include "form_snippet.html"%}
+		{% endwith %}
+	</fieldset>	
+	<button type="submit" class="check">Valider le virement</button>
 </form>
 {% endblock %}

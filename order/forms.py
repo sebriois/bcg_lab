@@ -1,4 +1,6 @@
 # coding: utf-8
+from decimal import Decimal
+
 from django import forms
 
 from order.models import OrderItem, OrderComplement
@@ -27,6 +29,15 @@ class AddCreditForm(forms.ModelForm):
 			'cost_type': forms.HiddenInput( attrs = { 'value': CREDIT } )
 		}
 	
+	def clean_price(self):	
+		price = self.cleaned_data.get('price', None)
+		price = Decimal(price.replace(',','.'))
+		if price <= 0:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
+		return price
+	
+
 
 DEBIT_ORDER_CHOICES=";".join([c.name for c in OrderComplement.objects.filter(type_comp=DEBIT)])
 class AddDebitForm(forms.ModelForm):
@@ -40,6 +51,14 @@ class AddDebitForm(forms.ModelForm):
 									}),
 			'cost_type': forms.HiddenInput( attrs = { 'value': DEBIT } )
 		}
+	
+	def clean_price(self):	
+		price = self.cleaned_data.get('price', None)
+		price = Decimal(price.replace(',','.'))
+		if price <= 0:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
+		return price
 	
 
 class ServiceForm(forms.Form):
@@ -64,3 +83,12 @@ class ServiceForm(forms.Form):
 			self.fields['team'].initial = member.team
 			self.fields['team'].widget.attrs.update({ 'disabled': 'disabled' })
 	
+	def clean_cost(self):	
+		cost = self.cleaned_data.get('cost', None)
+		cost = Decimal(price.replace(',','.'))
+		if cost <= 0:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
+		return cost
+	
+

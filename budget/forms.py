@@ -97,7 +97,8 @@ class CreditBudgetForm(forms.ModelForm):
 	
 
 class TransferForm(forms.Form):
-	title = forms.CharField( label = u"Désignation", max_length = 100, required = False )
+	title1 = forms.CharField( label = u"Désignation", max_length = 100, required = False )
+	title2 = forms.CharField( label = u"Désignation", max_length = 100, required = False )
 	budget1 = forms.ModelChoiceField( label = u"Débiter", queryset = Budget.objects.filter(is_active = True) )
 	budget2 = forms.ModelChoiceField( label = u"Créditer", queryset = Budget.objects.filter(is_active = True) )
 	amount = forms.DecimalField( label = u"Montant" )

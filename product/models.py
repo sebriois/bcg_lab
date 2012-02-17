@@ -62,9 +62,9 @@ class Product(models.Model):
 		return ( 'product_item', [self.id] )
 	
 	def has_expired(self):
-		return self.expiry and self.expiry < datetime.now()
+		return (self.expiry and self.expiry < datetime.now())
 	
 	def soon_expired(self):
 		delta = timedelta( days = 10 )
-		return self.expiry - delta <= datetime.now()
+		return (self.expiry - delta <= datetime.now())
 	

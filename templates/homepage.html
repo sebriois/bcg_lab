@@ -23,20 +23,12 @@
 	</thead>
 	<tbody>
 		{% for info in infos %}
-			{% if info.has_expired %}
-				<tr class="expired">
-			{% else %}{% if info.soon_expired %}
-				<tr class="soon_expired">
-			{% else %}
-				<tr>
-			{% endif %}{% endif %}
-				<td>{{ info.date_created|date }}</td>
-				<td>{{ info.expiry|date }}</td>
-				<td>{{ info.text|safe }}</td>
-				<td>
-					<a href="{% url info_delete info.id %}" class="trash no-text"></a>
-				</td>
-			</tr>
+		<tr class="{% cycle 'even' 'odd' %} {% if info.has_expired %}expired{% else %}{% if info.soon_expired %}soon_expired{% endif %}{% endif %}">
+			<td>{{ info.date_created|date }}</td>
+			<td>{{ info.expiry|date }}</td>
+			<td>{{ info.text|safe }}</td>
+			<td><a href="{% url info_delete info.id %}" class="trash no-text"></a></td>
+		</tr>
 		{% endfor %}
 	</tbody>
 </table>

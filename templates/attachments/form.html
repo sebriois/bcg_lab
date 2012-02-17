@@ -12,7 +12,12 @@
 			<em>Les champs marqués d'une étoile sont obligatoires</em>
 		</p>
 		<fieldset>
-			{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+			{% with form.filename as field %}
+				{% include "form_snippet.html"%}
+			{% endwith %}
+			{% with form.attached_file as field %}
+				{% include "form_snippet.html"%}
+			{% endwith %}
 		</fieldset>
 		<button type="submit" class="check">Valider</button>
 		<a href="{{ next }}" class="back">Retour</a>
