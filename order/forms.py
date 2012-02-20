@@ -85,7 +85,7 @@ class ServiceForm(forms.Form):
 	
 	def clean_cost(self):	
 		cost = self.cleaned_data.get('cost', None)
-		cost = Decimal(price.replace(',','.'))
+		cost = Decimal(cost.replace(',','.'))
 		if cost <= 0:
 			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
 		

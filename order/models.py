@@ -158,7 +158,7 @@ class OrderItem(models.Model):
 			return
 		order = self.order_set.get()
 		bl = BudgetLine.objects.create(
-			team					= order.team.name,
+			team					= order.budget.team.name,
 			order_id			= order.id,
 			orderitem_id	= self.id,
 			budget_id			= order.budget.id,
