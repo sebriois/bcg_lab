@@ -38,7 +38,7 @@ def tab_services(request):
 			order_item = OrderItem.objects.create(
 				username				= request.user.username,
 				name						= data['name'],
-				price						= Decimal(data['cost'].replace(',','.')),
+				price						= data['cost'],
 				cost_type				= DEBIT,
 				quantity				= data['quantity'],
 				is_confidential	= data['confidential']

@@ -83,7 +83,7 @@ class ServiceForm(forms.Form):
 			self.fields['team'].initial = member.team
 			self.fields['team'].widget.attrs.update({ 'disabled': 'disabled' })
 	
-	def clean_cost(self):	
+	def clean_cost(self):
 		cost = self.cleaned_data.get('cost', None)
 		cost = Decimal(cost.replace(',','.'))
 		if cost <= 0:
