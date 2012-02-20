@@ -133,12 +133,12 @@ def order_detail(request, order_id):
 	else:
 		budget_list = Budget.objects.none()
 	
-	if not order.provider.is_service:
-		budget_list = budget_list.filter(
-			Q(default_nature__isnull = True) |
-			Q(default_nature='FO') |
-			Q(default_nature='')
-		)
+	# if not order.provider.is_service:
+	# 	budget_list = budget_list.filter(
+	# 		Q(default_nature__isnull = True) |
+	# 		Q(default_nature='FO') |
+	# 		Q(default_nature='')
+	# 	)
 	
 	return direct_to_template(request, 'order/item.html', {
 		'order': order,
