@@ -80,14 +80,18 @@
 	</thead>
 	<tbody>
 		{% for product in products.object_list %}
-			<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+			<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% endif %}">
 				<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
 				<td>{{ product.name }}</td>
 				<td>{{ product.packaging|default:"" }}</td>
 				<td>{{ product.reference }}</td>
 				<td>{{ product.price }}&nbsp;€</td>
 				<td>{{ product.offer_nb|default:"" }}</td>
-				<td>{{ product.expiry|date }}</td>
+				{% if product.has_expired %}
+					<td style="background:#ffe7dc;"><b>{{ product.expiry|date }}</b></td>
+				{% else %}
+					<td>{{product.expiry|date}}</td>
+				{% endif %}
 				<td>{{ product.nomenclature|default:"" }}</td>
 				<td>{{ product.last_change|date }}</td>
 				<td style="white-space:nowrap">

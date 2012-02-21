@@ -29,7 +29,7 @@ def index(request):
 		data = request.GET,
 		product_choices = product_choices
 	)
-	if len(request.GET.keys()) > 0:
+	if len(request.GET.keys()) > 1:
 		if form.is_valid():
 			data = form.cleaned_data
 			for key, value in data.items():
