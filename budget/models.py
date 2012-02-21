@@ -115,6 +115,36 @@ class BudgetLine(models.Model):
 			return self.debit * self.quantity * -1
 		return self.product_price
 	
+	def get_order_team(self):
+		"""
+		Returns team that has ordered using this budget
+		"""
+		from order.models import Order
+		from history.models import History
+		
+		if not self.number: return ""
+		
+		t = None
+		
+		# From order
+		order_list = Order.objects.filter( number = self.number )
+		if order_list.count() > 0:
+			t = order_list[0].team
+		
+		# From history
+		history_list = History.objects.filter( number = self.number )
+		if history_list.count() > 0:
+			team_name = history_list[0].team
+			t = Team.objects.get( name = team_name )
+		
+		if not t:
+			return "NOT FOUND"
+		
+		if t.name != self.team:
+			return t.shortname
+		
+		return ""
+	
 	def update_budget_relation(self):
 		b = Budget.objects.get(id = self.budget_id)
 		self.budget = b.name

@@ -1036,8 +1036,8 @@ button.btn_small img, button.btn_medium img, button.btn_big img {
 
 /* MISC */
 
-table.list tbody tr.has_problem td { background: #ffe7dc; color: #e2350d; }
-table.list tbody tr.is_urgent { background: #fff6e0; color: #f9a900; }
+table.list tbody tr.is_urgent td { background: #ffe7dc; color: #e2350d; }
+table.list tbody tr.has_problem { background: #fff6e0; color: #f9a900; }
 table.list tbody tr.expired { color:#E2350D; }
 table.list tbody tr.soon_expired { color: #f9a900; }
 

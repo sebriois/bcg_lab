@@ -1,5 +1,5 @@
 # coding: utf-8
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django import forms
 
@@ -18,6 +18,8 @@ class OrderItemForm(forms.ModelForm):
 
 CREDIT_ORDER_CHOICES=";".join([c.name for c in OrderComplement.objects.filter(type_comp=CREDIT)])
 class AddCreditForm(forms.ModelForm):
+	price = forms.CharField( label = u"Montant" )
+	
 	class Meta:
 		model = OrderItem
 		fields = ("name", "reference", "offer_nb", "price", "quantity", "cost_type")
@@ -29,9 +31,13 @@ class AddCreditForm(forms.ModelForm):
 			'cost_type': forms.HiddenInput( attrs = { 'value': CREDIT } )
 		}
 	
-	def clean_price(self):	
+	def clean_price(self):
 		price = self.cleaned_data.get('price', None)
-		price = Decimal(price.replace(',','.'))
+		try:
+			price = Decimal(price.replace(',','.'))
+		except InvalidOperation:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
 		if price <= 0:
 			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
 		
@@ -41,6 +47,8 @@ class AddCreditForm(forms.ModelForm):
 
 DEBIT_ORDER_CHOICES=";".join([c.name for c in OrderComplement.objects.filter(type_comp=DEBIT)])
 class AddDebitForm(forms.ModelForm):
+	price = forms.CharField( label = u"Montant" )
+	
 	class Meta:
 		model = OrderItem
 		fields = ("name", "reference", "offer_nb", "price", "quantity", "cost_type")
@@ -52,9 +60,13 @@ class AddDebitForm(forms.ModelForm):
 			'cost_type': forms.HiddenInput( attrs = { 'value': DEBIT } )
 		}
 	
-	def clean_price(self):	
+	def clean_price(self):
 		price = self.cleaned_data.get('price', None)
-		price = Decimal(price.replace(',','.'))
+		try:
+			price = Decimal(price.replace(',','.'))
+		except InvalidOperation:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
 		if price <= 0:
 			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
 		
@@ -85,7 +97,11 @@ class ServiceForm(forms.Form):
 	
 	def clean_cost(self):
 		cost = self.cleaned_data.get('cost', None)
-		cost = Decimal(cost.replace(',','.'))
+		try:
+			price = Decimal(cost.replace(',','.'))
+		except InvalidOperation:
+			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
+		
 		if cost <= 0:
 			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
 		

@@ -154,9 +154,26 @@
 	<fieldset>
 	<input type="hidden" name="next" value="{{next}}" />
 	<input type="hidden" name="username" value="{{user.username}}" />
-	{% for field in credit_form %}{% include "form_snippet.html"%}{% endfor %}
+	{% with credit_form.name as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with credit_form.reference as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with credit_form.offer_nb as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with credit_form.price as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with credit_form.quantity as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with credit_form.cost_type as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
 	<button type="submit" class="check">Valider</button>
-	<a href="{{ order.get_absolute_url }}" class="back">Annuler</a>
+	<a href="." class="back">Annuler</a>
 	</fieldset>
 </form>
 
@@ -165,9 +182,26 @@
 	<fieldset>
 	<input type="hidden" name="next" value="{{next}}" />
 	<input type="hidden" name="username" value="{{user.username}}" />
-	{% for field in debit_form %}{% include "form_snippet.html"%}{% endfor %}
+	{% with debit_form.name as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with debit_form.reference as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with debit_form.offer_nb as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with debit_form.price as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with debit_form.quantity as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
+	{% with debit_form.cost_type as field %}
+		{% include "form_snippet.html"%}
+	{% endwith %}
 	<button type="submit" class="check">Valider</button>
-	<a href="{{ order.get_absolute_url }}" class="back">Annuler</a>
+	<a href="." class="back">Annuler</a>
 	</fieldset>
 </form>
 
