@@ -155,7 +155,7 @@ def order_export(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	
 	xls = xlwt.Workbook()
-	sheet = xls.add_sheet('Commande %s' % order.provider.name)
+	sheet = xls.add_sheet('export')
 	
 	row = 0
 	for order_item in order.items.all():
@@ -172,7 +172,7 @@ def order_export(request, order_id):
 		row += 1
 	
 	response = HttpResponse(mimetype="application/ms-excel")
-	response['Content-Disposition'] = 'attachment; filename=commande %s.xls' % order.provider.name
+	response['Content-Disposition'] = 'attachment; filename=export_commande.xls'
 	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
 	xls.save(response)
 	
