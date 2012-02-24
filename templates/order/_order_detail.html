@@ -32,7 +32,7 @@
 		style="float:none;display:inline;padding:1px;"
 	/>
 	{% else %}{% if order.number %}
-	<p>Commande n°{{ order.number }}</p>
+	<p>Commande n°{{ order.number|default:"" }}</p>
 	{% endif %}{% endif %}
 	
 	{% if order.status >= 1 and user|can_edit:order %}
@@ -243,6 +243,6 @@
 	{% endif %}
 {% endif %}{% endif %}{% endif %}{% endif %}
 {% if order.status > 1 %}
-	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
+	<a href="{% url tab_orders %}?page={{next_page|default:1}}" class="back">Retour aux commandes</a>
 {% endif %}
 </div>

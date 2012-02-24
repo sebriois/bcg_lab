@@ -145,7 +145,8 @@ def order_detail(request, order_id):
 		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
-		'next': order.get_absolute_url()
+		'next': order.get_absolute_url(),
+		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
 
 
