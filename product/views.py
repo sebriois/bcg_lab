@@ -101,8 +101,8 @@ def new(request):
 		if form.is_valid():
 			p = form.save()
 			if p.provider.reseller:
-				p.provider = p.provider.reseller
 				p.origin = p.provider.name
+				p.provider = p.provider.reseller
 				p.save()
 			
 			info_msg( request, u"Produit ajouté avec succès." )
