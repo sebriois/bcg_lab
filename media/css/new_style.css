@@ -1041,6 +1041,24 @@ table.list tbody tr.has_problem { background: #fff6e0; color: #f9a900; }
 table.list tbody tr.expired { color:#E2350D; }
 table.list tbody tr.soon_expired { color: #f9a900; }
 
+div.legend_urgent {
+	float:left;
+	width:50px;
+	height:20px;
+	background:#ffe7dc;
+	border: 1px solid #e2350d;
+	margin-right:10px;
+	margin-bottom: 3px;
+}
+div.legend_problem {
+	float:left;
+	width:50px;
+	height:20px;
+	background:#fff6e0;
+	border: 1px solid #f9a900;
+	margin-right:10px;
+}
+
 p.help {
 	clear:both;
 	color:#51473d;
