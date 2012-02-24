@@ -18,6 +18,7 @@ class History(models.Model):
 	date_delivered	= models.DateTimeField(u"Date de réception")
 	date_created		= models.DateTimeField(u"Date", auto_now_add = True)
 	items						= models.ManyToManyField( OrderItem, verbose_name = "Produits" )
+	# TODO: comments = models.TextField(u"Commentaires", null = True, blank = True)
 	attachments			= generic.GenericRelation( Attachment )
 	
 	class Meta:
@@ -34,8 +35,11 @@ class History(models.Model):
 		return ( 'history_detail', [self.id] )
 	
 	def get_notes(self):
-		order_list = Order.objects.filter( number = self.number )
+		if not self.number: return ""
+		
+		order_list = Order.objects.filter( number = self.number, team__name = self.team )
 		if order_list.count() > 0:
 			return order_list[0].notes
+		
 		return ""
 	
