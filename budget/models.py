@@ -1,5 +1,6 @@
 # -*- encoding: utf8 -*-
 from django.db import models
+from django.db.models.query import Q
 
 from team.models import Team
 from constants import BUDGET_CHOICES
@@ -124,26 +125,21 @@ class BudgetLine(models.Model):
 		
 		if not self.number: return ""
 		
-		t = None
-		
 		# From order
-		order_list = Order.objects.filter( number = self.number )
-		if order_list.count() > 0:
-			t = order_list[0].team
+		ids = Order.objects.filter( number = self.number ).values_list('team',flat=True)
 		
 		# From history
-		history_list = History.objects.filter( number = self.number )
-		if history_list.count() > 0:
-			team_name = history_list[0].team
-			t = Team.objects.get( name = team_name )
+		names = History.objects.filter( number = self.number ).values_list('team', flat=True)
 		
-		if not t:
-			return "NOT FOUND"
+		teams = Team.objects.filter(
+			Q( name__in = names ) | Q( id__in = ids )
+		).distinct()
 		
-		if t.name != self.team:
-			return t.shortname
+		# If budgetline's team is in order/history too
+		if teams.filter( name = self.team ).count() > 0:
+			return ""
 		
-		return ""
+		return ", ".join( teams.values_list('shortname', flat = True) )
 	
 	def update_budget_relation(self):
 		b = Budget.objects.get(id = self.budget_id)
