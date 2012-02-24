@@ -100,6 +100,11 @@ def new(request):
 		
 		if form.is_valid():
 			p = form.save()
+			if p.provider.reseller:
+				p.provider = p.provider.reseller
+				p.origin = p.provider.name
+				p.save()
+			
 			info_msg( request, u"Produit ajouté avec succès." )
 			return redirect( reverse('product_index') + "?reference=%s&connector=OR" % p.reference )
 	
