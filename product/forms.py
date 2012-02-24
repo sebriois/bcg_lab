@@ -16,7 +16,7 @@ class ProductForm(forms.ModelForm):
 	def __init__( self, provider = None, *args, **kwargs ):
 		super( ProductForm, self ).__init__( *args, **kwargs )
 		
-		self.fields['provider'].queryset = Provider.objects.exclude(is_service = True).exclude(is_local = True)
+		self.fields['provider'].queryset = Provider.objects.exclude(is_service = True)
 		
 		if provider:
 			self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
