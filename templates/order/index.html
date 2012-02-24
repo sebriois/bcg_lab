@@ -52,14 +52,14 @@
 				<td>
 					{% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
 						{% if order.budget.budget_type == 0 %}
-							<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status xlab">Saisie XLAB</a>
+							<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie XLAB</a>
 						{% else %}
-							<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status sifac">Saisie SIFAC</a>
+							<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
 						{% endif %}
 					{% else %}{% if order.status == 4 %}
-						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="next-status"><b>A réceptionner</b></a>
+						<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status"><b>A réceptionner</b></a>
 					{% else %}
-						<a href="{{ order.get_absolute_url }}?next=tab_orders" class="pencil">Voir détail</a>
+						<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
 					{% endif %}{% endif %}
 				</td>
 			</tr>

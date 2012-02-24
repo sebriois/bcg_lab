@@ -76,7 +76,8 @@ def tab_orders(request):
 	
 	return direct_to_template( request, "order/index.html", {
 		'orders': paginate( request, order_list ),
-		'next': 'tab_orders'
+		'next': 'tab_orders',
+		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
 
 
