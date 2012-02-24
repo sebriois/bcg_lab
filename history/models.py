@@ -34,5 +34,8 @@ class History(models.Model):
 		return ( 'history_detail', [self.id] )
 	
 	def get_notes(self):
-		return Order.objects.get( number = self.number ).notes
+		order_list = Order.objects.filter( number = self.number )
+		if order_list.count() > 0:
+			return order_list[0].notes
+		return ""
 	

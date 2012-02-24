@@ -32,6 +32,8 @@ def index(request):
 @login_required
 @transaction.commit_on_success
 def item(request, provider_id):
+	from product.models import Product
+	
 	provider = get_object_or_404(Provider, id = provider_id)
 	if request.method == 'GET':
 		form = ProviderForm(instance = provider)
@@ -44,6 +46,15 @@ def item(request, provider_id):
 				for product in provider.product_set.all():
 					if not product.origin: product.origin = provider.name
 					product.provider = provider.reseller
+					product.save()
+				
+				for product in Product.objects.filter( origin = provider.name ):
+					product.provider = provider.reseller
+					product.save()
+			else:
+				for product in Product.objects.filter( origin = provider.name ):
+					product.provider = provider
+					product.origin = None
 					product.save()
 			
 			info_msg( request, u"Fournisseur modifié avec succès." )

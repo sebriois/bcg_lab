@@ -131,14 +131,14 @@ class BudgetLine(models.Model):
 		# From history
 		names = History.objects.filter( number = self.number ).values_list('team', flat=True)
 		
-		teams = Team.objects.filter(
-			Q( name__in = names ) | Q( id__in = ids )
-		).distinct()
+		# Get team from orders and history
+		teams = Team.objects.filter(Q( name__in = names ) | Q( id__in = ids )).distinct()
 		
 		# If budgetline's team is in order/history too
 		if teams.filter( name = self.team ).count() > 0:
 			return ""
 		
+		# Return team short names
 		return ", ".join( teams.values_list('shortname', flat = True) )
 	
 	def update_budget_relation(self):
