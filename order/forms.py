@@ -98,7 +98,7 @@ class ServiceForm(forms.Form):
 	def clean_cost(self):
 		cost = self.cleaned_data.get('cost', None)
 		try:
-			price = Decimal(cost.replace(',','.'))
+			cost = Decimal(cost.replace(',','.'))
 		except InvalidOperation:
 			raise forms.ValidationError(u"Veuillez saisir un montant positif.")
 		
