@@ -104,7 +104,7 @@ def read_xls( header, data, input_excel ):
 			errors.append( base_error + u"Colonne 'prix' - la colonne prix est vide." )
 		
 		new_row = [is_valid]
-		for colIdx, col in enumerate(row[0:6]):
+		for colIdx, col in enumerate(row[0:7]):
 			col = unicode(col.value)
 			
 			if colIdx == ref_idx:
