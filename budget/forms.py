@@ -54,16 +54,19 @@ class BudgetLineForm(forms.ModelForm):
 	
 	def __init__( self, *args, **kwargs ):
 		super( BudgetLineForm, self ).__init__( *args, **kwargs )
+		initial_cost = 0
+		
 		if self.instance:
 			if self.instance.credit:
 				initial_cost = self.instance.credit
 			elif self.instance.debit:
 				initial_cost = self.instance.debit
 			self.fields['budget'].initial = Budget.objects.get(id = self.instance.budget_id)
-		else:
-			initial_cost = 0
 		
-		self.fields["cost"] = forms.DecimalField( label = u"Montant unitaire", initial = initial_cost)
+		self.fields["cost"] = forms.DecimalField(
+			label = u"Montant unitaire",
+			initial = initial_cost
+		)
 		self.fields["quantity"].required = True
 		
 	
