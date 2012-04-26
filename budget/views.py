@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.simple import direct_to_template
 
 from budget.models import Budget, BudgetLine
-from budget.forms import BudgetForm
+from budget.forms import BudgetForm, BudgetLineFilterForm
 from budget.forms import CreditBudgetForm, DebitBudgetForm
 from budget.forms import TransferForm
 
@@ -30,7 +30,8 @@ def index(request):
 		return redirect('home')
 	
 	return direct_to_template(request, 'budget/index.html',{
-		'budgets': budget_list
+		'budgets': budget_list,
+		'filter_form': BudgetLineFilterForm( user = request.user, data = request.GET )
 	})
 
 @login_required
