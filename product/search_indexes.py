@@ -6,7 +6,7 @@ class ProductIndex(indexes.SearchIndex, indexes.Indexable):
 	provider = indexes.CharField(model_attr='provider')
 	reference = indexes.CharField(model_attr='reference')
 	packaging = indexes.CharField(model_attr='packaging', null = True)
-	offer_nb = indexes.CharField(model_attr='offer_nb', null = True)
+#	offer_nb = indexes.CharField(model_attr='offer_nb', null = True)
 	
 	def get_model(self):
 		return Product

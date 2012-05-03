@@ -3,6 +3,7 @@
 {% block main_content %}
 <div id="main">
 	<h1>Gestion des produits</h1>
+	<h2>Liste des produits</h2>
   {% if messages %}
     <ul class="messages">
       {% for message in messages %}
@@ -13,10 +14,11 @@
   <div class="cleaner"></div>
   {% block content %}
 	<form method="GET" action="." class="search">
-		{{ form.q }}<input type="submit" value=" " />
+		<span>Rechercher</span> {{form.q }}<input type="submit" value=" " />
 	</form>
 	<br />
-	{% if query %}
+	{% if query and page.object_list|length > 0 %}
+		<h3>{{page.paginator.count}} produit{{page.paginator.count|pluralize}} trouv&eacute{{page.paginator.count|pluralize}}</h3>
 		<table class="list">
 			<thead>
 					<th>Fournisseur</th>
@@ -32,6 +34,7 @@
 			</thead>
 			<tbody>
 				{% for result in page.object_list %}
+					{% if result.content_type == "product.product" %}
 					{% with result.object as product %}
 					<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
 						<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
@@ -49,15 +52,16 @@
 						</td>
 					</tr>
 					{% endwith %}
+					{% endif %}
 				{% endfor %}
 			</tbody>
 		</table>
 		
 		{% if page.has_previous or page.has_next %}
 			<div>
-				{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
-				|
-				{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+				{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Pr&eacutec&eacutedente{% if page.has_previous %}</a>{% endif %}
+				- page {{page.number}}/{{page.paginator.num_pages}} -
+				{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Suivante &raquo;{% if page.has_next %}</a>{% endif %}
 			</div>
 		{% endif %}
 	{% else %}

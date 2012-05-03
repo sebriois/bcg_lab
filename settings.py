@@ -99,10 +99,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-		'haystack',
-		'admin',
-		'attachments',
-		'preferences',
+    'haystack',
+    'admin',
+    'attachments',
+    'preferences',
     'team',
     'provider',
     'product',
@@ -112,7 +112,7 @@ INSTALLED_APPS = (
     'infos',
     'issues',
     'utils',
-		'management'
+    'management'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

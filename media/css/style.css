@@ -473,6 +473,10 @@ div.cleaner { clear:both; padding-bottom:5px; }
 tr.border-top-double {
   border-top: 2px double;
 }
+.search {
+  margin: auto;
+  text-align: center;
+}
 
 /* @end MISC */
 

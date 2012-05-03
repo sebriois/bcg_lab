@@ -1,5 +1,5 @@
+{{object.provider}}
 {{object.name}}
-{{object.provider.name}}
 {{object.reference}}
 {{object.packaging}}
 {{object.offer_nb}}

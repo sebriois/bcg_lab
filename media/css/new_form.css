@@ -228,8 +228,19 @@ form.transfer select {
 }
 /* END WIZARD FORM */
 
+form.search {
+	margin: auto;
+	text-align: center;
+}
+form.search span {
+	font-weight: bold;
+	font-size: 16px;
+	color: #51473D;
+}
 form.search input {
+	margin-left: 10px;
 	border: 1px solid #625B52;
+	width: 300px;
 }
 
 form.search input[type="submit"] {
