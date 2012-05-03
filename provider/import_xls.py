@@ -29,15 +29,24 @@ def import_xls( request, provider_id ):
 		form = ImportForm(data = request.POST, files = request.FILES)
 		
 		if form.is_valid():
+			form_data = form.cleaned_data
 			head_str = request.POST['column_order'].lower().replace('*','').replace(u"é",'e')
 			header = head_str.split(';')
 			data = []
 			
 			errors = read_xls( header, data, request.FILES['xls_file'] )
 			
+			if form_data['offer_nb'] and form_data['expiry']:
+				offer_idx = header.index(u"n° d'offre")
+				for row in data:
+					if not row[offer_idx]:
+						row[offer_idx] = form_data['offer_nb']
+			
 			request.session['import_data'] = json.dumps({
 				'header': header,
-				'data': data
+				'data': data,
+				'offer_nb': form_data.get('offer_nb', None),
+				'expiry': form_data.get('expiry', None)
 			}).encode('utf8')
 			
 			if errors:
@@ -127,6 +136,7 @@ def read_xls( header, data, input_excel ):
 @transaction.commit_on_success
 def do_import( request, provider_id ):
 	provider = get_object_or_404( Provider, id = provider_id )
+	
 	if not 'import_data' in request.session:
 		warn_msg( request, "Une erreur de session est survenue. Veuillez \
 d'abord vérifier votre historique pour savoir si l'import CSV a été \
@@ -174,6 +184,8 @@ votre navigateur)." )
 		
 		if len(line) > offer_idx and line[offer_idx]:
 			product.offer_nb = line[offer_idx]
+			if line[offer_idx] == xls_data['offer_nb']:
+				product.expiry = xls_data['expiry']
 		
 		if len(line) > nom_idx and line[nom_idx]:
 			product.nomenclature = line[nom_idx]
@@ -189,5 +201,7 @@ votre navigateur)." )
 	
 	del request.session['import_data']
 	
+	provider.users_in_charge.add( request.user )
+	provider.save()
 	info_msg(request, u'La mise à jour des produits a bien été effectuée.')
-	return redirect( 'provider_index' )
+	return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.id )

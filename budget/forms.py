@@ -50,7 +50,7 @@ class BudgetLineForm(forms.ModelForm):
 	
 	class Meta:
 		model = BudgetLine
-		fields = ('provider','number','offer','product','reference','quantity')
+		fields = ('provider','number','budget_id','offer','product','reference','quantity')
 	
 	def __init__( self, *args, **kwargs ):
 		super( BudgetLineForm, self ).__init__( *args, **kwargs )

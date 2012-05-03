@@ -31,7 +31,7 @@ def index(request):
 		return redirect('home')
 	
 	# 
-	# Filter history_list depending on received GET data
+	# Filter budget_lines depending on received GET data
 	form = BudgetLineFilterForm( user = request.user, data = request.GET )
 	if len(request.GET.keys()) > 0 and form.is_valid():
 		data = form.cleaned_data
@@ -70,11 +70,12 @@ def item(request, bl_id):
 	
 	elif request.method == 'POST':
 		data = request.POST.copy()
-		data['budget_id'] = data['budget']
+		data['budget_id'] = int(data['budget'])
 		form = BudgetLineForm( instance = bl, data = data )
 		if form.is_valid():
-			bl = form.save( commit = False )
+			bl = form.save()
 			bl.update_budget_relation()
+			bl.update_order_or_history()
 			
 			bl.is_active = True
 			if data["cost_type"] == "credit":

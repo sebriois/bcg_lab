@@ -1,14 +1,9 @@
-Commande passée par {{ order.user.get_full_name }} le {{ order.date_created|date }}:
-{% for item in order.items.all %}
-- {{ item.name }} {% if item.packaging %}({{ item.packaging }}){% endif %}, qté: {{ item.quantity }}{% endfor %}
+Une nouvelle commande LBCMCP a été saisie.
+(Commande passée par {{ order.get_full_name }} le {{ order.date_created|date }})
 
-Nouvelle commande MAGASIN:
+Merci de consulter la page de livraison: {{ url }}
 
-* Commande passée par {{ order.get_full_name }} le {{ order.date_created|date }}
-* Détail:
-{% for order_item in order.items.all %}
-  - Utilisateur: {{ order_item.get_fullname }}
-  - Fournisseur: {{ order_item.origin }}
-  - Produit: {{ order_item.name}}
-  - Quantité: {{ order_item.quantity }}
-{% endfor %}
+
+{# * Détail: #}
+{# {% for item in order.items.all %} #}
+{# - {{ item.name }} {% if item.packaging %}({{ item.packaging }}){% endif %}, qté: {{ item.quantity }}{% endfor %} #}

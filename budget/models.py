@@ -87,7 +87,7 @@ class BudgetLine(models.Model):
 	product				= models.CharField(u"Désignation", max_length = 500, null = True, blank = True )
 	reference			= models.CharField(u"Référence", max_length = 50, null = True, blank = True )
 	quantity			= models.IntegerField(u"Quantité", null = True, blank = True, default = 1)
-	product_price = models.DecimalField(u"Montant", max_digits=12, decimal_places=2, null = True, blank = True)
+	product_price = models.DecimalField(u"Montant unitaire", max_digits=12, decimal_places=2, null = True, blank = True)
 	credit				= models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
 	debit					= models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
 	confidential	= models.BooleanField(u"Ligne confidentielle", default = False)
@@ -150,3 +150,25 @@ class BudgetLine(models.Model):
 		self.origin = b.default_origin
 		self.save()
 	
+	def update_related(self):
+		"""
+		Update related budgetlines (ie. having the same order number)
+		Update related order/history if any order/history field is changed
+		"""
+		from order.models import Order
+		from history.models import History
+		
+		if not self.number: return
+		
+		# From order
+		order_list = Order.objects.filter( number = self.number )
+		if order_list.count() > 0:
+			o = order_list[0]
+		
+		# From history
+		history_list = History.objects.filter( number = self.number )
+		if history_list.count() > 0:
+			o = history_list[0]
+		
+		
+		

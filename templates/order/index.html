@@ -65,11 +65,9 @@
 						{% else %}
 							<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
 						{% endif %}
-					{% else %}{% if order.status == 4 %}
-						<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status"><b>A réceptionner</b></a>
 					{% else %}
 						<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
-					{% endif %}{% endif %}
+					{% endif %}
 				</td>
 			</tr>
 			{% endfor %}

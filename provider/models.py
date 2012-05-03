@@ -10,6 +10,7 @@ class Provider(models.Model):
   notes           = models.TextField( 'Notes', blank = True, null = True )
   is_local        = models.BooleanField( u'Magasin ?', default = False )
   is_service      = models.BooleanField( u'Type service ?', default = False )
+	# direct_reception = models.BooleanField( u'Réception immédiate ?', default = False )
   
   class Meta:
     verbose_name = "Fournisseur"

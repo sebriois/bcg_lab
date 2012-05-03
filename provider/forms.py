@@ -2,6 +2,7 @@
 import os
 
 from django import forms
+from django.forms import widgets
 
 from provider.models import Provider
 
@@ -18,8 +19,32 @@ class ProviderForm(forms.ModelForm):
 
 
 class ImportForm(forms.Form):
-	xls_file = forms.FileField(label=u"Fichier à importer")
-	replace_all = forms.BooleanField( label=u"Ecraser tous les produits existants", initial = False, required = False)
+	xls_file = forms.FileField( label = u"Fichier à importer" )
+	replace_all = forms.BooleanField( 
+		label = u"Ecraser tous les produits existants",
+		initial = False,
+		required = False
+	)
+	offer_nb = forms.CharField(
+		label = "Offre",
+		required = False
+	)
+	expiry = forms.CharField(
+		label = "Date d'expiration",
+		required = False
+	)
+	def __init__(self, *args, **kwargs):
+		super( ImportForm, self ).__init__( *args, **kwargs )
+		self.fields['expiry'].widget = widgets.DateInput(attrs={'class':'datepicker'})
+	
+	def clean_expiry(self):
+		offer_nb = self.data.get('offer_nb', None)
+		expiry = self.cleaned_data.get('expiry', None)
+		
+		if offer_nb and not expiry:
+			raise forms.ValidationError(u"Veuillez donner une date d'expiration pour cette offre.")
+		
+		return expiry
 	
 	def clean_xls_file(self):
 		xls_file = self.cleaned_data['xls_file']

@@ -10,13 +10,13 @@
 {% endblock %}
 
 {% block content %}
-<a href="{% url perform_import_products provider.id %}?replace_all={{replace_all}}" id="confirm_import" class="check">
-	Valider l'import
-</a>
-<a href="{% url import_products provider.id %}" class="back">
-	Retour page import
-</a>
-<br /><br />
+<form action="{% url perform_import_products provider.id %}">
+	<input type="hidden" name="replace_all" value="{{replace_all}}" />
+	<input type="hidden" name="items" value="" />
+	
+	<input type="submit" id="confirm_import" class="check" />Valider l'import
+	<a href="{% url import_products provider.id %}" class="back">Retour page import</a>
+</form>
 
 <table class="list">
 	<thead>

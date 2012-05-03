@@ -1,0 +1,68 @@
+{% extends "new_base.html" %}
+
+{% block main_content %}
+<div id="main">
+	<h1>Gestion des produits</h1>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message|escape|safe }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="cleaner"></div>
+  {% block content %}
+	<form method="GET" action="." class="search">
+		{{ form.q }}<input type="submit" value=" " />
+	</form>
+	<br />
+	{% if query %}
+		<table class="list">
+			<thead>
+					<th>Fournisseur</th>
+					<th style="max-width:200px">produit</th>
+					<th>Cond.</th>
+					<th>Réf.</th>
+					<th>Prix</th>
+					<th>N° Offre</th>
+					<th>Expiration</th>
+					<th>Nomen.</th>
+					<th>MAJ</th>
+					<th>Action</th>
+			</thead>
+			<tbody>
+				{% for result in page.object_list %}
+					{% with result.object as product %}
+					<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+						<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+						<td>{{ product.name }}</td>
+						<td>{{ product.packaging|default:"" }}</td>
+						<td>{{ product.reference }}</td>
+						<td>{{ product.price }}&nbsp;€</td>
+						<td>{{ product.offer_nb|default:"" }}</td>
+						<td>{{ product.expiry|date }}</td>
+						<td>{{ product.nomenclature|default:"" }}</td>
+						<td>{{ product.last_change|date }}</td>
+						<td style="white-space:nowrap">
+							<button id="{{product.id}}" class="plus addToCart">Panier</button>
+							<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
+						</td>
+					</tr>
+					{% endwith %}
+				{% endfor %}
+			</tbody>
+		</table>
+		
+		{% if page.has_previous or page.has_next %}
+			<div>
+				{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+				|
+				{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+			</div>
+		{% endif %}
+	{% else %}
+		{# Show some example queries to run, maybe query syntax, something else? #}
+	{% endif %}
+	{% endblock %}
+</div>
+{% endblock %}

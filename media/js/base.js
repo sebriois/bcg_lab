@@ -13,9 +13,7 @@ $(document).ready(function(){
       });
     });
     
-    $( "#sortable" ).sortable({
-      'axis': 'x'
-    });
+    $( "#sortable" ).sortable({ 'axis': 'x' });
     
     // Datepicker widget
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
@@ -89,6 +87,9 @@ $(document).ready(function(){
     // PRODUCT EDIT ALL
     $('input[name="edit_all"]').click(function(){
       $('input.edited_item').prop( "checked", $('input[name="edit_all"]').is(':checked') );
+    });
+    $('input[name="select_all"]').click(function(){
+      $('table.list input[type="checkbox"]').prop( "checked", $(this).is(':checked') );
     });
     
     // 

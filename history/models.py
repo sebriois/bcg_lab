@@ -35,6 +35,7 @@ class History(models.Model):
 		return ( 'history_detail', [self.id] )
 	
 	def get_notes(self):
+		# TODO: use self.comments instead
 		if not self.number: return ""
 		
 		order_list = Order.objects.filter( number = self.number, team__name = self.team )

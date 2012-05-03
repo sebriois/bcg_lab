@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
+		'haystack',
 		'admin',
 		'attachments',
 		'preferences',
@@ -122,6 +123,16 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.contrib.messages.context_processors.messages',
 )
+
+##
+##		Haystack config
+##
+HAYSTACK_CONNECTIONS = {
+	'default': {
+		'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+		'URL': 'http://127.0.0.1:8983/solr'
+	},
+}
 
 ##
 ##    Custom settings

@@ -53,16 +53,17 @@ class Order(models.Model):
 		item, created = self.items.get_or_create( 
 			product_id = product.id,
 			defaults = {
-				'cost_type':				DEBIT,
-				'name':							product.origin and "%s - %s" % (product.origin,product.name) or product.name,
-				'provider':					product.provider.name,
-				'origin':						product.origin,
-				'packaging':				product.packaging,
-				'reference':				product.reference,
-				'price':						product.price,
-				'offer_nb':					product.offer_nb,
-				'nomenclature': 		product.nomenclature,
-				'quantity':					quantity
+				'cost_type':		 DEBIT,
+				'name':					 product.origin and "%s - %s" % (product.origin,product.name) or product.name,
+				'provider':			 product.provider.name,
+				'origin':				 product.origin,
+				'packaging':		 product.packaging,
+				'reference':		 product.reference,
+				'price':				 product.price,
+				'offer_nb':			 product.offer_nb,
+				'nomenclature':  product.nomenclature,
+				'quantity':			 quantity,
+				'delivered':		 quantity
 			}
 		)
 		
@@ -128,6 +129,7 @@ class OrderItem(models.Model):
 	price						= models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
 	cost_type				= models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
 	quantity				= models.IntegerField( u'Quantité', default = 1 )
+	delivered				= models.IntegerField( u'Quantité à livrer', default = 0 )
 	is_confidential	= models.BooleanField( u"Confidentielle?", default = False )
 	
 	class Meta:
@@ -137,6 +139,9 @@ class OrderItem(models.Model):
 	
 	def get_order(self):
 		return self.order_set.get()
+	
+	def get_history(self):
+		return self.history_set.get()
 	
 	def get_fullname(self):
 		users = User.objects.filter( username = self.username )

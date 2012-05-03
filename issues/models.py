@@ -4,6 +4,7 @@ from django.db import models
 from constants import *
 
 class Issue(models.Model):
+	username = models.CharField(u"Utilisateur", max_length=100)
 	title = models.CharField(u"Titre", max_length=100)
 	description = models.TextField(u"Description", null = True, blank = True)
 	issue_type = models.IntegerField(u"Type", choices = ISSUE_CHOICES, default = 0)

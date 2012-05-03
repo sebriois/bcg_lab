@@ -49,19 +49,25 @@ def tab_cart(request):
 @login_required
 @GET_method
 def tab_orders(request):
+	# Case: magasin or not magasin?
+	if request.user.has_perm('order.custom_view_local_provider'):
+		order_list = Order.objects.filter( provider__is_local = True )
+	else:
+		order_list = Order.objects.all()
+	
+	# Any other case
 	if request.user.has_perm('order.custom_goto_status_4') and not request.user.is_superuser:
-		order_list = Order.objects.filter(
+		order_list = order_list.filter(
 			Q( status__in = [2,3,4] ) |
 			Q( status = 1, team = get_teams( request.user )[0] ) |
 			Q( status = 1, items__username = request.user.username )
 		).order_by('-status','last_change').distinct()
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
-		order_list = Order.objects.filter(
+		order_list = order_list.filter(
 			status__in = [2,3,4]
 		).distinct()
-		
 	else:
-		order_list = Order.objects.filter(status__in = [1,2,3,4])
+		order_list = order_list.filter(status__in = [1,2,3,4])
 		order_list = order_list.filter(
 			Q(items__username = request.user.username) |
 			Q(team__in = get_teams(request.user))
@@ -118,6 +124,61 @@ def tab_validation( request ):
 		'next': 'tab_validation'
 	})
 
+
+@login_required
+@transaction.commit_on_success
+def tab_reception( request ):
+	if request.method == "GET":
+		orderitems = OrderItem.objects.filter(
+			order__status = 4,
+			product_id__isnull = False
+		)
+		
+		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
+			orderitems = orderitems.filter(
+				order__provider__is_local = True
+			)
+		elif not request.user.has_perm("team.custom_view_teams"):
+			orderitems = orderitems.filter(
+				order__team = get_teams( request.user )[0]
+			)
+		return direct_to_template( request, 'order/reception.html', {
+			'orderitems': orderitems.order_by('order__number', 'name')
+		})
+	
+	elif request.method == "POST":
+		action_ids = filter( lambda key: key.startswith("action_"), request.POST.keys() )
+		order_ids = []
+		
+		for action_id in action_ids:
+			item_id = action_id.split("_")[1]
+			item = OrderItem.objects.get( id = item_id )
+			order = item.get_order()
+			
+			qty_delivered = int( request.POST["delivered_%s" % item_id] )
+			
+			if item.delivered - qty_delivered < 0 or item.delivered - qty_delivered > item.quantity:
+				if item.delivered - qty_delivered < 0:
+					error_msg( request, u"Commande %s: %s (%s) - la quantité livrée ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+				else:
+					error_msg( request, u"Commande %s: %s (%s) - la quantité à livrer ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+			else:
+				item.delivered -= qty_delivered
+			item.save()
+		
+		
+		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
+			order_list = Order.objects.filter( status = 4, provider__is_local = True )
+		else:
+			order_list = Order.objects.filter( status = 4, team = get_teams( request.user )[0] )
+		
+		for order in order_list:
+			if order.items.filter( delivered__gt = 0, product_id__isnull = False ).count() == 0:
+				if not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser:
+					info_msg( request, u"La commande %s a été entièrement réceptionnée et archivée." % order.number )
+				order.save_to_history()
+				order.delete()
+	return redirect("tab_reception")
 
 @login_required
 @GET_method
@@ -508,8 +569,12 @@ def set_item_quantity(request):
 		return HttpResponseServerError( u"'%s': Veuillez saisir une quantité entière positive." % item.name )
 	
 	item = get_object_or_404( OrderItem, id = orderitem_id )
+	item.delivered -= item.quantity - quantity
 	item.quantity = quantity
 	item.save()
+	
+	if item.get_order().number:
+		item.update_budget_line()
 	
 	return HttpResponse('ok')
 
@@ -581,11 +646,12 @@ def _move_to_status_2(request, order):
 	if order.provider.is_local:
 		subject = "[Commandes LBCMCP] Nouvelle commande magasin"
 		template = loader.get_template('email_local_provider.txt')
-		message = template.render( Context({ 'order': order }) )
+		url = request.build_absolute_uri(reverse('tab_reception'))
+		message = template.render( Context({ 'order': order, 'url': url }) )
 		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
 		
-		order.save_to_history()
-		order.delete()
+		order.status = 4
+		order.save()
 		
 		info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 	else:
@@ -633,6 +699,7 @@ def _move_to_status_4(request, order):
 		return redirect( order.get_absolute_url() )
 	
 	order.status = 4
+	order.is_urgent = False
 	order.save()
 	order.create_budget_line()
 	
@@ -688,7 +755,7 @@ def cart_add(request):
 		provider = product.provider,
 		status	 = 0
 	)
-	item	= order.add( product, quantity )
+	item = order.add( product, quantity )
 	item.username = request.user.username
 	item.save()
 	
