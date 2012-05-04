@@ -50,7 +50,7 @@ class Product(models.Model):
 		verbose_name = "Produit"
 		verbose_name_plural = "Produits"
 		ordering = ('provider', 'name')
-		# TODO: !!!! unique_together = ('provider', 'reference')
+		unique_together = ('provider', 'reference')
 	
 	def __unicode__(self):
 		return self.name
