@@ -697,6 +697,10 @@ def _move_to_status_2(request, order):
 		order.status = 4
 		order.save()
 		
+		for item in order.items.all():
+			item.delivered = item.quantity
+			item.save()
+		
 		info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 	else:
 		budget_id = request.GET.get("budget", None)
