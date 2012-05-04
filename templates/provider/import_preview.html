@@ -10,40 +10,41 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url perform_import_products provider.id %}">
+<form action="{% url perform_import_products provider.id %}" method="POST">{% csrf_token %}
 	<input type="hidden" name="replace_all" value="{{replace_all}}" />
-	<input type="hidden" name="items" value="" />
 	
-	<input type="submit" id="confirm_import" class="check" />Valider l'import
+	<button type="submit" class="check">Valider l'import</button>
 	<a href="{% url import_products provider.id %}" class="back">Retour page import</a>
-</form>
-
-<table class="list">
-	<thead>
-		<th></th>
-		{% for head in header %}
-		<th>{{ head }}</th>
-		{% endfor %}
-	</thead>
-	<tbody>
-	{% for line in data %}
-	<tr class="{% cycle 'odd' 'even' %} {% if line.0 == 'false' %}disabled{% endif %}">
-		{% for item in line %}
-			{% if forloop.counter == 1 %}
-			<td>
-				{% if item == 'true' %}
-				<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" checked="checked" />
+	
+	<br />
+	
+	<table class="list">
+		<thead>
+			<th></th>
+			{% for head in header %}
+			<th>{{ head }}</th>
+			{% endfor %}
+		</thead>
+		<tbody>
+		{% for line in data %}
+		<tr class="{% cycle 'odd' 'even' %} {% if line.0 == 'false' %}disabled{% endif %}">
+			{% for item in line %}
+				{% if forloop.counter == 1 %}
+				<td>
+					{% if item == 'true' %}
+					<input type="checkbox" class="imported_item" name="item_{{forloop.parentloop.counter0}}" checked="checked" />
+					{% else %}
+					<input type="checkbox" class="imported_item" name="item_{{forloop.parentloop.counter0}}" disabled="true" />
+					{% endif %}
+					- {{ forloop.parentloop.counter }}
+				</td>
 				{% else %}
-				<input type="checkbox" class="imported_item" value="{{forloop.parentloop.counter0}}" disabled="true" />
+				<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
 				{% endif %}
-				- {{ forloop.parentloop.counter }}
-			</td>
-			{% else %}
-			<td class="{% if line.0 == False %}disabled{% endif %}">{{ item }}</td>
-			{% endif %}
+			{% endfor %}
+		</tr>
 		{% endfor %}
-	</tr>
-	{% endfor %}
-	</tbody>
-</table>
+		</tbody>
+	</table>
+</form>
 {% endblock %}

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import datetime
+from datetime import datetime
 import xlrd
 from decimal import Decimal
 
@@ -114,25 +114,31 @@ def read_xls( header, data, input_excel ):
 		
 		new_row = [is_valid]
 		for colIdx, col in enumerate(row[0:7]):
-			col = unicode(col.value)
+			col = col.value
 			
-			if colIdx == ref_idx:
-				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
-			elif colIdx == header.index(u"n° d'offre"):
-				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
-			elif colIdx == header.index(u"conditionnement"):
-				new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			if colIdx == header.index(u"conditionnement"):
+				new_row.append( str(col).rstrip(",0").rstrip(".") )
 			elif colIdx == price_idx:
-				new_row.append( col.strip().replace(",",".").replace(u'€','') )
+				new_row.append( str(col).replace(",",".").replace(u"€","") )
 			else:
 				new_row.append( col )
+			
+			# if colIdx == ref_idx:
+			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			# elif colIdx == header.index(u"n° d'offre"):
+			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			# elif colIdx == header.index(u"conditionnement"):
+			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
+			# elif colIdx == price_idx:
+			# 	new_row.append( col.strip().replace(",",".").replace(u'€','') )
+			# else:
+			# 	new_row.append( col )
 		data.append( new_row )
 	
 	return errors
 
 
 @login_required
-@GET_method
 @transaction.commit_on_success
 def do_import( request, provider_id ):
 	provider = get_object_or_404( Provider, id = provider_id )
@@ -145,58 +151,60 @@ votre navigateur)." )
 		return redirect( reverse('import_products', args=[provider_id]) )
 	
 	# Loads data from cookie - dumped as json when the file was imported
-	xls_data = json.loads( request.session['import_data'] )
-	kept_items = map(int, request.GET['items'].split(','))
+	json_data = json.loads( request.session['import_data'] )
 	
-	if request.GET['replace_all'] == 'on':
+	if request.POST['replace_all'] == 'on':
 		provider.product_set.all().delete()
 	
-	header = xls_data['header']
-	name_idx = header.index(u'designation') + 1
-	ref_idx = header.index(u'reference') + 1
-	price_idx = header.index(u'prix') + 1
-	pack_idx = header.index(u'conditionnement') + 1
-	offer_idx = header.index(u"n° d'offre") + 1
-	nom_idx = header.index(u'nomenclature') + 1
-	origin_idx = header.index(u"fournisseur d'origine") + 1
+	# First index in header is "is_valid" (true/false)
+	name_idx   = json_data['header'].index(u'designation') + 1
+	ref_idx    = json_data['header'].index(u'reference') + 1
+	price_idx  = json_data['header'].index(u'prix') + 1
+	pack_idx   = json_data['header'].index(u'conditionnement') + 1
+	offer_idx  = json_data['header'].index(u"n° d'offre") + 1
+	nom_idx    = json_data['header'].index(u'nomenclature') + 1
+	origin_idx = json_data['header'].index(u"fournisseur d'origine") + 1
 	
-	for i in kept_items:
-		if xls_data['data'][0] == 'false': continue # ie. is_valid = false, invalid line
-		
-		line = xls_data['data'][i]
+	# For each checked item
+	for item in filter( lambda key: key.startswith("item_"), request.POST.keys() ):
+		line = json_data['data'][int(item.split("_")[1])]
 		
 		price = line[price_idx]
 		if isinstance(price, str):
 			price = price.replace(" ","").replace(",",".").replace('€','')
 		price = Decimal(price)
 		
+		if len(line) > pack_idx and line[pack_idx]:
+			packaging = line[pack_idx]
+		else:
+			packaging = None
+		
+		if len(line) > nom_idx and line[nom_idx]:
+			nomenclature = line[nom_idx]
+		else:
+			nomenclature = None
+		
+		if len(line) > origin_idx and line[origin_idx]:
+			origin = line[origin_idx]
+		else:
+			origin = None
+		
 		product, created = Product.objects.get_or_create(
 			provider = provider,
 			reference = line[ref_idx],
 			defaults = {
 				'name' : line[name_idx],
-				'price' : price
+				'price' : price,
+				'packaging': packaging,
+				'nomenclature': nomenclature,
+				'origin': origin
 			}
 		)
-		
-		if len(line) > pack_idx and line[pack_idx]:
-			product.packaging = line[pack_idx]
-		
-		if len(line) > offer_idx and line[offer_idx]:
-			product.offer_nb = line[offer_idx]
-			if line[offer_idx] == xls_data['offer_nb']:
-				product.expiry = xls_data['expiry']
-		
-		if len(line) > nom_idx and line[nom_idx]:
-			product.nomenclature = line[nom_idx]
-		
-		if len(line) > origin_idx and line[origin_idx]:
-			product.origin = line[origin_idx]
-		
 		if not created:
-			product.name = line[name_idx]
 			product.price = price
 		
+		product.expiry = datetime.strptime(json_data['expiry'], "%d/%m/%Y")
+		product.offer_nb = json_data['offer_nb']
 		product.save()
 	
 	del request.session['import_data']
