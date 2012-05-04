@@ -76,7 +76,7 @@
 							<td>{{ history.date_delivered|date }}</td>
 							<td>{{ history.team }}</td>
 							<td>{{ item.get_fullname }}</td>
-							<td>{{ item.get_fullname_recept|default="" }}</td>
+							<td>{{ item.get_fullname_recept|default:"" }}</td>
 							<td>{{ history.provider }}{% if item.origin %} - {{ item.origin }}{% endif %}</td>
 							<td>{{ history.number|default:"" }}</td>
 							<td>{{ item.name }}</td>
