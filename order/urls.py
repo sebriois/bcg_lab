@@ -7,7 +7,7 @@ from order.views import add_credit, add_debit
 from order.views import cart_add, set_item_quantity
 from order.views import set_notes, set_number, set_team
 from order.views import set_is_urgent, set_has_problem
-from order.views import tab_cart, tab_orders, tab_validation, tab_reception
+from order.views import tab_cart, tab_orders, tab_validation, tab_reception, tab_reception_local_provider
 
 urlpatterns = patterns('',
   # Order
@@ -38,5 +38,6 @@ urlpatterns = patterns('',
   url(r'^validation/$', tab_validation, name="tab_validation"),
   url(r'^cart/$', tab_cart, name="tab_cart"),
 	url(r'^reception/$', tab_reception, name="tab_reception"),
+	url(r'^reception-local-provider/$', tab_reception_local_provider, name="tab_reception_local_provider"),
   url(r'^$', tab_orders, name="tab_orders")
 )

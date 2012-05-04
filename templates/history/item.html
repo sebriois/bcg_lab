@@ -46,7 +46,8 @@
 
 	<table class="list">
 		<thead>
-			<th>Utilisateur</th>
+			<th>Commandé par</th>
+			<th>Réceptionné par</th>
 			<th>Produit</th>
 			<th>Condt</th>
 			<th>Réf</th>
@@ -62,6 +63,7 @@
 			{% for order_item in history.items.all %}
 			<tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
 				<td>{{ order_item.get_fullname }}</td>
+				<td>{{ order_item.get_fullname_recept|default:"" }}</td>
 				<td>{{ order_item.name }}</td>
 				<td>{{ order_item.packaging|default:"" }}</td>
 				<td>{{ order_item.reference|default:"" }}</td>

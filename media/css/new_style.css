@@ -771,6 +771,9 @@ table.list thead th {
 	color: #fff;
 	font-size:14px;
 }
+table.list thead th.last {
+	border-right: none;
+}
 
 table.list tbody tr {
 	height: 32px;
