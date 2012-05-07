@@ -1,14 +1,10 @@
-function error_exit
-{
-	echo "$1" 1>&2
-	exit 1
-}
+#! /bin/sh
 
-sudo /usr/sbin/apachectl stop
-python manage.py validate || error_exit "Schema could not be validated. Aborting"
-python manage.py dumpdata auth.user budget history infos issues order product provider team > initial_data.json || error_exit "Dumpdata failed. Aborting"
-sudo git pull origin master
-dropdb order_manager -U briois
-createdb order_manager -U briois -E utf8
-python manage.py syncdb --no
-sudo /usr/sbin/apachectl start
+dropdb order_manager
+createdb order_manager -E utf8
+python2.7 manage.py syncdb --no
+export DJANGO_SETTINGS_MODULE=settings
+python2.7 -c "print 'deleting content types...';from django.contrib.contenttypes.models import ContentType;ContentType.objects.all().delete();print 'delete done.'"
+echo "Loading json data"
+python2.7 manage.py loaddata saved_data.json
+sudo apachectl restart

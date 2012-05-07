@@ -28,12 +28,17 @@
 	</li>
 	{% endif %}
 	
+	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<li class="{% block menu_reception %}{% endblock %}">
-		
-		{% if not user|has_perm:"order.custom_view_local_provider" %}
-			<a href="{% url tab_reception %}">Réception</a>
+		<a href="{% url tab_reception %}">Réception</a>
+	</li>
+	{% endif %}
+	
+	<li class="{% block menu_reception_local %}{% endblock %}">
+		{% if user|has_perm:"order.custom_view_local_provider" %}
+			<a href="{% url tab_reception_local_provider %}">Livraisons</a>
 		{% else %}
-			<a href="{% url tab_reception %}">Livraison</a>
+			<a href="{% url tab_reception_local_provider %}">Réception magasin</a>
 		{% endif %}
 	</li>
 </ul>

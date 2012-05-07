@@ -115,7 +115,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-	username				= models.CharField( u"Utilisateur", max_length = 100 )
+	username				= models.CharField( u"Commandé par", max_length = 100 )
+	username_recept = models.CharField( u"Réceptionné par", max_length = 100, null = True, blank = True )
 	product_id			= models.IntegerField( u'ID produit', blank = True, null = True )
 	name						= models.CharField( u'Désignation', max_length = 500 )
 	provider				= models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
@@ -149,6 +150,15 @@ class OrderItem(models.Model):
 			return u"%s" % users[0].get_full_name()
 		else:
 			return u"%s" % self.username
+	
+	def get_fullname_recept(self):
+		users = User.objects.filter( username = self.username_recept )
+		if users.count() > 0 and users[0].get_full_name():
+			return u"%s" % users[0].get_full_name()
+		elif self.username_recept:
+			return u"%s" % self.username_recept
+		else:
+			return None
 	
 	def total_price(self):
 		if self.cost_type == DEBIT:

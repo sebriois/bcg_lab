@@ -1,64 +1,71 @@
 {% extends "base_orders.html" %}
 {% load paginator filters %}
 
-{% block menu_reception %}active{% endblock %}
+{% block menu_reception_local %}active{% endblock %}
 
 {% block header %}
 	<h1>Gestion des commandes</h1>
 	{% if user|has_perm:"order.custom_view_local_provider" %}
 		<h2>Commandes à livrer</h2>
 	{% else %}
-		<h2>Commandes à réceptionner</h2>
+		<h2>Commandes magasin à réceptionner</h2>
 	{% endif %}
 {% endblock %}
 
 {% block content %}
 {% if orderitems %}
-<form action="{% url tab_reception %}" method="POST">{% csrf_token %}
+<form action="{% url tab_reception_local_provider %}" method="POST">{% csrf_token %}
+	
+	{% if user|has_perm:"order.custom_view_local_provider" %}
 	<div style="float:right;margin-bottom:10px">
 		<button type="submit" class="check" url="{% url tab_reception %}">Valider les quantités livrées</button>
 	</div>
+	{% endif %}
+	
 	<table class="list">
 		<thead>
 			<th>Date</th>
-			<th>Fournisseur</th>
-			{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
 			<th>Equipe</th>
-			{% endif %}
-			<th>Commandé par</th>
-			<th>Réceptionné par</th>
-			<th>N° Cmde</th>
+			<th>Utilisateur</th>
 			<th>Désignation</th>
 			<th>Référence</th>
+			<th>Cond.</th>
 			<th>Prix unitaire</th>
 			<th>Qté attendue</th>
 			<th>Reste à livrer</th>
-			<th>Qté livrée</th>
-			<th></th>
+			{% if user|has_perm:"order.custom_view_local_provider" %}
+				<th>Qté livrée</th>
+				<th style="text-align:center" class="last"><input type="checkbox" name="select_all" /></th>
+			{% endif %}
+			{% if user|is_admin %}<th></th>{% endif %}
 		</thead>
 		<tbody>
 			{% for item in orderitems %}
 				{% with item.get_order as order %}
 				<tr class="{% cycle 'even' 'odd' %}">
 					<td>{{ order.date_created|date }}</td>
-					<td>{{ order.provider.name }}</td>
-					{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
 					<td>{{ order.get_full_name }}</td>
-					{% endif %}
 					<td>{{ item.get_fullname }}</td>
-					<td>{{ item.get_fullname_recept|default:"" }}</td>
-					<td>{{ order.number|default:"" }}</td>
 					<td>{{ item.name }}</td>
 					<td>{{ item.reference }}</td>
+					<td>{{ item.packaging }}</td>
 					<td>{{ item.price }} €</td>
 					<td>{{ item.quantity }}</td>
 					<td>{{ item.delivered }}</td>
-					<td>
-						<input type="text" name="delivered_{{item.id}}" style="width: 30px;" value="{{item.delivered}}" />
-					</td>
-					<td style="text-align:center">
-						<input type="checkbox" name="action_{{item.id}}" />
-					</td>
+					
+					{% if user|has_perm:"order.custom_view_local_provider" %}
+						<td>
+							<input type="text" name="delivered_{{item.id}}" style="width: 30px;" value="{{item.delivered}}" />
+						</td>
+						<td style="text-align:center">
+							<input type="checkbox" name="action_{{item.id}}" />
+						</td>
+						{% if user|is_admin %}
+						<td>
+							<a href="{% url orderitem_delete item.id %}?next=tab_reception_local_provider" class="trash confirmDel no-text"></a>
+						</td>
+						{% endif %}
+					{% endif %}
 				</tr>
 				{% endwith %}
 			{% endfor %}
@@ -72,4 +79,8 @@
 		<p>Aucune commande à réceptionner</p>
 	{% endif %}
 {% endif %}
+
+<div id="confirmDel" class="dialog" title="Confirmer la suppression">
+	Merci de confirmer la suppression.
+</div>
 {% endblock %}

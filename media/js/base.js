@@ -501,19 +501,6 @@ $(document).ready(function(){
       });
     });
     
-    $("#confirm_import").click(function(e){
-      e.preventDefault();
-      
-      var targetUrl = $(this).attr('href');
-      var get_arg = [];
-      
-      $('.imported_item:checked').each(function(i){
-        get_arg.push($(this).val());
-      });
-      
-      window.location.href = targetUrl + "&items=" + get_arg.join(",");
-    });
-    
     // 
     // TEAM PAGE - For changing user's team membership
     // 

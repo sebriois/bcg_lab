@@ -49,25 +49,22 @@ def tab_cart(request):
 @login_required
 @GET_method
 def tab_orders(request):
-	# Case: magasin or not magasin?
-	if request.user.has_perm('order.custom_view_local_provider'):
-		order_list = Order.objects.filter( provider__is_local = True )
-	else:
-		order_list = Order.objects.all()
-	
-	# Any other case
+	# Commandes à saisir
 	if request.user.has_perm('order.custom_goto_status_4') and not request.user.is_superuser:
+		order_list = Order.objects.exclude( provider__is_local = True )
 		order_list = order_list.filter(
 			Q( status__in = [2,3,4] ) |
 			Q( status = 1, team = get_teams( request.user )[0] ) |
 			Q( status = 1, items__username = request.user.username )
 		).order_by('-status','last_change').distinct()
+	# Commandes en cours - toutes équipes
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
-		order_list = order_list.filter(
+		order_list = Order.objects.filter(
 			status__in = [2,3,4]
 		).distinct()
+	# Commandes en cours - par équipe
 	else:
-		order_list = order_list.filter(status__in = [1,2,3,4])
+		order_list = Order.objects.filter(status__in = [1,2,3,4])
 		order_list = order_list.filter(
 			Q(items__username = request.user.username) |
 			Q(team__in = get_teams(request.user))
@@ -131,17 +128,14 @@ def tab_reception( request ):
 	if request.method == "GET":
 		orderitems = OrderItem.objects.filter(
 			order__status = 4,
+			order__provider__is_local = False,
 			product_id__isnull = False
 		)
-		
-		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
-			orderitems = orderitems.filter(
-				order__provider__is_local = True
-			)
-		elif not request.user.has_perm("team.custom_view_teams"):
+		if not request.user.has_perm("team.custom_view_teams"):
 			orderitems = orderitems.filter(
 				order__team = get_teams( request.user )[0]
 			)
+		
 		return direct_to_template( request, 'order/reception.html', {
 			'orderitems': orderitems.order_by('order__number', 'name')
 		})
@@ -164,6 +158,8 @@ def tab_reception( request ):
 					error_msg( request, u"Commande %s: %s (%s) - la quantité à livrer ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
 			else:
 				item.delivered -= qty_delivered
+			
+			item.username_recept = request.user.username
 			item.save()
 		
 		
@@ -179,6 +175,53 @@ def tab_reception( request ):
 				order.save_to_history()
 				order.delete()
 	return redirect("tab_reception")
+
+
+@login_required
+@transaction.commit_on_success
+def tab_reception_local_provider( request ):
+	if request.method == "GET":
+		orderitems = OrderItem.objects.filter(
+			order__status = 4,
+			order__provider__is_local = True,
+			product_id__isnull = False
+		)
+		if not request.user.has_perm("team.custom_view_teams") and not request.user.has_perm("order.custom_view_local_provider"):
+			orderitems = orderitems.filter(
+				order__team = get_teams( request.user )[0]
+			)
+		
+		return direct_to_template( request, 'order/reception_local.html', {
+			'orderitems': orderitems.order_by('order__number', 'name')
+		})
+	elif request.method == "POST":
+		action_ids = filter( lambda key: key.startswith("action_"), request.POST.keys() )
+		order_ids = []
+		
+		for action_id in action_ids:
+			item_id = action_id.split("_")[1]
+			item = OrderItem.objects.get( id = item_id )
+			order = item.get_order()
+			
+			qty_delivered = int( request.POST["delivered_%s" % item_id] )
+			
+			if item.delivered - qty_delivered < 0 or item.delivered - qty_delivered > item.quantity:
+				if item.delivered - qty_delivered < 0:
+					error_msg( request, u"Commande %s: %s (%s) - la quantité livrée ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+				else:
+					error_msg( request, u"Commande %s: %s (%s) - la quantité à livrer ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+			else:
+				item.delivered -= qty_delivered
+			item.save()
+		
+		for order in Order.objects.filter( status = 4, provider__is_local = True ):
+			if order.items.filter( delivered__gt = 0, product_id__isnull = False ).count() == 0:
+				order.save_to_history()
+				order.delete()
+	
+	return redirect("tab_reception_local_provider")
+
+
 
 @login_required
 @GET_method
@@ -356,6 +399,7 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 	
 	return redirect( next )
 
+
 @login_required
 @GET_method
 @transaction.commit_on_success
@@ -370,7 +414,7 @@ def del_orderitem(request, orderitem_id):
 		next_page = request.GET.get('next', 'tab_validation')
 	elif order.status == 4:
 		BudgetLine.objects.filter(orderitem_id = item.id).delete()
-		next_page = 'tab_orders'
+		next_page = request.GET.get('next', 'tab_orders')
 	else:
 		next_page = request.GET.get('next', order)
 	
@@ -379,7 +423,7 @@ def del_orderitem(request, orderitem_id):
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
-		next_page = 'tab_orders' 
+		next_page = request.GET.get('next', 'tab_orders')
 	
 	return redirect( next_page )
 
@@ -652,6 +696,10 @@ def _move_to_status_2(request, order):
 		
 		order.status = 4
 		order.save()
+		
+		for item in order.items.all():
+			item.delivered = item.quantity
+			item.save()
 		
 		info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
 	else:

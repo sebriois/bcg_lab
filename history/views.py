@@ -18,6 +18,8 @@ def history_orders(request):
 	# Get initial history_list
 	if request.user.has_perm('team.custom_view_teams'):
 		history_list = History.objects.all()
+	elif request.user.has_perm('order.custom_view_local_provider'):
+		history_list = History.objects.filter( provider__iexact = "magasin" )
 	else:
 		history_list = History.objects.filter(
 			Q(items__username = request.user.username) |
