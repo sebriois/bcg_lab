@@ -404,7 +404,7 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 @login_required
 @GET_method
 @transaction.commit_on_success
-def del_orderitem(request, orderitem_id):
+def orderitem_delete(request, orderitem_id):
 	item = get_object_or_404( OrderItem, id = orderitem_id )
 	order = item.order_set.get()
 	info_msg( request, u"'%s' supprimé avec succès." % item.name )
@@ -436,6 +436,22 @@ def del_orderitem(request, orderitem_id):
 		next_page = request.GET.get('next', 'tab_orders')
 	
 	return redirect( next_page )
+
+@login_required
+@GET_method
+@transaction.commit_on_success
+def orderitem_disjoin(request, orderitem_id):
+	item = get_object_or_404( OrderItem, id = orderitem_id )
+	order = item.get_order()
+	
+	new_order = order.copy()
+	new_order.items.add( item )
+	new_order.save()
+	
+	order.items.remove(item)
+	order.save()
+	
+	return redirect( order )
 
 @login_required
 @GET_method

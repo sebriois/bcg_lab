@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 from order.views import order_detail, orderitem_detail, order_delete, order_export
 from order.views import set_delivered, set_budget, set_next_status
-from order.views import add_orderitem, del_orderitem
+from order.views import add_orderitem, orderitem_delete
 from order.views import add_credit, add_debit
 from order.views import cart_add, set_item_quantity
 from order.views import set_notes, set_number, set_team
@@ -27,7 +27,8 @@ urlpatterns = patterns('',
   url(r'^(?P<order_id>\d+)/$', order_detail, name="order_item"),
   
   # Order Items
-  url(r'^(?P<orderitem_id>\d+)/del-item/$', del_orderitem, name="orderitem_delete"),
+  url(r'^(?P<orderitem_id>\d+)/del-item/$', orderitem_delete, name="orderitem_delete"),
+  url(r'^(?P<orderitem_id>\d+)/disjoin-item/$', orderitem_disjoin, name="orderitem_disjoin"),
   url(r'^(?P<orderitem_id>\d+)/edit/$', orderitem_detail, name="orderitem_detail"),
   url(r'^set-item-quantity/$', set_item_quantity, name="set_item_quantity"),
   

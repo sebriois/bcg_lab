@@ -171,6 +171,9 @@ $(document).ready(function(){
     $(".document").not(".no-button").button({
       icons: { primary: "ui-icon-document" }
     });
+    $(".extlink").not(".no-button").button({
+      icons: { primary: "ui-icon-extlink" }
+    });
     $(".no-text").not(".no-button").button({
       text: false
     });
@@ -243,6 +246,25 @@ $(document).ready(function(){
       });
       
       $( "#confirm.dialog" ).dialog('open');
+    });
+    
+		$( '.confirmDisjoin' ).click(function(e){
+      e.preventDefault();
+      var targetUrl = $(this).attr('href');
+      
+      $( "#confirmDisjoin.dialog" ).dialog({
+        buttons: {
+          Confirmer: function() {
+            $( this ).dialog( "close" );
+            window.location.href = targetUrl;
+          },
+          Annuler: function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+      
+      $( "#confirmDisjoin.dialog" ).dialog('open');
     });
     
     // 

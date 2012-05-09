@@ -132,6 +132,9 @@
 			<td>
 				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
 				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				{% if order.status == 3 and order.items.all|length > 1 %}
+					<a href="{% url orderitem_disjoin order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
+				{% endif %}
 			</td>
 			{% endif %}
 		</tr>

@@ -45,6 +45,19 @@ class Order(models.Model):
 	def get_full_name(self):
 		return u"%s" % self.team
 	
+	def copy(self):
+		return Order.objects.create(
+			number = self.number,
+			budget = self.budget,
+			team = self.team,
+			provider = self.provider,
+			status = self.status,
+			notes = self.notes,
+			is_confidential = self.is_confidential,
+			is_urgent = self.is_urgent,
+			has_problem = self.has_problem
+		)
+	
 	def add(self, product, quantity):
 		if self.date_delivered:
 			 # TODO: raise an exception instead
