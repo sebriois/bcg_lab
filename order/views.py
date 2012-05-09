@@ -690,7 +690,7 @@ def _move_to_status_2(request, order):
 	if order.provider.is_local:
 		subject = "[Commandes LBCMCP] Nouvelle commande magasin"
 		template = loader.get_template('email_local_provider.txt')
-		url = request.build_absolute_uri(reverse('tab_reception'))
+		url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
 		message = template.render( Context({ 'order': order, 'url': url }) )
 		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
 		
@@ -749,6 +749,11 @@ def _move_to_status_4(request, order):
 	order.status = 4
 	order.is_urgent = False
 	order.save()
+	
+	for item in order.items.filter(delivered__isnull = True):
+		item.delivered = item.quantity
+		item.save()
+	
 	order.create_budget_line()
 	
 	usernames = []
