@@ -84,7 +84,7 @@ class HistoryFilterForm(forms.Form):
 			history = History.objects.filter( team__in = teams )
 		elif user.has_perm("order.custom_view_local_provider"):
 			teams = [t.name for t in Team.objects.all()]
-			history = History.objects.filter( provider__is_local = True )
+			history = History.objects.filter( provider__iexact = "magasin" )
 		else:
 			teams = [t.name for t in get_teams(user)]
 			history = History.objects.filter( team__in = teams )
