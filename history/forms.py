@@ -81,14 +81,19 @@ class HistoryFilterForm(forms.Form):
 		
 		if user.has_perm('team.custom_view_teams'):
 			teams = [t.name for t in Team.objects.all()]
+			history = History.objects.filter( team__in = teams )
+		elif user.has_perm("order.custom_view_local_provider"):
+			teams = [t.name for t in Team.objects.all()]
+			history = History.objects.filter( provider__is_local = True )
 		else:
 			teams = [t.name for t in get_teams(user)]
+			history = History.objects.filter( team__in = teams )
 			
 		team_choices = [(name,name) for name in teams]
 		name_choices = []
 		ref_choices = []
 		origin_choices = []
-		for h in History.objects.filter( team__in = teams ):
+		for h in history:
 			for i in h.items.all():
 				if i.name and not i.name in name_choices:
 					name_choices.append(i.name)

@@ -40,7 +40,7 @@ def history_orders(request):
 		
 		history_list = history_list.filter( Q_obj )
 	
-	search_name = request.GET.get("items__name",None)
+	search_name = request.GET.get("items__name__icontains",None)
 	search_ref = request.GET.get("items__reference",None)
 	search_type = request.GET.get("items__category",None)
 	search_subtype = request.GET.get("items__sub_category",None)

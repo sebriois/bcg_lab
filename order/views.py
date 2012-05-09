@@ -474,35 +474,6 @@ def order_delete(request, order_id):
 	return redirect(next_page)
 
 
-@login_required
-@transaction.commit_on_success
-def set_delivered(request, order_id):
-	if not request.method == 'GET':
-		error_msg( "This request method (%s) is not handled on this page" % request.method )
-		return redirect( 'tab_orders' )
-	
-	order = get_object_or_404( Order, id = order_id )
-	
-	if "delivery_date" in request.GET:
-		delivery_date_str = request.GET.get("delivery_date")
-		try:
-			delivery_date = datetime.strptime(delivery_date_str, "%d/%m/%Y")
-		except:
-			error_msg(request, "Merci de saisir une date au format jj/mm/aaaa. (Reçu: %s)" % delivery_date_str)
-			return redirect( 'tab_orders' )
-	else:
-		delivery_date = datetime.now()
-	
-	# if order.date_created.date() > delivery_date.date():
-	#		error_msg( request, "La date de livraison ne peut pas être inférieure à la date d'enregistrement de la commande.")
-	#		return redirect( 'tab_orders' )
-	
-	order.set_as_delivered( delivery_date )
-	info_msg( request, "Commande marquée comme livrée.")
-	return redirect( 'tab_orders' )
-
-
-
 
 					#################
 					# AJAX REQUESTS #
@@ -798,7 +769,8 @@ def _move_to_status_4(request, order):
 	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-	return redirect('tab_orders')
+	
+	return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
 
 def _move_to_status_5(request, order):
 	try:
