@@ -419,6 +419,15 @@ def del_orderitem(request, orderitem_id):
 	else:
 		next_page = request.GET.get('next', order)
 	
+	# SEND EMAIL TO ITEM OWNER - if set in preferences
+	if request.user.username != item.username:
+		tm = TeamMember.objects.filter( user__username = item.username, send_on_edit = True, user__email__isnull = False )
+		if tm.count() > 0:
+			subject = u"[Commandes LBCMCP] Item supprimé (%s)" % item.name
+			template = loader.get_template("email_delete_item.txt")
+			message = template.render( Context({ 'item': item, 'user': request.user, 'order': item.get_order() }) )
+			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm[0].user.email] )
+	
 	item.delete()
 	
 	if order.items.all().count() == 0:
