@@ -7,6 +7,7 @@ from django.db.models.query import Q
 from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError

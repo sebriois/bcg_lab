@@ -62,6 +62,4 @@ COST_TYPE_CHOICES = (
 	(DEBIT, u"Débit")
 )
 
-# EMAIL_MAGASIN = 'daniel.carlier@univ-tlse3.fr'
-EMAIL_MAGASIN = 'fabrice.escaffit@univ-tlse3.fr'
 EMPTY_SEL = [("","---------")]
