@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
-from order.views import order_detail, orderitem_detail, order_delete, order_export
+from order.views import order_detail, orderitem_detail, orderitem_disjoin, order_delete, order_export
 from order.views import set_delivered, set_budget, set_next_status
 from order.views import add_orderitem, orderitem_delete
 from order.views import add_credit, add_debit
