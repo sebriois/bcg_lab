@@ -26,7 +26,7 @@ class TeamMember(models.Model):
 	member_type = models.IntegerField(u"Type d'utilisateur", default = 0)
 	
 	send_on_validation = models.BooleanField(u"Email quand commande validée ?", default = False )
-	send_on_edit = models.BooleanField(u"Email quand item de commande supprimé ?", default = True )
+	send_on_edit = models.BooleanField(u"Email quand commande supprimée ?", default = True )
 	send_on_sent = models.BooleanField(u"Email quand commande envoyée ?", default = False )
 	
 	class Meta:
