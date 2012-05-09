@@ -692,7 +692,8 @@ def _move_to_status_2(request, order):
 		template = loader.get_template('email_local_provider.txt')
 		url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
 		message = template.render( Context({ 'order': order, 'url': url }) )
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
+		emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
+		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
 		
 		order.status = 4
 		order.save()
