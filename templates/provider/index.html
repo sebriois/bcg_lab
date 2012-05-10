@@ -14,6 +14,7 @@
 	<thead>
 		<th>Nom du fournisseur</th>
 		<th>Responsables</th>
+		<th>Notes</th>
 		<th>Action</th>
 	</thead>
 	
@@ -40,15 +41,15 @@
 					{% endif %}
 				</td>
 				<td>
+					<button class="comment notesDialog no-text" href="{% url set_notes provider.id %}" content="{{ provider.notes|default:"" }}"></button>
+				</td>
+				<td>
 					<a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
 					{% if provider.users_in_charge.all.count == 0 or user in provider.users_in_charge.all or user.is_superuser %}
 					<a href="{% url provider_item provider.id %}" class="pencil">Editer</a>
 					<a href="{% url import_products provider.id %}" class="import">Import produits</a>
 					<a href="{% url export_products provider.id %}" class="export">Export produits</a>
 					<a href="{% url provider_delete provider.id %}" class="trash">Supprimer</a>
-					{% if provider.notes %}
-						<button class="comment notesDialog" content="{{ provider.notes }}">Voir les notes</button>
-					{% endif %}
 					{% endif %}
 				</td>
 			</tr>
@@ -59,8 +60,8 @@
 	<p>Aucun fournisseur</p>
 {% endif %}
 
-<div id="dialog" title="Notes">
-	<p id="dialog_content">{# text set with js #}</p>
+<div id="notesDialog" title="Notes">
+	<textarea>{# text set with js #}</textarea>
 </div>
 
 <div id="mail" class="dialog" title="Envoyer un message au(x) responsable(s)">

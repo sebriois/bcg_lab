@@ -1071,6 +1071,11 @@ p.help {
 .margin-left{
 	margin-left:261px;
 }
+#notesDialog textarea {
+	height: 130px;
+	width: 300px;
+}
+
 /* END MISC */
 /* @end */
 

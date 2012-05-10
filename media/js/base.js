@@ -483,7 +483,6 @@ $(document).ready(function(){
             $('#productUpdateForm').submit();
           },
           "Annuler": function() {
-            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
@@ -495,10 +494,39 @@ $(document).ready(function(){
     // 
     // PROVIDER PAGE
     // 
+		$('#notesDialog textarea').hide();
     $('.notesDialog').click(function(e){
-      e.preventDefault();
-      $('#dialog_content').text( $(this).attr("content") );
-      $('#dialog').dialog('open');
+			$('#notesDialog textarea').show();
+			var url = $(this).attr("href");
+			var tr = $(this).parent('td').parent('tr');
+			
+      $('#notesDialog textarea').val( $(this).attr("content") );
+			
+			$('#notesDialog').dialog({
+				width: 350,
+				buttons: {
+					Enregistrer: function() {
+						$.ajax({
+		          url: url,
+		          async: false,
+		          data: {
+		            'notes': $('#notesDialog textarea').val()
+		          },
+		          error: function(jqXHR, textStatus, errorThrown){
+		            alert('pb set notes');
+		            alert(jqXHR.responseText);
+		          }
+		        });
+						$( this ).dialog( "close" );
+						$(tr).effect('pulsate');
+					},
+					Fermer: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+			});
+			
+      $('#notesDialog').dialog("open");
     });
 
     $('.mail').click(function(e){
