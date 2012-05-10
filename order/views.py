@@ -134,7 +134,8 @@ def tab_reception( request ):
 		)
 		if not request.user.has_perm("team.custom_view_teams"):
 			orderitems = orderitems.filter(
-				order__team = get_teams( request.user )[0]
+				Q(username = request.user.username) |
+				Q(order__team__in = get_teams(request.user))
 			)
 		
 		return direct_to_template( request, 'order/reception.html', {
@@ -610,7 +611,7 @@ def set_item_quantity(request):
 		return HttpResponseServerError( u"'%s': Veuillez saisir une quantité entière positive." % item.name )
 	
 	item = get_object_or_404( OrderItem, id = orderitem_id )
-	item.delivered -= item.quantity - quantity
+	item.delivered = quantity
 	item.quantity = quantity
 	item.save()
 	
@@ -673,7 +674,11 @@ def _move_to_status_1(request, order):
 		template = loader.get_template('order/validation_email.txt')
 		context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
 		message = template.render( context )
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		for email in emails:
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+			except:
+				continue
 	else:
 		warn_msg(request, "Aucun email de validation n'a pu être \
 		envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
@@ -690,7 +695,12 @@ def _move_to_status_2(request, order):
 		url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
 		message = template.render( Context({ 'order': order, 'url': url }) )
 		emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		
+		for email in emails:
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+			except:
+				continue
 		
 		order.status = 4
 		order.save()
@@ -717,7 +727,10 @@ def _move_to_status_2(request, order):
 			subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
 			template = loader.get_template("email_order_detail.txt")
 			message = template.render( Context({ 'order': order }) )
-			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+			except:
+				continue
 		
 		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect( request.GET.get('next','tab_validation') )
@@ -748,31 +761,31 @@ def _move_to_status_4(request, order):
 	order.is_urgent = False
 	order.save()
 	
-	for item in order.items.filter(delivered__isnull = True):
+	order.create_budget_line()
+	
+	for item in order.items.all():
 		item.delivered = item.quantity
 		item.save()
 	
-	order.create_budget_line()
-	
-	usernames = []
-	for item in order.items.all():
-		if not item.username in usernames:
-			usernames.append( item.username )
-	
-	emails = []
+	# Prepare emails to be sent
+	usernames = list(set( order.items.values_list("username", flat=True) ))
 	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
-		emails.append( tm.user.email )
-	
-	subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
-	template = loader.get_template("email_order_detail.txt")
-	message = template.render( Context({ 'order': order }) )
-	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
+		template = loader.get_template("email_order_detail.txt")
+		message = template.render( Context({ 'order': order }) )
+		try:
+			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+		except:
+			continue
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	
 	return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
 
 def _move_to_status_5(request, order):
+	# 
+	# FIXME: DEPRECATED
+	# 
 	try:
 		delivery_date = request.GET.get('delivery_date', None)
 		delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )

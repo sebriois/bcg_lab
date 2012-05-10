@@ -1,72 +1,112 @@
-{% extends "new_base.html" %}
+{% extends "base_products.html" %}
+{% load paginator filters %}
+{% block product_list %}active{% endblock %}
+{% block header %}<h1>Gestion des produits</h1>{% endblock %}
 
-{% block main_content %}
-<div id="main">
-	<h1>Gestion des produits</h1>
-	<h2>Liste des produits</h2>
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message|escape|safe }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  <div class="cleaner"></div>
-  {% block content %}
-	<form method="GET" action="." class="search">
-		<span>Rechercher</span> {{form.q }}<input type="submit" value=" " />
+{% block content %}
+<h2>Recherche rapide</h2>
+<form method="GET" action="." class="search">
+	{{form.q }}<input type="submit" value=" " />
+	<a href="{% url product_index %}" class="refresh">Liste globale</a>
+</form>
+<br />
+{% if query and page.object_list|length > 0 %}
+	<h3>{{page.paginator.count}} produit{{page.paginator.count|pluralize}} trouv&eacute{{page.paginator.count|pluralize}}</h3>
+	<table class="list">
+		<thead>
+				<th>Fournisseur</th>
+				<th style="max-width:200px">produit</th>
+				<th>Cond.</th>
+				<th>Réf.</th>
+				<th>Prix</th>
+				<th>N° Offre</th>
+				<th>Expiration</th>
+				<th>Nomen.</th>
+				<th>MAJ</th>
+				<th>Action</th>
+		</thead>
+		<tbody>
+			{% for result in page.object_list %}
+				{% with result.object as product %}
+				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+					<td>{{ product.name }}</td>
+					<td>{{ product.packaging|default:"" }}</td>
+					<td>{{ product.reference }}</td>
+					<td>{{ product.price }}&nbsp;€</td>
+					<td>{{ product.offer_nb|default:"" }}</td>
+					<td>{{ product.expiry|date }}</td>
+					<td>{{ product.nomenclature|default:"" }}</td>
+					<td>{{ product.last_change|date }}</td>
+					<td style="white-space:nowrap">
+						<button id="{{product.id}}" class="plus addToCart">Panier</button>
+						<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
+					</td>
+				</tr>
+				{% endwith %}
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	{% pagination page %}
+	
+	{# {% if page.has_previous or page.has_next %} #}
+	{# 	<div> #}
+	{# 		{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Pr&eacutec&eacutedente{% if page.has_previous %}</a>{% endif %} #}
+	{# 		- page {{page.number}}/{{page.paginator.num_pages}} - #}
+	{# 		{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Suivante &raquo;{% if page.has_next %}</a>{% endif %} #}
+	{# 	</div> #}
+	{# {% endif %} #}
+{% else %}
+	{# Show some example queries to run, maybe query syntax, something else? #}
+{% endif %}
+
+<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
+<form action="{% url product_index %}" method="GET" id="history_filter">{% csrf_token %}
+	<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+	<table>
+		<tr>
+			<td>Fournisseur:</td>
+			<td>{{ filter_form.provider }}</td>
+			<td width="5%"></td>
+			<td>Produit:</td>
+			<td>{{ filter_form.name__icontains }}</td>
+			<td width="5%"></td>
+			<td>Référence:</td>
+			<td>{{ filter_form.reference }}</td>
+			<td width="5%"></td>
+			<td>Fournisseur d'origine:</td>
+			<td>{{ filter_form.origin }}</td>
+		</tr>
+		<tr>
+			<td>Nomenclature:</td>
+			<td>{{ filter_form.nomenclature }}</td>
+			<td width="5%"></td>
+			<td>Type:</td>
+			<td>{{ filter_form.category }}</td>
+			<td width="5%"></td>
+			<td>Sous-Type:</td>
+			<td>{{ filter_form.sub_category }}</td>
+		</tr>
+	</table>
+	<div class="cleaner"></div>
+	<button type="submit" class="all">Chercher</button>
+</form>
+
+<div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
+	<div class="show_expired_warning">
+		ATTENTION: l'offre sur ce produit a atteint sa date d'expiration
+		<br /><br />
+	</div>	
+	<div class="cleaner"></div>
+	<form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
+		<input type="hidden" name="url_params" value="{{url_args}}" />
+		<input type="hidden" name="product_id" value="" />
+		<div id="qty-error-msg"></div>
+		<label for="quantity">Quantité:</label>
+		<input type="text" name="quantity" value="" />
+		<div class="cleaner"></div>
 	</form>
-	<br />
-	{% if query and page.object_list|length > 0 %}
-		<h3>{{page.paginator.count}} produit{{page.paginator.count|pluralize}} trouv&eacute{{page.paginator.count|pluralize}}</h3>
-		<table class="list">
-			<thead>
-					<th>Fournisseur</th>
-					<th style="max-width:200px">produit</th>
-					<th>Cond.</th>
-					<th>Réf.</th>
-					<th>Prix</th>
-					<th>N° Offre</th>
-					<th>Expiration</th>
-					<th>Nomen.</th>
-					<th>MAJ</th>
-					<th>Action</th>
-			</thead>
-			<tbody>
-				{% for result in page.object_list %}
-					{% if result.content_type == "product.product" %}
-					{% with result.object as product %}
-					<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
-						<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
-						<td>{{ product.name }}</td>
-						<td>{{ product.packaging|default:"" }}</td>
-						<td>{{ product.reference }}</td>
-						<td>{{ product.price }}&nbsp;€</td>
-						<td>{{ product.offer_nb|default:"" }}</td>
-						<td>{{ product.expiry|date }}</td>
-						<td>{{ product.nomenclature|default:"" }}</td>
-						<td>{{ product.last_change|date }}</td>
-						<td style="white-space:nowrap">
-							<button id="{{product.id}}" class="plus addToCart">Panier</button>
-							<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
-						</td>
-					</tr>
-					{% endwith %}
-					{% endif %}
-				{% endfor %}
-			</tbody>
-		</table>
-		
-		{% if page.has_previous or page.has_next %}
-			<div>
-				{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Pr&eacutec&eacutedente{% if page.has_previous %}</a>{% endif %}
-				- page {{page.number}}/{{page.paginator.num_pages}} -
-				{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Suivante &raquo;{% if page.has_next %}</a>{% endif %}
-			</div>
-		{% endif %}
-	{% else %}
-		{# Show some example queries to run, maybe query syntax, something else? #}
-	{% endif %}
-	{% endblock %}
 </div>
+
 {% endblock %}

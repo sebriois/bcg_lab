@@ -239,7 +239,6 @@ $(document).ready(function(){
             window.location.href = targetUrl;
           },
           Annuler: function() {
-            $('#loadingDialog').dialog('close');
             $( this ).dialog( "close" );
           }
         }
@@ -247,6 +246,27 @@ $(document).ready(function(){
       
       $( "#confirm.dialog" ).dialog('open');
     });
+
+		$('form .confirmSubmit').click(function(e){
+			e.preventDefault();
+			
+			var form = $(this).parent("form");
+			
+			$("#confirmSubmit").dialog({
+				buttons: {
+					Confirmer: function() {
+						$(this).dialog('close');
+						$('input[name="delete_all"]').val("on");
+						$(form).submit();
+					},
+					Annuler: function() {
+						$(this).dialog('close');
+					}
+				}
+			});
+			
+			$("#confirmSubmit").dialog('open');
+		});
     
 		$( '.confirmDisjoin' ).click(function(e){
       e.preventDefault();
@@ -389,21 +409,9 @@ $(document).ready(function(){
           }
         },
         Annuler: function() {
-          $('#loadingDialog').dialog('close');
           $(this).dialog('close');
         }
       }
-    });
-    
-    // 
-    // PRODUCT PAGE - edit list
-    // 
-    $(".confirm_edit").click(function(e){
-      var get_arg = [];
-      $('.edited_item:checked').each(function(i){
-        get_arg.push($(this).val());
-      });
-      $('input[name="product_ids"]').attr('value',get_arg.join(","));
     });
     
     // 

@@ -22,7 +22,7 @@
 		<thead>
 			<th>Date</th>
 			<th>Fournisseur</th>
-			{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
+			{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" or user|has_perm:"order.custom_order_any_team" %}
 			<th>Equipe</th>
 			{% endif %}
 			<th>Commandé par</th>
@@ -42,7 +42,7 @@
 				<tr class="{% cycle 'even' 'odd' %}">
 					<td>{{ order.date_created|date }}</td>
 					<td>{{ order.provider.name }}</td>
-					{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
+					{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" or user|has_perm:"order.custom_order_any_team" %}
 					<td>{{ order.get_full_name }}</td>
 					{% endif %}
 					<td>{{ item.get_fullname }}</td>

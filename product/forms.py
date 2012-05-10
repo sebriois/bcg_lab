@@ -33,7 +33,7 @@ class ProductForm(forms.ModelForm):
 
 class ProductFilterForm(forms.Form):
 	connector = forms.TypedChoiceField(
-		choices 		= [("OR", u"l'une des"), ("AND",u"toutes les")],
+		choices 		= [("AND",u"toutes les"),("OR", u"l'une des")],
 		initial 		= "AND",
 		coerce 			= str,
 		empty_value = None,
@@ -48,7 +48,6 @@ class ProductFilterForm(forms.Form):
 		label			= u"Produit",
 		widget		= forms.TextInput( attrs = { 'class' : 'autocomplete' }),
 								# autocomplete choices are set below, in __init__ method
-		help_text	= "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
 	reference = forms.CharField(
@@ -57,16 +56,11 @@ class ProductFilterForm(forms.Form):
 			'class' : 'autocomplete',
 			'choices': EMPTY_SEL
 		}),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
 		required 	= False
 	)
-	origin = forms.CharField(
+	origin = forms.ChoiceField(
 		label			= u"Fournisseur d'origine",
-		widget		= forms.TextInput( attrs = {
-			'class' : 'autocomplete',
-			'choices': EMPTY_SEL
-		}),
-		help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+		choices		= EMPTY_SEL + [(origin, origin) for origin in sorted(set(Product.objects.filter(origin__isnull = False).exclude(origin = "").values_list("origin",flat=True)), key = lambda i: i.lower())],
 		required 	= False
 	)
 	nomenclature = forms.CharField(
@@ -84,14 +78,12 @@ class ProductFilterForm(forms.Form):
 		required	= False
 	)
 	
-	def __init__(self, product_choices, *args, **kwargs):
+	def __init__(self, *args, **kwargs):
 		super( ProductFilterForm, self ).__init__( *args, **kwargs )
-		self.fields['name__icontains'].widget.attrs.update({'choices': product_choices})
+		NAME_CHOICES = ";".join(Product.objects.all().values_list("name",flat=True))
+		self.fields['name__icontains'].widget.attrs.update({'choices': NAME_CHOICES})
 		
-		ORIGIN_CHOICES = ";".join( set([ unicode(p.origin) for p in Product.objects.all() ]) )
-		self.fields['origin'].widget.attrs.update({'choices': ORIGIN_CHOICES})
-		
-		REFERENCE_CHOICES = ";".join( [ unicode(p.reference) for p in Product.objects.all() ] )
+		REFERENCE_CHOICES = ";".join( Product.objects.all().values_list("reference",flat=True) )
 		self.fields['reference'].widget.attrs.update({'choices': REFERENCE_CHOICES})
 	
 
@@ -123,7 +115,7 @@ class EditListForm(forms.Form):
 		required = False
 	)
 	percent_raise = forms.DecimalField(
-		label = "Augmentation du prix (%)",
+		label = "Variation du prix (%)",
 		min_value = 0,
 		max_value = 100,
 		required = False

@@ -16,8 +16,7 @@ def has_perms(user, perms):
 
 @register.filter
 def is_admin(user):
-	# TODO: maybe create a specific permission for admins
-	return user.has_perm("team.custom_add_group")
+	return user.has_perm("team.custom_is_admin")
 
 @register.filter
 def can_edit(user, order):

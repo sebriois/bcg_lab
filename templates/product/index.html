@@ -1,118 +1,105 @@
 {% extends "base_products.html" %}
 {% load paginator filters %}
 {% block product_list %}active{% endblock %}
-{% block header %}<h1>Gestion des produits</h1>{% endblock %}
+{% block header %}
+	<h1>Gestion des produits</h1>
+	<h3>{{ product_count }} produits référencés.</h3>
+{% endblock %}
 
 {% block content %}
-<!-- Start: search form -->
-<div class="bar">
-	<a href="#" class="expand">Voir</a>
-	<a href="#" class="hide">Cacher</a>
-	<h4>Recherche de produits</h4>
-</div>
-<div class="bar_content">
-	<form action="{% url product_index %}" method="GET" id="history_filter">{% csrf_token %}
-		<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
-		<div class="cleaner"></div>
-		<table>
-			<tr>
-				<td>Fournisseur:</td>
-				<td>{{ filter_form.provider }}</td>
-				<td width="5%"></td>
-				<td>Produit:</td>
-				<td>{{ filter_form.name__icontains }}</td>
-				<td width="5%"></td>
-				<td>Référence:</td>
-				<td>{{ filter_form.reference }}</td>
-				<td width="5%"></td>
-				<td>Fournisseur d'origine:</td>
-				<td>{{ filter_form.origin }}</td>
-			</tr>
-			<tr>
-				<td>Nomenclature:</td>
-				<td>{{ filter_form.nomenclature }}</td>
-				<td width="5%"></td>
-				<td>Type:</td>
-				<td>{{ filter_form.category }}</td>
-				<td width="5%"></td>
-				<td>Sous-Type:</td>
-				<td>{{ filter_form.sub_category }}</td>
-			</tr>
-		</table>
-		<div class="cleaner"></div>
-		<button type="submit" class="all">Chercher</button>
-		<a href="{% url product_index %}" class="refresh">Liste globale</a>
+<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche rapide</h2>
+<form method="GET" action="." class="search">
+	<fieldset>
+		<input type="text" name="q" value="{{q_init}}"/> <input type="submit" value=" " />
+		<p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouv&eacute{{search_count|pluralize}}</p>
+	</fieldset>
+</form>
+
+{% if products.object_list|length > 0 %}
+	<div class="btn_wrapper">
+		<a href="{% url tab_cart %}" class="btn_medium">
+			<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
+		</a>
+	</div>
+	{% if search_count > 0 %}
+	<div class="btn_wrapper">
+		<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
+			<img src="{{ MEDIA_URL }}img/icons/pencil.png" />Editer cette liste de produits
+		</a>
+	</div>
+	{% endif %}
+	<div class="cleaner"></div>
+	<div style="color:#e2350d;height:20px">
+		<div class="legend_urgent"></div>offre périmée
+	</div>
+	<div class="cleaner"></div>
+	<table class="list">
+		<thead>
+				<th>Fournisseur</th>
+				<th style="max-width:200px">produit</th>
+				<th>Cond.</th>
+				<th>Réf.</th>
+				<th>Prix</th>
+				<th>N° Offre</th>
+				<th>Expiration</th>
+				<th>Nomen.</th>
+				<th>MAJ</th>
+				<th>Action</th>
+		</thead>
+		<tbody>
+			{% for product in products.object_list %}
+				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+					<td>{{ product.name }}</td>
+					<td>{{ product.packaging|default:"" }}</td>
+					<td>{{ product.reference }}</td>
+					<td>{{ product.price }}&nbsp;€</td>
+					<td>{{ product.offer_nb|default:"" }}</td>
+					<td>{{ product.expiry|date }}</td>
+					<td>{{ product.nomenclature|default:"" }}</td>
+					<td>{{ product.last_change|date }}</td>
+					<td style="white-space:nowrap">
+						<button id="{{product.id}}" class="plus addToCart">Panier</button>
+						<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	
+	{% pagination products %}
+{% else %}
+	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
+	<form action="{% url product_index %}" method="GET" id="history_filter">
+		<fieldset>
+			<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+			{% with filter_form.provider as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.origin as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.name__icontains as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.reference as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.nomenclature as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.category as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+			{% with filter_form.sub_category as field %}
+				{% include "form_snippet.html" %}
+			{% endwith %}
+	
+			<div class="cleaner"></div>
+			<button type="submit" class="all">Chercher</button>
+		</fieldset>
 	</form>
-</div>
-<div class="cleaner"></div>
-<br />
-<!-- End: search form -->
-
-{# START: Product list #}
-<div class="btn_wrapper">
-	<a href="{% url tab_cart %}" class="btn_medium">
-		<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
-	</a>
-</div>
-{% if url_args|length > 0 %}
-<div class="btn_wrapper">
-	<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
-		<img src="{{ MEDIA_URL }}img/icons/pencil.png" />Editer cette liste de produits
-	</a>
-</div>
 {% endif %}
-
-<h2>Liste des produits - Page {{ products.number }} sur {{ products.paginator.num_pages }}.</h2>
-
-{% pagination products %}
-<br />
-<div class="cleaner"></div>
-<div style="color:#e2350d;height:20px">
-	<div class="legend_urgent"></div>offre périmée
-</div>
-<div class="cleaner"></div>
-
-<table class="list">
-	<thead>
-			<th>Fournisseur</th>
-			<th style="max-width:200px">produit</th>
-			<th>Cond.</th>
-			<th>Réf.</th>
-			<th>Prix</th>
-			<th>N° Offre</th>
-			<th>Expiration</th>
-			<th>Nomen.</th>
-			<th>MAJ</th>
-			<th>Action</th>
-	</thead>
-	<tbody>
-		{% for product in products.object_list %}
-			<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% endif %}">
-				<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
-				<td>{{ product.name }}</td>
-				<td>{{ product.packaging|default:"" }}</td>
-				<td>{{ product.reference }}</td>
-				<td>{{ product.price }}&nbsp;€</td>
-				<td>{{ product.offer_nb|default:"" }}</td>
-				{% if product.has_expired %}
-					<td style="background:#ffe7dc;"><b>{{ product.expiry|date }}</b></td>
-				{% else %}
-					<td>{{product.expiry|date}}</td>
-				{% endif %}
-				<td>{{ product.nomenclature|default:"" }}</td>
-				<td>{{ product.last_change|date }}</td>
-				<td style="white-space:nowrap">
-					<button id="{{product.id}}" class="plus addToCart">Panier</button>
-					<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
-	<tfoot>
-		<tr><td colspan="9">{% pagination products %}</td></tr>
-	</tfoot>
-</table>
-{# END: Product list #}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
 	<div class="show_expired_warning">

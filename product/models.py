@@ -40,8 +40,6 @@ class Product(models.Model):
 	nomenclature	= models.CharField( u'Nomenclature', blank = True, null = True, max_length = 100)
 	category			= models.ForeignKey( ProductType, verbose_name = "Type", blank = True, null = True )
 	sub_category	= models.ForeignKey( ProductSubType, verbose_name = "Sous-type", blank = True, null = True )
-	# category			= models.IntegerField( "Type", blank = True, null = True )
-	# sub_category	= models.IntegerField( "Sous-type", blank = True, null = True )
 	expiry				= models.DateTimeField( u"Date d'expiration", help_text = u"Format jj/mm/aaaa", blank = True, null = True )
 	last_change		= models.DateTimeField( u'Dernière modification', auto_now = True)
 	attachments		= generic.GenericRelation( Attachment )

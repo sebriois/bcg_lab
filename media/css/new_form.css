@@ -228,10 +228,12 @@ form.transfer select {
 }
 /* END WIZARD FORM */
 
-form.search {
+/*form.search {
 	margin: auto;
 	text-align: center;
 }
+*/
+
 form.search span {
 	font-weight: bold;
 	font-size: 16px;
