@@ -3,7 +3,7 @@
 <div style="float:left;">
 	<h3>Infos:</h3>
 	
-	{% if order.status == 0 and user|has_perm:"order.custom_order_any_team" %}
+	{% if order.status < 2 and user|has_perm:"order.custom_order_any_team" or user|is_admin %}
 		<p>
 			Equipe:
 			<select id="select-team" url="{% url order_team order.id %}">

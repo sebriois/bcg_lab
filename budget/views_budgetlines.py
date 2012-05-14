@@ -75,7 +75,6 @@ def item(request, bl_id):
 		if form.is_valid():
 			bl = form.save()
 			bl.update_budget_relation()
-			bl.update_order_or_history()
 			
 			bl.is_active = True
 			if data["cost_type"] == "credit":

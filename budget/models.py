@@ -150,25 +150,3 @@ class BudgetLine(models.Model):
 		self.origin = b.default_origin
 		self.save()
 	
-	def update_related(self):
-		"""
-		Update related budgetlines (ie. having the same order number)
-		Update related order/history if any order/history field is changed
-		"""
-		from order.models import Order
-		from history.models import History
-		
-		if not self.number: return
-		
-		# From order
-		order_list = Order.objects.filter( number = self.number )
-		if order_list.count() > 0:
-			o = order_list[0]
-		
-		# From history
-		history_list = History.objects.filter( number = self.number )
-		if history_list.count() > 0:
-			o = history_list[0]
-		
-		
-		

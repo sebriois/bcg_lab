@@ -57,7 +57,7 @@ def tab_orders(request):
 			Q( status__in = [2,3,4] ) |
 			Q( status = 1, team = get_teams( request.user )[0] ) |
 			Q( status = 1, items__username = request.user.username )
-		).order_by('-status','last_change').distinct()
+		).distinct()
 	# Commandes en cours - toutes équipes
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter(
@@ -252,6 +252,7 @@ def order_detail(request, order_id):
 		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
+		'team_choices': [(team.id,team.name) for team in Team.objects.all()],
 		'next': order.get_absolute_url(),
 		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
@@ -434,7 +435,7 @@ def orderitem_delete(request, orderitem_id):
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
-		next_page = request.GET.get('next', 'tab_orders')
+		next_page = 'tab_orders'
 	
 	return redirect( next_page )
 
@@ -495,6 +496,7 @@ def set_team(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	order.team = get_object_or_404( Team, id = int(team_id) )
 	order.save()
+	
 	return HttpResponse('ok')
 
 @login_required
@@ -780,7 +782,8 @@ def _move_to_status_4(request, order):
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	
-	return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
+	# return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
+	return redirect( order )
 
 def _move_to_status_5(request, order):
 	# 
