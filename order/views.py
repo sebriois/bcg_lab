@@ -112,10 +112,17 @@ def tab_validation( request ):
 		budget_list = Budget.objects.filter(team__in = teams, is_active = True)
 	else:
 		budget_list = Budget.objects.none()
+		
+	# TEAMS THAT CAN BE SELECTED
+	if request.user.has_perm("order.custom_order_any_team") or user.has_perm("team.custom_is_admin"):
+		team_choices = [(team.id, team.name) for team in Team.objects.all()]
+	else:
+		team_choices = []
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list.distinct() ),
 		'budgets': budget_list.distinct(),
+		'team_choices': team_choices,
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'see_all_teams': see_all_teams,
