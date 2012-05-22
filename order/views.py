@@ -114,7 +114,7 @@ def tab_validation( request ):
 		budget_list = Budget.objects.none()
 		
 	# TEAMS THAT CAN BE SELECTED
-	if request.user.has_perm("order.custom_order_any_team") or user.has_perm("team.custom_is_admin"):
+	if request.user.has_perm("order.custom_order_any_team") or request.user.has_perm("team.custom_is_admin"):
 		team_choices = [(team.id, team.name) for team in Team.objects.all()]
 	else:
 		team_choices = []
