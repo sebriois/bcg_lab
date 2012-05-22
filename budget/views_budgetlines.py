@@ -101,7 +101,7 @@ def delete(request, bl_id):
 	bl = get_object_or_404( BudgetLine, id = bl_id )
 	budget_name = bl.budget
 	bl.delete()
-	return redirect( reverse('budgetlines') + "?budget_name=%s" % budget_name )
+	return redirect( 'budgets' )
 
 
 	# @GET_method
