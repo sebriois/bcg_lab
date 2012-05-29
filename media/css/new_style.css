@@ -113,19 +113,6 @@ ol {
 	padding: 20px 0;
 	background: #51473d url('../img/layout/bg-footer.jpg') repeat-x;
 }
-#tracelite_version {
-	background: #64594e;
-	border: 1px solid #898077;
-	width:	260px;
-	padding: 10px;
-	float: right;
-	color: #282725;
-}
-#tracelite_version h4 {
-	height: 11px;
-	display: block;
-	margin: 5px 0px 2px 0px;
-}
 
 /* @group Header */
 #header {

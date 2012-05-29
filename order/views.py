@@ -171,16 +171,16 @@ def tab_reception( request ):
 			item.username_recept = request.user.username
 			item.save()
 		
-		
 		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
 			order_list = Order.objects.filter( status = 4, provider__is_local = True )
 		else:
 			order_list = Order.objects.filter( status = 4, team = get_teams( request.user )[0] )
 		
+		order_list = order_list.exclude( provider__is_service = True )
 		for order in order_list:
 			if order.items.filter( delivered__gt = 0, product_id__isnull = False ).count() == 0:
 				if not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser:
-					info_msg( request, u"La commande %s a été entièrement réceptionnée et archivée." % order.number )
+					info_msg( request, u"La commande %s (%s) a été entièrement réceptionnée et archivée." % (order.number, order.provider.name) )
 				order.save_to_history()
 				order.delete()
 	return redirect("tab_reception")
