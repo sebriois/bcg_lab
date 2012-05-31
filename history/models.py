@@ -34,13 +34,3 @@ class History(models.Model):
 	def get_absolute_url(self):
 		return ( 'history_detail', [self.id] )
 	
-	def get_notes(self):
-		# TODO: use self.comments instead
-		if not self.number: return ""
-		
-		order_list = Order.objects.filter( number = self.number, team__name = self.team )
-		if order_list.count() > 0:
-			return order_list[0].notes
-		
-		return ""
-	

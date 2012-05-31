@@ -1,27 +1,19 @@
-{% extends "main_custom.html" %}
-
-{% block sidebar %}
-{% endblock %}
+{% extends "base_main.html" %}
 
 {% block content %}
-<div id="content">
-  <h2>Une erreur a été détectée</h2>
-  <br />
-  <h3>Raisons possibles d'apparition de cette erreur:</h3>
-  <ul>
-    <li>Accès non-autorisé à la page demandée</li>
-    <li>La page demandée est introuvable</li>
-    <li>
-      Bug de l'application sur la page demandée. Dans ce cas, merci de
-      copier/coller le texte suivant et de l'envoyer à 
-      <strong>sbriois@cict.fr</strong>
-    </li>
-  </ul>
+<h2>Une erreur a été détectée</h2>
+<br />
+<h3>Raisons possibles d'apparition de cette erreur:</h3>
+<ul>
+  <li>Accès non-autorisé à la page demandée</li>
+  <li>La page demandée est introuvable</li>
+  <li>
+    Bug de l'application sur la page demandée. Dans ce cas, merci de
+    copier/coller le texte suivant et de le reporter dans la page suivante:
+    {% url issue_new %}
+  </li>
+</ul>
 
-  <h3>Traceback</h3>
-  {{ traceback|linebreaks }}
-
-  <h3>Request</h3>
-  {{ request|linebreaks }}
-</div>
+<h3>Traceback</h3>
+{{ traceback|linebreaks }}
 {% endblock %}
