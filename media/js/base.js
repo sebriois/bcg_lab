@@ -45,6 +45,11 @@ $(document).ready(function(){
 				return false;
 		});
 		
+		$('form.show_wait').submit(function(){
+			$('.saving').show();
+			$('.paginator, table.list, .hide_on_save').hide();
+		});
+		
 		// FRAIS / REMISES
 		var creditFormIsHidden=true;
 		var debitFormIsHidden=true;

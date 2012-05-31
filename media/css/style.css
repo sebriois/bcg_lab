@@ -810,6 +810,12 @@ p.help {
 	height: 130px;
 	width: 300px;
 }
+.saving {
+    text-align: center;
+    display: none;
+    margin:auto;
+}
+
 
 /* END MISC */
 

@@ -8,30 +8,34 @@
 
 {% block content %}
 <h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche rapide</h2>
-<form method="GET" action="." class="search">
+<form method="GET" action="." class="search show_wait">
 	<fieldset>
 		<input type="text" name="q" value="{{q_init}}"/> <input type="submit" value=" " />
 		<p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouv&eacute{{search_count|pluralize}}</p>
 	</fieldset>
 </form>
+<div class="cleaner"></div>
+<div class="saving">
+	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+</div>
 
 {% if products.object_list|length > 0 %}
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
-	<div class="btn_wrapper">
+	<div class="btn_wrapper hide_on_save">
 		<a href="{% url tab_cart %}" class="btn_medium">
 			<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
 		</a>
 	</div>
 	{% endif %}
 	{% if search_count > 0 %}
-	<div class="btn_wrapper">
+	<div class="btn_wrapper hide_on_save">
 		<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
 			<img src="{{ MEDIA_URL }}img/icons/pencil.png" />Editer cette liste de produits
 		</a>
 	</div>
 	{% endif %}
 	<div class="cleaner"></div>
-	<div style="color:#e2350d;height:20px">
+	<div style="color:#e2350d;height:20px" class="hide_on_save">
 		<div class="legend_urgent"></div>offre périmée
 	</div>
 	<div class="cleaner"></div>
@@ -74,8 +78,8 @@
 	{% pagination products %}
 {% else %}
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
-	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
-	<form action="{% url product_index %}" method="GET" id="history_filter">
+	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
+	<form action="{% url product_index %}" method="GET" class="show_wait hide_on_save">
 		<fieldset>
 			<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
 			{% with filter_form.provider as field %}
