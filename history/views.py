@@ -1,6 +1,10 @@
 # encoding: utf-8
+import xlwt
+
+from django.utils.http import urlencode
 from django.db.models.query import Q
 from django.db import transaction
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.views.generic.simple import direct_to_template
@@ -93,16 +97,14 @@ def item(request, item_id):
 
 @login_required
 def history_budgets(request):
-	if request.user.has_perms(['team.custom_view_teams','budget.custom_view_budget']):
-		budget_lines = BudgetLine.objects.filter( is_active = False )
-	elif request.user.has_perm('budget.custom_view_budget'):
-		budget_lines = BudgetLine.objects.filter(
-			is_active = False,
-			team__in = [t.name for t in get_teams(request.user)]
-		)
-	else:
-		not_allowed_msg(request)
-		return redirect('home')
+	if not request.user.has_perm("budget.custom_view_budget"):
+		not_allowed_msg( request )
+		return redirect("home")
+	
+	budgets = Budget.objects.filter( is_active = False )
+	
+	if not request.user.has_perm('team.custom_view_teams'):
+		budgets = budgets.filter( team__in = get_teams(request.user) )
 	
 	# 
 	# Filter history_list depending on received GET data
@@ -117,10 +119,113 @@ def history_budgets(request):
 		Q_obj.connector = data.pop("connector")
 		Q_obj.children	= data.items()
 		
-		budget_lines = budget_lines.filter( Q_obj )
+		budget_lines = BudgetLine.objects.filter( 
+			budget_id__in = budgets.values_list("id", flat=True) 
+		).filter( Q_obj )
+	else:
+		budget_lines = BudgetLine.objects.none()
 	
 	return direct_to_template( request, 'history/budgets.html', {
 		'filter_form': form,
-		'objects': paginate( request, budget_lines.distinct() )
+		'budgets': paginate( request, budgets ),
+		'budget_lines': paginate( request, budget_lines ),
+		'search_args': urlencode(request.GET)
 	})
+
+@login_required
+@GET_method
+def export_budget_to_xls(request):
+	if len(request.GET.keys()) > 0:
+		return export_budgetlines( request )
+	
+	return export_budgets( request )
+
+@login_required
+@GET_method
+def export_budgetlines( request ):
+	# 
+	# Filter budget_lines depending on received GET data
+	form = BudgetHistoryFilterForm( user = request.user, data = request.GET )
+	if form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		budget_lines = BudgetLine.objects.filter(is_active = False).filter( Q_obj )
+	else:
+		error_msg(request, "Impossible d'exporter cette page.")
+		return redirect( reverse("history_budgets") )
+	
+	wb = xlwt.Workbook()	
+	ws = wb.add_sheet("export")
+
+	header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
+	u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
+	u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"]
+	for col, title in enumerate(header): ws.write(0, col, title)
+
+	prev_budget = None
+	row = 1
+
+	for bl in budget_lines.order_by("budget"):
+		if prev_budget != bl.budget:
+			if prev_budget: row += 1
+			prev_budget = bl.budget
+		
+		ws.write( row, 0, bl.team )
+		ws.write( row, 1, bl.budget )
+		ws.write( row, 2, bl.number )
+		ws.write( row, 3, bl.date.strftime("%d/%m/%Y") )
+		ws.write( row, 4, bl.nature )
+		ws.write( row, 5, bl.get_budget_type_display() )
+		ws.write( row, 6, bl.provider )
+		ws.write( row, 7, bl.offer )
+		ws.write( row, 8, bl.product )
+		ws.write( row, 9, bl.credit )
+		ws.write( row, 10, bl.debit )
+		ws.write( row, 11, bl.quantity )
+		ws.write( row, 12, bl.product_price )
+		ws.write( row, 13, str(bl.get_amount_left()) )
+		row += 1
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=export_historique_budget.xls'
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	wb.save(response)
+	
+	return response
+
+@login_required
+@GET_method
+def export_budgets( request ):
+	budgets = Budget.objects.filter( is_active = False )
+	
+	if not request.user.has_perm('team.custom_view_teams'):
+		budgets = budgets.filter( team__in = get_teams(request.user) )
+	
+	wb = xlwt.Workbook()	
+	ws = wb.add_sheet("export")
+	
+	header = [u"EQUIPE", u"BUDGET", u"TUTELLE", u"NATURE"]
+	for col, title in enumerate(header): ws.write(0, col, title)
+	
+	row = 1
+	for budget in budgets:
+		ws.write( row, 0, budget.team.name )
+		ws.write( row, 1, budget.name )
+		ws.write( row, 2, budget.get_budget_type_display() )
+		ws.write( row, 3, budget.default_nature )
+		row += 1
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=export_historique_budget.xls'
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	wb.save(response)
+
+	return response
 
