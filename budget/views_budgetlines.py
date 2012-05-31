@@ -6,6 +6,7 @@ import xlwt
 from django.utils.http import urlencode
 from django.db import transaction
 from django.db.models.query import Q
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
@@ -85,15 +86,20 @@ def export_to_xls(request):
 	header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
 	u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
 	u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"]
-	
 	for col, title in enumerate(header): ws.write(0, col, title)
 	
+	prev_budget = None
 	row = 1
-	for bl in budget_lines:
+	
+	for bl in budget_lines.order_by("budget"):
+		if prev_budget != bl.budget:
+			if prev_budget: row += 1
+			prev_budget = bl.budget
+		
 		ws.write( row, 0, bl.team )
 		ws.write( row, 1, bl.budget )
 		ws.write( row, 2, bl.number )
-		ws.write( row, 3, bl.date )
+		ws.write( row, 3, bl.date.strftime("%d/%m/%Y") )
 		ws.write( row, 4, bl.nature )
 		ws.write( row, 5, bl.get_budget_type_display() )
 		ws.write( row, 6, bl.provider )
@@ -103,7 +109,7 @@ def export_to_xls(request):
 		ws.write( row, 10, bl.debit )
 		ws.write( row, 11, bl.quantity )
 		ws.write( row, 12, bl.product_price )
-		ws.write( row, 13, bl.get_amount_left )
+		ws.write( row, 13, str(bl.get_amount_left()) )
 		row += 1
 	
 	response = HttpResponse(mimetype="application/ms-excel")

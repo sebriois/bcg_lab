@@ -5,7 +5,7 @@
 </div>
 
 <div class="bar_content">
-  <form action="{% url budgetlines %}" method="GET">{% csrf_token %}
+  <form action="{% url budgetlines %}" method="GET">
     <strong>
       Chercher les lignes budgétaires qui correspondent à
       {{ filter_form.connector }} conditions suivantes:

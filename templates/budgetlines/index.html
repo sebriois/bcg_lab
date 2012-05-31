@@ -23,11 +23,13 @@
 			<img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
 		</a>
 	</div>
+	{% if search_args %}
 	<div class="btn_wrapper">
-		<a href="{% url budgetline_export %}" class="btn_big">
+		<a href="{% url budgetline_export %}?{{search_args}}" class="btn_big">
 			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
 		</a>
 	</div>
+	{% endif %}
 	<h1>Gestion des budgets</h1>
 {% endblock %}
 
