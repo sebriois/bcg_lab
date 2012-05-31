@@ -16,6 +16,12 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
 
+<!--[if !IE 7]>
+	<style type="text/css">
+		#wrapper {display:table;height:100%}
+	</style>
+<![endif]-->
+
 {% block extra_head %}{% endblock %}
 </head>
 
@@ -40,9 +46,11 @@
 	        <li class="{% block menu_provider %}{% endblock %}">
 	          <a href="{% url provider_index %}">Fournisseurs</a>
 	        </li>
-	        <li class="{% block menu_product %}{% endblock %}">
-	          <a href="{% url product_index %}">Produits</a>
-	        </li>
+				{% endif %}
+        <li class="{% block menu_product %}{% endblock %}">
+          <a href="{% url product_index %}">Produits</a>
+        </li>
+				{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
 	        <li class="{% block menu_services %}{% endblock %}">
 	          <a href="{% url tab_services %}">Services</a>
 	        </li>
@@ -86,18 +94,7 @@
     <!-- end: header -->
     
     {% block main_content %}{% endblock %}
-    <br /><br />
   </div>
-  <!-- end: wrapper -->
-  
-  <div id="footer">
-      <div id="footer_wrapper">
-          <div id="tracelite_version">
-              <h4>Gestion des commandes LBCMCP</h4>
-              <span class="little">VERSION {{ VERSION }} - Build {{ SVN_REVISION }}</span><br />
-          </div>
-          <div class="cleaner"></div>
-      </div>
-  </div>
+  <div id="footer"></div>
 </body>
 </html>
