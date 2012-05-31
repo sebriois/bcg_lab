@@ -13,6 +13,9 @@
 {% endblock %}
 
 {% block content %}
+
+{% include "order/_search_form.html" %}
+
 {% if orders.object_list %}
 	<div style="color:#e2350d">
 		<div class="legend_urgent"></div>commandes urgentes
@@ -78,11 +81,6 @@
 	<p>Aucune commande en cours.</p>
 {% endif %}
 
-{# ################## #}
-{#										#}
-{#			DIALOGS				#}
-{#										#}
-{# ################## #}
 
 <div id="setOrderNb" class="dialog" title="Saisie du N° de commande">
 	<div class="form-row">

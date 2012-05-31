@@ -20,7 +20,7 @@ from provider.models import Provider
 from product.models import Product
 from budget.models import Budget, BudgetLine
 from order.models import Order, OrderItem
-from order.forms import OrderItemForm, AddDebitForm, AddCreditForm
+from order.forms import OrderItemForm, AddDebitForm, AddCreditForm, FilterForm
 
 from constants import *
 from utils import *
@@ -78,8 +78,24 @@ def tab_orders(request):
 			Q(items__username = request.user.username)
 		).distinct()
 	
+	# 
+	# Filter order depending on received GET data
+	form = FilterForm( data = request.GET )
+	if len(request.GET.keys()) > 0 and form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		order_list = order_list.filter( Q_obj )
+	
 	return direct_to_template( request, "order/index.html", {
 		'orders': paginate( request, order_list ),
+		'filter_form': form,
 		'next': 'tab_orders',
 		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
@@ -484,18 +500,14 @@ def order_delete(request, order_id):
 
 
 
-					#################
-					# AJAX REQUESTS #
-					#################
+  #################
+  # AJAX REQUESTS #
+  #################
 
 @login_required
 @transaction.commit_on_success
-@GET_method
+@AJAX_method
 def set_team(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	team_id = request.GET.get("team_id", None)
 	if not team_id:
 		return HttpResponseServerError('team_id is missing.')
@@ -506,14 +518,11 @@ def set_team(request, order_id):
 	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_notes(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	if 'notes' in request.GET:
 		order.notes = request.GET['notes']
@@ -521,14 +530,11 @@ def set_notes(request, order_id):
 	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_number(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	number = request.GET.get("number", None)
 	if not number:
 		return HttpResponseServerError('number is missing.')
@@ -539,14 +545,11 @@ def set_number(request, order_id):
 	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_budget(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	budget_id = request.GET.get("budget_id", None)
 	if not budget_id:
 		return HttpResponseServerError('budget_id is missing.')
@@ -574,27 +577,21 @@ def set_budget(request, order_id):
 	order.save()
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_is_urgent(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	order.is_urgent = request.GET['is_urgent'] == 'true'
 	order.save()
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_has_problem(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	order.has_problem = request.GET['has_problem'] == 'true'
 	order.save()
@@ -602,13 +599,9 @@ def set_has_problem(request, order_id):
 
 
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_item_quantity(request):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	orderitem_id = request.GET.get('orderitem_id', None)
 	quantity = request.GET.get('quantity', None)
 	
@@ -630,9 +623,9 @@ def set_item_quantity(request):
 	return HttpResponse('ok')
 
 
-					################
-					# ORDER STATUS #
-					################
+  ################
+  # ORDER STATUS #
+  ################
 
 @login_required
 @GET_method
@@ -793,9 +786,6 @@ def _move_to_status_4(request, order):
 	return redirect( order )
 
 def _move_to_status_5(request, order):
-	# 
-	# FIXME: DEPRECATED
-	# 
 	try:
 		delivery_date = request.GET.get('delivery_date', None)
 		delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )

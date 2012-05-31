@@ -73,6 +73,32 @@ class AddDebitForm(forms.ModelForm):
 		return price
 	
 
+class FilterForm(forms.Form):
+	connector = forms.TypedChoiceField(
+		choices = [("AND",u"toutes les"), ("OR", u"l'une des")],
+		initial = "AND",
+		coerce = str,
+		empty_value = None,
+		required = True
+	)
+
+	team = forms.ModelChoiceField(
+		queryset = Team.objects.all(),
+		label    = "Equipe",
+		required = False
+	)
+	
+	number = forms.CharField(
+		label    = u"N°cmde",
+		required = False
+	)
+	
+	provider = forms.ModelChoiceField(
+		queryset = Provider.objects.exclude( is_local = True ),
+		label    = "Fournisseur",
+		required = False
+	)
+
 class ServiceForm(forms.Form):
 	team = forms.ModelChoiceField(
 		label = u"Equipe",
