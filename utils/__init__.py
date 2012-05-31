@@ -31,11 +31,23 @@ def GET_method(view):
 
 def POST_method(view):
 	"""
-	Decorator that checks whether the view is called using the GET method
+	Decorator that checks whether the view is called using the POST method
 	"""
 	def _wrapped_view( request, *args, **kwargs ):
 		if not request.method == 'POST':
 			error_msg( request, "This request method (%s) is not handled on this page" % request.method )
+			return redirect( 'error' )
+		return view(request, *args, **kwargs)
+	
+	return _wrapped_view
+
+def AJAX_method(view):
+	"""
+	Decorator that checks whether the view is called using AJAX
+	"""
+	def _wrapped_view( request, *args, **kwargs ):
+		if not request.is_ajax():
+			error_msg(request, 'Method %s not allowed at this URL' % request.method )
 			return redirect( 'error' )
 		return view(request, *args, **kwargs)
 	

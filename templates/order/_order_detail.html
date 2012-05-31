@@ -64,15 +64,15 @@
 		{% include "attachments/show.html" %}
 	{% endwith %}
 	{% if order.status == 0 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_cart %}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_cart %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status == 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status > 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% endif %}{% endif %}{% endif %}
@@ -240,7 +240,9 @@
 	{% if user|has_perm:"order.custom_goto_status_4" %}
 		{% if order.status == 3 %}
 		<a href="{% url set_next_status order.id %}" class="disk save-changes">Enregistrer les modifications</a>
-		{% else %}
+		{% else %}{% if order.status == 4 and user|has_perm:"order.custom_goto_status_4" %}
+			<a href="{% url set_next_status order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
+		{% endif %}
 		<a href="{{ order.get_absolute_url }}?page={{next_page|default:"1"}}" class="disk save-changes">Enregistrer les modifications</a>
 		{% endif %}
 		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
