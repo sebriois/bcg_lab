@@ -1,4 +1,6 @@
 # coding: utf-8
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
@@ -15,18 +17,21 @@ from utils import *
 def index(request):
 	if request.method == 'GET':
 		if request.GET.get('fixed',False):
-			issues = Issue.objects.filter( status__in = [2,4] )
+			issues = Issue.objects.filter( status__in = [2,4] ).order_by('-date_closed','-date_created')
 		else:
 			issues = Issue.objects.exclude( status__in = [2,4] )
 		
 		return direct_to_template( request, 'issues/index.html', {
-			'issues': issues
+			'issues': issues,
+			'show_fixed': 'fixed' in request.GET.keys()
 		})
 	
 	elif request.method == 'POST':
 		form = IssueForm( data = request.POST )
 		if form.is_valid():
-			form.save()
+			issue = form.save()
+			issue.username = request.user.username
+			issue.save()
 			return redirect('issue_index')
 		else:
 			return direct_to_template( request, 'issues/new.html', {
@@ -70,5 +75,9 @@ def delete(request, issue_id):
 def set_status(request, issue_id, status):
 	issue = get_object_or_404( Issue, id = issue_id )
 	issue.status = int(status)
+	
+	if issue.status == 4:
+		issue.date_closed = datetime.now()
+	
 	issue.save()
 	return redirect('issue_index')
