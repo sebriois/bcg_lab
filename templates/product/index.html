@@ -16,11 +16,13 @@
 </form>
 
 {% if products.object_list|length > 0 %}
+	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<div class="btn_wrapper">
 		<a href="{% url tab_cart %}" class="btn_medium">
 			<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
 		</a>
 	</div>
+	{% endif %}
 	{% if search_count > 0 %}
 	<div class="btn_wrapper">
 		<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
@@ -59,7 +61,9 @@
 					<td>{{ product.nomenclature|default:"" }}</td>
 					<td>{{ product.last_change|date }}</td>
 					<td style="white-space:nowrap">
+						{% if not user|has_perm:"order.custom_view_local_provider" %}
 						<button id="{{product.id}}" class="plus addToCart">Panier</button>
+						{% endif %}
 						<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
 					</td>
 				</tr>
@@ -69,6 +73,7 @@
 	
 	{% pagination products %}
 {% else %}
+	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
 	<form action="{% url product_index %}" method="GET" id="history_filter">
 		<fieldset>
@@ -99,6 +104,7 @@
 			<button type="submit" class="all">Chercher</button>
 		</fieldset>
 	</form>
+	{% endif %}
 {% endif %}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">

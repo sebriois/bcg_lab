@@ -64,15 +64,23 @@ def _product_search( request_args ):
 def index(request):
 	product_list, filter_form = _product_search( request.GET )
 	
+	if request.user.has_perm("order.custom_view_local_provider"):
+		if len( request.GET.keys() ) == 0 or request.GET.keys() == ["page"]:
+			product_list = Product.objects.filter( provider__is_local = True )
+		else:
+			product_list = product_list.filter( provider__is_local = True )
+		product_count = Product.objects.filter( provider__is_local = True ).count()
+	else:
+		product_count = Product.objects.all().count()
+	
 	return direct_to_template(request, 'product/index.html',{
-		'product_count': Product.objects.all().count(),
+		'product_count': product_count,
 		'search_count': product_list.count(),
 		'filter_form': filter_form,
 		'q_init': request.GET.get("q",""),
 		'products': paginate( request, product_list, 25 ),
 		'url_args': urlencode(request.GET)
 	})
-
 
 @login_required
 @transaction.commit_on_success
@@ -106,6 +114,9 @@ def new(request):
 		provider_id = request.GET.get('provider_id',None)
 		if provider_id:
 			provider = get_object_or_404( Provider, id = provider_id )
+			form = ProductForm( provider = provider )
+		elif request.user.has_perm("order.custom_view_local_provider"):
+			provider = get_object_or_404( Provider, is_local = True )
 			form = ProductForm( provider = provider )
 		else:
 			provider = None
@@ -151,6 +162,9 @@ def delete(request, product_id):
 def edit_list(request):
 	if request.method == 'GET':
 		product_list, filter_form = _product_search( request.GET )
+		
+		if request.user.has_perm("order.custom_view_local_provider"):
+			product_list = product_list.filter( provider__is_local = True )
 		
 		return direct_to_template(request, 'product/edit_list.html',{
 			'filter_form': filter_form,

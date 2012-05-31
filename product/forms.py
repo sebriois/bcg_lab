@@ -1,4 +1,6 @@
 # coding: utf-8
+from decimal import Decimal
+
 from django import forms
 from django.forms import widgets
 
@@ -7,6 +9,8 @@ from provider.models import Provider
 from constants import *
 
 class ProductForm(forms.ModelForm):
+	price = forms.CharField( label = "Prix", required = True )
+	
 	class Meta:
 			model = Product
 			widgets = {
@@ -17,11 +21,25 @@ class ProductForm(forms.ModelForm):
 		super( ProductForm, self ).__init__( *args, **kwargs )
 		
 		self.fields['provider'].queryset = Provider.objects.exclude(is_service = True)
-		
 		if provider:
 			self.fields['provider'].widget.attrs.update({'disabled':'disabled'})
 			self.fields['provider'].initial = provider
 		
+		self.fields.insert(5, 'price', self.fields.pop('price'))
+	
+	def clean_price(self):
+		price = self.cleaned_data.get('price', None)
+		
+		try:
+			price = Decimal(price.replace(",","."))
+		except:
+			raise forms.ValidationError(u"Veuillez saisir un nombre positif.")
+		
+		if not price > 0:
+			raise forms.ValidationError(u"Veuillez saisir un nombre positif.")
+		
+		return price
+	
 	def clean_expiry(self):
 		offer_nb = self.data.get('offer_nb', None)
 		expiry = self.cleaned_data.get('expiry', None)
