@@ -1,0 +1,40 @@
+{% extends "base_admin.html" %}
+{% load filters %}
+{% block menu_maintenance %}active{% endblock %}
+
+{% block header %}
+<h1>Administration</h1>
+<h2>Maintenance</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url maintenance %}" method="POST">{% csrf_token %}
+	<h3>Comptes utilisateurs</h3>
+	<fieldset>
+	<ul>
+		<li><input type="checkbox" name="inactive_all" />Désactiver tous les comptes (sauf admin).</li>
+		<li><input type="checkbox" name="active_all" />Activer tous les comptes.</li>
+		<li><input type="checkbox" name="delete_non_members" />Supprimer les utilisateurs affiliés à aucune équipe.</li>
+	</ul>
+	</fieldset>
+	
+	<h3>Produits</h3>
+	<fieldset>
+	<ul>
+		<li><input type="checkbox" name="delete_duplicates" />Supprimer les doublons (nom et/ou référence du produit) - garder le plus récent.</li>
+		<li><input type="checkbox" name="delete_expired" />Supprimer les produits ayant une offre périmée.</li>
+	</ul>
+	</fieldset>
+	
+	<h3>Commandes</h3>
+	<fieldset>
+	<ul>
+		<li><input type="checkbox" name="clean_history" />Supprimer les anciennes commandes (> 2 ans) de l'historique.</li>
+		<li><input type="checkbox" name="clean_budgets" />Supprimer les anciens budgets (archivés > 2 ans) de l'historique.</li>
+	</ul>
+	</fieldset>
+	
+	<button type="submit" class="check">Effectuer les opérations de maintenance</button>
+</form>
+{% endblock %}
+
