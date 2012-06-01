@@ -189,6 +189,8 @@ def tab_reception( request ):
 		
 		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
 			order_list = Order.objects.filter( status = 4, provider__is_local = True )
+		elif request.user.has_perm("team.custom_is_admin"):
+			order_list = Order.objects.filter( status = 4 )
 		else:
 			order_list = Order.objects.filter( status = 4, team = get_teams( request.user )[0] )
 		
