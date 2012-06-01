@@ -17,15 +17,16 @@
 {% include "order/_search_form.html" %}
 
 {% if orders.object_list %}
-	<div style="color:#e2350d">
+	<div style="color:#e2350d" class="hide_on_save">
 		<div class="legend_urgent"></div>commandes urgentes
 	</div>
 	<div class="cleaner"></div>
 
-	<div style="color:#f9a900">
+	<div style="color:#f9a900" class="hide_on_save">
 		<div class="legend_problem"></div>problème sur la commande</div>
 	</div>
 	<div class="cleaner"></div>
+	
 	<table class="list">
 		<thead>
 			<th>Date</th>

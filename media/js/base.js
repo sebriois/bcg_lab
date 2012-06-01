@@ -49,6 +49,10 @@ $(document).ready(function(){
 			$('.saving').show();
 			$('.paginator, table.list, .hide_on_save').hide();
 		});
+		$('a.show_wait').click(function(){
+			$('.saving').show();
+			$('.paginator, table.list, .hide_on_save').hide();
+		});
 		
 		// FRAIS / REMISES
 		var creditFormIsHidden=true;

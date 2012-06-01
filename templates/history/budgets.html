@@ -11,106 +11,108 @@
 
 {% include "history/search_form_budgets.html" %}
 
-<div class="btn_wrapper">
-	<a href="{% url history_budget_export %}?{{search_args}}" class="btn_big">
-		<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
-	</a>
-</div>
+<div class="hide_on_save">
+	<div class="btn_wrapper">
+		<a href="{% url history_budget_export %}?{{search_args}}" class="btn_big">
+			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
+		</a>
+	</div>
 
-{% if budget_lines.object_list|length > 0 %}
-	{% pagination budget_lines %}
-	<br />
+	{% if budget_lines.object_list|length > 0 %}
+		{% pagination budget_lines %}
+		<br />
 	
-	{% regroup budget_lines.object_list by team as team_list %}
-	{% for team in team_list %}
-	<h2>Equipe {{ team.grouper }}</h2>
-	{% regroup team.list by budget as budget_list %}
-	<table class="list" style="margin-bottom:20px">
-		<thead>
-			<th>budget</th>
-			<th>cmde</th>
-			<th>date</th>
-			<th>nature</th>
-			<th>tutelle</th>
-			<th>origine</th>
-			<th>fournisseur</th>
-			<th>offre</th>
-			<th>désignation</th>
-			<th>ref</th>
-			<th>crédit</th>
-			<th>débit</th>
-			<th>qté</th>
-			<th>Total</th>
-			<th>Dispo</th>
-		</thead>
-		<tbody>
-			{% for budget in budget_list %}
-				{% if forloop.counter > 1 %}
-					<tr class="empty_row"><td colspan="16"></td></tr>
-				{% endif %}
-			
-				{% for budget_line in budget.list %}
-				<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
-					{% if forloop.first %}
-						<td><strong>{{ budget.grouper }}</strong></td>
-					{% else %}
-						<td>{{ budget.grouper }}</td>
+		{% regroup budget_lines.object_list by team as team_list %}
+		{% for team in team_list %}
+		<h2>Equipe {{ team.grouper }}</h2>
+		{% regroup team.list by budget as budget_list %}
+		<table class="list" style="margin-bottom:20px">
+			<thead>
+				<th>budget</th>
+				<th>cmde</th>
+				<th>date</th>
+				<th>nature</th>
+				<th>tutelle</th>
+				<th>origine</th>
+				<th>fournisseur</th>
+				<th>offre</th>
+				<th>désignation</th>
+				<th>ref</th>
+				<th>crédit</th>
+				<th>débit</th>
+				<th>qté</th>
+				<th>Total</th>
+				<th>Dispo</th>
+			</thead>
+			<tbody>
+				{% for budget in budget_list %}
+					{% if forloop.counter > 1 %}
+						<tr class="empty_row"><td colspan="16"></td></tr>
 					{% endif %}
-					<td>{{ budget_line.number|default:"" }}</td>
-					<td>{{ budget_line.date|date }}</td>
-					<td>{{ budget_line.nature|default:"Toutes" }}</td>
-					<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
-					<td>{{ budget_line.origin|default:"" }}</td>
-					<td>{{ budget_line.provider|default:"" }}</td>
-					<td>{{ budget_line.offer|default:"" }}</td>
-					<td title="{{ budget_line.product|default:""}}">
-						{{ budget_line.product|default:""|truncatewords:6 }}
+			
+					{% for budget_line in budget.list %}
+					<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
+						{% if forloop.first %}
+							<td><strong>{{ budget.grouper }}</strong></td>
+						{% else %}
+							<td>{{ budget.grouper }}</td>
+						{% endif %}
+						<td>{{ budget_line.number|default:"" }}</td>
+						<td>{{ budget_line.date|date }}</td>
+						<td>{{ budget_line.nature|default:"Toutes" }}</td>
+						<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
+						<td>{{ budget_line.origin|default:"" }}</td>
+						<td>{{ budget_line.provider|default:"" }}</td>
+						<td>{{ budget_line.offer|default:"" }}</td>
+						<td title="{{ budget_line.product|default:""}}">
+							{{ budget_line.product|default:""|truncatewords:6 }}
+						</td>
+						<td>{{ budget_line.ref|default:"" }}</td>
+						<td style="color:green">{{ budget_line.credit|default:"" }}</td>
+						<td style="color:red">{{ budget_line.debit|default:"" }}</td>
+						<td>{{ budget_line.quantity|default:1 }}</td>
+						<td>{{ budget_line.get_total|default:"" }}</td>
+						<td><strong>{{ budget_line.get_amount_left }}</strong></td>
+					</tr>
+					{% endfor %}
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endfor %}
+		{% pagination budget_lines %}
+	{% else %}
+		<h2>Liste des budgets archivés - Page {{ budgets.number }} sur {{ budgets.paginator.num_pages }}.</h2>
+		{% pagination budgets %}
+		<br />
+		
+		<table class="list">
+			<thead>
+				<th>Equipe</th>
+				<th>Nom</th>
+				<th>Tutelle</th>
+				<th>Nature</th>
+				<th>Montant disponible</th>
+				<th>Action</th>
+			</thead>
+			<tbody>
+				{% for budget in budgets.object_list %}
+				<tr class="{% cycle 'even' 'odd' %}">
+					<td>{{ budget.team }}</td>
+					<td>{{ budget.name }}</td>
+					<td>{{ budget.get_budget_type_display }}</td>
+					<td>{{ budget.default_nature|default:"Toutes" }}</td>
+					<td>{{ budget.get_amount_left }}</td>
+					<td>
+						<a href="{% url history_budgets %}?budget_id={{budget.id}}&connector=AND" class="zoomin">Voir détail</a>
+						{% if user|is_admin %}
+						<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Activer</a>
+						{% endif %}
 					</td>
-					<td>{{ budget_line.ref|default:"" }}</td>
-					<td style="color:green">{{ budget_line.credit|default:"" }}</td>
-					<td style="color:red">{{ budget_line.debit|default:"" }}</td>
-					<td>{{ budget_line.quantity|default:1 }}</td>
-					<td>{{ budget_line.get_total|default:"" }}</td>
-					<td><strong>{{ budget_line.get_amount_left }}</strong></td>
 				</tr>
 				{% endfor %}
-			{% endfor %}
-		</tbody>
-	</table>
-	{% endfor %}
-	{% pagination budget_lines %}
-{% else %}
-	<h2>Liste des budgets archivés - Page {{ budgets.number }} sur {{ budgets.paginator.num_pages }}.</h2>
-	{% pagination budgets %}
-	<br />
-	
-	<table class="list">
-		<thead>
-			<th>Equipe</th>
-			<th>Nom</th>
-			<th>Tutelle</th>
-			<th>Nature</th>
-			<th>Montant disponible</th>
-			<th>Action</th>
-		</thead>
-		<tbody>
-			{% for budget in budgets.object_list %}
-			<tr class="{% cycle 'even' 'odd' %}">
-				<td>{{ budget.team }}</td>
-				<td>{{ budget.name }}</td>
-				<td>{{ budget.get_budget_type_display }}</td>
-				<td>{{ budget.default_nature|default:"Toutes" }}</td>
-				<td>{{ budget.get_amount_left }}</td>
-				<td>
-					<a href="{% url history_budgets %}?budget_id={{budget.id}}&connector=AND" class="zoomin">Voir détail</a>
-					{% if user|is_admin %}
-					<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Activer</a>
-					{% endif %}
-				</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	{% pagination budgets %}
-{% endif %}
+			</tbody>
+		</table>
+		{% pagination budgets %}
+	{% endif %}
+</div>
 {% endblock %}

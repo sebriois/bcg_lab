@@ -10,8 +10,12 @@
 {% block content %}
 {% include "history/search_form.html" %}
 
+<div class="hide_on_save">
 {% if objects.object_list %}
-	<h2>Liste des commandes réceptionnées - Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.</h2>
+	<h2>
+		Liste des commandes réceptionnées - 
+		Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.
+	</h2>
 	
 	{% if display == "by_order" %}
 		<p style="font-size:16px">Montant commandes cumulé: {{ total }}€</p>
@@ -98,4 +102,5 @@
 	<h2>Liste des commandes réceptionnées</h2>
 	<p>Aucun résultat.</p>
 {% endif %}
+</div>
 {% endblock %}

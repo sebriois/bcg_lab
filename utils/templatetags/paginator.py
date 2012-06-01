@@ -23,7 +23,7 @@ def paginator_number(context, page, i):
     elif i+1 == page.number:
         return mark_safe(u'<span class="this-page">%d</span> ' % (i+1))
     else:
-        return mark_safe(u'<a href="%s"%s>%d</a> ' % (escape(get_query_string(context, {'page':i+1})), (i == page.paginator.num_pages-1 and ' class="end"' or ''), i+1))
+        return mark_safe(u'<a href="%s" class="show_wait%s">%d</a> ' % (escape(get_query_string(context, {'page':i+1})), (i == page.paginator.num_pages-1 and ' end' or ''), i+1))
 paginator_number = register.simple_tag(paginator_number)
 
 def pagination(context, page):
