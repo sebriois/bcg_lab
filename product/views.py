@@ -12,6 +12,7 @@ from django.db.models.query import Q
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.http import HttpResponse
 from django.views.generic.simple import direct_to_template
 
 from provider.models import Provider
