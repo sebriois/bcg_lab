@@ -72,26 +72,26 @@ class Budget(models.Model):
 	
 
 class BudgetLine(models.Model):
-	team					= models.CharField(u"Equipe", max_length = 100)
-	order_id			= models.IntegerField( u"ID de commande", null = True, blank = True )
-	orderitem_id	= models.IntegerField( u"ID d'item de commande", null = True, blank = True )
-	budget_id			= models.IntegerField( u"ID de budget" )
-	budget				= models.CharField(u"Budget", max_length = 100 )
-	number				= models.CharField(u"N° de commande", max_length = 20, null = True, blank = True )
-	date					= models.DateTimeField(u"Date de l'acte", auto_now_add = True )
-	nature				= models.CharField(u"Nature", null = True, blank = True, max_length = 20 )
-	budget_type		= models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
-	origin				= models.CharField(u"Origine", max_length = 30, null = True, blank = True )
-	provider			= models.CharField(u"Fournisseur", max_length = 100, null = True, blank = True )
-	offer					= models.CharField(u"Offre/Commentaire", max_length = 100, null = True, blank = True )
-	product				= models.CharField(u"Désignation", max_length = 500, null = True, blank = True )
-	reference			= models.CharField(u"Référence", max_length = 50, null = True, blank = True )
-	quantity			= models.IntegerField(u"Quantité", null = True, blank = True, default = 1)
+	team          = models.CharField(u"Equipe", max_length = 100)
+	order_id      = models.IntegerField( u"ID de commande", null = True, blank = True )
+	orderitem_id  = models.IntegerField( u"ID d'item de commande", null = True, blank = True )
+	budget_id     = models.IntegerField( u"ID de budget" )
+	budget        = models.CharField(u"Budget", max_length = 100 )
+	number        = models.CharField(u"N° de commande", max_length = 20, null = True, blank = True )
+	date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True )
+	nature        = models.CharField(u"Nature", null = True, blank = True, max_length = 20 )
+	budget_type   = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
+	origin        = models.CharField(u"Origine", max_length = 30, null = True, blank = True )
+	provider      = models.CharField(u"Fournisseur", max_length = 100, null = True, blank = True )
+	offer         = models.CharField(u"Offre/Commentaire", max_length = 100, null = True, blank = True )
+	product       = models.CharField(u"Désignation", max_length = 500, null = True, blank = True )
+	reference     = models.CharField(u"Référence", max_length = 50, null = True, blank = True )
+	quantity      = models.IntegerField(u"Quantité", null = True, blank = True, default = 1)
 	product_price = models.DecimalField(u"Montant unitaire", max_digits=12, decimal_places=2, null = True, blank = True)
-	credit				= models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
-	debit					= models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
-	confidential	= models.BooleanField(u"Ligne confidentielle", default = False)
-	is_active			= models.BooleanField(u"Active?", default = True)
+	credit        = models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
+	debit         = models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
+	confidential  = models.BooleanField(u"Ligne confidentielle", default = False)
+	is_active     = models.BooleanField(u"Active?", default = True)
 	
 	class Meta:
 		verbose_name = "Ligne budgétaire"
@@ -150,25 +150,3 @@ class BudgetLine(models.Model):
 		self.origin = b.default_origin
 		self.save()
 	
-	def update_related(self):
-		"""
-		Update related budgetlines (ie. having the same order number)
-		Update related order/history if any order/history field is changed
-		"""
-		from order.models import Order
-		from history.models import History
-		
-		if not self.number: return
-		
-		# From order
-		order_list = Order.objects.filter( number = self.number )
-		if order_list.count() > 0:
-			o = order_list[0]
-		
-		# From history
-		history_list = History.objects.filter( number = self.number )
-		if history_list.count() > 0:
-			o = history_list[0]
-		
-		
-		

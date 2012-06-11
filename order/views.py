@@ -7,6 +7,7 @@ from django.db.models.query import Q
 from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError
@@ -19,7 +20,7 @@ from provider.models import Provider
 from product.models import Product
 from budget.models import Budget, BudgetLine
 from order.models import Order, OrderItem
-from order.forms import OrderItemForm, AddDebitForm, AddCreditForm
+from order.forms import OrderItemForm, AddDebitForm, AddCreditForm, FilterForm
 
 from constants import *
 from utils import *
@@ -56,7 +57,7 @@ def tab_orders(request):
 			Q( status__in = [2,3,4] ) |
 			Q( status = 1, team = get_teams( request.user )[0] ) |
 			Q( status = 1, items__username = request.user.username )
-		).order_by('-status','last_change').distinct()
+		).distinct()
 	# Commandes en cours - toutes équipes
 	elif request.user.has_perm("team.custom_view_teams") and not request.user.is_superuser:
 		order_list = Order.objects.filter(
@@ -77,8 +78,24 @@ def tab_orders(request):
 			Q(items__username = request.user.username)
 		).distinct()
 	
+	# 
+	# Filter order depending on received GET data
+	form = FilterForm( data = request.GET )
+	if len(request.GET.keys()) > 0 and form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		order_list = order_list.filter( Q_obj )
+	
 	return direct_to_template( request, "order/index.html", {
 		'orders': paginate( request, order_list ),
+		'filter_form': form,
 		'next': 'tab_orders',
 		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
@@ -111,10 +128,17 @@ def tab_validation( request ):
 		budget_list = Budget.objects.filter(team__in = teams, is_active = True)
 	else:
 		budget_list = Budget.objects.none()
+		
+	# TEAMS THAT CAN BE SELECTED
+	if request.user.has_perm("order.custom_order_any_team") or request.user.has_perm("team.custom_is_admin"):
+		team_choices = [(team.id, team.name) for team in Team.objects.all()]
+	else:
+		team_choices = []
 	
 	return direct_to_template( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list.distinct() ),
 		'budgets': budget_list.distinct(),
+		'team_choices': team_choices,
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
 		'see_all_teams': see_all_teams,
@@ -133,7 +157,8 @@ def tab_reception( request ):
 		)
 		if not request.user.has_perm("team.custom_view_teams"):
 			orderitems = orderitems.filter(
-				order__team = get_teams( request.user )[0]
+				Q(username = request.user.username) |
+				Q(order__team__in = get_teams(request.user))
 			)
 		
 		return direct_to_template( request, 'order/reception.html', {
@@ -162,16 +187,18 @@ def tab_reception( request ):
 			item.username_recept = request.user.username
 			item.save()
 		
-		
 		if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
 			order_list = Order.objects.filter( status = 4, provider__is_local = True )
+		elif request.user.has_perm("team.custom_is_admin"):
+			order_list = Order.objects.filter( status = 4 )
 		else:
 			order_list = Order.objects.filter( status = 4, team = get_teams( request.user )[0] )
 		
+		order_list = order_list.exclude( provider__is_service = True )
 		for order in order_list:
 			if order.items.filter( delivered__gt = 0, product_id__isnull = False ).count() == 0:
 				if not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser:
-					info_msg( request, u"La commande %s a été entièrement réceptionnée et archivée." % order.number )
+					info_msg( request, u"La commande %s (%s) a été entièrement réceptionnée et archivée." % (order.number, order.provider.name) )
 				order.save_to_history()
 				order.delete()
 	return redirect("tab_reception")
@@ -250,6 +277,7 @@ def order_detail(request, order_id):
 		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
+		'team_choices': [(team.id,team.name) for team in Team.objects.all()],
 		'next': order.get_absolute_url(),
 		'next_page': 'page' in request.GET and request.GET['page'] or 1
 	})
@@ -403,7 +431,7 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 @login_required
 @GET_method
 @transaction.commit_on_success
-def del_orderitem(request, orderitem_id):
+def orderitem_delete(request, orderitem_id):
 	item = get_object_or_404( OrderItem, id = orderitem_id )
 	order = item.order_set.get()
 	info_msg( request, u"'%s' supprimé avec succès." % item.name )
@@ -418,14 +446,39 @@ def del_orderitem(request, orderitem_id):
 	else:
 		next_page = request.GET.get('next', order)
 	
+	# SEND EMAIL TO ITEM OWNER - if set in preferences
+	if request.user.username != item.username:
+		tm = TeamMember.objects.filter( user__username = item.username, send_on_edit = True, user__email__isnull = False )
+		if tm.count() > 0:
+			subject = u"[Commandes LBCMCP] Item supprimé (%s)" % item.name
+			template = loader.get_template("email_delete_item.txt")
+			message = template.render( Context({ 'item': item, 'user': request.user, 'order': item.get_order() }) )
+			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm[0].user.email] )
+	
 	item.delete()
 	
 	if order.items.all().count() == 0:
 		warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
 		order.delete()
-		next_page = request.GET.get('next', 'tab_orders')
+		next_page = 'tab_orders'
 	
 	return redirect( next_page )
+
+@login_required
+@GET_method
+@transaction.commit_on_success
+def orderitem_disjoin(request, orderitem_id):
+	item = get_object_or_404( OrderItem, id = orderitem_id )
+	order = item.get_order()
+	
+	new_order = order.copy()
+	new_order.items.add( item )
+	new_order.save()
+	
+	order.items.remove(item)
+	order.save()
+	
+	return redirect( order )
 
 @login_required
 @GET_method
@@ -448,48 +501,15 @@ def order_delete(request, order_id):
 	return redirect(next_page)
 
 
-@login_required
-@transaction.commit_on_success
-def set_delivered(request, order_id):
-	if not request.method == 'GET':
-		error_msg( "This request method (%s) is not handled on this page" % request.method )
-		return redirect( 'tab_orders' )
-	
-	order = get_object_or_404( Order, id = order_id )
-	
-	if "delivery_date" in request.GET:
-		delivery_date_str = request.GET.get("delivery_date")
-		try:
-			delivery_date = datetime.strptime(delivery_date_str, "%d/%m/%Y")
-		except:
-			error_msg(request, "Merci de saisir une date au format jj/mm/aaaa. (Reçu: %s)" % delivery_date_str)
-			return redirect( 'tab_orders' )
-	else:
-		delivery_date = datetime.now()
-	
-	# if order.date_created.date() > delivery_date.date():
-	#		error_msg( request, "La date de livraison ne peut pas être inférieure à la date d'enregistrement de la commande.")
-	#		return redirect( 'tab_orders' )
-	
-	order.set_as_delivered( delivery_date )
-	info_msg( request, "Commande marquée comme livrée.")
-	return redirect( 'tab_orders' )
 
-
-
-
-					#################
-					# AJAX REQUESTS #
-					#################
+  #################
+  # AJAX REQUESTS #
+  #################
 
 @login_required
 @transaction.commit_on_success
-@GET_method
+@AJAX_method
 def set_team(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	team_id = request.GET.get("team_id", None)
 	if not team_id:
 		return HttpResponseServerError('team_id is missing.')
@@ -497,16 +517,14 @@ def set_team(request, order_id):
 	order = get_object_or_404( Order, id = order_id )
 	order.team = get_object_or_404( Team, id = int(team_id) )
 	order.save()
+	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_notes(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	if 'notes' in request.GET:
 		order.notes = request.GET['notes']
@@ -514,14 +532,11 @@ def set_notes(request, order_id):
 	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_number(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	number = request.GET.get("number", None)
 	if not number:
 		return HttpResponseServerError('number is missing.')
@@ -532,14 +547,11 @@ def set_number(request, order_id):
 	
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_budget(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	budget_id = request.GET.get("budget_id", None)
 	if not budget_id:
 		return HttpResponseServerError('budget_id is missing.')
@@ -567,27 +579,21 @@ def set_budget(request, order_id):
 	order.save()
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_is_urgent(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	order.is_urgent = request.GET['is_urgent'] == 'true'
 	order.save()
 	return HttpResponse('ok')
 
+
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_has_problem(request, order_id):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	order = get_object_or_404( Order, id = order_id )
 	order.has_problem = request.GET['has_problem'] == 'true'
 	order.save()
@@ -595,13 +601,9 @@ def set_has_problem(request, order_id):
 
 
 @login_required
-@GET_method
+@AJAX_method
 @transaction.commit_on_success
 def set_item_quantity(request):
-	if not request.is_ajax():
-		error_msg(request, 'Method %s not allowed at this URL' % request.method )
-		return redirect( request.META.get('HTTP_REFERER', 'tab_orders') )
-	
 	orderitem_id = request.GET.get('orderitem_id', None)
 	quantity = request.GET.get('quantity', None)
 	
@@ -613,7 +615,7 @@ def set_item_quantity(request):
 		return HttpResponseServerError( u"'%s': Veuillez saisir une quantité entière positive." % item.name )
 	
 	item = get_object_or_404( OrderItem, id = orderitem_id )
-	item.delivered -= item.quantity - quantity
+	item.delivered = quantity
 	item.quantity = quantity
 	item.save()
 	
@@ -623,9 +625,9 @@ def set_item_quantity(request):
 	return HttpResponse('ok')
 
 
-					################
-					# ORDER STATUS #
-					################
+  ################
+  # ORDER STATUS #
+  ################
 
 @login_required
 @GET_method
@@ -676,7 +678,11 @@ def _move_to_status_1(request, order):
 		template = loader.get_template('order/validation_email.txt')
 		context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
 		message = template.render( context )
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		for email in emails:
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+			except:
+				continue
 	else:
 		warn_msg(request, "Aucun email de validation n'a pu être \
 		envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
@@ -690,9 +696,15 @@ def _move_to_status_2(request, order):
 	if order.provider.is_local:
 		subject = "[Commandes LBCMCP] Nouvelle commande magasin"
 		template = loader.get_template('email_local_provider.txt')
-		url = request.build_absolute_uri(reverse('tab_reception'))
+		url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
 		message = template.render( Context({ 'order': order, 'url': url }) )
-		send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [EMAIL_MAGASIN] )
+		emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
+		
+		for email in emails:
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+			except:
+				continue
 		
 		order.status = 4
 		order.save()
@@ -719,7 +731,10 @@ def _move_to_status_2(request, order):
 			subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
 			template = loader.get_template("email_order_detail.txt")
 			message = template.render( Context({ 'order': order }) )
-			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+			try:
+				send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+			except:
+				continue
 		
 		info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
 	return redirect( request.GET.get('next','tab_validation') )
@@ -749,24 +764,28 @@ def _move_to_status_4(request, order):
 	order.status = 4
 	order.is_urgent = False
 	order.save()
+	
 	order.create_budget_line()
 	
-	usernames = []
 	for item in order.items.all():
-		if not item.username in usernames:
-			usernames.append( item.username )
+		item.delivered = item.quantity
+		item.save()
 	
-	emails = []
+	# Prepare emails to be sent
+	usernames = list(set( order.items.values_list("username", flat=True) ))
 	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
-		emails.append( tm.user.email )
-	
-	subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
-	template = loader.get_template("email_order_detail.txt")
-	message = template.render( Context({ 'order': order }) )
-	send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, emails )
+		subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
+		template = loader.get_template("email_order_detail.txt")
+		message = template.render( Context({ 'order': order }) )
+		try:
+			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+		except:
+			continue
 	
 	info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-	return redirect('tab_orders')
+	
+	# return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
+	return redirect( order )
 
 def _move_to_status_5(request, order):
 	try:

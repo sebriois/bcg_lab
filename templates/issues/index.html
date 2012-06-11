@@ -30,8 +30,14 @@
     <th>Titre</th>
     <th>Type</th>
     <th>Priorité</th>
-    <th>Statut</th>
-    <th>Date</th>
+		{% if not show_fixed %}
+			<th>Statut</th>
+		{% endif %}
+    <th>Utilisateur</th>
+    <th>Date création</th>
+    {% if show_fixed %}
+    	<th>Date fermeture</th>
+    {% endif %}
   </thead>
   <tbody>
     {% for issue in issues %}
@@ -42,8 +48,14 @@
         </td>
         <td>{{ issue.get_issue_type_display }}</td>
         <td>{{ issue.get_severity_display }}</td>
-        <td>{{ issue.get_status_display }}</td>
+				{% if not show_fixed %}
+					<td>{{ issue.get_status_display }}</td>
+				{% endif %}
+        <td>{{ issue.username }}</td>
         <td>{{ issue.date_created|date }}</td>
+				{% if show_fixed %}
+					<td>{{ issue.date_closed|date }}</td>
+				{% endif %}
       </tr>
     {% endfor %}
   </tbody>

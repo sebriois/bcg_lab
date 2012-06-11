@@ -1,14 +1,13 @@
 {% extends "base_products.html" %}
 {% load paginator filters %}
 {% block product_list %}active{% endblock %}
-{% block header %}
-	<h1>Gestion des produits</h1>
-	<h2>Liste des produits</h2>
-{% endblock %}
+{% block header %}<h1>Gestion des produits</h1>{% endblock %}
 
 {% block content %}
+<h2>Recherche rapide</h2>
 <form method="GET" action="." class="search">
-	<span>Rechercher</span> {{form.q }}<input type="submit" value=" " />
+	{{form.q }}<input type="submit" value=" " />
+	<a href="{% url product_index %}" class="refresh">Liste globale</a>
 </form>
 <br />
 {% if query and page.object_list|length > 0 %}
@@ -28,7 +27,6 @@
 		</thead>
 		<tbody>
 			{% for result in page.object_list %}
-				{% if result.content_type == "product.product" %}
 				{% with result.object as product %}
 				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
 					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
@@ -46,7 +44,6 @@
 					</td>
 				</tr>
 				{% endwith %}
-				{% endif %}
 			{% endfor %}
 		</tbody>
 	</table>
@@ -63,7 +60,38 @@
 {% else %}
 	{# Show some example queries to run, maybe query syntax, something else? #}
 {% endif %}
-{% endblock %}
+
+<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
+<form action="{% url product_index %}" method="GET" id="history_filter">{% csrf_token %}
+	<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
+	<table>
+		<tr>
+			<td>Fournisseur:</td>
+			<td>{{ filter_form.provider }}</td>
+			<td width="5%"></td>
+			<td>Produit:</td>
+			<td>{{ filter_form.name__icontains }}</td>
+			<td width="5%"></td>
+			<td>Référence:</td>
+			<td>{{ filter_form.reference }}</td>
+			<td width="5%"></td>
+			<td>Fournisseur d'origine:</td>
+			<td>{{ filter_form.origin }}</td>
+		</tr>
+		<tr>
+			<td>Nomenclature:</td>
+			<td>{{ filter_form.nomenclature }}</td>
+			<td width="5%"></td>
+			<td>Type:</td>
+			<td>{{ filter_form.category }}</td>
+			<td width="5%"></td>
+			<td>Sous-Type:</td>
+			<td>{{ filter_form.sub_category }}</td>
+		</tr>
+	</table>
+	<div class="cleaner"></div>
+	<button type="submit" class="all">Chercher</button>
+</form>
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
 	<div class="show_expired_warning">

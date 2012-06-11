@@ -1,6 +1,7 @@
 # coding: utf-8
 from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 
@@ -84,3 +85,16 @@ def delete(request, provider_id):
 		provider.delete()
 		info_msg( request, u"Fournisseur supprimé avec succès." )
 		return redirect( 'provider_index' )
+
+@login_required
+@transaction.commit_on_success
+def set_notes(request, provider_id):
+	if not request.is_ajax():
+		error_msg("Vous n'avez pas les permissions pour accéder à cette page.")
+		return redirect("provider_index")
+	
+	provider = get_object_or_404( Provider, id = provider_id )
+	provider.notes = request.GET['notes']
+	provider.save()
+	
+	return HttpResponse("ok")

@@ -14,7 +14,6 @@
 	<div style="float:left;">
 		<h3>Infos:</h3>
 		<p style="font-size:14px;">Equipe: <b>{{ history.team }}</b></p>
-		<p>Date de création: {{ history.date_created|date }}</p>
 		<p>Date de réception: {{ history.date_delivered|date }}</p>
 		<p>Commande n°: {{ history.number }}</p>
 		{% if user|has_perm:"order.custom_can_validate" or user|has_perm:"order.custom_goto_status_4" %}
@@ -33,7 +32,7 @@
 	
 	<div style="float:left;margin-left:20px;">
 		<h3>Commentaires:</h3>
-		<textarea>{{ history.get_notes|default:"" }}</textarea>
+		<textarea>{{ history.comments|default:"" }}</textarea>
 	</div>
 	
 	<div class="cleaner" style="margin-bottom:20px;"></div>

@@ -58,6 +58,7 @@ def create_custom_budget_permissions(sender, **kwargs):
 
 def create_custom_team_permissions(sender, **kwargs):
 	make_permissions( u"team", (
+		('custom_is_admin', u"Administrateur"),
 		('custom_view_teams', u"Voir toutes les équipes"),
 		('custom_edit_member', u"Editer un membre d'équipe"),
 		('custom_activate_account', u"Activer un nouveau compte"),

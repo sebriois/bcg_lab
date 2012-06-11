@@ -16,5 +16,5 @@ class Issue(models.Model):
 	class Meta:
 		verbose_name = u"Bug"
 		verbose_name_plural = u"Bugs"
-		ordering = ('issue_type', 'severity', 'title', 'status')
+		ordering = ('severity', 'issue_type', 'title')
 	

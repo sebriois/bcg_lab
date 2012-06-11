@@ -1,0 +1,44 @@
+{% load filters %}
+
+<div class="bar">
+	<a href="#" class="expand">Dérouler</a>
+	<a href="#" class="hide">Cacher</a>
+	<h4>Recherche de commandes</h4>
+</div>
+
+<div class="bar_content">
+	<form action="{% url tab_orders %}" method="GET" class="show_wait">
+		<strong>
+			Chercher les commandes qui correspondent à
+			{{ filter_form.connector }} conditions suivantes:
+		</strong>
+		<div class="cleaner"></div>
+		
+		<table>
+			<tr>
+				{% if user|has_perm:"team.custom_view_all_teams" or user|has_perm:"order.custom_order_any_team" or user|has_perm:"order.custom_goto_status_3" %}
+					<td>Equipe:</td>
+					<td>{{ filter_form.team }}</td>
+					<td width="10%"></td>
+				{% endif %}
+				<td>Fournisseur:</td>
+				<td>{{ filter_form.provider }}</td>
+				<td width="10%"></td>
+				<td>N°cmde:</td>
+				<td>{{ filter_form.number }}</td>
+				<td width="10%"></td>
+			</tr>
+		</table>
+		<div class="cleaner"></div>
+		
+		<button type="submit" class="all">Chercher</button>
+		<a href="{% url tab_orders %}" class="refresh">Liste globale</a>
+	</form>
+</div>
+
+<div class="cleaner"></div>
+<br />
+
+<div class="saving">
+	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+</div>

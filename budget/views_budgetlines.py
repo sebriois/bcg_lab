@@ -1,10 +1,12 @@
 # coding: utf-8
 from datetime import date
 from decimal import Decimal
+import xlwt
 
 from django.utils.http import urlencode
 from django.db import transaction
 from django.db.models.query import Q
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
@@ -58,7 +60,64 @@ def index(request):
 		'search_args': urlencode(request.GET)
 	})
 
-
+@login_required
+@GET_method
+def export_to_xls(request):
+	# 
+	# Filter budget_lines depending on received GET data
+	form = BudgetLineFilterForm( user = request.user, data = request.GET )
+	if len(request.GET.keys()) > 0 and form.is_valid():
+		data = form.cleaned_data
+		for key, value in data.items():
+			if not value:
+				del data[key]
+		
+		Q_obj = Q()
+		Q_obj.connector = data.pop("connector")
+		Q_obj.children	= data.items()
+		
+		budget_lines = BudgetLine.objects.filter( Q_obj )
+	else:
+		budget_lines = BudgetLine.objects.none()
+	
+	wb = xlwt.Workbook()
+	ws = wb.add_sheet("export")
+	
+	header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
+	u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
+	u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"]
+	for col, title in enumerate(header): ws.write(0, col, title)
+	
+	prev_budget = None
+	row = 1
+	
+	for bl in budget_lines.order_by("budget"):
+		if prev_budget != bl.budget:
+			if prev_budget: row += 1
+			prev_budget = bl.budget
+		
+		ws.write( row, 0, bl.team )
+		ws.write( row, 1, bl.budget )
+		ws.write( row, 2, bl.number )
+		ws.write( row, 3, bl.date.strftime("%d/%m/%Y") )
+		ws.write( row, 4, bl.nature )
+		ws.write( row, 5, bl.get_budget_type_display() )
+		ws.write( row, 6, bl.provider )
+		ws.write( row, 7, bl.offer )
+		ws.write( row, 8, bl.product )
+		ws.write( row, 9, bl.credit )
+		ws.write( row, 10, bl.debit )
+		ws.write( row, 11, bl.quantity )
+		ws.write( row, 12, bl.product_price )
+		ws.write( row, 13, str(bl.get_amount_left()) )
+		row += 1
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=export_budget.xls'
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	wb.save(response)
+	
+	return response
 
 @login_required
 @transaction.commit_on_success
@@ -75,7 +134,6 @@ def item(request, bl_id):
 		if form.is_valid():
 			bl = form.save()
 			bl.update_budget_relation()
-			bl.update_order_or_history()
 			
 			bl.is_active = True
 			if data["cost_type"] == "credit":
@@ -102,65 +160,5 @@ def delete(request, bl_id):
 	bl = get_object_or_404( BudgetLine, id = bl_id )
 	budget_name = bl.budget
 	bl.delete()
-	return redirect( reverse('budgetlines') + "?budget_name=%s" % budget_name )
+	return redirect( 'budgets' )
 
-
-	# @GET_method
-	# def budgetline_export(request):
-	# 	wb = xlwt.Workbook()
-	# 	green = xlwt.easyxf(
-	# 		"""
-	# 		pattern:
-	# 			fore_color: green
-	# 		"""
-	# 	)
-	# 	red = xlwt.easyxf(
-	# 		"""
-	# 		pattern:
-	# 			fore_color: red
-	# 		"""
-	# 	)
-	# 	budgets = request.GET['budget_names'].split(';')
-	# 	for budget_name in budgets:
-	# 		ws = wb.add_sheet(budget_name)
-	# 
-	# 		ws.write(0,0,'BUDGET')
-	# 		ws.write(0,1,'N°CMDE')
-	# 		ws.write(0,2,'DATE')
-	# 		ws.write(0,3,'NATURE')
-	# 		ws.write(0,4,'TUTELLE')
-	# 		ws.write(0,5,'ORIGINE')
-	# 		ws.write(0,6,'FOURNISSEUR')
-	# 		ws.write(0,7,'OFFRE')
-	# 		ws.write(0,8,'DESIGNATION')
-	# 		ws.write(0,9,'REFERENCE')
-	# 		ws.write(0,10,'CREDIT')
-	# 		ws.write(0,11,'DEBIT')
-	# 		ws.write(0,12,'QUANTITE')
-	# 		ws.write(0,13,'TOTAL')
-	# 		ws.write(0,14,'MONTANT DISPO')
-	# 
-	# 		row = 1
-	# 		for bl in budget_lines.filter( budget = budget_name ):
-	# 			ws.write( row, 0, budget_name )
-	# 			ws.write( row, 1, bl.number )
-	# 			ws.write( row, 2, bl.date )
-	# 			ws.write( row, 3, bl.nature )
-	# 			ws.write( row, 4, bl.get_budget_type_display() )
-	# 			ws.write( row, 5, bl.origin )
-	# 			ws.write( row, 6, bl.provider )
-	# 			ws.write( row, 7, bl.offer )
-	# 			ws.write( row, 8, bl.product )
-	# 			ws.write( row, 9, bl.ref )
-	# 			ws.write( row, 10, bl.credit )
-	# 			ws.write( row, 11, bl.debit )
-	# 			ws.write( row, 12, bl.quantity )
-	# 			ws.write( row, 13, bl.product_price )
-	# 			ws.write( row, 14, bl.get_amount_left )
-	# 			row += 1
-	# 	
-	# 	response = HttpResponse(mimetype="application/ms-excel")
-	# 	response['Content-Disposition'] = 'attachment; filename=export.xls'
-	# 	wb.save(response)
-	# 	
-	# 	return response

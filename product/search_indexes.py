@@ -1,7 +1,7 @@
 from haystack import indexes
 from product.models import Product
 
-class ProductIndex(indexes.SearchIndex, indexes.Indexable):
+class ProductIndex(indexes.RealTimeSearchIndex, indexes.Indexable):
 	text = indexes.CharField(document=True, use_template=True)
 	provider = indexes.CharField(model_attr='provider')
 	reference = indexes.CharField(model_attr='reference')

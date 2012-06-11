@@ -1,6 +1,7 @@
 # coding: utf-8
 from datetime import datetime, date
 from decimal import Decimal
+import urlparse
 
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.http import urlencode
@@ -20,39 +21,66 @@ from attachments.models import Attachment
 from constants import *
 from utils import *
 
+from haystack.query import SearchQuerySet
+
+def _product_search( request_args ):
+	# SEARCH WITH APACHE SOLR
+	if "q" in request_args:
+		results = SearchQuerySet().auto_query(request_args["q"])
+		product_ids = []
+		for r in results:
+			if r and r.object and r.object.id: product_ids.append( r.object.id )
+		product_list = Product.objects.filter( id__in = product_ids )
+		form = ProductFilterForm()
+		
+	# ADVANCED SEARCH: with Django
+	else:
+		form = ProductFilterForm(data = request_args)
+	
+		if len(request_args.keys()) > 1:
+			if form.is_valid():
+				data = form.cleaned_data
+				for key, value in data.items():
+					if not value:
+						del data[key]
+			
+				if 'id__in' in request_args:
+					data['id__in'] = request_args['id__in'].split(',')
+			
+				Q_obj = Q()
+				Q_obj.connector = data.pop("connector")
+				Q_obj.children  = data.items()
+			
+				product_list = Product.objects.filter( Q_obj )
+			else:
+				error_msg(request, "Recherche non valide")
+				product_list = Product.objects.none()
+		else:
+			product_list = Product.objects.none()
+	
+	return product_list, form
+
 @login_required
 def index(request):
-	product_list = Product.objects.all()
-	product_choices = ";".join( list(set([ unicode(p) for p in product_list ])) )
+	product_list, filter_form = _product_search( request.GET )
 	
-	form = ProductFilterForm(
-		data = request.GET,
-		product_choices = product_choices
-	)
-	if len(request.GET.keys()) > 1:
-		if form.is_valid():
-			data = form.cleaned_data
-			for key, value in data.items():
-				if not value:
-					del data[key]
-		
-			if 'id__in' in request.GET:
-				data['id__in'] = request.GET['id__in'].split(',')
-		
-			Q_obj = Q()
-			Q_obj.connector = data.pop("connector")
-			Q_obj.children  = data.items()
-		
-			product_list = product_list.filter( Q_obj )
+	if request.user.has_perm("order.custom_view_local_provider"):
+		if len( request.GET.keys() ) == 0 or request.GET.keys() == ["page"]:
+			product_list = Product.objects.filter( provider__is_local = True )
 		else:
-			error_msg(request, "Recherche non valide")
+			product_list = product_list.filter( provider__is_local = True )
+		product_count = Product.objects.filter( provider__is_local = True ).count()
+	else:
+		product_count = Product.objects.all().count()
 	
 	return direct_to_template(request, 'product/index.html',{
-		'filter_form': form,
-		'products': paginate( request, product_list, 50 ),
+		'product_count': product_count,
+		'search_count': product_list.count(),
+		'filter_form': filter_form,
+		'q_init': request.GET.get("q",""),
+		'products': paginate( request, product_list, 25 ),
 		'url_args': urlencode(request.GET)
 	})
-
 
 @login_required
 @transaction.commit_on_success
@@ -86,6 +114,9 @@ def new(request):
 		provider_id = request.GET.get('provider_id',None)
 		if provider_id:
 			provider = get_object_or_404( Provider, id = provider_id )
+			form = ProductForm( provider = provider )
+		elif request.user.has_perm("order.custom_view_local_provider"):
+			provider = get_object_or_404( Provider, is_local = True )
 			form = ProductForm( provider = provider )
 		else:
 			provider = None
@@ -130,55 +161,43 @@ def delete(request, product_id):
 @transaction.commit_on_success
 def edit_list(request):
 	if request.method == 'GET':
-		product_list = Product.objects.all()
-		product_choices = ";".join( list(set([ unicode(p) for p in product_list ])) )
-	
-		form = ProductFilterForm(
-			data = request.GET,
-			product_choices = product_choices
-		)
-		if len(request.GET.keys()) > 0 and form.is_valid():
-			data = form.cleaned_data
-			for key, value in data.items():
-				if not value:
-					del data[key]
-			
-			if 'id__in' in request.GET:
-				data['id__in'] = request.GET['id__in'].split(',')
-			
-			Q_obj = Q()
-			Q_obj.connector = data.pop("connector")
-			Q_obj.children  = data.items()
+		product_list, filter_form = _product_search( request.GET )
 		
-			product_list = product_list.filter( Q_obj )
-		else:
-			product_list = Product.objects.none()
+		if request.user.has_perm("order.custom_view_local_provider"):
+			product_list = product_list.filter( provider__is_local = True )
 		
 		return direct_to_template(request, 'product/edit_list.html',{
-			'filter_form': form,
+			'filter_form': filter_form,
 			'edit_form': EditListForm(),
-			'products': product_list,
+			'product_list': product_list,
 			'url_args': urlencode(request.GET)
 		})
 	
 	if request.method == 'POST':
-		data = request.POST
-		product_list = Product.objects.filter( id__in = data['product_ids'].split(',') )
-		url_args = data['url_args']
+		form = EditListForm( data = request.POST )
 		
-		form = EditListForm( data = data )
 		if form.is_valid():
 			clean_data = form.cleaned_data
+			
 			percent_raise = clean_data.get('percent_raise', None)
 			category = clean_data.get('category', None)
 			sub_category = clean_data.get('sub_category', None)
 			nomenclature = clean_data.get('nomenclature', None)
 			offer_nb = clean_data.get('offer_nb',None)
 			expiry = clean_data.get('expiry',None)
-			delete_all = 'confirm_delete' in data
+			
+			product_ids = map( 
+				lambda item: int(item.split("_")[1]), 
+				filter( 
+					lambda key: key.startswith("product_"), 
+					request.POST.keys() 
+				)
+			)
+			
+			product_list = Product.objects.filter( id__in = product_ids )
 			
 			for product in product_list:
-				if delete_all:
+				if request.POST['delete_all'] == "on":
 					product.delete()
 					continue
 				
@@ -191,16 +210,19 @@ def edit_list(request):
 				if expiry: product.expiry = expiry
 				product.save()
 			
-			if delete_all:
+			if request.POST['delete_all'] == "on":
 				info_msg( request, "Produits supprimés avec succès.")
-				return redirect('product_index')
+				return redirect( reverse('product_edit_list') + "?" + request.POST["url_args"] )
 			else:
 				info_msg( request, "Liste de produits mise à jour avec succès." )
-				return redirect( reverse('product_index') + '?connector=OR&id__in=' + data['product_ids'] )
+				return redirect( reverse('product_edit_list') + "?" + request.POST["url_args"] )
 		else:
+			url_args = dict( urlparse.parse_qsl( request.POST["url_args"] ) )
+			product_list, filter_form = _product_search( url_args )
+			
 			return direct_to_template(request, 'product/edit_list.html', {
 				'edit_form': form,
-				'products': product_list,
-				'url_args': url_args
+				'product_list': product_list,
+				'url_args': request.POST['url_args']
 			})
 	

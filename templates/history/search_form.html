@@ -4,7 +4,7 @@
 		<h4>Recherche de commandes réceptionnées</h4>
 </div>
 <div class="bar_content">
-	<form action="{% url history_orders %}" method="GET">{% csrf_token %}
+	<form action="{% url history_orders %}" method="GET" class="show_wait">{% csrf_token %}
 		<strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
 		<div class="cleaner"></div>
 		<table>
@@ -47,3 +47,7 @@
 </div>
 <div class="cleaner"></div>
 <br />
+
+<div class="saving">
+	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+</div>

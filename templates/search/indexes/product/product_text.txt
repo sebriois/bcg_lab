@@ -1,5 +1,12 @@
 {{object.provider}}
+{{object.provider}}
+{{object.origin}}
+{{object.name}}
+{{object.name}}
 {{object.name}}
 {{object.reference}}
 {{object.packaging}}
+{{object.nomenclature}}
 {{object.offer_nb}}
+{{object.category}}
+{{object.sub_category}}

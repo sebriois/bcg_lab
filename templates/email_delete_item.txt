@@ -1,0 +1,1 @@
+{{user.get_full_name}} a supprimé "{{item.name}}" de votre commande {{order.provider}}.

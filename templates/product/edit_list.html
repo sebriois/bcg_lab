@@ -8,78 +8,37 @@
 {% endblock %}
 
 {% block content %}
-<form>
-	<h3>Consignes d'utilisation:</h3>
+<form action="{% url product_edit_list %}" method="POST" style="margin-bottom:20px">{% csrf_token %}
+	<h3>Appliquer les modifications suivantes à l'ensemble des produits cochés</h3>
+	<input type="hidden" name="url_args" value="{{url_args}}" />
+	<input type="hidden" name="delete_all" value="" />
+	
 	<fieldset>
-		<ol>
-			<li>Rechercher les produits d'intérêt</li>
-			<li>Affiner la recherche en cochant/décochant les produits à modifier</li>
-			<li>Saisir les modifications dans le cadre prévu à cet effet (visible une fois l'étape 1 passée)</li>
-			<li>Valider les modifications</li>
-		</ol>
+		{% for field in edit_form %}
+			{% include "form_snippet.html" %}
+		{% endfor %}
 	</fieldset>
-</form>
-
-{% if products|length == 0 %}
-	<div class="bar">
-		<a href="#" class="expand">Voir</a>
-		<a href="#" class="hide">Cacher</a>
-		<h4>Recherche de produits</h4>
-	</div>
-	<div class="bar_content">
-		<form action="{% url product_edit_list %}" method="GET">{% csrf_token %}
-			<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
-			<div class="cleaner"></div>
-			<table>
-				<tr>
-					<td>Fournisseur:</td>
-					<td>{{ filter_form.provider }}</td>
-					<td width="5%"></td>
-					<td>Produit:</td>
-					<td>{{ filter_form.name__icontains }}</td>
-					<td width="5%"></td>
-					<td>Référence:</td>
-					<td>{{ filter_form.reference }}</td>
-					<td width="5%"></td>
-					<td>Fournisseur d'origine:</td>
-					<td>{{ filter_form.origin }}</td>
-				</tr>
-				<tr>
-					<td>Nomenclature:</td>
-					<td>{{ filter_form.nomenclature }}</td>
-					<td width="5%"></td>
-					<td>Type:</td>
-					<td>{{ filter_form.category }}</td>
-					<td width="5%"></td>
-					<td>Sous-Type:</td>
-					<td>{{ filter_form.sub_category }}</td>
-				</tr>
-			</table>
-			<div class="cleaner"></div>
-			<button type="submit" class="all">Chercher</button>
-			<a href="{% url product_edit_list %}" class="refresh">Réinitialiser</a>
-		</form>
-	</div>
-{% else %}	
-	<form action="{% url product_edit_list %}" method="POST" style="margin-bottom:20px">{% csrf_token %}
-		<h3>Appliquer les modifications suivantes à l'ensemble des produits cochés</h3>
-		<input type="hidden" name="product_ids" value="" />
-		<input type="hidden" name="url_args" value="{{url_args}}" />
-		<fieldset>
-		{% for field in edit_form %}{% include "form_snippet.html" %}{% endfor %}
-		</fieldset>
-		<button type="submit" class="check confirm_edit">Appliquer les modifications</button>
-		{% if user.is_superuser %}
-			<button type="submit" class="trash confirm_edit" name="confirm_delete">Supprimer les produits sélectionnés</button>
-		{% endif %}
-		<a href="{% url product_edit_list %}" class="back">Effectuer une nouvelle recherche</a>
-	</form>
-	<strong>{{ products|length }} produits trouvés:</strong><br /><br />
+	
+	<button type="submit" class="check">
+		Appliquer les modifications
+	</button>
+	
+	<button type="submit" class="trash confirmSubmit">
+		Supprimer les produits sélectionnés
+	</button>
+	
+	<a href="{% url product_index %}" class="back">
+		Effectuer une nouvelle recherche
+	</a>
+	<div class="cleaner"></div><br />
+	
+	<strong>{{ product_list|length }} produits trouvés:</strong><br /><br />
 	<table class="list">
 		<thead>
 				<th><input type="checkbox" checked="checked" name="edit_all" /></th>
 				<th>Fournisseur</th>
 				<th style="max-width:200px">produit</th>
+				<th>T / ST</th>
 				<th>Cond.</th>
 				<th>Réf.</th>
 				<th>Prix</th>
@@ -89,11 +48,12 @@
 				<th>MAJ</th>
 		</thead>
 		<tbody>
-			{% for product in products %}
+			{% for product in product_list %}
 			<tr class="{% cycle 'odd' 'even' %}">
-				<td><input type="checkbox" class="edited_item" value="{{ product.id }}" checked="checked" /></td>
+				<td><input type="checkbox" class="edited_item" name="product_{{product.id}}" checked="checked" /></td>
 				<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
 				<td>{{ product.name }}</td>
+				<td>{{ product.category|default:"" }} / {{ product.sub_category|default:"" }}</td>
 				<td>{{ product.packaging|default:"" }}</td>
 				<td>{{ product.reference }}</td>
 				<td>{{ product.price }}&nbsp;€</td>
@@ -105,5 +65,11 @@
 			{% endfor %}
 		</tbody>
 	</table>
-{% endif %}
+</form>
+
+<div id="confirmSubmit" class="dialog" title="Confirmation requise">
+	ATTENTION: Veuillez confirmer la suppression des produits sélectionnés.
+	La suppression sera définitive.
+</div>
+
 {% endblock %}

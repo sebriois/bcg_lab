@@ -11,46 +11,48 @@
 </div>
 <h1>Gestion des budgets</h1>
 {% include "budgetlines/search_form.html" %}
-<h2>Liste des budgets</h2>
 {% endblock %}
 
 {% block content %}
-{% if budgets %}
-	<table class="list">
-		<thead>
-			<th>Equipe</th>
-			<th>Nom</th>
-			<th>Tutelle</th>
-			<th>Nature</th>
-			<th>Montant disponible</th>
-			<th>Action</th>
-		</thead>
-		<tbody>
-			{% for budget in budgets %}
-			<tr class="{% cycle 'even' 'odd' %}">
-				<td>{{ budget.team }}</td>
-				<td>{{ budget.name }}</td>
-				<td>{{ budget.get_budget_type_display }}</td>
-				<td>{{ budget.default_nature|default:"Toutes" }}</td>
-				<td>{{ budget.get_amount_left }}</td>
-				<td>
-					<a href="{% url budgetlines %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
-					{% if user|has_perm:"budget.custom_edit_budget" %}
-					<a href="{% url budget_edit budget.id %}" class="pencil">Editer</a>
-					<a href="{% url credit_budget budget.id %}" class="plus">Créditer</a>
-					<a href="{% url debit_budget budget.id %}" class="minus">Débiter</a>
-					{% endif %}
-					{% if user|has_perm:"budget.custom_edit_budget" %}
-					<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Archiver</a>
-					{% endif %}
-				</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-{% else %}
-<p>Aucun budget.</p>
-{% endif %}
+<div class="hide_on_save">
+	<h2>Liste des budgets</h2>
+	{% if budgets %}
+		<table class="list">
+			<thead>
+				<th>Equipe</th>
+				<th>Nom</th>
+				<th>Tutelle</th>
+				<th>Nature</th>
+				<th>Montant disponible</th>
+				<th>Action</th>
+			</thead>
+			<tbody>
+				{% for budget in budgets %}
+				<tr class="{% cycle 'even' 'odd' %}">
+					<td>{{ budget.team }}</td>
+					<td>{{ budget.name }}</td>
+					<td>{{ budget.get_budget_type_display }}</td>
+					<td>{{ budget.default_nature|default:"Toutes" }}</td>
+					<td>{{ budget.get_amount_left }}</td>
+					<td>
+						<a href="{% url budgetlines %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
+						{% if user|has_perm:"budget.custom_edit_budget" %}
+						<a href="{% url budget_edit budget.id %}" class="pencil">Editer</a>
+						<a href="{% url credit_budget budget.id %}" class="plus">Créditer</a>
+						<a href="{% url debit_budget budget.id %}" class="minus">Débiter</a>
+						{% endif %}
+						{% if user|has_perm:"budget.custom_edit_budget" %}
+						<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Archiver</a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+	<p>Aucun budget.</p>
+	{% endif %}
+</div>
 
 <div id="confirm" class="dialog" title="Confirmer l'archivage">
 	Ce budget va être retiré de cette liste, ainsi que toutes ses lignes

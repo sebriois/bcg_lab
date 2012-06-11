@@ -3,7 +3,7 @@
 <div style="float:left;">
 	<h3>Infos:</h3>
 	
-	{% if order.status == 0 and user|has_perm:"order.custom_order_any_team" %}
+	{% if order.status < 2 and user|has_perm:"order.custom_order_any_team" or user|is_admin %}
 		<p>
 			Equipe:
 			<select id="select-team" url="{% url order_team order.id %}">
@@ -64,15 +64,15 @@
 		{% include "attachments/show.html" %}
 	{% endwith %}
 	{% if order.status == 0 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_cart %}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_cart %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status == 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status > 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document">
+		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% endif %}{% endif %}{% endif %}
@@ -132,6 +132,9 @@
 			<td>
 				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
 				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				{% if order.status == 3 and order.items.all|length > 1 %}
+					<a href="{% url orderitem_disjoin order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
+				{% endif %}
 			</td>
 			{% endif %}
 		</tr>
@@ -231,11 +234,17 @@
 		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	{% endif %}
 	{% if user|has_perm:"order.custom_goto_status_3" %}
-		<a href="{% url set_next_status order.id %}" class="next-status save-changes"><b>Pour saisie</b></a>
+		<a href="{% url set_next_status order.id %}?page={{next_page|default:"1"}}" class="next-status save-changes"><b>Pour saisie</b></a>
 	{% endif %}
 {% else %}{% if order.status > 2 %}
 	{% if user|has_perm:"order.custom_goto_status_4" %}
-		<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+		{% if order.status == 3 %}
+		<a href="{% url set_next_status order.id %}" class="disk save-changes">Enregistrer les modifications</a>
+		{% else %}{% if order.status == 4 and user|has_perm:"order.custom_goto_status_4" %}
+			<a href="{% url set_next_status order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
+		{% endif %}
+		<a href="{{ order.get_absolute_url }}?page={{next_page|default:"1"}}" class="disk save-changes">Enregistrer les modifications</a>
+		{% endif %}
 		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	{% endif %}
 {% endif %}{% endif %}{% endif %}{% endif %}

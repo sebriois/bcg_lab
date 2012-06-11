@@ -23,6 +23,13 @@
 			<img src="{{ MEDIA_URL }}img/icons/magnifier.png" />Détail de tous les budgets
 		</a>
 	</div>
+	{% if search_args %}
+	<div class="btn_wrapper">
+		<a href="{% url budgetline_export %}?{{search_args}}" class="btn_big">
+			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
+		</a>
+	</div>
+	{% endif %}
 	<h1>Gestion des budgets</h1>
 {% endblock %}
 
@@ -31,69 +38,71 @@
 
 {% regroup budget_lines by team as team_list %}
 
-{% for team in team_list %}
-<h2>Equipe {{ team.grouper }}</h2>
-{% regroup team.list by budget as budget_list %}
-<table class="list" style="margin-bottom:20px">
-	<thead>
-		<th>budget</th>
-		<th>cmde</th>
-		<th>date</th>
-		<th>dest</th>
-		<th>nature</th>
-		<th>tutelle</th>
-		<th>fournisseur</th>
-		<th>commentaire</th>
-		<th>désignation</th>
-		<th>crédit</th>
-		<th>débit</th>
-		<th>qté</th>
-		<th>Total</th>
-		<th>Dispo</th>
-		{% if user|has_perm:"budget.custom_edit_budget" %}<th></th>{% endif %}
-	</thead>
-	<tbody>
-		{% for budget in budget_list %}
-			{% if forloop.counter > 1 %}
-				<tr class="empty_row"><td colspan="16"></td></tr>
-			{% endif %}
+<div class="hide_on_save">
+	{% for team in team_list %}
+	<h2>Equipe {{ team.grouper }}</h2>
+	{% regroup team.list by budget as budget_list %}
+	<table class="list" style="margin-bottom:20px">
+		<thead>
+			<th>budget</th>
+			<th>cmde</th>
+			<th>date</th>
+			<th>dest</th>
+			<th>nature</th>
+			<th>tutelle</th>
+			<th>fournisseur</th>
+			<th>commentaire</th>
+			<th>désignation</th>
+			<th>crédit</th>
+			<th>débit</th>
+			<th>qté</th>
+			<th>Total</th>
+			<th>Dispo</th>
+			{% if user|has_perm:"budget.custom_edit_budget" %}<th></th>{% endif %}
+		</thead>
+		<tbody>
+			{% for budget in budget_list %}
+				{% if forloop.counter > 1 %}
+					<tr class="empty_row"><td colspan="16"></td></tr>
+				{% endif %}
 			
-			{% for budget_line in budget.list %}
-			<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
-				{% if forloop.first %}
-					<td><strong>{{ budget.grouper }}</strong></td>
-				{% else %}
-					<td>{{ budget.grouper }}</td>
-				{% endif %}
-				<td>{{ budget_line.number|default:"" }}</td>
-				<td>{{ budget_line.date|date }}</td>
-				<td style="color:#e2350d">{{ budget_line.get_order_team }}</td>
-				<td>{{ budget_line.nature|default:"Toutes" }}</td>
-				<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
-				<td>{{ budget_line.provider|default:"" }}</td>
-				<td>{{ budget_line.offer|default:"" }}</td>
-				<td title="{{ budget_line.product|default:""}}">
-					{{ budget_line.product|default:""|truncatewords:6 }}
-				</td>
-				<td style="color:green">{{ budget_line.credit|default:"" }}</td>
-				<td style="color:red">{{ budget_line.debit|default:"" }}</td>
-				<td>{{ budget_line.quantity|default:1 }}</td>
-				<td>{{ budget_line.get_total|default:"" }}</td>
-				<td><strong>{{ budget_line.get_amount_left }}</strong></td>
-				{% if user|has_perm:"budget.custom_edit_budget" %}
-					<td style="white-space:nowrap">
-						<a href="{% url budgetline_item budget_line.id %}?{{search_args}}" class="pencil no-text"></a>
-						<a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
+				{% for budget_line in budget.list %}
+				<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
+					{% if forloop.first %}
+						<td><strong>{{ budget.grouper }}</strong></td>
+					{% else %}
+						<td>{{ budget.grouper }}</td>
+					{% endif %}
+					<td>{{ budget_line.number|default:"" }}</td>
+					<td>{{ budget_line.date|date }}</td>
+					<td style="color:#e2350d">{{ budget_line.get_order_team }}</td>
+					<td>{{ budget_line.nature|default:"Toutes" }}</td>
+					<td>{{ budget_line.get_budget_type_display|default:"" }}</td>
+					<td>{{ budget_line.provider|default:"" }}</td>
+					<td>{{ budget_line.offer|default:"" }}</td>
+					<td title="{{ budget_line.product|default:""}}">
+						{{ budget_line.product|default:""|truncatewords:6 }}
 					</td>
-				{% endif %}
-			</tr>
+					<td style="color:green">{{ budget_line.credit|default:"" }}</td>
+					<td style="color:red">{{ budget_line.debit|default:"" }}</td>
+					<td>{{ budget_line.quantity|default:1 }}</td>
+					<td>{{ budget_line.get_total|default:"" }}</td>
+					<td><strong>{{ budget_line.get_amount_left }}</strong></td>
+					{% if user|has_perm:"budget.custom_edit_budget" %}
+						<td style="white-space:nowrap">
+							<a href="{% url budgetline_item budget_line.id %}?{{search_args}}" class="pencil no-text"></a>
+							<a href="{% url budgetline_delete budget_line.id %}" class="trash confirmDel no-text"></a>
+						</td>
+					{% endif %}
+				</tr>
+				{% endfor %}
 			{% endfor %}
-		{% endfor %}
-	</tbody>
-</table>
-{% empty %}
-<h2>Aucun résultat pour cette recherche.</h2>
-{% endfor %}
+		</tbody>
+	</table>
+	{% empty %}
+	<h2>Aucun résultat pour cette recherche.</h2>
+	{% endfor %}
+</div>
 
 <div id="confirmDel" class="dialog" title="Confirmer la suppression">
 	Merci de confirmer la suppression.

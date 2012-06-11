@@ -36,8 +36,8 @@
 			{% if user|has_perm:"order.custom_view_local_provider" %}
 				<th>Qté livrée</th>
 				<th style="text-align:center" class="last"><input type="checkbox" name="select_all" /></th>
+				<th></th>
 			{% endif %}
-			{% if user|is_admin %}<th></th>{% endif %}
 		</thead>
 		<tbody>
 			{% for item in orderitems %}
@@ -60,11 +60,9 @@
 						<td style="text-align:center">
 							<input type="checkbox" name="action_{{item.id}}" />
 						</td>
-						{% if user|is_admin %}
 						<td>
 							<a href="{% url orderitem_delete item.id %}?next=tab_reception_local_provider" class="trash confirmDel no-text"></a>
 						</td>
-						{% endif %}
 					{% endif %}
 				</tr>
 				{% endwith %}
