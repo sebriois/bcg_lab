@@ -34,6 +34,12 @@
 		</a>
 	</div>
 	{% endif %}
+	<div class="btn_wrapper hide_on_save">
+		<a href="{% url product_export_xls %}?{{url_args}}" class="btn_big">
+			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter cette liste en xls
+		</a>
+	</div>
+	
 	<div class="cleaner"></div>
 	<div style="color:#e2350d;height:20px" class="hide_on_save">
 		<div class="legend_urgent"></div>offre périmée

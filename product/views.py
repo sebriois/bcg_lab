@@ -157,6 +157,47 @@ def delete(request, product_id):
 		info_msg( request, u"Produit supprimé avec succès." )
 		return redirect( 'product_index' )
 
+
+@login_required
+def export_xls( request ):
+	product_list, filter_form = _product_search( request.GET )
+	
+	if request.user.has_perm("order.custom_view_local_provider"):
+		product_list = product_list.filter( provider__is_local = True )
+	
+	wb = xlwt.Workbook()
+	ws = wb.add_sheet("export")
+	
+	header = [u"FOURNISSEUR", u"DESIGNATION", u"CONDITIONNEMENT",u"REFERENCE", u"PRIX", 
+	u"N°OFFRE", u"EXPIRATION", u"NOMENCLATURE", u"DERNIERE MISE A JOUR"]
+	for col, title in enumerate(header): ws.write(0, col, title)
+	
+	row = 1
+	
+	for product in product_list:
+		if product.origin:
+			provider = u"%s - %s" % (product.provider.name, product.origin)
+		else:
+			provider = u"%s" % product.provider.name
+		
+		ws.write( row, 0, provider )
+		ws.write( row, 1, product.name )
+		ws.write( row, 2, product.packaging )
+		ws.write( row, 3, product.reference )
+		ws.write( row, 4, product.price )
+		ws.write( row, 5, product.offer_nb )
+		ws.write( row, 6, product.expiry.strftime("%d/%m/%Y") )
+		ws.write( row, 7, product.nomenclature )
+		ws.write( row, 8, product.last_change.strftime("%d/%m/%Y") )
+		row += 1
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=export_produit.xls'
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	wb.save(response)
+
+	return response
+
 @login_required
 @transaction.commit_on_success
 def edit_list(request):
