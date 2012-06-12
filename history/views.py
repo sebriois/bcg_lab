@@ -17,8 +17,7 @@ from budget.models import Budget, BudgetLine
 from constants import *
 from utils import *
 
-@login_required
-def history_orders(request):
+def search_orders(request):
 	# Get initial history_list
 	if request.user.has_perm('team.custom_view_teams'):
 		history_list = History.objects.all()
@@ -40,7 +39,7 @@ def history_orders(request):
 		
 		Q_obj = Q()
 		Q_obj.connector = data.pop("connector")
-		Q_obj.children	= data.items()
+		Q_obj.children  = data.items()
 		
 		history_list = history_list.filter( Q_obj )
 	
@@ -74,10 +73,19 @@ def history_orders(request):
 		
 		objects = OrderItem.objects.filter( id__in = items_id ).distinct()
 		objects = objects.order_by('-history__date_delivered')
-		total = sum( [item.total_price() for item in objects] )
 	else:
 		display = "by_order"
 		objects = history_list
+	
+	return display, objects, form
+
+
+@login_required
+def history_orders(request):
+	display, objects, form = search_orders( request )
+	if display == "by_product":
+		total = sum( [item.total_price() for item in objects] )
+	else:
 		total = sum( [history.price for history in history_list.distinct()] )
 	
 	return direct_to_template( request, "history/orders.html", {
@@ -94,6 +102,60 @@ def item(request, item_id):
 	return direct_to_template( request, 'history/item.html', {
 		'history': item
 	})
+
+@login_required
+def export_order( request ):
+	display, objects, form = search_orders( request )
+	
+	wb = xlwt.Workbook()
+	ws = wb.add_sheet("export")
+	
+	if display == "by_order":
+		header = [u"DATE RECEPTION", u"EQUIPE", u"FOURNISSEUR",u"N° COMMANDE", u"MONTANT"]
+		for col, title in enumerate(header): ws.write(0, col, title)
+		row = 1
+		
+		for history in objects:
+			history = item.history_set.get()
+			
+			ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
+			ws.write( row, 1, history.team )
+			ws.write( row, 2, history.provider )
+			ws.write( row, 3, history.number )
+			ws.write( row, 4, history.price )
+		
+	else:
+		header = [
+		u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
+		u"FOURNISSEUR",u"N°CMDE",u"DESIGNATION",u"CONDITIONNEMENT",u"RÉFÉRENCE",
+		u"N° OFFRE",u"PRIX UNITAIRE",u"QUANTITE",u"PRIX TOTAL",u"MONTANT CDE"]
+		for col, title in enumerate(header): ws.write(0, col, title)
+		row = 1
+		
+		for item in objects:
+			history = item.history_set.get()
+			
+			ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
+			ws.write( row, 1, history.team )
+			ws.write( row, 2, item.get_fullname() )
+			ws.write( row, 3, item.get_fullname_recept() )
+			ws.write( row, 4, history.provider )
+			ws.write( row, 5, history.number )
+			ws.write( row, 6, item.name )
+			ws.write( row, 7, item.packaging )
+			ws.write( row, 8, item.reference )
+			ws.write( row, 9, item.offer_nb )
+			ws.write( row, 10, item.price )
+			ws.write( row, 11, item.quantity )
+			ws.write( row, 12, item.total_price )
+			ws.write( row, 13, history.price )
+	
+	response = HttpResponse(mimetype="application/ms-excel")
+	response['Content-Disposition'] = 'attachment; filename=export_historique_commandes.xls'
+	response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
+	wb.save(response)
+	
+	return response
 
 @login_required
 def history_budgets(request):
@@ -131,6 +193,7 @@ def history_budgets(request):
 		'budget_lines': paginate( request, budget_lines ),
 		'search_args': urlencode(request.GET)
 	})
+
 
 @login_required
 @GET_method
