@@ -116,6 +116,7 @@ class Order(models.Model):
 			budget					= self.budget and self.budget.name or "",
 			number					= self.number,
 			price						= self.price(),
+			comments				= self.notes,
 			date_delivered	= date_delivered
 		)
 		
