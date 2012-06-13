@@ -86,7 +86,7 @@ def history_orders(request):
 	if display == "by_product":
 		total = sum( [item.total_price() for item in objects] )
 	else:
-		total = sum( [history.price for history in history_list.distinct()] )
+		total = sum( [history.price for history in objects.distinct()] )
 	
 	return direct_to_template( request, "history/orders.html", {
 		'filter_form': form,

@@ -65,7 +65,7 @@
 				{% if forloop.counter > 1 %}
 					<tr class="empty_row"><td colspan="16"></td></tr>
 				{% endif %}
-			
+				
 				{% for budget_line in budget.list %}
 				<tr class="{% cycle 'even' 'odd' %} {% if forloop.first %}border-top-double{% endif %}">
 					{% if forloop.first %}

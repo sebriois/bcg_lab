@@ -113,7 +113,7 @@ def read_xls( header, data, input_excel ):
 			errors.append( base_error + u"Colonne 'prix' - la colonne prix est vide." )
 		
 		new_row = [is_valid]
-		for colIdx, col in enumerate(row[0:7]):
+		for colIdx, col in enumerate(row[0:6]):
 			col = col.value
 			
 			if colIdx == header.index(u"conditionnement"):
@@ -122,17 +122,7 @@ def read_xls( header, data, input_excel ):
 				new_row.append( str(col).replace(",",".").replace(u"€","") )
 			else:
 				new_row.append( col )
-			
-			# if colIdx == ref_idx:
-			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
-			# elif colIdx == header.index(u"n° d'offre"):
-			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
-			# elif colIdx == header.index(u"conditionnement"):
-			# 	new_row.append( col.strip().rstrip(".0").rstrip(",0") )
-			# elif colIdx == price_idx:
-			# 	new_row.append( col.strip().replace(",",".").replace(u'€','') )
-			# else:
-			# 	new_row.append( col )
+		
 		data.append( new_row )
 	
 	return errors
@@ -161,7 +151,6 @@ votre navigateur)." )
 	ref_idx    = json_data['header'].index(u'reference') + 1
 	price_idx  = json_data['header'].index(u'prix') + 1
 	pack_idx   = json_data['header'].index(u'conditionnement') + 1
-	offer_idx  = json_data['header'].index(u"n° d'offre") + 1
 	nom_idx    = json_data['header'].index(u'nomenclature') + 1
 	origin_idx = json_data['header'].index(u"fournisseur d'origine") + 1
 	

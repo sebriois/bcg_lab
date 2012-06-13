@@ -32,7 +32,7 @@ class Order(models.Model):
 	class Meta:
 		verbose_name = "Commande"
 		verbose_name_plural = "Commandes"
-		ordering = ('status', 'provider', 'date_created')
+		ordering = ('status', '-date_created', 'provider')
 	
 	def __unicode__(self):
 		d = datetime.strftime( self.date_created, "%d/%m/%Y %Hh%M" )
@@ -109,6 +109,7 @@ class Order(models.Model):
 	def save_to_history(self, date_delivered = datetime.now()):
 		from history.models import History
 		
+		# Create history object that is a copy of this order
 		history = History.objects.create(
 			team						= self.team.name,
 			provider				= self.provider.name,
@@ -117,10 +118,13 @@ class Order(models.Model):
 			price						= self.price(),
 			date_delivered	= date_delivered
 		)
+		
+		# Move attachments to history
 		for attachment in self.attachments.all():
 			attachment.content_object = history
 			attachment.save()
 		
+		# Move order's items to the new history object
 		for item in self.items.all():
 			history.items.add( item )
 		self.items.clear()

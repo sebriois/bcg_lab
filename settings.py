@@ -140,9 +140,9 @@ HAYSTACK_CONNECTIONS = {
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-EMAIL_HOST = "smtp.cict.fr"
+EMAIL_HOST = "smtp.univ-tlse3.fr"
 EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = "no-reply-lbcmcp@cict.fr"
+DEFAULT_FROM_EMAIL = "no-reply@univ-tlse3.fr"
 
 LOGIN_URL = '/%slogin/' % ROOT_URL
 LOGIN_REDIRECT_URL = '/' + ROOT_URL

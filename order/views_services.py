@@ -44,6 +44,7 @@ def tab_services(request):
 				is_confidential	= data['confidential']
 			)
 			
+			# Add item to order
 			order.items.add(order_item)
 			
 			return redirect('tab_cart')

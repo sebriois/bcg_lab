@@ -1,5 +1,5 @@
 # encoding: utf-8
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from decimal import Decimal
 import xlwt
 
@@ -152,9 +152,14 @@ def tab_reception( request ):
 	if request.method == "GET":
 		orderitems = OrderItem.objects.filter(
 			order__status = 4,
-			order__provider__is_local = False,
-			product_id__isnull = False
+			order__provider__is_local = False
+		).exclude(
+			product_id__isnull = True,
+			order__provider__is_service = False
+		).exclude(
+			order__provider__direct_reception = True
 		)
+		
 		if not request.user.has_perm("team.custom_view_teams"):
 			orderitems = orderitems.filter(
 				Q(username = request.user.username) |
@@ -194,10 +199,16 @@ def tab_reception( request ):
 		else:
 			order_list = Order.objects.filter( status = 4, team = get_teams( request.user )[0] )
 		
-		order_list = order_list.exclude( provider__is_service = True )
+		# Move to history order's having 0 item to receive
+		order_list = order_list.exclude( provider__direct_reception = True, last_change__gte = datetime.now() - timedelta(days = 7) )
 		for order in order_list:
-			if order.items.filter( delivered__gt = 0, product_id__isnull = False ).count() == 0:
-				if not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser:
+			order_items = order.items.filter(
+				Q( product_id__isnull = False ) |
+				Q( order__provider__is_service = True, order__provider__direct_reception = False )
+			)
+			
+			if order_items.filter( delivered__gt = 0 ).count() == 0:
+				if (not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser) and order.provider.direct_reception == False:
 					info_msg( request, u"La commande %s (%s) a été entièrement réceptionnée et archivée." % (order.number, order.provider.name) )
 				order.save_to_history()
 				order.delete()

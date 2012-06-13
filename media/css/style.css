@@ -568,16 +568,20 @@ table.list tbody tr.incoming_event a{
 	color: #51473D;
 }
 
-table.list tbody tr.empty_row {
+table.list tbody tr.empty_row, table.list tbody tr.empty_row_orders {
 	height: 35px;
 	border-right:0;
 	border-left:0;
 }
-table.list tbody tr.empty_row:hover {
+table.list tbody tr.empty_row:hover, table.list tbody tr.empty_row_orders:hover {
 	background: none;
 }
 table.list tbody tr.empty_row td {
 	border-bottom:2px solid #51473d;
+	border-right:0;
+	border-left:0;
+}
+table.list tbody tr.empty_row td, table.list tbody tr.empty_row_orders td {
 	border-right:0;
 	border-left:0;
 }

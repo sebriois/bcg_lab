@@ -27,7 +27,9 @@
 			<div class="legend_problem"></div>problème sur la commande
 		</div>
 		<div class="cleaner"></div>
-	
+		
+		{% regroup orders.object_list by status as order_list %}
+		
 		<table class="list">
 			<thead>
 				<th>Date</th>
@@ -46,36 +48,42 @@
 			</thead>
 			
 			<tbody>
-				{% for order in orders.object_list %}
-				<tr class="{% cycle 'even' 'odd' %} {% if order.has_problem %}has_problem{% endif %} {% if order.is_urgent %}is_urgent{% endif %}">
-					<td>{{ order.date_created|date }}</td>
-					<td>{{ order.last_change|date }}</td>
-					<td>{{ order.provider.name }}</td>
-					{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
-						<td>{{ order.get_full_name }}</td>
+				{% for orders in order_list %}
+					{% if forloop.counter > 1 %}
+						<tr class="empty_row_orders"><td colspan="9"></td></tr>
 					{% endif %}
-					{% if user|has_perm:"budget.custom_view_budget" %}
-						{% if order.budget %}
-						<td>{{ order.budget.name }}</td>
-						{% else %}
-						<td class="warning" style="background-position:center"></td>
+					
+					{% for order in orders.list %}
+					<tr class="{% cycle 'even' 'odd' %} {% if order.has_problem %}has_problem{% endif %} {% if order.is_urgent %}is_urgent{% endif %}">
+						<td>{{ order.date_created|date }}</td>
+						<td>{{ order.last_change|date }}</td>
+						<td>{{ order.provider.name }}</td>
+						{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
+							<td>{{ order.get_full_name }}</td>
 						{% endif %}
-					{% endif %}
-					<td>{{ order.price }} €</td>
-					<td><b>{{ order.get_status_display }}</b></td>
-					<td>{{ order.number|default:"" }}</td>
-					<td>
-						{% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
-							{% if order.budget.budget_type == 0 %}
-								<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie XLAB</a>
+						{% if user|has_perm:"budget.custom_view_budget" %}
+							{% if order.budget %}
+							<td>{{ order.budget.name }}</td>
 							{% else %}
-								<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
+							<td class="warning" style="background-position:center"></td>
 							{% endif %}
-						{% else %}
-							<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
 						{% endif %}
-					</td>
-				</tr>
+						<td>{{ order.price }} €</td>
+						<td><b>{{ order.get_status_display }}</b></td>
+						<td>{{ order.number|default:"" }}</td>
+						<td>
+							{% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
+								{% if order.budget.budget_type == 0 %}
+									<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie XLAB</a>
+								{% else %}
+									<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
+								{% endif %}
+							{% else %}
+								<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
 				{% endfor %}
 			</tbody>
 		</table>
