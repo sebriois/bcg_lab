@@ -71,8 +71,10 @@
 					<td>{{ product.nomenclature|default:"" }}</td>
 					<td>{{ product.last_change|date }}</td>
 					<td style="white-space:nowrap">
-						{% if not user|has_perm:"order.custom_view_local_provider" %}
-						<button id="{{product.id}}" class="plus addToCart">Panier</button>
+						{% if not product.has_expired %}
+							{% if not user|has_perm:"order.custom_view_local_provider" %}
+							<button id="{{product.id}}" class="plus addToCart">Panier</button>
+							{% endif %}
 						{% endif %}
 						<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
 					</td>
