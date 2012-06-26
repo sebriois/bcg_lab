@@ -230,7 +230,7 @@ def tab_reception_local_provider( request ):
 			)
 		
 		return direct_to_template( request, 'order/reception_local.html', {
-			'orderitems': orderitems.order_by('order__number', 'name')
+			'orderitems': orderitems.order_by('order__team')
 		})
 	elif request.method == "POST":
 		action_ids = filter( lambda key: key.startswith("action_"), request.POST.keys() )

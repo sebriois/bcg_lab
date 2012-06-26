@@ -183,13 +183,18 @@ def export_xls( request ):
 		else:
 			provider = u"%s" % product.provider.name
 		
+		if product.expiry:
+			expiry = product.expiry.strftime("%d/%m/%Y")
+		else:
+			expiry = u""
+		
 		ws.write( row, 0, provider )
 		ws.write( row, 1, product.name )
 		ws.write( row, 2, product.packaging )
 		ws.write( row, 3, product.reference )
 		ws.write( row, 4, product.price )
 		ws.write( row, 5, product.offer_nb )
-		ws.write( row, 6, product.expiry.strftime("%d/%m/%Y") )
+		ws.write( row, 6, expiry )
 		ws.write( row, 7, product.nomenclature )
 		ws.write( row, 8, product.last_change.strftime("%d/%m/%Y") )
 		row += 1
