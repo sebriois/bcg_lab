@@ -6,6 +6,7 @@ from django import forms
 from order.models import OrderItem, OrderComplement
 from team.models import Team
 from provider.models import Provider
+from product.models import Product
 
 from constants import *
 from utils import in_team_secretary
@@ -98,6 +99,19 @@ class FilterForm(forms.Form):
 		label    = "Fournisseur",
 		required = False
 	)
+	
+	items__name__icontains = forms.CharField(
+		label			= u"Produit",
+		widget		= forms.TextInput( attrs = { 'class' : 'autocomplete' }),
+								# autocomplete choices are set below, in __init__ method
+		required 	= False
+	)
+	
+	def __init__(self, *args, **kwargs):
+		super( FilterForm, self ).__init__( *args, **kwargs )
+		NAME_CHOICES = ";".join(Product.objects.all().values_list("name",flat=True))
+		self.fields['items__name__icontains'].widget.attrs.update({'choices': NAME_CHOICES})
+	
 
 class ServiceForm(forms.Form):
 	team = forms.ModelChoiceField(
