@@ -30,6 +30,9 @@ class Budget(models.Model):
 	def get_amount_left(self):
 		return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])
 	
+	def get_amount_spent(self):
+		return sum([bl.get_total() * -1 for bl in BudgetLine.objects.filter(budget_id = self.id)])
+	
 	def update_budgetlines(self):
 		for bl in BudgetLine.objects.filter( budget_id = self.id ):
 			bl.team = self.team.name

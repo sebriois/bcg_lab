@@ -11,7 +11,7 @@
 </form>
 <br />
 {% if query and page.object_list|length > 0 %}
-	<h3>{{page.paginator.count}} produit{{page.paginator.count|pluralize}} trouv&eacute{{page.paginator.count|pluralize}}</h3>
+	<h3>{{page.paginator.count}} produit{{page.paginator.count|pluralize}} trouvé{{page.paginator.count|pluralize}}</h3>
 	<table class="list">
 		<thead>
 				<th>Fournisseur</th>
@@ -52,7 +52,7 @@
 	
 	{# {% if page.has_previous or page.has_next %} #}
 	{# 	<div> #}
-	{# 		{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Pr&eacutec&eacutedente{% if page.has_previous %}</a>{% endif %} #}
+	{# 		{% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Précédente{% if page.has_previous %}</a>{% endif %} #}
 	{# 		- page {{page.number}}/{{page.paginator.num_pages}} - #}
 	{# 		{% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Suivante &raquo;{% if page.has_next %}</a>{% endif %} #}
 	{# 	</div> #}
