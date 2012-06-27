@@ -92,6 +92,7 @@ def history_orders(request):
 		'filter_form': form,
 		'objects': paginate( request, objects.distinct() ),
 		'display': display,
+		'search_args': urlencode(request.GET),
 		'total': total
 	})
 
