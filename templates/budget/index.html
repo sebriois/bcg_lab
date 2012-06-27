@@ -34,8 +34,8 @@
 					<td>{{ budget.name }}</td>
 					<td>{{ budget.get_budget_type_display }}</td>
 					<td>{{ budget.default_nature|default:"Toutes" }}</td>
-					<td>{{ budget.get_amount_spent }}</td>
-					<td>{{ budget.get_amount_left }}</td>
+					<td style="color:red">{{ budget.get_amount_spent }}</td>
+					<td style="color:green">{{ budget.get_amount_left }}</td>
 					<td>
 						<a href="{% url budgetlines %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
 						{% if user|has_perm:"budget.custom_edit_budget" %}

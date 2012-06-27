@@ -57,6 +57,7 @@
 			<th>débit</th>
 			<th>qté</th>
 			<th>Total</th>
+			<th>Dépensé</th>
 			<th>Dispo</th>
 			{% if user|has_perm:"budget.custom_edit_budget" %}<th></th>{% endif %}
 		</thead>
@@ -87,6 +88,7 @@
 					<td style="color:red">{{ budget_line.debit|default:"" }}</td>
 					<td>{{ budget_line.quantity|default:1 }}</td>
 					<td>{{ budget_line.get_total|default:"" }}</td>
+					<td><strong>{{ budget_line.get_amount_spent }}</strong></td>
 					<td><strong>{{ budget_line.get_amount_left }}</strong></td>
 					{% if user|has_perm:"budget.custom_edit_budget" %}
 						<td style="white-space:nowrap">
