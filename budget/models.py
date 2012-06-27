@@ -31,7 +31,7 @@ class Budget(models.Model):
 		return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])
 	
 	def get_amount_spent(self):
-		return sum([bl.get_total_spent() for bl in BudgetLine.objects.filter(budget_id = self.id)])
+		return sum([bl.debit() for bl in BudgetLine.objects.filter(budget_id = self.id, debit__isnull = False)])
 	
 	def update_budgetlines(self):
 		for bl in BudgetLine.objects.filter( budget_id = self.id ):
@@ -113,11 +113,9 @@ class BudgetLine(models.Model):
 	
 	def get_amount_spent(self):
 		amount_spent = 0
-		for line in BudgetLine.objects.filter( budget_id = self.budget_id ):
-			amount_spent += line.get_total_spent()
-			
-			if line == self:
-				break
+		for line in BudgetLine.objects.filter( budget_id = self.budget_id, debit__isnull = False ):
+			amount_spent += line.debit
+			if line == self: break
 		
 		return amount_spent
 	
@@ -127,13 +125,6 @@ class BudgetLine(models.Model):
 			return self.credit * self.quantity
 		if self.debit:
 			return self.debit * self.quantity * -1
-		return self.product_price
-	
-	def get_total_spent(self):
-		if self.credit:
-			return self.credit * self.quantity * -1
-		if self.debit:
-			return self.debit * self.quantity
 		return self.product_price
 	
 	def get_order_team(self):
