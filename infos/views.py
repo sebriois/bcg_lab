@@ -41,6 +41,24 @@ def new(request):
 
 @login_required
 @transaction.commit_on_success
+def item(request, info_id):
+	info = get_object_or_404( Info, id = info_id )
+	
+	if request.method == 'GET':
+		form = InfoForm( instance = info )
+	elif request.method == 'POST':
+		form = InfoForm( instance = info, data = request.POST )
+		if form.is_valid():
+			form.save()
+			return redirect( 'info_index' )
+	
+	return direct_to_template( request, 'infos/item.html', {
+		'form': form,
+		'info': info
+	})
+
+@login_required
+@transaction.commit_on_success
 def delete(request, info_id):
 	info = get_object_or_404( Info, id = info_id )
 	info.delete()
