@@ -121,6 +121,7 @@ def export_orders_to_xls( request ):
 			ws.write( row, 2, history.provider )
 			ws.write( row, 3, history.number )
 			ws.write( row, 4, history.price )
+			row += 1
 	else:
 		header = [
 		u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
@@ -146,6 +147,7 @@ def export_orders_to_xls( request ):
 			ws.write( row, 11, item.quantity )
 			ws.write( row, 12, item.total_price() )
 			ws.write( row, 13, history.price )
+			row += 1
 	
 	response = HttpResponse(mimetype="application/ms-excel")
 	response['Content-Disposition'] = 'attachment; filename=export_historique_commandes.xls'
