@@ -131,7 +131,7 @@ def export_history_orders(request):
 			for col, title in enumerate(header): sheet.write(0, col, title)
 			row = 1
 		
-		for item in history.items.all():
+		for item in history.items.all().order_by('date_delivered'):
 			sheet.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
 			sheet.write( row, 1, item.get_fullname() )
 			sheet.write( row, 2, item.get_fullname_recept() )
