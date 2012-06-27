@@ -36,11 +36,14 @@
 	
 	<button type="submit" class="check">Effectuer les opérations de maintenance</button>
 </form>
+<br>
 
 <h2>Exports Excel</h2>
-<a href="{% url export_all_budgets %}">Exporter tous les budgets (un onglet par équipe)</a>
-<a href="{% url export_history_budgets %}">Exporter l'historique des budgets (un onglet par équipe)</a>
-<a href="{% url export_history_orders %}">Exporter l'historique des commandes (un onglet par équipe)</a>
-<a href="{% url export_all_products %}">Exporter tous les produits (un onglet par fournisseur)</a>
+<ul>
+	<li><a href="{% url export_all_budgets %}">Exporter tous les budgets (un onglet par équipe)</a></li>
+	<li><a href="{% url export_history_budgets %}">Exporter l'historique des budgets (un onglet par équipe)</a></li>
+	<li><a href="{% url export_history_orders %}">Exporter l'historique des commandes (un onglet par équipe)</a></li>
+	<li><a href="{% url export_all_products %}">Exporter tous les produits (un onglet par fournisseur)</a></li>
+</ul>
 {% endblock %}
 
