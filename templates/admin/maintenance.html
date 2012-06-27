@@ -4,10 +4,10 @@
 
 {% block header %}
 <h1>Administration</h1>
-<h2>Maintenance</h2>
 {% endblock %}
 
 {% block content %}
+<h2>Maintenance</h2>
 <form action="{% url maintenance %}" method="POST">{% csrf_token %}
 	<h3>Comptes utilisateurs</h3>
 	<fieldset>
@@ -36,5 +36,11 @@
 	
 	<button type="submit" class="check">Effectuer les opérations de maintenance</button>
 </form>
+
+<h2>Exports Excel</h2>
+<a href="{% url export_all_budgets %}">Exporter tous les budgets (un onglet par équipe)</a>
+<a href="{% url export_history_budgets %}">Exporter l'historique des budgets (un onglet par équipe)</a>
+<a href="{% url export_history_orders %}">Exporter l'historique des commandes (un onglet par équipe)</a>
+<a href="{% url export_all_products %}">Exporter tous les produits (un onglet par fournisseur)</a>
 {% endblock %}
 
