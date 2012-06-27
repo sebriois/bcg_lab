@@ -34,7 +34,7 @@ def _export_budgets(request, is_active):
 			prev_team = bl.team
 			prev_budget = None
 			if len( bl.team ) >= 32:
-				sheet = xls.add_sheet(u"%s..."[0:28] % bl.team)
+				sheet = xls.add_sheet(u"%s..." % bl.team[0:28])
 			else:
 				sheet = xls.add_sheet(u"%s" % bl.team)
 			row = 0
@@ -79,7 +79,7 @@ def export_all_products(request):
 	
 	for provider in Provider.objects.filter( is_service = False ):
 		if len( provider.name ) >= 32:
-			sheet = xls.add_sheet(u"%s..."[0:28] % provider.name )
+			sheet = xls.add_sheet(u"%s..." % provider.name[0:28] )
 		else:
 			sheet = xls.add_sheet(u"%s" % provider.name )
 		sheet.write(0,0,u"Désignation")
@@ -125,7 +125,7 @@ def export_history_orders(request):
 		if prev_team != history.team:
 			prev_team = history.team
 			if len( history.team ) >= 32:
-				sheet = xls.add_sheet( u"%s..."[0:28] % history.team )
+				sheet = xls.add_sheet( u"%s..." % history.team[0:28] )
 			else:
 				sheet = xls.add_sheet( u"%s" % history.team )
 			for col, title in enumerate(header): sheet.write(0, col, title)
