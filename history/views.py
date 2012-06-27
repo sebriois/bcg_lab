@@ -104,7 +104,7 @@ def item(request, item_id):
 	})
 
 @login_required
-def export_order( request ):
+def export_orders_to_xls( request ):
 	display, objects, form = search_orders( request )
 	
 	wb = xlwt.Workbook()
