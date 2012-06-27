@@ -33,7 +33,10 @@ def _export_budgets(request, is_active):
 		if prev_team != bl.team:
 			prev_team = bl.team
 			prev_budget = None
-			sheet = xls.add_sheet(u"%s" % bl.team)
+			if len( bl.team ) >= 32:
+				sheet = xls.add_sheet(u"%s..."[0:28] % bl.team)
+			else:
+				sheet = xls.add_sheet(u"%s" % bl.team)
 			row = 0
 			for col, title in enumerate(header): sheet.write(row, col, title)
 		
@@ -75,7 +78,10 @@ def export_all_products(request):
 	xls = xlwt.Workbook()
 	
 	for provider in Provider.objects.filter( is_service = False ):
-		sheet = xls.add_sheet(u"%s" % provider.name )
+		if len( provider.name ) >= 32:
+			sheet = xls.add_sheet(u"%s..."[0:28] % provider.name )
+		else:
+			sheet = xls.add_sheet(u"%s" % provider.name )
 		sheet.write(0,0,u"Désignation")
 		sheet.write(0,1,u"Conditionnement")
 		sheet.write(0,2,u"Réference")
@@ -118,7 +124,10 @@ def export_history_orders(request):
 	for history in History.objects.all().order_by('team'):
 		if prev_team != history.team:
 			prev_team = history.team
-			sheet = xls.add_sheet( u"%s" % history.team )
+			if len( history.team ) >= 32:
+				sheet = xls.add_sheet( u"%s..."[0:28] % history.team )
+			else:
+				sheet = xls.add_sheet( u"%s" % history.team )
 			for col, title in enumerate(header): sheet.write(0, col, title)
 			row = 1
 		
