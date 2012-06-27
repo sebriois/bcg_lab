@@ -116,14 +116,11 @@ def export_orders_to_xls( request ):
 		row = 1
 		
 		for history in objects:
-			history = item.history_set.get()
-			
 			ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
 			ws.write( row, 1, history.team )
 			ws.write( row, 2, history.provider )
 			ws.write( row, 3, history.number )
 			ws.write( row, 4, history.price )
-		
 	else:
 		header = [
 		u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
