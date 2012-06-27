@@ -46,14 +46,17 @@ def _product_search( request_args ):
 				for key, value in data.items():
 					if not value:
 						del data[key]
-			
+				
 				if 'id__in' in request_args:
 					data['id__in'] = request_args['id__in'].split(',')
-			
+				
+				if 'has_expired' in request_args:
+					data['expiry__lt'] = datetime.now()
+				
 				Q_obj = Q()
 				Q_obj.connector = data.pop("connector")
 				Q_obj.children  = data.items()
-			
+				
 				product_list = Product.objects.filter( Q_obj )
 			else:
 				error_msg(request, "Recherche non valide")

@@ -85,6 +85,10 @@
 	
 	{% pagination products %}
 {% else %}
+	{# ############# #}
+	{# ADVANCED FORM #}
+	{# ############# #}
+
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
 	<form action="{% url product_index %}" method="GET" class="show_wait hide_on_save">
@@ -111,7 +115,9 @@
 			{% with filter_form.sub_category as field %}
 				{% include "form_snippet.html" %}
 			{% endwith %}
-	
+			<label for="has_expired">Date d'expiration dépassée?</label>
+			<input type="checkbox" id="has_expired" name="has_expired" />
+			
 			<div class="cleaner"></div>
 			<button type="submit" class="all">Chercher</button>
 		</fieldset>
