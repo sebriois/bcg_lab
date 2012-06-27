@@ -147,7 +147,7 @@ def export_order( request ):
 			ws.write( row, 9, item.offer_nb )
 			ws.write( row, 10, item.price )
 			ws.write( row, 11, item.quantity )
-			ws.write( row, 12, item.total_price )
+			ws.write( row, 12, item.total_price() )
 			ws.write( row, 13, history.price )
 	
 	response = HttpResponse(mimetype="application/ms-excel")

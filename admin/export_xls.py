@@ -29,7 +29,7 @@ def _export_budgets(request, is_active):
 	prev_team = None
 	row = 0
 	
-	for bl in BudgetLine.objects.filter(is_active = is_active).order_by("team"," budget"):
+	for bl in BudgetLine.objects.filter(is_active = is_active).order_by("team","budget"):
 		if prev_team != bl.team:
 			prev_team = bl.team
 			prev_budget = None
@@ -143,7 +143,7 @@ def export_history_orders(request):
 			sheet.write( row, 8, item.offer_nb )
 			sheet.write( row, 9, item.price )
 			sheet.write( row, 10, item.quantity )
-			sheet.write( row, 11, item.total_price )
+			sheet.write( row, 11, item.total_price() )
 			sheet.write( row, 12, history.price )
 			row += 1
 	
