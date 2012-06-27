@@ -27,7 +27,10 @@
 			<td>{{ info.date_created|date }}</td>
 			<td>{{ info.expiry|date }}</td>
 			<td>{{ info.text|safe }}</td>
-			<td><a href="{% url info_delete info.id %}" class="trash no-text"></a></td>
+			<td>
+				<a href="{% url info_item info.id %}" class="pencil no-text"></a>
+				<a href="{% url info_delete info.id %}" class="trash no-text"></a>
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>
