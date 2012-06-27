@@ -63,6 +63,7 @@ def _product_search( request_args ):
 	
 	return product_list, form
 
+
 @login_required
 def index(request):
 	product_list, filter_form = _product_search( request.GET )
@@ -85,6 +86,7 @@ def index(request):
 		'url_args': urlencode(request.GET)
 	})
 
+
 @login_required
 @transaction.commit_on_success
 def item(request, product_id):
@@ -98,7 +100,12 @@ def item(request, product_id):
 		form = ProductForm(instance = product, data = data)
 		if form.is_valid():
 			if form.has_changed():
-				form.save()
+				orig_price = product.price
+				product = form.save()
+				if orig_price != product.price and product.has_expired():
+					product.expiry = datetime("31/12/%s" % datetime.now().year, "%d/%m/%Y")
+					product.save()
+					
 				info_msg( request, u"Produit modifié avec succès." )
 			return redirect( reverse('product_index') + '?' + url_args[0] )
 	
@@ -109,6 +116,7 @@ def item(request, product_id):
 		'form': form,
 		'url_args': url_args
 	})
+
 
 @login_required
 @transaction.commit_on_success
@@ -146,6 +154,7 @@ def new(request):
 		'provider': provider,
 		'form': form
 	})
+
 
 @login_required
 @transaction.commit_on_success

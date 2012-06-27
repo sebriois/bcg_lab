@@ -238,6 +238,11 @@ class OrderItem(models.Model):
 	def update_product(self):
 		if self.product_id:
 			product = Product.objects.get( id = self.product_id )
+			
+			orig_price = product.price
+			if orig_price != self.price and product.has_expired():
+				product.expiry = datetime("31/12/%s" % datetime.now().year, "%d/%m/%Y")
+			
 			product.name = self.name
 			product.packaging = self.packaging
 			product.reference = self.reference
