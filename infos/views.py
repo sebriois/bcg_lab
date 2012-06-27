@@ -29,6 +29,8 @@ def new(request):
 		data = request.POST.copy()
 		if in_team_secretary( request.user ):
 			data['text'] = u'<strong><u>INFO GESTION:</u></strong> %s' % data['text']
+		if 'provider' in data.keys() and data['provider']:
+			data['text'] = data['provider'] + " : " + data['text']
 		
 		form = InfoForm( data = data )
 		if form.is_valid():
@@ -47,7 +49,11 @@ def item(request, info_id):
 	if request.method == 'GET':
 		form = InfoForm( instance = info )
 	elif request.method == 'POST':
-		form = InfoForm( instance = info, data = request.POST )
+		data = request.POST.copy()
+		if 'provider' in data.keys() and data['provider']:
+			data['text'] = data['provider'] + " : " + data['text']
+		
+		form = InfoForm( instance = info, data = data )
 		if form.is_valid():
 			form.save()
 			return redirect( 'info_index' )

@@ -12,6 +12,9 @@
 <form action="{% url info_item info.id %}" method="POST">{% csrf_token %}
 	<h3>Modification d'une information</h3>
 	<fieldset>
+		<label for="provider">Fournisseur</label>
+		<input type="text" name="provider" id="provider" />
+		<div class="cleaner"></div>
   {% for field in form %}
     {% include "form_snippet.html"%}
   {% endfor %}
