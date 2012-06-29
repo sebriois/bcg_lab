@@ -112,43 +112,38 @@ def export_orders_to_xls( request ):
 	ws = wb.add_sheet("export")
 	
 	if display == "by_order":
-		header = [u"DATE RECEPTION", u"EQUIPE", u"FOURNISSEUR",u"N° COMMANDE", u"MONTANT"]
-		for col, title in enumerate(header): ws.write(0, col, title)
-		row = 1
-		
+		items = []
 		for history in objects:
-			ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
-			ws.write( row, 1, history.team )
-			ws.write( row, 2, history.provider )
-			ws.write( row, 3, history.number )
-			ws.write( row, 4, history.price )
-			row += 1
+			for item in history.items.all():
+				items.append( item )
 	else:
-		header = [
-		u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
-		u"FOURNISSEUR",u"N°CMDE",u"DESIGNATION",u"CONDITIONNEMENT",u"RÉFÉRENCE",
-		u"N° OFFRE",u"PRIX UNITAIRE",u"QUANTITE",u"PRIX TOTAL",u"MONTANT CDE"]
-		for col, title in enumerate(header): ws.write(0, col, title)
-		row = 1
+		items = objects
+	
+	header = [
+	u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
+	u"FOURNISSEUR",u"N°CMDE",u"DESIGNATION",u"CONDITIONNEMENT",u"RÉFÉRENCE",
+	u"N° OFFRE",u"PRIX UNITAIRE",u"QUANTITE",u"PRIX TOTAL",u"MONTANT CDE"]
+	for col, title in enumerate(header): ws.write(0, col, title)
+	row = 1
+	
+	for item in items:
+		history = item.history_set.get()
 		
-		for item in objects:
-			history = item.history_set.get()
-			
-			ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
-			ws.write( row, 1, history.team )
-			ws.write( row, 2, item.get_fullname() )
-			ws.write( row, 3, item.get_fullname_recept() )
-			ws.write( row, 4, history.provider )
-			ws.write( row, 5, history.number )
-			ws.write( row, 6, item.name )
-			ws.write( row, 7, item.packaging )
-			ws.write( row, 8, item.reference )
-			ws.write( row, 9, item.offer_nb )
-			ws.write( row, 10, item.price )
-			ws.write( row, 11, item.quantity )
-			ws.write( row, 12, item.total_price() )
-			ws.write( row, 13, history.price )
-			row += 1
+		ws.write( row, 0, history.date_delivered.strftime("%d/%m/%Y") )
+		ws.write( row, 1, history.team )
+		ws.write( row, 2, item.get_fullname() )
+		ws.write( row, 3, item.get_fullname_recept() )
+		ws.write( row, 4, history.provider )
+		ws.write( row, 5, history.number )
+		ws.write( row, 6, item.name )
+		ws.write( row, 7, item.packaging )
+		ws.write( row, 8, item.reference )
+		ws.write( row, 9, item.offer_nb )
+		ws.write( row, 10, item.price )
+		ws.write( row, 11, item.quantity )
+		ws.write( row, 12, item.total_price() )
+		ws.write( row, 13, history.price )
+		row += 1
 	
 	response = HttpResponse(mimetype="application/ms-excel")
 	response['Content-Disposition'] = 'attachment; filename=export_historique_commandes.xls'

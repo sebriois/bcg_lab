@@ -29,7 +29,7 @@ def _export_budgets(request, is_active):
 	prev_team = None
 	row = 0
 	
-	for bl in BudgetLine.objects.filter(is_active = is_active).order_by("team","budget"):
+	for bl in BudgetLine.objects.filter(is_active = is_active).order_by("team","budget","id"):
 		if prev_team != bl.team:
 			prev_team = bl.team
 			prev_budget = None
