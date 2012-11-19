@@ -108,7 +108,10 @@ def export_to_xls(request):
 		ws.write( row, 9, bl.credit )
 		ws.write( row, 10, bl.debit )
 		ws.write( row, 11, bl.quantity )
-		ws.write( row, 12, bl.product_price )
+		if bl.debit:
+			ws.write( row, 12, bl.product_price * -1 )
+		else:
+			ws.write( row, 12, bl.product_price )
 		ws.write( row, 13, str(bl.get_amount_left()) )
 		row += 1
 	
