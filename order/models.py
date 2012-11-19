@@ -117,7 +117,6 @@ class Order(models.Model):
 			number         = self.number,
 			price          = self.price(),
 			comments       = self.notes,
-			date_delivered = date_delivered
 		)
 		
 		# Move attachments to history
