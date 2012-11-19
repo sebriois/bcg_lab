@@ -24,7 +24,7 @@ class HistoryFilterForm(forms.Form):
 		choices		= EMPTY_SEL,
 		required	= False
 	)
-        comments = forms.CharField(
+        comments__icontains = forms.CharField(
                 label    = "Commentaire",
                 required = False
         )
