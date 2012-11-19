@@ -99,6 +99,10 @@ class FilterForm(forms.Form):
 		label    = "Fournisseur",
 		required = False
 	)
+        notes = forms.CharField(
+                label    = u"Commentaire",
+                required = False
+        )
 	
 	items__name__icontains = forms.CharField(
 		label			= u"Produit",

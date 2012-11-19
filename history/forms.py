@@ -20,10 +20,14 @@ class HistoryFilterForm(forms.Form):
 	)
 	
 	team = forms.ChoiceField(
-		label			= "Equipe",
+		label	        = "Equipe",
 		choices		= EMPTY_SEL,
 		required	= False
 	)
+        comments = forms.CharField(
+                label    = "Commentaire",
+                required = False
+        )
 
 	items__name = forms.CharField(
 		label			= u"Produit",
