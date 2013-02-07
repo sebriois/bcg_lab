@@ -36,12 +36,6 @@ def import_xls( request, provider_id ):
 			
 			errors = read_xls( header, data, request.FILES['xls_file'] )
 			
-			if form_data['offer_nb'] and form_data['expiry']:
-				offer_idx = header.index(u"n° d'offre")
-				for row in data:
-					if not row[offer_idx]:
-						row[offer_idx] = form_data['offer_nb']
-			
 			request.session['import_data'] = json.dumps({
 				'header': header,
 				'data': data,
