@@ -160,18 +160,19 @@ def credit(request, budget_id):
 	
 	if form.is_valid():
 		bl = form.save( commit = False )
-		bl.team					= budget.team.name
-		bl.budget_id		= budget.id
-		bl.nature				= budget.default_nature
-		bl.budget_type	= budget.budget_type
-		bl.origin				= budget.default_origin
-		bl.quantity			= 1
-		bl.credit				= bl.product_price
-		bl.debit				= 0
+		bl.team         = budget.team.name
+		bl.budget_id    = budget.id
+		bl.nature       = budget.default_nature
+		bl.budget_type  = budget.budget_type
+		bl.origin       = budget.default_origin
+		bl.quantity     = 1
+		bl.credit       = bl.product_price
+		bl.debit        = 0
 		bl.save()
 		
 		info_msg(request, "Ligne de crédit ajoutée avec succès.")
-		return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
+                return redirect('budgets')
+		# return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
 	else:
 		return direct_to_template(request, 'budget/form_credit.html',{
 			'budget': budget,
@@ -197,18 +198,19 @@ def debit(request, budget_id):
 	form = DebitBudgetForm( budget, data = data )
 	if form.is_valid():
 		bl = form.save( commit = False )
-		bl.team					= budget.team.name
-		bl.budget_id		= budget.id
-		bl.nature				= budget.default_nature
-		bl.budget_type	= budget.budget_type
-		bl.origin				= budget.default_origin
-		bl.quantity			= 1
-		bl.credit				= 0
-		bl.debit				= bl.product_price
+		bl.team         = budget.team.name
+		bl.budget_id    = budget.id
+		bl.nature       = budget.default_nature
+		bl.budget_type  = budget.budget_type
+		bl.origin       = budget.default_origin
+		bl.quantity     = 1
+		bl.credit       = 0
+		bl.debit        = bl.product_price
 		bl.save()
 		
 		info_msg(request, "Ligne de débit ajoutée avec succès!")
-		return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
+                return redirect('budgets')
+		# return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
 	else:
 		return direct_to_template(request, 'budget/form_debit.html',{
 			'budget': budget,
