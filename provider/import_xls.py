@@ -1,4 +1,10 @@
 # coding: utf-8
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+from django.utils.encoding import smart_unicode
 
 from datetime import datetime
 import xlrd
@@ -77,43 +83,54 @@ def read_xls( header, data, input_excel ):
 		name = row[name_idx].value
 		if not name:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'désignation' - la désignation est manquante." )
+			errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
+		if len(name) >= 500:
+			is_valid = 'false'
+			errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
 		
 		# CHECK REFERENCE
 		ref_idx = header.index(u"reference")
-		ref = row[ref_idx].value
+		ref = unicode(row[ref_idx].value)
 		if not ref:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'référence' - la référence est manquante." )
+			errors.append( base_error + u"Colonne 'référence' - valeur est manquante." )
+		if len(ref) >= 100:
+			is_valid = 'false'
+			errors.append( base_error + u"Colonne 'référence' - valeur trop longue (%s/100 charactères)" % len(ref))
+		
+		# CHECK PACKAGING
+		pack_idx = header.index('conditionnement')
+		pack = unicode(row[pack_idx].value)
+		if len(pack) >= 100:
+			is_valid = 'false'
+			errors.append( base_error + u"Colonne 'conditionnement' - valeur trop longue (%s/100 charactères)" % len(pack))
 		
 		# CHECK PRICE
 		price_idx = header.index(u"prix")
-		price = row[price_idx].value
-		
-		if isinstance(price, str):
-			price = price.replace(" ","").replace(",",".").replace('€','')
-		try:
-			price = Decimal(price)
-		except:
+		price = unicode(row[price_idx].value)
+		price = price.replace(' ','').replace(',','.').replace(u"€",'')
+		if not price:
 			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'prix' - impossible de lire une valeur décimale. Valeur reçue: '%s'." % price)
-		
-		if price:
-			if price <= 0:
-				is_valid = 'false'
-				errors.append( base_error + u"Colonne 'prix' - le prix est négatif ou nul, il doit être strictement positif." )
+			errors.append( base_error + u"Colonne 'prix' - valeur manquante." )
 		else:
-			is_valid = 'false'
-			errors.append( base_error + u"Colonne 'prix' - la colonne prix est vide." )
+			try:
+				price = Decimal(price)
+				if price <= 0:
+					is_valid = 'false'
+					errors.append( base_error + u"Colonne 'prix' - le prix est négatif ou nul, il doit être strictement positif." )
+			except:
+				is_valid = 'false'
+				errors.append( base_error + u"Colonne 'prix' - impossible de lire une valeur décimale. Valeur reçue: '%s'." % row[price_idx].value)
 		
 		new_row = [is_valid]
-		for colIdx, col in enumerate(row[0:6]):
+		for colIdx, col in enumerate(row[0:6]):	
 			col = col.value
 			
-			if colIdx == header.index(u"conditionnement"):
-				new_row.append( str(col).rstrip(",0").rstrip(".") )
+			if colIdx in (pack_idx, ref_idx):
+				new_row.append( unicode(col).rstrip(",0").rstrip(".") )
 			elif colIdx == price_idx:
-				new_row.append( str(col).replace(",",".").replace(u"€","") )
+				price = unicode(col).replace(' ','').replace(',','.').replace(u"€",'')
+				new_row.append( price )
 			else:
 				new_row.append( col )
 		
@@ -129,7 +146,7 @@ def do_import( request, provider_id ):
 	
 	if not 'import_data' in request.session:
 		warn_msg( request, "Une erreur de session est survenue. Veuillez \
-d'abord vérifier votre historique pour savoir si l'import CSV a été \
+d'abord vérifier votre historique pour savoir si l'import Excel a été \
 effectué. Autrement, essayez à nouveau (cette erreur est relative à \
 votre navigateur)." )
 		return redirect( reverse('import_products', args=[provider_id]) )
@@ -154,7 +171,7 @@ votre navigateur)." )
 		
 		price = line[price_idx]
 		if isinstance(price, str):
-			price = price.replace(" ","").replace(",",".").replace('€','')
+			price = unicode(price).replace(' ','').replace(',','.').replace(u"€",'')
 		price = Decimal(price)
 		
 		if len(line) > pack_idx and line[pack_idx]:
@@ -186,8 +203,12 @@ votre navigateur)." )
 		if not created:
 			product.price = price
 		
-		product.expiry = datetime.strptime(json_data['expiry'], "%d/%m/%Y")
-		product.offer_nb = json_data['offer_nb']
+		if 'expiry' in json_data and json_data['expiry']:
+			product.expiry = datetime.strptime(json_data['expiry'], "%d/%m/%Y")
+		
+		if 'offer_nb' in json_data and json_data['offer_nb']:
+			product.offer_nb = json_data['offer_nb']
+		
 		product.save()
 	
 	del request.session['import_data']

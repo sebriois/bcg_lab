@@ -41,7 +41,7 @@
 				<td>
 					{{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
 					{% if provider.users_in_charge.all.count > 0 %}
-						<button class="mail" to="{{provider.users_in_charge.all|asId|join:","}}">Envoyer un message</button>
+						<button class="mail no-text" to="{{provider.users_in_charge.all|asId|join:","}}"> </button>
 					{% endif %}
 				</td>
 				<td>
@@ -50,9 +50,9 @@
 				<td>
 					<a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
 					{% if provider.users_in_charge.all.count == 0 or user in provider.users_in_charge.all or user.is_superuser %}
-					<a href="{% url provider_item provider.id %}" class="pencil">Editer</a>
 					<a href="{% url import_products provider.id %}" class="import">Import produits</a>
 					<a href="{% url export_products provider.id %}" class="export">Export produits</a>
+					<a href="{% url provider_item provider.id %}" class="pencil">Editer</a>
 					<a href="{% url provider_delete provider.id %}" class="trash">Supprimer</a>
 					{% endif %}
 				</td>
