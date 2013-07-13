@@ -28,7 +28,7 @@ from utils import *
 
 def _product_search( request_args ):
     # QUICK SEARCH: with SolR
-    if "q" in request_args:
+    if "q" in request_args.keys():
         args = request_args.copy()
         args['wt'] = 'python'
         response = eval(send_request(settings.SOLR_URL, args))
@@ -126,7 +126,7 @@ def autocomplete(request):
 
 @login_required
 def index(request):
-    product_list, filter_form = _product_search( request.GET )
+    product_list, filter_form = _product_search( dict(request.GET) )
     
     if request.user.has_perm("order.custom_view_local_provider"):
         if len( request.GET.keys() ) == 0 or request.GET.keys() == ["page"]:
