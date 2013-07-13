@@ -14,10 +14,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'order_manager',      # Or path to database file if using sqlite3.
         'USER': 'briois',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'PASSWORD': 'peachdoor',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -47,8 +47,8 @@ USE_I18N = True
 USE_L10N = True
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-# ROOT_URL = '' # DEV SERVER
-ROOT_URL = 'lbcmcp-orders/' # APACHE
+ROOT_URL = '' # DEV SERVER
+# ROOT_URL = 'lbcmcp-orders/' # APACHE
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -79,7 +79,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.csrf.CsrfResponseMiddleware',
     'middleware.HttpMethodsMiddleware',
     'middleware.ExceptionMiddleware'
 )
@@ -100,7 +99,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    'haystack',
     'admin',
     'attachments',
     'preferences',
@@ -113,11 +111,12 @@ INSTALLED_APPS = (
     'infos',
     'issues',
     'utils',
-    'management'
+    'management',
+    'solr'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.auth',
+    'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
     'django.core.context_processors.media',
     'django.core.context_processors.request',
@@ -125,15 +124,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 )
 
-##
-##		Haystack config
-##
-HAYSTACK_CONNECTIONS = {
-	'default': {
-		'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-		'URL': 'http://127.0.0.1:8983/solr'
-	},
-}
+SOLR_HOME=PROJECT_PATH + '/solr'
+SOLR_URL='http://localhost:8983/solr/collection1/select'
 
 ##
 ##    Custom settings

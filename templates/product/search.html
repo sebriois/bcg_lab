@@ -1,0 +1,109 @@
+{% extends "base_products.html" %}
+{% load paginator filters %}
+{% block product_list %}active{% endblock %}
+{% block header %}
+	<h1>Liste des produits</h1>
+{% endblock %}
+
+{% block content %}
+<form method="GET" action="." class="search container show_wait">
+	<fieldset id="query_container" style="width:400px;margin:auto;">
+		<input type="text" name="q" id="query" value="{{query|default:''}}" /> <input type="submit" value=" " />
+	</fieldset>
+</form>
+<div class="cleaner"></div>
+<div class="saving">
+	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+</div>
+
+{% if query and numFound %}
+  <h2>Résultats pour <i>{{ query }}</i> : {{ numFound }} produits.</h2>
+{% endif %}
+
+{% if facets and numFound > 1 %}
+<div class="faceting">
+  <h4>Fournisseur</h4>
+  <ul>
+    {% for item in facets.provider_facet %}
+      {% if forloop.counter0|divisibleby:2 %}
+        <li>
+          <a href="{% url product_search %}?q={{query}}&fq=provider_facet:{{item}}">{{ item }}</a>
+      {% else %}
+          ({{ item }})
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <h4>Conditionnement</h4>
+  <ul>
+    {% for item in facets.packaging %}
+      {% if forloop.counter0|divisibleby:2 %}
+        <li>
+          <a href="{% url product_search %}?q={{query}}&fq=packaging:{{item}}">{{ item }}</a>
+      {% else %}
+          ({{ item }})
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <h4>Catégorie</h4>
+  <ul>
+    {% for item in facets.category_facet %}
+      {% if forloop.counter0|divisibleby:2 %}
+        <li>
+          <a href="{% url product_search %}?q={{query}}&fq=category_facet:{{item}}">{{ item }}</a>
+      {% else %}
+          ({{ item }})
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="search_results">
+{% if suggestion %}
+  <h3>
+      Essayez avec l'orthographe 
+      <a href="{% url product_search %}?q={{suggestion}}">
+        <b>{{ suggestion }}</b>
+      </a>
+  </h3>
+{% endif %}
+{% if facet_query %}
+  <p>Filtres: {{ facet_query }} (<a href="{% url product_search %}?q={{query}}">supprimer</a>)</p>
+  <br />
+{% endif %}
+
+{% if product_list %}
+	<table class="list">
+		<thead>
+				<th>Fournisseur</th>
+				<th style="max-width:200px">Produit</th>
+				<th>Cond.</th>
+				<th>Réf.</th>
+				<th>Prix</th>
+				<th>N° Offre</th>
+				<th>Expiration</th>
+				<th>Nomen.</th>
+				<th>MAJ</th>
+		</thead>
+		<tbody>
+			{% for product in product_list %}
+				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+					<td>{{ product.name }}</td>
+					<td>{{ product.packaging|default:"" }}</td>
+					<td>{{ product.reference }}</td>
+					<td>{{ product.price }}&nbsp;€</td>
+					<td>{{ product.offer_nb|default:"" }}</td>
+					<td>{{ product.expiry|date }}</td>
+					<td>{{ product.nomenclature|default:"" }}</td>
+					<td>{{ product.last_change|date }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endif %}
+</div>
+{% endblock %}

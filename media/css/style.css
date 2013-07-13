@@ -11,7 +11,7 @@ body {
 /* @group Layout */
 #wrapper {
 	min-height: 100%;
-	width: 90%;
+	width: 1280px;
 	text-align: left;
 	margin: auto;
 }
@@ -868,4 +868,24 @@ ul#sortable li {
   margin-left: 0px;
   margin-right: 40px;
   padding: 5px;
+}
+
+.search_results {
+    float: left;
+    width: 1100px;
+    margin-left: 30px;
+}
+
+.faceting {
+    float: left;
+    width: 150px;
+}
+.faceting h4 {
+    border-bottom: 1px solid #666;
+    padding-left: 5px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.faceting li {
+    padding-left:10px;
 }

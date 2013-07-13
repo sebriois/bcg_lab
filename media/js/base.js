@@ -1,4 +1,21 @@
 $(document).ready(function(){
+    /* Autocomplete */
+    var options, a;
+    jQuery(function(){
+       options = {
+            serviceUrl:'autocomplete/',
+            appendTo: $('#query_container'),
+            minChars:2,
+            maxHeight:400,
+            width:310,
+            zIndex: 9999,
+            deferRequestBy: 0, //miliseconds
+       };
+       a = $('#query').autocomplete(options);
+    });
+    
+    
+    
 		$('.collapsable h2').click(function(){
 			$(".content").toggle();
 		});
