@@ -97,7 +97,7 @@ def not_allowed_msg( request ):
 def send_request( url, args ):
     if not 'wt' in args:
         args['wt'] = 'python'
-    print url + '?' + urlencode(args)
+    
     req = Request( url, urlencode(args) )
     
     try:

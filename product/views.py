@@ -29,7 +29,9 @@ from utils import *
 def _product_search( request_args ):
     # QUICK SEARCH: with SolR
     if "q" in request_args:
-        response = eval(send_request(settings.SOLR_URL, request_args["q"]))
+        args = request_args.copy()
+        args['wt'] = 'python'
+        response = eval(send_request(settings.SOLR_URL, args))
         product_ids  = [doc['id'] for doc in response['response']['docs']]
         product_list = Product.objects.filter( id__in = product_ids )
         form = ProductFilterForm()
