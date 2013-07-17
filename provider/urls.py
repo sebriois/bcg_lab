@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from provider.views import index, item, delete, new, set_notes
 from provider.import_xls import import_xls, do_import

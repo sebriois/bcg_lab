@@ -8,7 +8,7 @@ from team.models import Team
 from provider.models import Provider
 from product.models import Product
 
-from constants import *
+from bcg_lab.constants import *
 from utils import in_team_secretary
 
 class OrderItemForm(forms.ModelForm):

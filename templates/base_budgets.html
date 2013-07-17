@@ -1,5 +1,5 @@
 {% extends "base_main.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 
 {% block title %}Budgets{% endblock title %}
 {% block tab_budgets %}active{% endblock %}
@@ -7,16 +7,16 @@
 {% block nav_secondary %}
 <ul id="subnav">
   <li class="{% block menu_budget %}{% endblock %}">
-    <a href="{% url budgets %}">Liste des budgets</a>
+    <a href="{% url 'budgets' %}">Liste des budgets</a>
   </li>
   {% if user|has_perm:"budget.custom_add_budget" %}
   <li class="{% block menu_budget_new %}{% endblock %}">
-    <a href="{% url budget_new %}">Ajouter un budget</a>
+    <a href="{% url 'budget_new' %}">Ajouter un budget</a>
   </li>
   {% endif %}
   {% if user|has_perm:"budget.custom_edit_budget" %}
   <li class="{% block menu_budget_transfer %}{% endblock %}">
-    <a href="{% url budget_transfer %}">Effectuer un virement</a>
+    <a href="{% url 'budget_transfer' %}">Effectuer un virement</a>
   </li>
   {% endif %}
 </ul>

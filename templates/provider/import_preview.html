@@ -10,11 +10,11 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url perform_import_products provider.id %}" method="POST">{% csrf_token %}
+<form action="{% url 'perform_import_products' provider.id %}" method="POST">{% csrf_token %}
 	<input type="hidden" name="replace_all" value="{{replace_all}}" />
 	
 	<button type="submit" class="check">Valider l'import</button>
-	<a href="{% url import_products provider.id %}" class="back">Retour page import</a>
+	<a href="{% url 'import_products' provider.id %}" class="back">Retour page import</a>
 	
 	<br />
 	

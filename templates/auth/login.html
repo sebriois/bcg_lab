@@ -1,17 +1,18 @@
-{% load i18n %}
+{% load i18n static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>BCG-Lab - login</title>
-		<link rel="stylesheet" href="{{ MEDIA_URL }}css/login.css" type="text/css" />
-		<link rel="stylesheet" href="{{ MEDIA_URL }}css/humanity/jquery-ui-1.8.16.custom.css" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/humanity/jquery-ui-1.8.16.custom.css' %}" type="text/css" />
 		
-		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.6.4.min.js"></script>
-		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-ui-1.8.16.custom.min.js"></script>
-		<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.ui.datepicker-fr.js"></script>
-		<script type="text/javascript" src="{{ MEDIA_URL }}js/base.js"></script>
+		<script type="text/javascript" src="{% static 'js/jquery-1.6.4.min.js'%} "></script>
+		<script type="text/javascript" src="{% static 'js/jquery-ui-1.8.16.custom.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/jquery.ui.datepicker-fr.js'%}"></script>
+		
+		<script type="text/javascript" src="{% static 'js/base.js'%}"></script>
 </head>
 
 <body>
@@ -26,14 +27,14 @@
 		<div id="header"><h1>BCG-Lab</h1></div>
 		<div id="in_login">
 			<div id="login_subhead">Identification</div>
-			<form method="post" action="{% url django.contrib.auth.views.login %}" name="login">{% csrf_token %}
+			<form method="post" action="{% url 'django.contrib.auth.views.login' %}" name="login">{% csrf_token %}
 				{% for field in form %}{% include "form_snippet.html" %}{% endfor %}
 				<br/>
-				<input type="image" src="{{ MEDIA_URL }}img/layout/btn-login.png" value="Connexion" class="submit" />
+				<input type="image" src="{% static 'img/layout/btn-login.png' %}" value="Connexion" class="submit" />
 			</form>
 		</div>
 		<div id="footer">
-			<a href="{% url new_user %}"> >>> Créer un compte</a>
+			<a href="{% url 'new_user' %}"> >>> Créer un compte</a>
 		</div>
 	</div>
 </div>

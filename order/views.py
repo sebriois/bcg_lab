@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, loader
 from django.utils.http import urlencode
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from provider.models import Provider
 from product.models import Product
@@ -22,7 +22,7 @@ from budget.models import Budget, BudgetLine
 from order.models import Order, OrderItem
 from order.forms import OrderItemForm, AddDebitForm, AddCreditForm, FilterForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
@@ -39,7 +39,7 @@ def tab_cart(request):
 			Q(items__username = request.user.username)
 		).distinct()
 	
-	return direct_to_template(request, "tab_cart.html", { 
+	return render(request, "tab_cart.html", { 
 		'order_list': orders.distinct().order_by('provider__name'),
 		'credit_form': AddCreditForm(),
 		'debit_form': AddDebitForm(),
@@ -93,7 +93,7 @@ def tab_orders(request):
 		
 		order_list = order_list.filter( Q_obj )
 	
-	return direct_to_template( request, "order/index.html", {
+	return render( request, "order/index.html", {
 		'orders': paginate( request, order_list ),
 		'filter_form': form,
 		'next': 'tab_orders',
@@ -135,7 +135,7 @@ def tab_validation( request ):
 	else:
 		team_choices = []
 	
-	return direct_to_template( request, 'tab_validation.html', {
+	return render( request, 'tab_validation.html', {
 		'orders': paginate( request, order_list.distinct() ),
 		'budgets': budget_list.distinct(),
 		'team_choices': team_choices,
@@ -166,7 +166,7 @@ def tab_reception( request ):
 				Q(order__team__in = get_teams(request.user))
 			)
 		
-		return direct_to_template( request, 'order/reception.html', {
+		return render( request, 'order/reception.html', {
 			'orderitems': orderitems.order_by('order__number', 'name')
 		})
 	
@@ -229,7 +229,7 @@ def tab_reception_local_provider( request ):
 				order__team = get_teams( request.user )[0]
 			)
 		
-		return direct_to_template( request, 'order/reception_local.html', {
+		return render( request, 'order/reception_local.html', {
 			'orderitems': orderitems.order_by('order__team')
 		})
 	elif request.method == "POST":
@@ -283,7 +283,7 @@ def order_detail(request, order_id):
 	# 		Q(default_nature='')
 	# 	)
 	
-	return direct_to_template(request, 'order/item.html', {
+	return render(request, 'order/item.html', {
 		'order': order,
 		'budgets': budget_list.distinct(),
 		'credit_form': AddCreditForm(),
@@ -337,7 +337,7 @@ def orderitem_detail(request, orderitem_id):
 
 
 def _orderitem_get(request, orderitem ):
-	return direct_to_template( request, 'order/orderitem_detail.html', {
+	return render( request, 'order/orderitem_detail.html', {
 		'form': OrderItemForm( instance = orderitem ),
 		'orderitem': orderitem,
 		'order': orderitem.order_set.get()
@@ -362,7 +362,7 @@ def _orderitem_update(request, orderitem):
 		info_msg( request, "Commande modifiée avec succès.")
 		return redirect(order)
 	
-	return direct_to_template( request, 'order/orderitem_detail.html', {
+	return render( request, 'order/orderitem_detail.html', {
 		'form': form,
 		'orderitem': orderitem,
 		'order': order

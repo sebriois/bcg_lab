@@ -1,5 +1,5 @@
 {% extends "base_history.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 
 {% block history_budgets %}active{% endblock %}
 
@@ -13,8 +13,8 @@
 
 <div class="hide_on_save">
 	<div class="btn_wrapper">
-		<a href="{% url history_budget_export %}?{{search_args}}" class="btn_big">
-			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
+		<a href="{% url 'history_budget_export' %}?{{search_args}}" class="btn_big">
+			<img src="{% static 'img/icons/page_excel.png' %}" />Exporter vers Excel
 		</a>
 	</div>
 
@@ -103,9 +103,9 @@
 					<td>{{ budget.default_nature|default:"Toutes" }}</td>
 					<td>{{ budget.get_amount_left }}</td>
 					<td>
-						<a href="{% url history_budgets %}?budget_id={{budget.id}}&connector=AND" class="zoomin">Voir détail</a>
+						<a href="{% url 'history_budgets' %}?budget_id={{budget.id}}&connector=AND" class="zoomin">Voir détail</a>
 						{% if user|is_admin %}
-						<a href="{% url toggle_budget budget.id %}" class="folder-collapsed confirm">Activer</a>
+						<a href="{% url 'toggle_budget' budget.id %}" class="folder-collapsed confirm">Activer</a>
 						{% endif %}
 					</td>
 				</tr>

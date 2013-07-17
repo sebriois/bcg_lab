@@ -6,7 +6,7 @@
 	{% if order.status < 2 and user|has_perm:"order.custom_order_any_team" or user|is_admin %}
 		<p>
 			Equipe:
-			<select id="select-team" url="{% url order_team order.id %}">
+			<select id="select-team" url="{% url 'order_team' order.id %}">
 				{% for team_id, team_name in team_choices %}
 					{% if team_id == order.team.id %}
 						<option selected="selected" value="{{ team_id }}">{{ team_name }}</option>
@@ -27,7 +27,7 @@
 	{% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
 	<strong>Commande n°</strong>
 	<input type="text" id="order_number"
-		url="{% url set_order_number order.id %}"
+		url="{% url 'set_order_number' order.id %}"
 		value="{{ order.number|default:"" }}"
 		style="float:none;display:inline;padding:1px;"
 	/>
@@ -39,7 +39,7 @@
 		{% if order.status < 5 and not order.provider.is_local %}
 			<p>
 				<strong>Budget à imputer:</strong>
-				<select id="select-budget" url="{% url order_budget order.id %}">
+				<select id="select-budget" url="{% url 'order_budget' order.id %}">
 					<option value="0">A définir par la gestionnaire</option>
 					{% for budget in budgets %}
 					<option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
@@ -64,15 +64,15 @@
 		{% include "attachments/show.html" %}
 	{% endwith %}
 	{% if order.status == 0 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_cart %}" class="document save-changes">
+		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_cart' %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status == 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url tab_validation %}" class="document save-changes">
+		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_validation' %}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% else %}{% if order.status > 1 %}
-		<a href="{% url attachment_new %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
+		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
 			Ajouter une pièce jointe
 		</a>
 	{% endif %}{% endif %}{% endif %}
@@ -80,13 +80,13 @@
 
 <div style="float:left;">
 	<h3>Commentaires:</h3>
-	<input type="checkbox" id="is_urgent" url="{% url set_is_urgent order.id %}" {% if order.is_urgent %}checked="checked"{% endif %}>
+	<input type="checkbox" id="is_urgent" url="{% url 'set_is_urgent' order.id %}" {% if order.is_urgent %}checked="checked"{% endif %}>
 	<label for="is_urgent">Commande urgente</label>
 	
-	<input type="checkbox" id="has_problem" url="{% url set_has_problem order.id %}"  {% if order.has_problem %}checked="checked"{% endif %} style="margin-left:15px">
+	<input type="checkbox" id="has_problem" url="{% url 'set_has_problem' order.id %}"  {% if order.has_problem %}checked="checked"{% endif %} style="margin-left:15px">
 	<label for="has_problem">Problème</label> !<br />
 	
-	<textarea url="{% url set_order_notes order.id %}">{{ order.notes|default:"" }}</textarea>
+	<textarea url="{% url 'set_order_notes' order.id %}">{{ order.notes|default:"" }}</textarea>
 </div>
 
 <div class="cleaner" style="margin-bottom:20px;"></div>
@@ -122,7 +122,7 @@
 			<td>{{ order_item.price }} €</td>
 			{% if user|can_edit:order %}
 			<td id="setQuantity">
-				<input type="text" url="{% url set_item_quantity %}" value="{{ order_item.quantity }}" style="width:15px;" />
+				<input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:15px;" />
 			</td>
 			{% else %}
 			<td>{{ order_item.quantity }}</td>
@@ -130,10 +130,10 @@
 			<td>{{ order_item.total_price }} €</td>
 			{% if user|can_edit:order %}
 			<td>
-				<a href="{% url orderitem_detail order_item.id %}?next={{next}}" class="pencil">Modifier</a>
-				<a href="{% url orderitem_delete order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+				<a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+				<a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
 				{% if order.status == 3 and order.items.all|length > 1 %}
-					<a href="{% url orderitem_disjoin order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
+					<a href="{% url 'orderitem_disjoin' order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
 				{% endif %}
 			</td>
 			{% endif %}
@@ -152,7 +152,7 @@
 
 <p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ order.price }} €</b></p>
 
-<form id="credit_form" action="{% url add_credit order.id %}" method="POST">{% csrf_token %}
+<form id="credit_form" action="{% url 'add_credit' order.id %}" method="POST">{% csrf_token %}
 	<h3>Remise</h3>
 	<fieldset>
 	<input type="hidden" name="next" value="{{next}}" />
@@ -180,7 +180,7 @@
 	</fieldset>
 </form>
 
-<form id="debit_form" action="{% url add_debit order.id %}" method="POST">{% csrf_token %}
+<form id="debit_form" action="{% url 'add_debit' order.id %}" method="POST">{% csrf_token %}
 	<h3>Frais annexes</h3>
 	<fieldset>
 	<input type="hidden" name="next" value="{{next}}" />
@@ -216,39 +216,39 @@
 
 <div id="order-buttons">
 {% if order.status == 0 %}
-	<a href="{% url tab_cart %}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url set_next_status order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
-	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+	<a href="{% url 'tab_cart' %}" class="disk save-changes">Enregistrer les modifications</a>
+	<a href="{% url 'set_next_status' order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
+	<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 1 %}
 	{% if user|has_perm:"order.custom_validate" %}
-	<a href="{% url tab_validation %}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url set_next_status order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
+	<a href="{% url 'tab_validation' %}" class="disk save-changes">Enregistrer les modifications</a>
+	<a href="{% url 'set_next_status' order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
 	{% else %}
 	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url tab_orders %}" class="back">Retour aux commandes</a>
+	<a href="{% url 'tab_orders' %}" class="back">Retour aux commandes</a>
 	{% endif %}
-	<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+	<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 2 %}
 	{% if user|has_perm:"order.custom_goto_status_3" or user|has_perm:"order.custom_validate" %}
 		<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
-		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+		<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	{% endif %}
 	{% if user|has_perm:"order.custom_goto_status_3" %}
-		<a href="{% url set_next_status order.id %}?page={{next_page|default:"1"}}" class="next-status save-changes"><b>Pour saisie</b></a>
+		<a href="{% url 'set_next_status' order.id %}?page={{next_page|default:"1"}}" class="next-status save-changes"><b>Pour saisie</b></a>
 	{% endif %}
 {% else %}{% if order.status > 2 %}
 	{% if user|has_perm:"order.custom_goto_status_4" %}
 		{% if order.status == 3 %}
-		<a href="{% url set_next_status order.id %}" class="disk save-changes">Enregistrer les modifications</a>
+		<a href="{% url 'set_next_status' order.id %}" class="disk save-changes">Enregistrer les modifications</a>
 		{% else %}{% if order.status == 4 and user|has_perm:"order.custom_goto_status_4" %}
-			<a href="{% url set_next_status order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
+			<a href="{% url 'set_next_status' order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
 		{% endif %}
 		<a href="{{ order.get_absolute_url }}?page={{next_page|default:"1"}}" class="disk save-changes">Enregistrer les modifications</a>
 		{% endif %}
-		<a href="{% url order_delete order.id %}" class="trash confirmDel">Supprimer la commande</a>
+		<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 	{% endif %}
 {% endif %}{% endif %}{% endif %}{% endif %}
 {% if order.status > 1 %}
-	<a href="{% url tab_orders %}?page={{next_page|default:1}}" class="back">Retour aux commandes</a>
+	<a href="{% url 'tab_orders' %}?page={{next_page|default:1}}" class="back">Retour aux commandes</a>
 {% endif %}
 </div>

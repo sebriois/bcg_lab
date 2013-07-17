@@ -5,13 +5,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from team.models import Team, TeamMember
 from team.forms import TeamForm
 from history.models import History
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 
@@ -30,7 +30,7 @@ def item(request, team_id):
 
 @login_required
 def new(request):
-	return direct_to_template(request, 'team/form.html', {
+	return render(request, 'team/form.html', {
 		'form': TeamForm()
 	})
 
@@ -60,14 +60,14 @@ def _team_list(request):
 	else:
 		teams = get_teams( request.user )
 	
-	return direct_to_template(request, 'team/index.html',{
+	return render(request, 'team/index.html',{
 		'team_list': teams,
 		'noteam': noteam
 	})
 
 def _team_detail(request, team):
 	form = TeamForm(instance = team)
-	return direct_to_template(request, 'team/item.html',{
+	return render(request, 'team/item.html',{
 		'team': team,
 		'form': form
 	})
@@ -80,7 +80,7 @@ def _team_creation(request):
 		info_msg( request, u"Equipe ajoutée avec succès." )
 		return redirect( 'team_index' )
 	else:
-		return direct_to_template(request, 'team/form.html',{
+		return render(request, 'team/form.html',{
 				'form': form
 		})
 
@@ -101,7 +101,7 @@ def _team_update(request, team):
 		info_msg( request, u"Equipe modifiée avec succès." )
 		return redirect( 'team_index' )
 	else:
-		return direct_to_template(request, 'team/item.html',{
+		return render(request, 'team/item.html',{
 				'team': team,
 				'form': form
 		})

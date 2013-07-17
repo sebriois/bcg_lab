@@ -3,19 +3,19 @@ from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from provider.models import Provider
 from provider.forms import ProviderForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
 @transaction.commit_on_success
 def index(request):
 	if request.method == 'GET':
-		return direct_to_template(request, 'provider/index.html',{
+		return render(request, 'provider/index.html',{
 			'provider_list': Provider.objects.filter(is_service = False)
 		})
 	elif request.method == 'POST':
@@ -26,7 +26,7 @@ def index(request):
 			return redirect( 'provider_index' )
 		else:
 			error_msg(request, "Impossible de créer le fournisseur.")
-			return direct_to_template(request, 'provider/form.html',{
+			return render(request, 'provider/form.html',{
 				'form': form
 			})
 
@@ -61,14 +61,14 @@ def item(request, provider_id):
 			info_msg( request, u"Fournisseur modifié avec succès." )
 			return redirect( 'provider_index' )
 	
-	return direct_to_template(request, 'provider/item.html',{
+	return render(request, 'provider/item.html',{
 		'provider': provider,
 		'form': form
 	})
 
 @login_required
 def new(request):
-	return direct_to_template(request, 'provider/form.html', {
+	return render(request, 'provider/form.html', {
 		'form': ProviderForm()
 	})
 
@@ -78,7 +78,7 @@ def delete(request, provider_id):
 	provider = get_object_or_404(Provider, id = provider_id)
 	
 	if request.method == 'GET':
-		return direct_to_template(request, "provider/delete.html", {
+		return render(request, "provider/delete.html", {
 			'provider': provider
 		})
 	elif request.method == 'POST':

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from django.db import models
-from constants import *
+from bcg_lab.constants import *
 
 class Issue(models.Model):
 	username = models.CharField(u"Utilisateur", max_length=100)

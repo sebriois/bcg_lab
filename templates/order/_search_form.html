@@ -7,7 +7,7 @@
 </div>
 
 <div class="bar_content">
-	<form action="{% url tab_orders %}" method="GET" class="show_wait">
+	<form action="{% url 'tab_orders' %}" method="GET" class="show_wait">
 		<strong>
 			Chercher les commandes qui correspondent à
 			{{ filter_form.connector }} conditions suivantes:
@@ -38,7 +38,7 @@
 		<div class="cleaner"></div>
 		
 		<button type="submit" class="all">Chercher</button>
-		<a href="{% url tab_orders %}" class="refresh">Liste globale</a>
+		<a href="{% url 'tab_orders' %}" class="refresh">Liste globale</a>
 	</form>
 </div>
 
@@ -46,5 +46,5 @@
 <br />
 
 <div class="saving">
-	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+	<img src="{% static 'img/layout/wait.gif" %} />
 </div>

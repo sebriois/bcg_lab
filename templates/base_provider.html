@@ -7,10 +7,10 @@
 {% block nav_secondary %}
 <ul id="subnav">
   <li class="{% block provider_list %}{% endblock %}">
-    <a href="{% url provider_index %}">Liste des fournisseurs</a>
+    <a href="{% url 'provider_index' %}">Liste des fournisseurs</a>
   </li>
   <li class="{% block provider_new %}{% endblock %}">
-    <a href="{% url provider_new %}">Ajouter un fournisseur</a>
+    <a href="{% url 'provider_new' %}">Ajouter un fournisseur</a>
   </li>
 </ul>
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from order.views import order_detail, orderitem_detail, orderitem_disjoin, order_delete, order_export
 from order.views import set_budget, set_next_status

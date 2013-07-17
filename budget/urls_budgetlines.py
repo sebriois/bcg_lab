@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from budget.views_budgetlines import index, item, delete, export_to_xls
 

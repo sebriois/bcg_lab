@@ -6,7 +6,7 @@ import urlparse
 import xlwt
 import json
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import urlencode
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -15,7 +15,6 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
-from django.views.generic.simple import direct_to_template
 
 from provider.models import Provider
 from product.models import Product
@@ -23,99 +22,49 @@ from product.forms import ProductForm, ProductFilterForm, EditListForm
 from order.models import Order, OrderItem
 from attachments.models import Attachment
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
+from solr import Solr
 
-def _product_search( request_args ):
-    # QUICK SEARCH: with SolR
-    if "q" in request_args.keys():
-        args = request_args.copy()
-        args['wt'] = 'python'
-        response = eval(send_request(settings.SOLR_URL, args))
-        product_ids  = [doc['id'] for doc in response['response']['docs']]
-        product_list = Product.objects.filter( id__in = product_ids )
-        form = ProductFilterForm()
-    
-    # ADVANCED SEARCH: with Django
-    else:
-        form = ProductFilterForm(data = request_args)
-    
-        if len(request_args.keys()) > 1:
-            if form.is_valid():
-                data = form.cleaned_data
-                for key, value in data.items():
-                    if not value:
-                        del data[key]
-                
-                if 'id__in' in request_args:
-                    data['id__in'] = request_args['id__in'].split(',')
-                
-                if 'has_expired' in request_args:
-                    data['expiry__lt'] = datetime.now()
-                
-                Q_obj = Q()
-                Q_obj.connector = data.pop("connector")
-                Q_obj.children  = data.items()
-                
-                product_list = Product.objects.filter( Q_obj )
-            else:
-                error_msg(request, "Recherche non valide")
-                product_list = Product.objects.none()
-        else:
-            product_list = Product.objects.none()
-    
-    return product_list, form
-
-def search(request):    
+def search(request):   
     query = request.GET.get("q", None)
-    facet_query = request.GET.get("fq", None)
     
     if query:
-        query_args = {
-            'q': query,
-            'fl': 'id',
-        }
-        if facet_query:
-            query_args.update({
-                'fq': facet_query
-            })
-            facet_query = facet_query.split(':')[1]
+        solr = Solr()
+        solr.query({ 'q': query })
         
-        response = eval(send_request(settings.SOLR_URL, query_args))
+        spellcheck = solr.suggestions()
         
-        spellcheck = response['spellcheck']['suggestions']
         spellcheck = dict(zip(spellcheck[0::2], spellcheck[1::2]))
         if not spellcheck['correctlySpelled'] and 'collation' in spellcheck:
             suggestion = spellcheck['collation'][1]
         else:
             suggestion = None
         
-        product_ids  = [doc['id'] for doc in response['response']['docs']]
-        
-        return direct_to_template(request, 'product/search.html', {
-            'numFound': response['response']['numFound'],
+        return render(request, 'product/search.html', {
+            'numFound': solr.numFound(),
             'query': query,
             'facet_query': facet_query,
-            'facets': response['facet_counts']['facet_fields'],
+            'facets': solr.get_facet_fields(),
             'suggestion': suggestion,
-            'product_list': Product.objects.filter( id__in = product_ids ),
+            'product_list': Product.objects.filter( id__in = [doc['id'] for doc in solr.docs()] ),
         })
     else:
-        return direct_to_template(request, 'product/search.html', {
+        return render(request, 'product/search.html', {
             'product_list': Product.objects.none()
         })
 
 def autocomplete(request):
-    query = request.GET.get('query', '')
-    
-    response = eval(send_request(settings.SOLR_URL, {
+    solr = Solr()
+    solr.query({
         'q': '*:*',
         'rows': 0,
         'facet': 'true',
         'facet.field': 'product_auto',
-        'facet.prefix': query,
-    }))
-    results = response['facet_counts']['facet_fields']['product_auto']
+        'facet.prefix': request.GET.get('query', ''),
+    })
+    
+    results = solr.facet_fields('product_auto')
     
     output_data = {
         'query': query,
@@ -124,12 +73,59 @@ def autocomplete(request):
     
     return HttpResponse(json.dumps(output_data))
 
+def _solr_search( query_dict ):
+    solr = Solr()
+    solr.query( query_dict )
+    
+    product_list = Product.objects.filter( id__in = [doc['id'] for doc in solr.docs()] )
+    
+    return product_list, solr.numFound()
+
+def _django_search( query_dict ):
+    form = ProductFilterForm(data = query_dict)
+    
+    if len(query_dict.keys()) > 1:
+        if form.is_valid():
+            data = form.cleaned_data
+            for key, value in data.items():
+                if not value:
+                    del data[key]
+            
+            if 'id__in' in query_dict:
+                data['id__in'] = query_dict['id__in'].split(',')
+            
+            if 'has_expired' in query_dict:
+                data['expiry__lt'] = datetime.now()
+            
+            Q_obj = Q()
+            Q_obj.connector = data.pop("connector")
+            Q_obj.children  = data.items()
+            
+            product_list = Product.objects.filter( Q_obj )
+        else:
+            error_msg(request, "Recherche non valide")
+            product_list = Product.objects.none()
+    else:
+        product_list = Product.objects.none()
+
+
 @login_required
 def index(request):
-    product_list, filter_form = _product_search( dict(request.GET) )
+    query_dict = request.GET.copy()
+    
+    filter_form = ProductFilterForm()
+    num_found = 0
+    
+    if 'q' in query_dict.keys():
+        product_list, num_found = _solr_search( query_dict.dict() )
+    elif len(query_dict.keys()) > 0:
+        product_list, filter_form = _django_search( query_dict )
+        num_found = product_list.count()
+    else:
+        product_list = Product.objects.none()
     
     if request.user.has_perm("order.custom_view_local_provider"):
-        if len( request.GET.keys() ) == 0 or request.GET.keys() == ["page"]:
+        if len( query_dict.keys() ) == 0 or query_dict.keys() == ["page"]:
             product_list = Product.objects.filter( provider__is_local = True )
         else:
             product_list = product_list.filter( provider__is_local = True )
@@ -137,13 +133,22 @@ def index(request):
     else:
         product_count = Product.objects.all().count()
     
-    return direct_to_template(request, 'product/index.html',{
+    # Pagination
+    if 'page' in query_dict:
+        current_page = int(query_dict.pop('page')[0])
+    else:
+        current_page = 1
+    start = (current_page - 1) * settings.PAGINATION_ROWS
+    end   = start + settings.PAGINATION_ROWS
+
+    return render(request, 'product/index.html', {
         'product_count': product_count,
-        'search_count': product_list.count(),
+        'search_count': num_found,
         'filter_form': filter_form,
-        'q_init': request.GET.get("q",""),
-        'products': paginate( request, product_list, 25 ),
-        'url_args': urlencode(request.GET)
+        'q_init': query_dict.get("q",""),
+        'products': product_list,
+        'current_page': current_page,
+        'url_args': query_dict.urlencode(),
     })
 
 
@@ -170,7 +175,7 @@ def item(request, product_id):
             return redirect( reverse('product_index') + '?' + url_args[0] )
     
     product_type = ContentType.objects.get_for_model(Product)
-    return direct_to_template(request, 'product/item.html',{
+    return render(request, 'product/item.html',{
         'product': product,
         'product_type': product_type.id,
         'form': form,
@@ -210,7 +215,7 @@ def new(request):
             info_msg( request, u"Produit ajouté avec succès." )
             return redirect( reverse('product_index') + "?reference=%s&connector=OR" % p.reference )
     
-    return direct_to_template(request, 'product/form.html', {
+    return render(request, 'product/form.html', {
         'provider': provider,
         'form': form
     })
@@ -221,7 +226,7 @@ def new(request):
 def delete(request, product_id):
     product = get_object_or_404(Product, id = product_id)
     if request.method == 'GET':
-        return direct_to_template(request, "product/delete.html", {
+        return render(request, "product/delete.html", {
             'product': product
         })
     elif request.method == 'POST':
@@ -284,7 +289,7 @@ def edit_list(request):
         if request.user.has_perm("order.custom_view_local_provider"):
             product_list = product_list.filter( provider__is_local = True )
         
-        return direct_to_template(request, 'product/edit_list.html',{
+        return render(request, 'product/edit_list.html',{
             'filter_form': filter_form,
             'edit_form': EditListForm(),
             'product_list': product_list,
@@ -338,7 +343,7 @@ def edit_list(request):
             url_args = dict( urlparse.parse_qsl( request.POST["url_args"] ) )
             product_list, filter_form = _product_search( url_args )
             
-            return direct_to_template(request, 'product/edit_list.html', {
+            return render(request, 'product/edit_list.html', {
                 'edit_form': form,
                 'product_list': product_list,
                 'url_args': request.POST['url_args']

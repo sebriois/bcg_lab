@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url user_item member.id %}" method="POST">{% csrf_token %}
+<form action="{% url 'user_item' member.id %}" method="POST">{% csrf_token %}
   <p class="instructions">
     <em>Les champs marqués d'une étoile sont obligatoires</em>
   </p>

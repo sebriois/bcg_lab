@@ -4,11 +4,11 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from preferences.forms import UserPrefForm, EmailPrefForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
@@ -35,7 +35,7 @@ def index(request):
 				email_form.save()
 				info_msg( request, "Préférences enregistrées!" )
 	
-	return direct_to_template( request, "preferences/index.html", {
+	return render( request, "preferences/index.html", {
 		'user_form': user_form,
 		'email_form': email_form
 	})
@@ -52,6 +52,6 @@ def change_password(request):
 			info_msg( request, "Nouveau mot de passe enregistré!" )
 			return redirect( 'change_password' )
 	
-	return direct_to_template( request, "preferences/change_password.html", {
+	return render( request, "preferences/change_password.html", {
 		'form': form
 	})

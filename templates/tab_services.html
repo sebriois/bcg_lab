@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{% url tab_services %}" method="POST">
+  <form action="{% url 'tab_services' %}" method="POST">
     <fieldset>
       {% for field in form %}
         {% include "form_snippet.html" %}

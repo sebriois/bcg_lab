@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from admin.views import group_index, group_new, group_item, group_delete
 from admin.views import maintenance

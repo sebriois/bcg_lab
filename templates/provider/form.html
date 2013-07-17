@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url provider_index %}" method="POST">{% csrf_token %}
+<form action="{% url 'provider_index' %}" method="POST">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>

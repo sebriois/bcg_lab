@@ -94,15 +94,3 @@ def get_teams( user ):
 def not_allowed_msg( request ):
     error_msg(request, "Vous ne disposez pas des permissions nécessaires pour accéder à cette page.")
 
-def send_request( url, args ):
-    if not 'wt' in args:
-        args['wt'] = 'python'
-    
-    req = Request( url, urlencode(args) )
-    
-    try:
-        f = urlopen( req )
-        return f.read()
-    except HTTPError as error:
-        print error.code, error.reason
-        return False

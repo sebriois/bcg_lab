@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from budget.views import index, item, new
 from budget.views import credit, debit, transfer, toggle

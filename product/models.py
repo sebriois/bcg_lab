@@ -1,7 +1,5 @@
 # -*- encoding: utf8 -*-
-import commands
 from datetime import datetime, timedelta
-from xml.etree.ElementTree import Element, SubElement, tostring
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -9,7 +7,7 @@ from django.contrib.contenttypes import generic
 from provider.models import Provider
 from attachments.models import Attachment
 
-from constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
+from bcg_lab.constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
 
 class ProductType(models.Model):
     name = models.CharField( u"Type", max_length=200 )
@@ -70,8 +68,9 @@ class Product(models.Model):
         delta = timedelta( days = 10 )
         return (self.expiry - delta <= datetime.now())
     
-    def generate_xml_doc(self, root_element = Element('add')):
-        fields = {
+    def post_to_solr(self):
+        print "POSTing product ID %s to Solr ..." % self.id
+        data = {
             'id': "%s" % self.id,
             'product': self.name,
             'reference': self.reference,
@@ -84,30 +83,8 @@ class Product(models.Model):
             'sub_category': self.sub_category and self.sub_category.name or None,
         }
         
-        doc_element = SubElement( root_element, 'doc' )
-        
-        for name, value in fields.items():
-            if not value: continue
-            
-            field_element = SubElement( doc_element, 'field' )
-            field_element.set( 'name', name )
-            field_element.text = value
-        
-        return root_element
-    
-    def post_to_solr(self):
-        root_element  = self.generate_xml_doc()
-        xml_data = tostring( root_element )
-        
-        solr_home = "/Users/briois/Documents/sebastien/workspace/solr-4.3.0/example/solr_bcg_lab"
-        executable = solr_home + '/../exampledocs/post.jar'
-        arguments = [
-            '-Ddata=args'  # Specify that data is sent as straight xml
-        ]
-        command = "java %s -jar %s '%s'" % ( ' '.join(arguments), executable, xml_data)
-        
-        commands.getoutput(command)
-        print "Product ID %s loaded in SolR successfully." % self.id
+        solr = Solr()
+        solr.post( data )
     
     def clean_packaging(self):
         unit_mapping = {
@@ -116,6 +93,7 @@ class Product(models.Model):
             'µl' : 'µL',
             'ug' : 'µg',
             'ml' : 'mL',
+            'ML' : 'mL'
         }
         for old_unit, new_unit in unit_mapping.items():
             self.packaging = self.packaging(k, v)

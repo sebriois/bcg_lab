@@ -4,19 +4,19 @@ from datetime import date
 from django.shortcuts import get_object_or_404, redirect
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from infos.models import Info
 from infos.forms import InfoForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
 @transaction.commit_on_success
 def index(request):
 	Info.objects.filter( expiry__lt = date.today() ).delete()
-	return direct_to_template( request, 'homepage.html', {
+	return render( request, 'homepage.html', {
 		'infos': Info.objects.all()
 	})
 
@@ -37,7 +37,7 @@ def new(request):
 			form.save()
 		return redirect('info_index')
 	
-	return direct_to_template(request, 'infos/new.html', {
+	return render(request, 'infos/new.html', {
 		'form': form
 	})
 
@@ -58,7 +58,7 @@ def item(request, info_id):
 			form.save()
 			return redirect( 'info_index' )
 	
-	return direct_to_template( request, 'infos/item.html', {
+	return render( request, 'infos/item.html', {
 		'form': form,
 		'info': info
 	})

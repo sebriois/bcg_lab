@@ -10,8 +10,8 @@
 des commandes en cours lui étant rattachées seront également supprimées.</p>
 <p>Êtes-vous sûr de vouloir supprimer ce produit ?</p>
 
-<form action="{% url product_delete product.id %}" method="post">{% csrf_token %}
+<form action="{% url 'product_delete' product.id %}" method="post">{% csrf_token %}
   <button type="submit" class="trash">Supprimer</button>
-  <a href="{% url product_index %}" class="back">Abandonner la suppression</a>
+  <a href="{% url 'product_index' %}" class="back">Abandonner la suppression</a>
 </form>
 {% endblock %}

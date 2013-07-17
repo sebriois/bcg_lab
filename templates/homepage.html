@@ -5,8 +5,8 @@
 
 {% block header %}
 <div class="btn_wrapper">
-	<a href="{% url info_new %}" class="btn_medium">
-		<img src="{{ MEDIA_URL }}img/icons/add.png" />Ajouter une info
+	<a href="{% url 'info_new' %}" class="btn_medium">
+		<img src="{% static 'img/icons/add.png' %}" />Ajouter une info
 	</a>
 </div>
 <h1>Accueil</h1>
@@ -28,8 +28,8 @@
 			<td>{{ info.expiry|date }}</td>
 			<td>{{ info.text|safe }}</td>
 			<td>
-				<a href="{% url info_item info.id %}" class="pencil no-text"></a>
-				<a href="{% url info_delete info.id %}" class="trash no-text"></a>
+				<a href="{% url 'info_item' info.id %}" class="pencil no-text"></a>
+				<a href="{% url 'info_delete' info.id %}" class="trash no-text"></a>
 			</td>
 		</tr>
 		{% endfor %}

@@ -7,14 +7,14 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from history.models import History
 from history.forms import HistoryFilterForm, BudgetHistoryFilterForm
 from order.models import OrderItem
 from budget.models import Budget, BudgetLine
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 def search_orders(request):
@@ -88,7 +88,7 @@ def history_orders(request):
 	else:
 		total = sum( [history.price for history in objects.distinct()] )
 	
-	return direct_to_template( request, "history/orders.html", {
+	return render( request, "history/orders.html", {
 		'filter_form': form,
 		'objects': paginate( request, objects.distinct() ),
 		'display': display,
@@ -100,7 +100,7 @@ def history_orders(request):
 def item(request, item_id):
 	item = get_object_or_404( History, id = item_id )
 	
-	return direct_to_template( request, 'history/item.html', {
+	return render( request, 'history/item.html', {
 		'history': item
 	})
 
@@ -182,7 +182,7 @@ def history_budgets(request):
 	else:
 		budget_lines = BudgetLine.objects.none()
 	
-	return direct_to_template( request, 'history/budgets.html', {
+	return render( request, 'history/budgets.html', {
 		'filter_form': form,
 		'budgets': paginate( request, budgets ),
 		'budget_lines': paginate( request, budget_lines ),

@@ -6,7 +6,7 @@ from team.models import Team
 from provider.models import Provider
 from product.models import Product
 from utils import *
-from constants import *
+from bcg_lab.constants import *
 
 class BudgetForm(forms.ModelForm):
 	all_natures = forms.DecimalField(

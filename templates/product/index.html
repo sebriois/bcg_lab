@@ -1,5 +1,5 @@
 {% extends "base_products.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 {% block product_list %}active{% endblock %}
 {% block header %}
 	<h1>Gestion des produits</h1>
@@ -11,32 +11,34 @@
 <form method="GET" action="." class="search show_wait">
 	<fieldset>
 		<input type="text" name="q" value="{{q_init}}"/> <input type="submit" value=" " />
-		<p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouvé{{search_count|pluralize}}</p>
+		{% if products %}
+		  <p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouvé{{search_count|pluralize}}</p>
+		{% endif %}
 	</fieldset>
 </form>
 <div class="cleaner"></div>
 <div class="saving">
-	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+	<img src="{% static 'img/layout/wait.gif' %}" />
 </div>
 
-{% if products.object_list|length > 0 %}
+{% if products %}
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<div class="btn_wrapper hide_on_save">
-		<a href="{% url tab_cart %}" class="btn_medium">
-			<img src="{{ MEDIA_URL }}img/icons/cart_go.png" />Voir le panier
+		<a href="{% url 'tab_cart' %}" class="btn_medium">
+			<img src="{% static 'img/icons/cart_go.png' %}" />Voir le panier
 		</a>
 	</div>
 	{% endif %}
 	{% if search_count > 0 %}
 	<div class="btn_wrapper hide_on_save">
-		<a href="{% url product_edit_list %}?{{url_args}}" class="btn_big">
-			<img src="{{ MEDIA_URL }}img/icons/pencil.png" />Editer cette liste de produits
+		<a href="{% url 'product_edit_list' %}?{{url_args}}" class="btn_big">
+			<img src="{% static 'img/icons/pencil.png' %}" />Editer cette liste de produits
 		</a>
 	</div>
 	{% endif %}
 	<div class="btn_wrapper hide_on_save">
-		<a href="{% url product_export_xls %}?{{url_args}}" class="btn_big">
-			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter cette liste
+		<a href="{% url 'product_export_xls' %}?{{url_args}}" class="btn_big">
+			<img src="{% static 'img/icons/page_excel.png' %}" />Exporter cette liste
 		</a>
 	</div>
 	
@@ -45,6 +47,7 @@
 		<div class="legend_urgent"></div>offre périmée
 	</div>
 	<div class="cleaner"></div>
+	{% autopaginate current_page search_count %}
 	<table class="list">
 		<thead>
 				<th>Fournisseur</th>
@@ -59,7 +62,7 @@
 				<th>Action</th>
 		</thead>
 		<tbody>
-			{% for product in products.object_list %}
+			{% for product in products %}
 				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
 					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
 					<td>{{ product.name }}</td>
@@ -76,14 +79,12 @@
 							<button id="{{product.id}}" class="plus addToCart">Panier</button>
 							{% endif %}
 						{% endif %}
-						<a href="{% url product_item product.id %}?{{url_args}}" class="pencil">Editer</a>
+						<a href="{% url 'product_item' product.id %}?{{url_args}}" class="pencil">Editer</a>
 					</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
-	
-	{% pagination products %}
 {% else %}
 	{# ############# #}
 	{# ADVANCED FORM #}
@@ -91,7 +92,7 @@
 
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
-	<form action="{% url product_index %}" method="GET" class="show_wait hide_on_save">
+	<form action="{% url 'product_index' %}" method="GET" class="show_wait hide_on_save">
 		<fieldset>
 			<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
 			{% with filter_form.provider as field %}
@@ -131,7 +132,7 @@
 		<br /><br />
 	</div>	
 	<div class="cleaner"></div>
-	<form action="{% url cart_add %}" method="POST" style="padding:0">{% csrf_token %}
+	<form action="{% url 'cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
 		<input type="hidden" name="url_params" value="{{url_args}}" />
 		<input type="hidden" name="product_id" value="" />
 		<div id="qty-error-msg"></div>

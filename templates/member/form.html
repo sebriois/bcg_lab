@@ -21,7 +21,7 @@
 		<div id="header"><h1>BCG-Lab</h1></div>
 		<div id="in_login">
 			<div id="login_subhead">Création d'un nouveau compte</div>
-			<form action="{% url new_member %}" method="POST" accept-charset="utf-8">{% csrf_token %}
+			<form action="{% url 'new_member' %}" method="POST" accept-charset="utf-8">{% csrf_token %}
 				<input type="hidden" name="user" value="{{user_id}}" />
 				{% with form.team as field %}
 					{% include "form_snippet.html" %}
@@ -43,7 +43,7 @@
 			</form>
 		</div>
 		<div id="footer">
-			<a href="{% url django.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
+			<a href="{% url 'django'.contrib.auth.views.login %}">>> Retour à la page de connexion</a>
 		</div>
 	</div>
 </div>

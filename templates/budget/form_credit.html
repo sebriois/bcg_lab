@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url credit_budget budget.id %}" method="POST">{% csrf_token %}
+<form action="{% url 'credit_budget' budget.id %}" method="POST">{% csrf_token %}
 	<input type="hidden" name="budget" value="{{budget.name}}" />
 	<p class="instructions">
 		<em>Les champs marqués d'une étoile sont obligatoires</em>

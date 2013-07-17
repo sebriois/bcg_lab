@@ -7,7 +7,7 @@ from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from budget.models import Budget, BudgetLine
 from budget.forms import BudgetForm, BudgetLineFilterForm
@@ -29,7 +29,7 @@ def index(request):
 		not_allowed_msg(request)
 		return redirect('home')
 	
-	return direct_to_template(request, 'budget/index.html',{
+	return render(request, 'budget/index.html',{
 		'budgets': budget_list,
 		'filter_form': BudgetLineFilterForm( user = request.user, data = request.GET )
 	})
@@ -89,7 +89,7 @@ def item(request, budget_id):
 	else:
 		return redirect('error')
 	
-	return direct_to_template(request, 'budget/item.html', {
+	return render(request, 'budget/item.html', {
 		'budget': budget,
 		'form': form
 	})
@@ -136,7 +136,7 @@ def new(request):
 	else:
 		return redirect('error')
 		
-	return direct_to_template(request, 'budget/form.html',{
+	return render(request, 'budget/form.html',{
 		'form': form
 	})
 
@@ -147,7 +147,7 @@ def credit(request, budget_id):
 	budget = get_object_or_404( Budget, id = budget_id )
 	
 	if request.method == "GET":
-		return direct_to_template(request, "budget/form_credit.html",{
+		return render(request, "budget/form_credit.html",{
 			'budget': budget,
 			'form': CreditBudgetForm( budget ),
 			'prev': request.META.get('HTTP_REFERER','') + urlencode(request.GET)
@@ -174,7 +174,7 @@ def credit(request, budget_id):
                 return redirect('budgets')
 		# return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
 	else:
-		return direct_to_template(request, 'budget/form_credit.html',{
+		return render(request, 'budget/form_credit.html',{
 			'budget': budget,
 			'form': form
 		})
@@ -186,7 +186,7 @@ def debit(request, budget_id):
 	budget = get_object_or_404( Budget, id = budget_id )
 	
 	if request.method == "GET":
-		return direct_to_template(request, "budget/form_debit.html",{
+		return render(request, "budget/form_debit.html",{
 			'budget': budget,
 			'form': DebitBudgetForm( budget ),
 			'prev': request.META.get('HTTP_REFERER','') + urlencode(request.GET)
@@ -212,7 +212,7 @@ def debit(request, budget_id):
                 return redirect('budgets')
 		# return redirect( reverse('budgetlines') + "?budget_name=%s" % budget.name )
 	else:
-		return direct_to_template(request, 'budget/form_debit.html',{
+		return render(request, 'budget/form_debit.html',{
 			'budget': budget,
 			'form': form
 		})
@@ -244,7 +244,7 @@ def transfer(request):
 			bl.save()
 			return redirect('budgets')
 			
-	return direct_to_template(request, 'budget/transfer.html', {
+	return render(request, 'budget/transfer.html', {
 		'form': form
 	})
 

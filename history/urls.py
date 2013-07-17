@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from history.views import history_orders, history_budgets, item
 from history.views import export_budget_to_xls, export_orders_to_xls

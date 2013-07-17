@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url group_index %}" method="POST">
+<form action="{% url 'group_index' %}" method="POST">
   <h3>Ajout d'un nouveau groupe</h3>
   <fieldset>
     {% for field in form %}

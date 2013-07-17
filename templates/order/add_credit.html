@@ -13,7 +13,7 @@
 			{% if user|has_perm:"order.custom_edit_number" and order.status > 2 %}
 			<strong>Commande n°</strong>
 			<input type="text" id="order_number"
-				url="{% url set_order_number order.id %}"
+				url="{% url 'set_order_number' order.id %}"
 				value="{{ order.number|default:"" }}"
 				style="float:none;display:inline;padding:1px;"
 			/>
@@ -25,7 +25,7 @@
 				{% if not order.number and not order.provider.is_local %}
 					<p>
 						<strong>Budget à imputer:</strong>
-						<select id="select-budget" url="{% url order_budget order.id %}">
+						<select id="select-budget" url="{% url 'order_budget' order.id %}">
 							{% for budget in budgets %}
 							<option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
 								{{budget}}
@@ -44,7 +44,7 @@
 		</div>
 		<div style="float:left">
 			<h4>Commentaires</h4>
-			<textarea id="order_notes" url="{% url set_order_notes order.id %}" class="comment-area">
+			<textarea id="order_notes" url="{% url 'set_order_notes' order.id %}" class="comment-area">
 				{{ order.notes|default:"" }}
 			</textarea>
 		</div>
@@ -86,9 +86,9 @@
 					{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
 					<td>
 						{% if user|has_perm:"order.custom_edit_number" %}
-							<a href="{% url orderitem_detail order_item.id %}" class="pencil">Modifier</a>
+							<a href="{% url 'orderitem_detail' order_item.id %}" class="pencil">Modifier</a>
 						{% endif %}
-						<a href="{% url orderitem_delete order_item.id %}" class="trash confirmDel">Supprimer</a>
+						<a href="{% url 'orderitem_delete' order_item.id %}" class="trash confirmDel">Supprimer</a>
 					</td>
 					{% endif %}
 				</tr>
@@ -98,8 +98,8 @@
 		<br />
 		{% if user|has_perm:"order.custom_edit_number" or order.status == 1 %}
 		<div style="float:right">
-			<a href="{% url add_debit order.id %}?next={{order.get_absolute_url}}" class="plus">Frais annexes</a>
-			<a href="{% url add_credit order.id %}?next={{order.get_absolute_url}}" class="minus">Remises</a>
+			<a href="{% url 'add_debit' order.id %}?next={{order.get_absolute_url}}" class="plus">Frais annexes</a>
+			<a href="{% url 'add_credit' order.id %}?next={{order.get_absolute_url}}" class="minus">Remises</a>
 		</div>
 		{% endif %}
 		<p style="font-size:16px">PRIX TOTAL COMMANDE: <b>{{ order.price }} €</b></p>
@@ -107,7 +107,7 @@
 		
 		<h3>Remise</h3>
 		<fieldset>
-			<form action="{% url add_credit order.id %}" method="POST">{% csrf_token %}
+			<form action="{% url 'add_credit' order.id %}" method="POST">{% csrf_token %}
 			  <input type="hidden" name="next" value="{{next}}" />
 			  <input type="hidden" name="username" value="{{user.username}}" />
 			  {% for field in form %}{% include "form_snippet.html"%}{% endfor %}

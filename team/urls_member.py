@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from team.views_member import item, delete
 from team.views_member import new_user, new_member, set_password

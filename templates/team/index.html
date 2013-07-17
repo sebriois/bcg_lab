@@ -5,8 +5,8 @@
 {% block header %}
 {% if user|has_perm:"team.custom_add_team" %}
 <div class="btn_wrapper">
-	<a href="{% url team_new %}" class="btn_medium">
-		<img src="{{ MEDIA_URL }}img/icons/add.png" />Créer une équipe
+	<a href="{% url 'team_new' %}" class="btn_medium">
+		<img src="{% static 'img/icons/add.png' %}" />Créer une équipe
 	</a>
 </div>
 {% endif %}
@@ -19,7 +19,7 @@
 {% for team in team_list %}
 	<h3>
 		{% if user.is_superuser %}
-			<a href="{% url team_item team.id %}">Equipe {{ team }}</a>
+			<a href="{% url 'team_item' team.id %}">Equipe {{ team }}</a>
 		{% else %}
 			Equipe {{ team }}
 		{% endif %}
@@ -54,17 +54,17 @@
 				<td>{{ member.user.last_login }}</td>
 				<td>
 					{% if member.user == user %}
-						<a href="{% url user_item member.id %}" class="pencil">Editer</a>
-						<a href="{% url set_password member.user.id %}" class="key">Changer de mot de passe</a>
+						<a href="{% url 'user_item' member.id %}" class="pencil">Editer</a>
+						<a href="{% url 'set_password' member.user.id %}" class="key">Changer de mot de passe</a>
 					{% else %}
 						{% if user|has_perm:"team.custom_edit_member" %}
-							<a href="{% url user_item member.id %}" class="pencil">Editer</a>
-							<a href="{% url user_delete member.user.id %}" class="trash confirm">Supprimer</a>
-							<a href="{% url set_password member.user.id %}" class="key">Nouveau mot de passe</a>
+							<a href="{% url 'user_item' member.id %}" class="pencil">Editer</a>
+							<a href="{% url 'user_delete' member.user.id %}" class="trash confirm">Supprimer</a>
+							<a href="{% url 'set_password' member.user.id %}" class="key">Nouveau mot de passe</a>
 							{% if member.user.is_active %}
-								<a href="{% url user_toggle_active member.user.id %}" class="locked">Inactiver</a>
+								<a href="{% url 'user_toggle_active' member.user.id %}" class="locked">Inactiver</a>
 							{% else %}
-								<a href="{% url user_toggle_active member.user.id %}" class="unlocked">Activer</a>
+								<a href="{% url 'user_toggle_active' member.user.id %}" class="unlocked">Activer</a>
 							{% endif %}
 						{% endif %}
 					{% endif %}
@@ -90,8 +90,8 @@
 					<td>{{ lonely_user.username }}</td>
 					<td>{{ lonely_user.last_login }}</td>
 					<td>
-						<a href="{% url add_user_to_team lonely_user.id %}" class="plus setTeam">Affilier à une équipe</a>
-						<a href="{% url user_delete lonely_user.id %}" class="trash confirm">Supprimer</a>
+						<a href="{% url 'add_user_to_team' lonely_user.id %}" class="plus setTeam">Affilier à une équipe</a>
+						<a href="{% url 'user_delete' lonely_user.id %}" class="trash confirm">Supprimer</a>
 					</td>
 				</tr>
 			{% endfor %}

@@ -4,8 +4,8 @@
 
 {% block header %}
 <div class="btn_wrapper">
-	<a href="{% url group_delete group.id %}" class="btn_big confirm">
-		<img src="{{ MEDIA_URL }}img/icons/cross.png" />Supprimer ce groupe
+	<a href="{% url 'group_delete' group.id %}" class="btn_big confirm">
+		<img src="{% static 'img/icons/cross.png' %}" />Supprimer ce groupe
 	</a>
 </div>
 <h1>Administration</h1>
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url group_item group.id %}" method="POST">{% csrf_token %}
+<form action="{% url 'group_item' group.id %}" method="POST">{% csrf_token %}
 	<h3>Modification du groupe {{ group.name }}</h3>
 	<fieldset>
 		{% with form.name as field %}

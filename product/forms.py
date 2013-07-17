@@ -6,7 +6,7 @@ from django.forms import widgets
 
 from product.models import Product, ProductType, ProductSubType
 from provider.models import Provider
-from constants import *
+from bcg_lab.constants import *
 
 class ProductForm(forms.ModelForm):
 	price = forms.CharField( label = "Prix", required = True )

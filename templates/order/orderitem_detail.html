@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form id="productUpdateForm" action="{% url orderitem_detail orderitem.id %}" method="POST">{% csrf_token %}
+<form id="productUpdateForm" action="{% url 'orderitem_detail' orderitem.id %}" method="POST">{% csrf_token %}
 	<p class="instructions">
 		<em>Les champs marqués d'une étoile sont obligatoires</em>
 	</p>
@@ -23,7 +23,7 @@
 		<button type="submit" class="check">Valider</button>
 	{% endif %}
 	
-	<a href="{% url order_item order.id %}" class="back">Annuler</a>
+	<a href="{% url 'order_item' order.id %}" class="back">Annuler</a>
 	</fieldset>
 </form>
 

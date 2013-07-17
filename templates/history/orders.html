@@ -1,5 +1,5 @@
 {% extends "base_history.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 
 {% block history_orders %}active{% endblock %}
 
@@ -17,8 +17,8 @@
 		Page {{ objects.number }} sur {{ objects.paginator.num_pages }}.
 	</h2>
 	<div class="btn_wrapper">
-		<a href="{% url history_orders_export %}?{{search_args}}" class="btn_big">
-			<img src="{{ MEDIA_URL }}img/icons/page_excel.png" />Exporter vers Excel
+		<a href="{% url 'history_orders_export' %}?{{search_args}}" class="btn_big">
+			<img src="{% static 'img/icons/page_excel.png' %}" />Exporter vers Excel
 		</a>
 	</div>
 	

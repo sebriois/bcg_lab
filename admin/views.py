@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User, Group, Permission
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -19,7 +19,7 @@ from utils import *
 @transaction.commit_on_success
 def group_index(request):
 	if request.method == 'GET':
-		return direct_to_template( request, 'admin/group_index.html', {
+		return render( request, 'admin/group_index.html', {
 			'groups': Group.objects.all()
 		})
 	elif request.method == 'POST':
@@ -40,7 +40,7 @@ def group_index(request):
 			return redirect( 'group_index' )
 		else:
 			error_msg( request, "Impossible de créer le groupe." )
-			return direct_to_template( request, 'group_new', {
+			return render( request, 'group_new', {
 				'form': form
 			})
 
@@ -74,14 +74,14 @@ def group_item(request, group_id):
 		else:
 			error_msg( request, "Impossible de modifier le groupe." )
 	
-	return direct_to_template( request, 'admin/group_item.html', {
+	return render( request, 'admin/group_item.html', {
 		'form': form,
 		'group': group
 	})
 
 @login_required
 def group_new(request):
-	return direct_to_template( request, 'admin/group_new.html', {
+	return render( request, 'admin/group_new.html', {
 		'form': GroupForm()
 	})
 
@@ -121,7 +121,7 @@ def maintenance(request):
 			if key == "clean_budgets":
 				clean_budgets( request )
 	
-	return direct_to_template( request, "admin/maintenance.html", {} )
+	return render( request, "admin/maintenance.html", {} )
 
 def inactive_all_users( request ):	
 	for user in User.objects.filter(is_active = True):

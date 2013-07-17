@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url budget_new %}" method="POST">{% csrf_token %}
+<form action="{% url 'budget_new' %}" method="POST">{% csrf_token %}
 	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
 	<h3>Informations générales</h3>
 	<fieldset>
@@ -53,6 +53,6 @@
 		</fieldset>
 	{% endif %}
 	<button type="submit" class="check">Valider</button>
-	<a href="{% url budgets %}" class="back">Retour</a>
+	<a href="{% url 'budgets' %}" class="back">Retour</a>
 </form>
 {% endblock %}

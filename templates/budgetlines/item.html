@@ -5,7 +5,7 @@
 <h2>Modification d'une ligne budgétaire</h2>
 {% endblock %}
 {% block content %}
-<form action="{% url budgetline_item bl.id %}" method="post">{% csrf_token %}
+<form action="{% url 'budgetline_item' bl.id %}" method="post">{% csrf_token %}
 	<p class="instructions">
 		<em>Les champs marqués d'une étoile sont obligatoires</em>
 	</p>
@@ -47,7 +47,7 @@
 	</fieldset>
 	
 	<button type="submit" class="check">Valider</button>
-	<a href="{% url budgetlines %}?{{search_args}}" class="back">Retour</a>
+	<a href="{% url 'budgetlines' %}?{{search_args}}" class="back">Retour</a>
 </form>
 
 {% endblock %}

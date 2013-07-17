@@ -7,14 +7,14 @@
 {% block nav_secondary %}
 <ul id="subnav">
 	<li class="{% block menu_team %}{% endblock %}">
-		<a href="{% url team_index %}">Equipes</a>
+		<a href="{% url 'team_index' %}">Equipes</a>
 	</li>
 	{% if user|is_admin %}
 	<li class="{% block menu_group %}{% endblock %}">
-		<a href="{% url group_index %}">Groupes d'utilisateur</a>
+		<a href="{% url 'group_index' %}">Groupes d'utilisateur</a>
 	</li>
 	<li class="{% block menu_maintenance %}{% endblock %} last">
-		<a href="{% url maintenance %}">Maintenance</a>
+		<a href="{% url 'maintenance' %}">Maintenance</a>
 	</li>
 	{% endif %}
 </ul>

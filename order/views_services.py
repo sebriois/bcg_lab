@@ -3,13 +3,13 @@ from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
 
 from order.models import Order, OrderItem
 from order.forms import ServiceForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
@@ -49,6 +49,6 @@ def tab_services(request):
 			
 			return redirect('tab_cart')
 	
-	return direct_to_template(request, "tab_services.html", {
+	return render(request, "tab_services.html", {
 		'form': form
 	})

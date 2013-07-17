@@ -11,7 +11,7 @@ import xlrd
 from decimal import Decimal
 
 from django.utils import simplejson as json
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -21,7 +21,7 @@ from provider.models import Provider
 from product.models import Product
 from provider.forms import ImportForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 
@@ -55,14 +55,14 @@ def import_xls( request, provider_id ):
 				warn_msg( request, msg )
 			else:
 				info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
-			return direct_to_template(request, 'provider/import_preview.html', {
+			return render(request, 'provider/import_preview.html', {
 				'header': header,
 				'data': data,
 				'provider': provider,
 				'replace_all': request.POST.get('replace_all',False)
 			})
 	
-	return direct_to_template(request, 'provider/import.html', {
+	return render(request, 'provider/import.html', {
 		'form': form,
 		'provider': provider
 	})

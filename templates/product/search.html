@@ -1,5 +1,5 @@
 {% extends "base_products.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 {% block product_list %}active{% endblock %}
 {% block header %}
 	<h1>Liste des produits</h1>
@@ -13,7 +13,7 @@
 </form>
 <div class="cleaner"></div>
 <div class="saving">
-	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+	<img src="{% static 'img/layout/wait.gif" %} />
 </div>
 
 {% if query and numFound %}
@@ -27,7 +27,7 @@
     {% for item in facets.provider_facet %}
       {% if forloop.counter0|divisibleby:2 %}
         <li>
-          <a href="{% url product_search %}?q={{query}}&fq=provider_facet:{{item}}">{{ item }}</a>
+          <a href="{% url 'product_search' %}?q={{query}}&fq=provider_facet:{{item}}">{{ item }}</a>
       {% else %}
           ({{ item }})
         </li>
@@ -39,7 +39,7 @@
     {% for item in facets.packaging %}
       {% if forloop.counter0|divisibleby:2 %}
         <li>
-          <a href="{% url product_search %}?q={{query}}&fq=packaging:{{item}}">{{ item }}</a>
+          <a href="{% url 'product_search' %}?q={{query}}&fq=packaging:{{item}}">{{ item }}</a>
       {% else %}
           ({{ item }})
         </li>
@@ -51,7 +51,7 @@
     {% for item in facets.category_facet %}
       {% if forloop.counter0|divisibleby:2 %}
         <li>
-          <a href="{% url product_search %}?q={{query}}&fq=category_facet:{{item}}">{{ item }}</a>
+          <a href="{% url 'product_search' %}?q={{query}}&fq=category_facet:{{item}}">{{ item }}</a>
       {% else %}
           ({{ item }})
         </li>
@@ -65,13 +65,13 @@
 {% if suggestion %}
   <h3>
       Essayez avec l'orthographe 
-      <a href="{% url product_search %}?q={{suggestion}}">
+      <a href="{% url 'product_search' %}?q={{suggestion}}">
         <b>{{ suggestion }}</b>
       </a>
   </h3>
 {% endif %}
 {% if facet_query %}
-  <p>Filtres: {{ facet_query }} (<a href="{% url product_search %}?q={{query}}">supprimer</a>)</p>
+  <p>Filtres: {{ facet_query }} (<a href="{% url 'product_search' %}?q={{query}}">supprimer</a>)</p>
   <br />
 {% endif %}
 

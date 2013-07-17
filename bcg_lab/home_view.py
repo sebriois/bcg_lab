@@ -1,12 +1,11 @@
 # coding: utf-8
 from datetime import date
 
-from django.views.generic.simple import direct_to_template
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.template import Context, loader
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.conf import settings
 
 from order.models import Order
@@ -27,7 +26,7 @@ def home(request):
 	return redirect('info_index')
 
 def error(request):
-  return direct_to_template( request, '500.html', {} )
+  return render( request, '500.html', {} )
 
 @login_required
 @POST_method

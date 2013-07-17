@@ -15,8 +15,8 @@
 
 <p>Êtes-vous sûr de vouloir supprimer ce fournisseur ?</p>
 
-<form action="{% url provider_delete provider.id %}" method="post">{% csrf_token %}
+<form action="{% url 'provider_delete' provider.id %}" method="post">{% csrf_token %}
   <button type="submit" class="trash">Supprimer {{ provider.name }}</button>
-  <a href="{% url provider_index %}" class="back">Retour</a>
+  <a href="{% url 'provider_index' %}" class="back">Retour</a>
 </form>
 {% endblock %}

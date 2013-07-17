@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import SetPasswordForm
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.mail import send_mail
 from django.template import Context, loader
@@ -17,7 +17,7 @@ from django.template import Context, loader
 from team.models import Team, TeamMember
 from team.forms import TeamForm, TeamMemberForm
 
-from constants import *
+from bcg_lab.constants import *
 from utils import *
 
 @login_required
@@ -32,7 +32,7 @@ def new_user(request):
 		form = UserCreationForm()
 		
 		if 'member_user' in request.session:
-			return direct_to_template( request, 'member/form.html', {
+			return render( request, 'member/form.html', {
 				'form': TeamMemberForm( is_admin = request.user.has_perm('team.custom_edit_member') )
 			})
 		
@@ -45,11 +45,11 @@ def new_user(request):
 				
 				request.session['member_user'] = user
 				request.session.save()
-				return direct_to_template( request, 'member/form.html', {
+				return render( request, 'member/form.html', {
 					'form': TeamMemberForm( is_admin = request.user.has_perm('team.custom_edit_member') )
 				})
 		
-		return direct_to_template( request, 'auth/register.html', { 'form': form })
+		return render( request, 'auth/register.html', { 'form': form })
 
 @transaction.commit_on_success
 def new_member(request):
@@ -105,7 +105,7 @@ def new_member(request):
 	else:
 		form = TeamMemberForm(is_admin = request.user.has_perm('team.custom_edit_member') )
 	
-	return direct_to_template(request, 'member/form.html',{
+	return render(request, 'member/form.html',{
 			'form': form,
 			'user_id': user.id
 	})
@@ -140,7 +140,7 @@ def set_password(request, user_id):
 	if request.method == 'GET':
 		form = SetPasswordForm( user = user )
 		
-		return direct_to_template(request, 'auth/set_password.html', {
+		return render(request, 'auth/set_password.html', {
 			'form': form,
 			'user_id': user_id
 		})
@@ -151,7 +151,7 @@ def set_password(request, user_id):
 			form.save()
 			info_msg( request, 'Nouveau mot de passe enregistré.')
 		else:
-			return direct_to_template(request, 'auth/set_password.html', {
+			return render(request, 'auth/set_password.html', {
 				'form': form,
 				'user_id': user_id
 			})
@@ -179,7 +179,7 @@ def delete(request, user_id):
 #--- Private views
 def _member_detail(request, member):
 		form = TeamMemberForm(instance = member, is_admin = request.user.has_perm('team.custom_edit_member'))
-		return direct_to_template(request, 'member/item.html',{
+		return render(request, 'member/item.html',{
 				'member': member,
 				'form': form
 		})
@@ -214,7 +214,7 @@ def _member_update(request, member):
 		info_msg( request, u"Utilisateur modifié avec succès." )
 		return redirect( 'team_index' )
 	else:
-		return direct_to_template(request, 'member/item.html',{
+		return render(request, 'member/item.html',{
 				'member': member,
 				'form': form
 		})

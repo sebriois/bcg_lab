@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from order.models import Order
 from budget.models import Budget, BudgetLine
@@ -53,7 +53,7 @@ def index(request):
 	else:
 		budget = Budget.objects.none()
 	
-	return direct_to_template(request, "budgetlines/index.html", {
+	return render(request, "budgetlines/index.html", {
 		'budget': budget,
 		'budget_lines' : budget_lines,
 		'filter_form': form,
@@ -150,7 +150,7 @@ def item(request, bl_id):
 			bl.save()
 			return redirect( reverse('budgetlines') + "?budget_id=%s&connector=OR" % data['budget_id'] )
 	
-	return direct_to_template( request, 'budgetlines/item.html', {
+	return render( request, 'budgetlines/item.html', {
 		'form': form,
 		'bl': bl,
 		'search_args': urlencode(request.GET)

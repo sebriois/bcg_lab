@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 from product.views import index, item, delete, new, edit_list, search, autocomplete
 from product.views import export_xls

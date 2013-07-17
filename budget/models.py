@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.query import Q
 
 from team.models import Team
-from constants import BUDGET_CHOICES
+from bcg_lab.constants import BUDGET_CHOICES
 
 class Budget(models.Model):
 	team = models.ForeignKey(Team, verbose_name="Equipe")

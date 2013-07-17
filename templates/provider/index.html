@@ -1,5 +1,5 @@
 {% extends "base_provider.html" %}
-{% load paginator filters %}
+{% load paginator filters static %}
 
 {% block provider_list %}active{% endblock %}
 
@@ -10,7 +10,7 @@
 
 {% block content %}
 <div class="saving">
-	<img src="{{ MEDIA_URL }}img/layout/wait.gif" />
+	<img src="{% static 'img/layout/wait.gif" %} />
 </div>
 
 {% if provider_list %}
@@ -29,11 +29,11 @@
 					{% if provider.reseller %}
 						{{ provider.name }} ({{ provider.product_set.all.count }} produits)
 						- Revendeur: 
-						<a href="{% url product_index %}?provider={{provider.reseller.id}}&connector=OR" class="table_go show_wait">
+						<a href="{% url 'product_index' %}?provider={{provider.reseller.id}}&connector=OR" class="table_go show_wait">
 							{{ provider.reseller.name }}
 						</a>
 					{% else %}
-						<a href="{% url product_index %}?provider={{provider.id}}&connector=OR" class="table_go show_wait">
+						<a href="{% url 'product_index' %}?provider={{provider.id}}&connector=OR" class="table_go show_wait">
 							{{ provider.name }}
 						</a>({{ provider.product_set.all.count }} produits)
 					{% endif %}
@@ -45,15 +45,15 @@
 					{% endif %}
 				</td>
 				<td>
-					<button class="comment notesDialog no-text" href="{% url set_notes provider.id %}" content="{{ provider.notes|default:"" }}"></button>
+					<button class="comment notesDialog no-text" href="{% url 'set_notes' provider.id %}" content="{{ provider.notes|default:"" }}"></button>
 				</td>
 				<td>
-					<a href="{% url product_new %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
+					<a href="{% url 'product_new' %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
 					{% if provider.users_in_charge.all.count == 0 or user in provider.users_in_charge.all or user.is_superuser %}
-					<a href="{% url import_products provider.id %}" class="import">Import produits</a>
-					<a href="{% url export_products provider.id %}" class="export">Export produits</a>
-					<a href="{% url provider_item provider.id %}" class="pencil">Editer</a>
-					<a href="{% url provider_delete provider.id %}" class="trash">Supprimer</a>
+					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+					<a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
 					{% endif %}
 				</td>
 			</tr>
@@ -69,9 +69,9 @@
 </div>
 
 <div id="mail" class="dialog" title="Envoyer un message au(x) responsable(s)">
-	<form action="{% url send_message %}" method="POST">{% csrf_token %}
+	<form action="{% url 'send_message' %}" method="POST">{% csrf_token %}
 		<input type="hidden" name="to" value="" />
-		<input type="hidden" name="next" value="{% url provider_index %}">
+		<input type="hidden" name="next" value="{% url 'provider_index' %}">
 		<div class="form-row">
 			<label for="subject">Sujet</label>
 			<div class="cleaner"></div>

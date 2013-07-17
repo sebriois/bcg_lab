@@ -11,7 +11,7 @@ from budget.models import Budget, BudgetLine
 from team.models import Team, TeamMember
 from attachments.models import Attachment
 
-from constants import *
+from bcg_lab.constants import *
 
 class Order(models.Model):
 	number          = models.CharField(u"N° cmde", max_length = 20, null = True, blank = True)

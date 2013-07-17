@@ -8,7 +8,7 @@ from history.models import History
 from budget.models import Budget, BudgetLine
 from order.models import OrderItem
 from utils import *
-from constants import *
+from bcg_lab.constants import *
 
 class HistoryFilterForm(forms.Form):
 	connector = forms.TypedChoiceField(

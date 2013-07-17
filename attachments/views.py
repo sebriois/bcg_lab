@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 
 from attachments.forms import AttachmentForm
 from attachments.models import Attachment
@@ -32,7 +32,7 @@ def new(request):
 			content_type = data['content_type']
 			object_id = data['object_id']
 	
-	return direct_to_template( request, "attachments/form.html", {
+	return render( request, "attachments/form.html", {
 		'form': form,
 		'content_type': content_type,
 		'object_id': object_id,
