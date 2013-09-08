@@ -107,6 +107,8 @@ def _django_search( query_dict ):
             product_list = Product.objects.none()
     else:
         product_list = Product.objects.none()
+    
+    return product_list, form
 
 
 @login_required
