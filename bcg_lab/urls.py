@@ -11,7 +11,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/',            include(admin.site.urls)),
-    (r'^media/(.*)',        'django.views.static.serve', {'document_root' : settings.MEDIA_ROOT, 'show_indexes': True }),
+    (r'^static/(.*)',       'django.views.static.serve', {'show_indexes': settings.DEBUG }),
     (r'^attachments/',      include('attachments.urls')),
     (r'^administration/',   include('admin.urls')),
     (r'^products/',         include('product.urls')),

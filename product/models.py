@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from provider.models import Provider
 from attachments.models import Attachment
+from solr import Solr
 
 from bcg_lab.constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
 

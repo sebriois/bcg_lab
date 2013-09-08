@@ -1,12 +1,12 @@
 from xml.etree.ElementTree import Element, SubElement, tostring
 import commands
+import json
 from urllib import urlencode
 from urllib2 import Request, urlopen, HTTPError
 
 from django.conf import settings
 
 def send_request( url, args ):
-    print url + '?' + urlencode(args)
     req = Request( url, urlencode(args) )
     
     try:
@@ -18,7 +18,7 @@ def send_request( url, args ):
 
 
 class Solr(object):
-    def __init__(self, url = settings.SOLR_URL):
+    def __init__(self, url = settings.SOLR_URL + 'collection1/select' ):
         self.url = url
         self.solr_params = {
             'wt': 'python',
@@ -63,20 +63,12 @@ class Solr(object):
         if not data_dict:
             raise "doc to post is empty"
         
-        # Convert dictionnary to XML
-        root_element = Element('add')
-        doc_element  = SubElement( root_element, 'doc' )
+        json_doc = json.dumps([ data_dict ])
         
-        for name, value in data_dict.items():
-            if not value: continue
-            
-            field_element = SubElement( doc_element, 'field' )
-            field_element.set( 'name', name )
-            field_element.text = value
+        update_url = settings.SOLR_URL + 'update/'
+        command = "curl %s -H 'Content-type:application/json' -d '%s'" % ( update_url, json_doc )
+        commands.getoutput(command)
         
-        xml_data = tostring( root_element )
-        
-        # POST xml document to Solr
-        command = 'java -Ddata=args -jar post.jar ' + xml_data
+        command = "curl %s?commit=true" % update_url
         commands.getoutput(command)
     

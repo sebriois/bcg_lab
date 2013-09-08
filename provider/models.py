@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import os
 from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
 
 from django.db import models
@@ -24,9 +25,3 @@ class Provider(models.Model):
             return u"%s (revendeur: %s)" % ( self.name, self.reseller )
         return self.name
     
-    def make_solr_xml(self):
-        root_element = Element('add')
-        for product in self.product_set.all():
-            product.generate_xml_doc(root_element)
-        
-        ElementTree(root_element).write("%s/%s.xml" % (settings.SOLR_HOME, self.id))
