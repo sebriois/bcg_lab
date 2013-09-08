@@ -212,6 +212,8 @@ def new(request):
                 p.provider = p.provider.reseller
                 p.save()
             
+            p.post_to_solr()
+            
             info_msg( request, u"Produit ajouté avec succès." )
             return redirect( reverse('product_index') + "?reference=%s&connector=OR" % p.reference )
     

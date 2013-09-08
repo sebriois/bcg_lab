@@ -210,6 +210,7 @@ votre navigateur)." )
 			product.offer_nb = json_data['offer_nb']
 		
 		product.save()
+		product.post_to_solr()
 	
 	del request.session['import_data']
 	
