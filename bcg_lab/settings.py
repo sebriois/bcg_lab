@@ -19,7 +19,7 @@ DATABASES = {
         'NAME': 'order_manager',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'briois',
-        'PASSWORD': 'briois',
+        'PASSWORD': '',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -174,7 +174,7 @@ LOGGING = {
 ##    Custom settings
 ##
 
-SOLR_URL='http://localhost:8983/solr/'
+SOLR_URL='http://localhost:8989/solr/'
 PAGINATION_ROWS = 50
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
