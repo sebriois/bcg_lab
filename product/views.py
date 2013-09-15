@@ -37,13 +37,7 @@ def search(request):
             'fq': facet_query
         })
         
-        spellcheck = solr.suggestions()
-        
-        spellcheck = dict(zip(spellcheck[0::2], spellcheck[1::2]))
-        if not spellcheck['correctlySpelled'] and 'collation' in spellcheck:
-            suggestion = spellcheck['collation'][1]
-        else:
-            suggestion = None
+        suggestion = solr.suggestion()
         
         return render(request, 'product/search.html', {
             'numFound': solr.numFound(),

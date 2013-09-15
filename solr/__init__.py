@@ -48,11 +48,15 @@ class Solr(object):
     def numFound(self):
         return self._response['response']['numFound']
     
-    def suggestions(self):
-        if self._response and self._response['spellcheck']:
-            return self._response['spellcheck']['suggestions']
-        else:
-            return []
+    def suggestion(self):
+        suggestion = None
+        if self._response and 'spellcheck' in self._response:
+            spellcheck = self._response['spellcheck']['suggestions']
+            spellcheck = dict(zip(spellcheck[0::2], spellcheck[1::2]))
+            if not spellcheck['correctlySpelled'] and 'collation' in spellcheck:
+                suggestion = spellcheck['collation'][1]
+        
+        return suggestion
     
     def facet_fields(self, field = None):
         if self._response:
