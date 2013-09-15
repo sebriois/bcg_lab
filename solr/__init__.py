@@ -8,6 +8,7 @@ from django.conf import settings
 
 def send_request( url, args ):
     req = Request( url, urlencode(args) )
+    print url + '?' + urlencode(args)
     
     try:
         f = urlopen( req )
@@ -35,8 +36,11 @@ class Solr(object):
         
         self._response = eval( send_request(self.url, self.solr_params) )
     
-    def response(self):
-        return self._response
+    def response(self, field = None):
+        if not field:
+            return self._response
+        
+        return self._response[field]
     
     def docs(self):
         return self._response['response']['docs']

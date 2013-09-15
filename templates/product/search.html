@@ -34,18 +34,8 @@
       {% endif %}
     {% endfor %}
   </ul>
-  <h4>Conditionnement</h4>
-  <ul>
-    {% for item in facets.packaging %}
-      {% if forloop.counter0|divisibleby:2 %}
-        <li>
-          <a href="{% url 'product_search' %}?q={{query}}&fq=packaging:{{item}}">{{ item }}</a>
-      {% else %}
-          ({{ item }})
-        </li>
-      {% endif %}
-    {% endfor %}
-  </ul>
+  
+  {% if facets.category_facet %}
   <h4>Catégorie</h4>
   <ul>
     {% for item in facets.category_facet %}
@@ -58,6 +48,7 @@
       {% endif %}
     {% endfor %}
   </ul>
+  {% endif %}
 </div>
 {% endif %}
 

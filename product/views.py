@@ -28,10 +28,14 @@ from solr import Solr
 
 def search(request):   
     query = request.GET.get("q", None)
+    facet_query = request.GET.get("fq", None)
     
     if query:
         solr = Solr()
-        solr.query({ 'q': query })
+        solr.query({ 
+            'q': query,
+            'fq': facet_query
+        })
         
         spellcheck = solr.suggestions()
         
@@ -44,8 +48,8 @@ def search(request):
         return render(request, 'product/search.html', {
             'numFound': solr.numFound(),
             'query': query,
-            'facet_query': facet_query,
-            'facets': solr.get_facet_fields(),
+            'facet_query': facet_query.split(':')[1],
+            'facets': solr.facet_fields(),
             'suggestion': suggestion,
             'product_list': Product.objects.filter( id__in = [doc['id'] for doc in solr.docs()] ),
         })
@@ -72,6 +76,7 @@ def autocomplete(request):
     }
     
     return HttpResponse(json.dumps(output_data))
+
 
 def _solr_search( query_dict ):
     solr = Solr()
@@ -102,29 +107,45 @@ def _django_search( query_dict ):
             Q_obj.children  = data.items()
             
             product_list = Product.objects.filter( Q_obj )
+            num_found = product_list.count()
+            
+            if 'page' in query_dict:
+                current_page = int(query_dict.pop('page')[0])
+            else:
+                current_page = 1
+            start = (current_page - 1) * settings.PAGINATION_ROWS
+            end   = start + settings.PAGINATION_ROWS
+            if end > num_found:
+                end = num_found - 1
+            
+            product_list = product_list[start:end]
         else:
             error_msg(request, "Recherche non valide")
             product_list = Product.objects.none()
+            num_found = 0
     else:
         product_list = Product.objects.none()
+        num_found = 0
     
-    return product_list, form
+    return product_list, num_found
 
+
+def _product_search( query_dict ):
+    if 'q' in query_dict.keys():
+        product_list, num_found = _solr_search( query_dict.dict() )
+    elif len(query_dict.keys()) > 0:
+        product_list, num_found = _django_search( query_dict )
+    else:
+        product_list = Product.objects.none()
+        num_found = 0
+    
+    return product_list, num_found
 
 @login_required
 def index(request):
     query_dict = request.GET.copy()
     
-    filter_form = ProductFilterForm()
-    num_found = 0
-    
-    if 'q' in query_dict.keys():
-        product_list, num_found = _solr_search( query_dict.dict() )
-    elif len(query_dict.keys()) > 0:
-        product_list, filter_form = _django_search( query_dict )
-        num_found = product_list.count()
-    else:
-        product_list = Product.objects.none()
+    product_list, num_found = _product_search( query_dict )
     
     if request.user.has_perm("order.custom_view_local_provider"):
         if len( query_dict.keys() ) == 0 or query_dict.keys() == ["page"]:
@@ -140,13 +161,11 @@ def index(request):
         current_page = int(query_dict.pop('page')[0])
     else:
         current_page = 1
-    start = (current_page - 1) * settings.PAGINATION_ROWS
-    end   = start + settings.PAGINATION_ROWS
-
+    
     return render(request, 'product/index.html', {
         'product_count': product_count,
         'search_count': num_found,
-        'filter_form': filter_form,
+        'filter_form': ProductFilterForm(),
         'q_init': query_dict.get("q",""),
         'products': product_list,
         'current_page': current_page,
@@ -241,7 +260,7 @@ def delete(request, product_id):
 
 @login_required
 def export_xls( request ):
-    product_list, filter_form = _product_search( request.GET )
+    product_list, num_found = _product_search( request.GET.copy() )
     
     if request.user.has_perm("order.custom_view_local_provider"):
         product_list = product_list.filter( provider__is_local = True )
@@ -288,13 +307,13 @@ def export_xls( request ):
 @transaction.commit_on_success
 def edit_list(request):
     if request.method == 'GET':
-        product_list, filter_form = _product_search( request.GET )
+        product_list, num_found = _product_search( request.GET.copy() )
         
         if request.user.has_perm("order.custom_view_local_provider"):
             product_list = product_list.filter( provider__is_local = True )
         
         return render(request, 'product/edit_list.html',{
-            'filter_form': filter_form,
+            'filter_form': ProductFilterForm(),
             'edit_form': EditListForm(),
             'product_list': product_list,
             'url_args': urlencode(request.GET)

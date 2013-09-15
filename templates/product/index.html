@@ -7,19 +7,17 @@
 {% endblock %}
 
 {% block content %}
-<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche rapide</h2>
-<form method="GET" action="." class="search show_wait">
-	<fieldset>
-		<input type="text" name="q" value="{{q_init}}"/> <input type="submit" value=" " />
-		{% if products %}
-		  <p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouvé{{search_count|pluralize}}</p>
-		{% endif %}
-	</fieldset>
-</form>
-<div class="cleaner"></div>
-<div class="saving">
-	<img src="{% static 'img/layout/wait.gif' %}" />
-</div>
+
+{# QUICK SEARCH FORM - always displayed #}
+{% include "product/_quick_search_form.html" %}
+
+{# ADVANCED SEARCH FORM - displayed if no products shown #}
+{% if not products %}
+  {% if not user|has_perm:"order.custom_view_local_provider" %}
+    {% include "product/_advanced_search_form.html" %}
+  {% endif %}
+{% endif %}
+
 
 {% if products %}
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
@@ -85,45 +83,6 @@
 			{% endfor %}
 		</tbody>
 	</table>
-{% else %}
-	{# ############# #}
-	{# ADVANCED FORM #}
-	{# ############# #}
-
-	{% if not user|has_perm:"order.custom_view_local_provider" %}
-	<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
-	<form action="{% url 'product_index' %}" method="GET" class="show_wait hide_on_save">
-		<fieldset>
-			<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
-			{% with filter_form.provider as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.origin as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.name__icontains as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.reference as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.nomenclature as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.category as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			{% with filter_form.sub_category as field %}
-				{% include "form_snippet.html" %}
-			{% endwith %}
-			<label for="has_expired">Date d'expiration dépassée?</label>
-			<input type="checkbox" id="has_expired" name="has_expired" />
-			
-			<div class="cleaner"></div>
-			<button type="submit" class="all">Chercher</button>
-		</fieldset>
-	</form>
-	{% endif %}
 {% endif %}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">

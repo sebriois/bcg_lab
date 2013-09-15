@@ -1,0 +1,14 @@
+{% load static %}
+<h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche rapide</h2>
+<form method="GET" action="." class="search show_wait">
+	<fieldset>
+		<input type="text" name="q" value="{{q_init}}"/> <input type="submit" value=" " />
+		{% if products %}
+		  <p style="margin-left:10px">&rarr;&nbsp;{{search_count}} produit{{search_count|pluralize}} trouvé{{search_count|pluralize}}</p>
+		{% endif %}
+	</fieldset>
+</form>
+<div class="cleaner"></div>
+<div class="saving">
+	<img src="{% static 'img/layout/wait.gif' %}" />
+</div>
