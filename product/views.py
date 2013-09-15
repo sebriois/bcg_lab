@@ -28,7 +28,7 @@ from solr import Solr
 
 def search(request):   
     query = request.GET.get("q", None)
-    facet_query = request.GET.get("fq", None)
+    facet_query = request.GET.get("fq", '')
     
     if query:
         solr = Solr()
@@ -48,7 +48,7 @@ def search(request):
         return render(request, 'product/search.html', {
             'numFound': solr.numFound(),
             'query': query,
-            'facet_query': facet_query.split(':')[1],
+            'facet_query': facet_query and facet_query.split(':')[1] or None,
             'facets': solr.facet_fields(),
             'suggestion': suggestion,
             'product_list': Product.objects.filter( id__in = [doc['id'] for doc in solr.docs()] ),

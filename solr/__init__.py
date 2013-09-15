@@ -49,7 +49,7 @@ class Solr(object):
         return self._response['response']['numFound']
     
     def suggestions(self):
-        if self._response:
+        if self._response and self._response['spellcheck']:
             return self._response['spellcheck']['suggestions']
         else:
             return []
