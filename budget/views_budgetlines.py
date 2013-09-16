@@ -57,7 +57,7 @@ def index(request):
 		'budget': budget,
 		'budget_lines' : budget_lines,
 		'filter_form': form,
-		'search_args': urlencode(request.GET)
+		'url_args': urlencode(request.GET)
 	})
 
 @login_required
@@ -153,7 +153,7 @@ def item(request, bl_id):
 	return render( request, 'budgetlines/item.html', {
 		'form': form,
 		'bl': bl,
-		'search_args': urlencode(request.GET)
+		'url_args': urlencode(request.GET)
 	})
 
 

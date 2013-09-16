@@ -23,9 +23,9 @@
 			<img src="{% static 'img/icons/magnifier.png' %}" />Détail de tous les budgets
 		</a>
 	</div>
-	{% if search_args %}
+	{% if url_args %}
 	<div class="btn_wrapper">
-		<a href="{% url 'budgetline_export' %}?{{search_args}}" class="btn_big">
+		<a href="{% url 'budgetline_export' %}?{{url_args}}" class="btn_big">
 			<img src="{% static 'img/icons/page_excel.png' %}" />Exporter vers Excel
 		</a>
 	</div>
@@ -92,7 +92,7 @@
 					<td><strong>{{ budget_line.get_amount_left }}</strong></td>
 					{% if user|has_perm:"budget.custom_edit_budget" %}
 						<td style="white-space:nowrap">
-							<a href="{% url 'budgetline_item' budget_line.id %}?{{search_args}}" class="pencil no-text"></a>
+							<a href="{% url 'budgetline_item' budget_line.id %}?{{url_args}}" class="pencil no-text"></a>
 							<a href="{% url 'budgetline_delete' budget_line.id %}" class="trash confirmDel no-text"></a>
 						</td>
 					{% endif %}

@@ -94,7 +94,7 @@ def history_orders(request):
         'filter_form': form,
         'objects': paginate( request, objects.distinct() ),
         'display': display,
-        'search_args': urlencode(request.GET),
+        'url_args': urlencode(request.GET),
         'total': total
     })
 
@@ -190,7 +190,7 @@ def history_budgets(request):
         'filter_form': form,
         'budgets': paginate( request, budgets ),
         'budget_lines': paginate( request, budget_lines ),
-        'search_args': urlencode(request.GET)
+        'url_args': urlencode(request.GET)
     })
 
 
