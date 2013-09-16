@@ -213,17 +213,13 @@ $(document).ready(function(){
             resizable: false,
             modal: true,
             closeOnEscape: false,
-            create: function(event, ui) {
-             $("body").css({ overflow: 'hidden' })
-            },
-            beforeClose: function(event, ui) {
-             $("body").css({ overflow: 'inherit' })
-            },
             open: function() {
                 $("#loadingDialog").dialog('close');
                 $(".ui-dialog-titlebar-close").hide();
+                $("body").css({ overflow: 'hidden' });
             },
             close: function() {
+                $("body").css({ overflow: 'inherit' });
                 $("#loadingDialog").dialog('close');
             }
         });
