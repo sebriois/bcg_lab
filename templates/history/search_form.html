@@ -5,7 +5,7 @@
     <h4>Recherche de commandes réceptionnées</h4>
 </div>
 <div class="bar_content">
-  <form action="{% url 'history_orders' %}" method="GET" class="show_wait">{% csrf_token %}
+  <form action="{% url 'history_orders' %}" method="GET" class="show_wait">
     <strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
     <div class="cleaner"></div>
     <table>
