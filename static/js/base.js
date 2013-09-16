@@ -215,7 +215,6 @@ $(document).ready(function(){
             closeOnEscape: false,
             open: function() {
                 $("#loadingDialog").dialog('close');
-                $(".ui-dialog-titlebar-close").hide();
                 $("body").css({ overflow: 'hidden' });
             },
             close: function() {
