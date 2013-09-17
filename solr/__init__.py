@@ -73,7 +73,7 @@ class Solr(object):
         
         json_doc = json.dumps([ data_dict ])
         
-        update_url = settings.SOLR_URL + '/update'
+        update_url = settings.SOLR_URL + '/update/'
         command = "curl %s -H 'Content-type:application/json' -d '%s'" % ( update_url, json_doc )
         commands.getoutput(command)
         
