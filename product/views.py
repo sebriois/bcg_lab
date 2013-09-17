@@ -161,7 +161,7 @@ def index(request):
         'search_count': num_found,
         'filter_form': ProductFilterForm(),
         'q_init': query_dict.get("q",""),
-        'products': product_list,
+        'products': product_list.order_by('name'),
         'current_page': current_page,
         'url_args': query_dict.urlencode(),
     })
