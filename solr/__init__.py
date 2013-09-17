@@ -19,7 +19,7 @@ def send_request( url, args ):
 
 
 class Solr(object):
-    def __init__(self, url = settings.SOLR_URL + 'collection1/select' ):
+    def __init__(self, url = settings.SOLR_URL + '/select' ):
         self.url = url
         self.solr_params = {
             'wt': 'python',
@@ -73,7 +73,7 @@ class Solr(object):
         
         json_doc = json.dumps([ data_dict ])
         
-        update_url = settings.SOLR_URL + 'update/'
+        update_url = settings.SOLR_URL + '/update'
         command = "curl %s -H 'Content-type:application/json' -d '%s'" % ( update_url, json_doc )
         commands.getoutput(command)
         

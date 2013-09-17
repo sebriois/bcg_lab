@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta
 
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from provider.models import Provider
@@ -100,4 +101,10 @@ class Product(models.Model):
             self.packaging = self.packaging(k, v)
             self.packaging = self.packaging(" %s" % k, v)
         self.save()
-    
+
+# method for updating solr when a product is saved (after creation or after update)
+def update_solr(sender, instance, **kwargs):
+    instance.post_to_solr()
+
+# register the signal
+post_save.connect(update_solr, sender=Product, dispatch_uid="update_solr")
