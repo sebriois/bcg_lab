@@ -37,7 +37,8 @@ def search_orders(request):
             if not value:
                 del data[key]
         
-        data['team'] = data['team'].name
+        if 'team' in data:
+            data['team'] = data['team'].name
         
         Q_obj = Q()
         Q_obj.connector = data.pop("connector")
@@ -215,7 +216,8 @@ def export_budgetlines( request ):
             if not value:
                 del data[key]
         
-        data['team'] = data['team'].name
+        if 'team' in data:
+            data['team'] = data['team'].name
                 
         Q_obj = Q()
         Q_obj.connector = data.pop("connector")
