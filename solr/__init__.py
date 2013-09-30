@@ -8,7 +8,11 @@ from urllib2 import Request, urlopen, HTTPError
 from django.conf import settings
 
 def send_request( url, args ):
-    req = Request( url, urlencode(args) )
+    encoded_args = {}
+    for k, v in args.iteritems():
+        encoded_args[k] = unicode(v).encode('utf-8')
+    
+    req = Request( url, urlencode(encoded_args) )
     
     try:
         f = urlopen( req )
