@@ -1,3 +1,4 @@
+# -*- coding : utf8 -*-
 from xml.etree.ElementTree import Element, SubElement, tostring
 import commands
 import json
@@ -8,7 +9,6 @@ from django.conf import settings
 
 def send_request( url, args ):
     req = Request( url, urlencode(args) )
-    print url + '?' + urlencode(args)
     
     try:
         f = urlopen( req )
