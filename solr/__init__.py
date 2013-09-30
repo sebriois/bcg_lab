@@ -26,7 +26,7 @@ class Solr(object):
     def __init__(self, url = settings.SOLR_URL + '/select' ):
         self.url = url
         self.solr_params = {
-            'wt': 'python',
+            'wt': 'json',
             'fl': 'id',
             'rows': settings.PAGINATION_ROWS
         }
@@ -38,7 +38,8 @@ class Solr(object):
             start = (int(query_dict.get('page', 1)) - 1) * self.solr_params['rows']
             self.solr_params['start'] = start
         
-        self._response = eval( send_request(self.url, self.solr_params) )
+        json_response = send_request(self.url, self.solr_params)
+        self._response = json.loads( json_response )
     
     def response(self, field = None):
         if not field:
