@@ -1,29 +1,6 @@
 import os.path
 
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-# PROJECT_PATH=''
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    ('Sebastien Briois', 'sebriois@gmail.com'),
-    # ('Your Name', 'your_email@domain.com'),
-)
-
-MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'cbd',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'briois',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
-    }
-}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -173,9 +150,6 @@ LOGGING = {
 ##
 ##    Custom settings
 ##
-
-SOLR_URL='http://localhost:8989/solr/cbd'
-PAGINATION_ROWS = 50
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
