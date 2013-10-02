@@ -151,8 +151,8 @@ class BudgetHistoryFilterForm(forms.Form):
         label           = "N°cmde",
         required    = False
     )
-    product = forms.CharField(
-        label           = u"Produit",
+    product__istartswith = forms.CharField(
+        label       = u"Produit",
         help_text   = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required    = False
     )
@@ -194,7 +194,7 @@ class BudgetHistoryFilterForm(forms.Form):
         
         self.fields['team'].queryset = teams
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
-        self.fields['product'].widget = forms.TextInput( attrs = {
+        self.fields['product__istartswith'].widget = forms.TextInput( attrs = {
             'class' : 'autocomplete',
             'choices': ";".join(name_choices)
         })

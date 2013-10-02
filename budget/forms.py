@@ -139,7 +139,7 @@ class BudgetLineFilterForm(forms.Form):
         label    = "N°cmde",
         required = False
     )
-    product = forms.CharField(
+    product__istartswith = forms.CharField(
         label       = u"Produit",
         help_text   = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required    = False
@@ -189,7 +189,7 @@ class BudgetLineFilterForm(forms.Form):
         
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
         self.fields['team'].queryset = teams
-        self.fields['product'].widget = forms.TextInput( attrs = {
+        self.fields['product__istartswith'].widget = forms.TextInput( attrs = {
             'class' : 'autocomplete',
             'choices': ";".join(name_choices)
         })
