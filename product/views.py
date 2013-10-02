@@ -257,6 +257,8 @@ def export_xls( request ):
     product_list, num_found = _product_search( request.GET.copy() )
     
     if request.user.has_perm("order.custom_view_local_provider"):
+        if num_found == 0:
+            product_list = Product.objects.all()
         product_list = product_list.filter( provider__is_local = True )
     
     wb = xlwt.Workbook()
