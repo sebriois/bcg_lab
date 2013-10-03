@@ -18,7 +18,7 @@ class Order(models.Model):
 	budget	        = models.ForeignKey(Budget, verbose_name="Ligne budgétaire", blank = True, null = True)
 	team	        = models.ForeignKey(Team, verbose_name = u"Equipe", max_length = 20 )
 	provider        = models.ForeignKey(Provider, verbose_name = u"Fournisseur", max_length = 100 )
-	status		= models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
+	status          = models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
 	items	        = models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
 	notes	        = models.TextField( u"Commentaires", null = True, blank = True )
 	is_confidential	= models.BooleanField( u"Confidentielle?", default = False )

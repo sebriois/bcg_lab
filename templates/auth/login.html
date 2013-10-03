@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="MSSmartTagsPreventParsing" content="TRUE" />
 		<meta name="robots" content="noindex, nofollow">
-		<title>BCG-Lab - login</title>
+		<title>BCG-Lab {{ SITE_NAME }} - login</title>
 		<link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" />
 		<link rel="stylesheet" href="{% static 'css/humanity/jquery-ui-1.10.3.custom.css' %}" type="text/css" />
 		
@@ -25,7 +25,11 @@
 
 <div id="wrapper">
 	<div id="login">
-		<div id="header"><h1>BCG-Lab</h1></div>
+		<div id="header">
+		    <h1>{{ SITE_NAME }}</h1>
+		    <div class="cleaner"></div>
+		    <h2 style="margin-left:20px;color:#64584b">BCG-Lab</h2>
+		</div>
 		<div id="in_login">
 			<div id="login_subhead">Identification</div>
 			<form method="post" action="{% url 'django.contrib.auth.views.login' %}" name="login">{% csrf_token %}
