@@ -31,7 +31,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = os.path.join( PROJECT_PATH, '../media' ) 
+MEDIA_ROOT = '/var/www/bcg_lab/media' )
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -42,7 +42,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/var/www/bcg-lab-static/'
+STATIC_ROOT = '/var/www/bcg_lab/static/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -152,10 +152,6 @@ LOGGING = {
 ##
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-EMAIL_HOST = "smtp.univ-tlse3.fr"
-EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = "no-reply@univ-tlse3.fr"
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
