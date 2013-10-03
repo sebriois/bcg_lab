@@ -110,7 +110,7 @@ def _django_search( query_dict ):
             start = (current_page - 1) * settings.PAGINATION_ROWS
             end   = start + settings.PAGINATION_ROWS
             if end > num_found:
-                end = num_found - 1
+                end = num_found
             
             product_list = product_list[start:end]
         else:

@@ -2,8 +2,8 @@
 {% load paginator filters static %}
 {% block product_list %}active{% endblock %}
 {% block header %}
-	<h1>Gestion des produits</h1>
-	<h3>{{ product_count }} produits référencés.</h3>
+    <h1>Gestion des produits</h1>
+    <h3>{{ product_count }} produits référencés.</h3>
 {% endblock %}
 
 {% block content %}
@@ -20,83 +20,83 @@
 
 
 {% if products %}
-	{% if not user|has_perm:"order.custom_view_local_provider" %}
-	<div class="btn_wrapper hide_on_save">
-		<a href="{% url 'tab_cart' %}" class="btn_medium">
-			<img src="{% static 'img/icons/cart_go.png' %}" />Voir le panier
-		</a>
-	</div>
-	{% endif %}
-	{% if search_count > 0 %}
-	<div class="btn_wrapper hide_on_save">
-		<a href="{% url 'product_edit_list' %}?{{url_args}}" class="btn_big">
-			<img src="{% static 'img/icons/pencil.png' %}" />Editer cette liste de produits
-		</a>
-	</div>
-	{% endif %}
-	<div class="btn_wrapper hide_on_save">
-		<a href="{% url 'product_export_xls' %}?{{url_args}}" class="btn_big">
-			<img src="{% static 'img/icons/page_excel.png' %}" />Exporter cette liste
-		</a>
-	</div>
-	
-	<div class="cleaner"></div>
-	<div style="color:#e2350d;height:20px" class="hide_on_save">
-		<div class="legend_urgent"></div>offre périmée
-	</div>
-	<div class="cleaner"></div>
-	{% autopaginate current_page search_count %}
-	<table class="list">
-		<thead>
-				<th>Fournisseur</th>
-				<th style="max-width:200px">produit</th>
-				<th>Cond.</th>
-				<th>Réf.</th>
-				<th>Prix</th>
-				<th>N° Offre</th>
-				<th>Expiration</th>
-				<th>Nomen.</th>
-				<th>MAJ</th>
-				<th>Action</th>
-		</thead>
-		<tbody>
-			{% for product in products %}
-				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
-					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
-					<td>{{ product.name }}</td>
-					<td>{{ product.packaging|default:"" }}</td>
-					<td>{{ product.reference }}</td>
-					<td>{{ product.price }}&nbsp;€</td>
-					<td>{{ product.offer_nb|default:"" }}</td>
-					<td>{{ product.expiry|date }}</td>
-					<td>{{ product.nomenclature|default:"" }}</td>
-					<td>{{ product.last_change|date }}</td>
-					<td style="white-space:nowrap">
-						{% if not product.has_expired %}
-							{% if not user|has_perm:"order.custom_view_local_provider" %}
-							<button id="{{product.id}}" class="plus addToCart">Panier</button>
-							{% endif %}
-						{% endif %}
-						<a href="{% url 'product_item' product.id %}?{{url_args}}" class="pencil">Editer</a>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    {% if not user|has_perm:"order.custom_view_local_provider" %}
+    <div class="btn_wrapper hide_on_save">
+        <a href="{% url 'tab_cart' %}" class="btn_medium">
+            <img src="{% static 'img/icons/cart_go.png' %}" />Voir le panier
+        </a>
+    </div>
+    {% endif %}
+    {% if search_count > 0 %}
+    <div class="btn_wrapper hide_on_save">
+        <a href="{% url 'product_edit_list' %}?{{url_args}}" class="btn_big">
+            <img src="{% static 'img/icons/pencil.png' %}" />Editer cette liste de produits
+        </a>
+    </div>
+    {% endif %}
+    <div class="btn_wrapper hide_on_save">
+        <a href="{% url 'product_export_xls' %}?{{url_args}}" class="btn_big">
+            <img src="{% static 'img/icons/page_excel.png' %}" />Exporter cette liste
+        </a>
+    </div>
+    
+    <div class="cleaner"></div>
+    <div style="color:#e2350d;height:20px" class="hide_on_save">
+        <div class="legend_urgent"></div>offre périmée
+    </div>
+    <div class="cleaner"></div>
+    {% autopaginate current_page search_count %}
+    <table class="list">
+        <thead>
+                <th>Fournisseur</th>
+                <th style="max-width:200px">produit</th>
+                <th>Cond.</th>
+                <th>Réf.</th>
+                <th>Prix</th>
+                <th>N° Offre</th>
+                <th>Expiration</th>
+                <th>Nomen.</th>
+                <th>MAJ</th>
+                <th>Action</th>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+                    <td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.packaging|default:"" }}</td>
+                    <td>{{ product.reference }}</td>
+                    <td>{{ product.price }}&nbsp;€</td>
+                    <td>{{ product.offer_nb|default:"" }}</td>
+                    <td>{{ product.expiry|date }}</td>
+                    <td>{{ product.nomenclature|default:"" }}</td>
+                    <td>{{ product.last_change|date }}</td>
+                    <td style="white-space:nowrap">
+                        {% if not product.has_expired %}
+                            {% if not user|has_perm:"order.custom_view_local_provider" %}
+                            <button id="{{product.id}}" class="plus addToCart">Panier</button>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{% url 'product_item' product.id %}?{{url_args}}" class="pencil">Editer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endif %}
 
 <div id="addToCart" class="dialog" title="Saisissez la quantité à commander">
-	<div class="show_expired_warning">
-		ATTENTION: l'offre sur ce produit a atteint sa date d'expiration
-		<br /><br />
-	</div>
-	<form action="{% url 'cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
-		<input type="hidden" name="url_params" value="{{url_args}}" />
-		<input type="hidden" name="product_id" value="" />
-		<div id="qty-error-msg"></div>
-		<label for="quantity">Quantité:</label>
-		<input type="text" name="quantity" value="" />
-	</form>
+    <div class="show_expired_warning">
+        ATTENTION: l'offre sur ce produit a atteint sa date d'expiration
+        <br /><br />
+    </div>
+    <form action="{% url 'cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
+        <input type="hidden" name="url_params" value="{{url_args}}" />
+        <input type="hidden" name="product_id" value="" />
+        <div id="qty-error-msg"></div>
+        <label for="quantity">Quantité:</label>
+        <input type="text" name="quantity" value="" />
+    </form>
 </div>
 
 {% endblock %}
