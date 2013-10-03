@@ -85,7 +85,7 @@ def new_member(request):
 			del request.session['member_user']
 			
 			# SEND EMAIL FOR ACTIVATING ACCOUNT...
-			subject = "[Commandes LBCMCP] Demande d'ouverture de compte"
+			subject = "[BCG-Lab %s] Demande d'ouverture de compte" % settings.SITE_NAME
 			emails = []
 			for u in User.objects.all():
 				if u.teammember_set.filter(team = member.team) and u.has_perm('team.custom_activate_account') and u.email and u.email not in emails:
@@ -120,10 +120,10 @@ def toggle_active( request, user_id ):
 	if not user.email: return redirect('team_index')
 	
 	if user.is_active:
-		subject = "[Commandes LBCMCP] Votre compte vient d'être activé"
+		subject = "[BCG-Lab %s] Votre compte vient d'être activé" % settings.SITE_NAME
 		content = "Vous pouvez désormais vous connecter à l`application."
 	else:
-		subject = "[Commandes LBCMCP] Votre compte vient d'être inactivé"
+		subject = "[BCG-Lab %s] Votre compte vient d'être inactivé" % settings.SITE_NAME
 		content = "Vous ne pouvez plus vous connecter à l`application pour le moment."
 	
 	emails = [user.email]

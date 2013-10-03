@@ -3,6 +3,7 @@ from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.mail import send_mail
 from django.template import Context, loader
 from django.shortcuts import redirect, render
@@ -31,7 +32,7 @@ def error(request):
 @login_required
 @POST_method
 def send_message(request):
-  subject = "[Commandes LBCMCP] " + request.POST.get('subject', 'Nouveau message')
+  subject = "[BCG-Lab %s] %s" % (settings.SITE_NAME, request.POST.get('subject', 'Nouveau message'))
   message = request.POST.get('message', '')
   emails = []
   for user_id in request.POST.get('to', None).split(','):

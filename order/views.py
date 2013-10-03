@@ -461,7 +461,7 @@ def orderitem_delete(request, orderitem_id):
 	if request.user.username != item.username:
 		tm = TeamMember.objects.filter( user__username = item.username, send_on_edit = True, user__email__isnull = False )
 		if tm.count() > 0:
-			subject = u"[Commandes LBCMCP] Item supprimé (%s)" % item.name
+			subject = u"[BCG-Lab %s] Item supprimé (%s)" % (settings.SITE_NAME, item.name)
 			template = loader.get_template("email_delete_item.txt")
 			message = template.render( Context({ 'item': item, 'user': request.user, 'order': item.get_order() }) )
 			send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm[0].user.email] )
@@ -685,7 +685,7 @@ def _move_to_status_1(request, order):
 			emails.append( user.email )
 	
 	if emails:
-		subject = "[Commandes LBCMCP] Validation d'une commande (%s)" % order.get_full_name()
+		subject = "[BCG-Lab %s] Validation d'une commande (%s)" % (settings.SITE_NAME, order.get_full_name())
 		template = loader.get_template('order/validation_email.txt')
 		context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
 		message = template.render( context )
@@ -705,7 +705,7 @@ def _move_to_status_1(request, order):
 
 def _move_to_status_2(request, order):
 	if order.provider.is_local:
-		subject = "[Commandes LBCMCP] Nouvelle commande magasin"
+		subject = "[BCG-Lab %s] Nouvelle commande magasin" % settings.SITE_NAME
 		template = loader.get_template('email_local_provider.txt')
 		url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
 		message = template.render( Context({ 'order': order, 'url': url }) )
@@ -739,7 +739,7 @@ def _move_to_status_2(request, order):
 				usernames.append( item.username )
 		
 		for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_validation = True, user__email__isnull = False ):
-			subject = u"[Commandes LBCMCP] Votre commande %s a été validée" % order.provider.name
+			subject = u"[BCG-Lab %s] Votre commande %s a été validée" % (settings.SITE_NAME, order.provider.name)
 			template = loader.get_template("email_order_detail.txt")
 			message = template.render( Context({ 'order': order }) )
 			try:
@@ -785,7 +785,7 @@ def _move_to_status_4(request, order):
 	# Prepare emails to be sent
 	usernames = list(set( order.items.values_list("username", flat=True) ))
 	for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
-		subject = u"[Commandes LBCMCP] Votre commande %s a été envoyée" % order.provider.name
+		subject = u"[BCG-Lab %s] Votre commande %s a été envoyée" % (settings.SITE_NAME, order.provider.name)
 		template = loader.get_template("email_order_detail.txt")
 		message = template.render( Context({ 'order': order }) )
 		try:
