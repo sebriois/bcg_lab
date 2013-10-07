@@ -24,8 +24,8 @@ class HistoryFilterForm(forms.Form):
         required = False
     )
     comments__icontains = forms.CharField(
-            label    = "Commentaire",
-            required = False
+        label    = "Commentaire",
+        required = False
     )
     items__name__icontains = forms.CharField(
         label       = u"Produit",
@@ -53,7 +53,7 @@ class HistoryFilterForm(forms.Form):
     )
     provider = forms.ModelChoiceField( 
         label    = u"Fournisseur",
-        queryset = Provider.objects.exclude(is_service = True),
+        queryset = Provider.objects.all(),
         required = False
     )
     number = forms.CharField(
@@ -149,7 +149,7 @@ class BudgetHistoryFilterForm(forms.Form):
     )
     provider = forms.ModelChoiceField(
         label    = "Fournisseur",
-        queryset = Provider.objects.exclude(is_service = True),
+        queryset = Provider.objects.all(),
         required = False
     )
     date__gte = forms.DateField( 
