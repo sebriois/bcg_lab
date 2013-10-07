@@ -12,7 +12,7 @@ from bcg_lab.constants import *
 
 class HistoryFilterForm(forms.Form):
     connector = forms.TypedChoiceField(
-        choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
+        choices = [("AND",u"toutes les"), ("OR", u"l'une des")],
         initial = "AND",
         coerce = str,
         empty_value = None,
@@ -32,14 +32,14 @@ class HistoryFilterForm(forms.Form):
         required    = False
     )
     items__reference = forms.CharField(
-        label           = u"Référence",
+        label     = u"Référence",
         help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
-        required    = False
+        required  = False
     )
     items__origin = forms.CharField(
-        label           = u"Fournisseur d'origine",
+        label     = u"Fournisseur d'origine",
         help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
-        required    = False
+        required  = False
     )
     items__category = forms.ChoiceField(
         label       = "Type",

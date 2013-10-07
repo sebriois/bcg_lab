@@ -56,7 +56,7 @@ def search_orders(request):
         
         search_dict = {}
         if search_name:
-            search_dict['name'] = search_name
+            search_dict['name__icontains'] = search_name
         if search_ref:
             search_dict['reference'] = search_ref
         if search_type:
