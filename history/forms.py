@@ -27,9 +27,8 @@ class HistoryFilterForm(forms.Form):
             label    = "Commentaire",
             required = False
     )
-    items__name = forms.CharField(
-        label           = u"Produit",
-        help_text   = "Appuyez sur 'esc' pour fermer la liste de choix.",
+    items__name__icontains = forms.CharField(
+        label       = u"Produit",
         required    = False
     )
     items__reference = forms.CharField(
@@ -62,16 +61,16 @@ class HistoryFilterForm(forms.Form):
         required = False
     )
     date_delivered__gte = forms.DateField( 
-        label                   = "Date d'enregistrement min",
+        label         = "Date d'enregistrement min",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     date_delivered__lte = forms.DateField( 
-        label                   = "Date d'enregistrement max",
+        label         = "Date d'enregistrement max",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     
     def __init__(self, user, *args, **kwargs):
@@ -87,13 +86,10 @@ class HistoryFilterForm(forms.Form):
             teams = get_teams(user)
             history = History.objects.filter( team__in = [t.name for t in teams] )
         
-        name_choices = []
         ref_choices = []
         origin_choices = []
         for h in history:
             for i in h.items.all():
-                if i.name and not i.name in name_choices:
-                    name_choices.append(i.name)
                 if i.reference and not i.reference in ref_choices:
                     ref_choices.append(i.reference)
                 if i.origin and i.origin != '' and not i.origin in origin_choices:
@@ -103,10 +99,6 @@ class HistoryFilterForm(forms.Form):
         self.fields['items__reference'].widget = forms.TextInput( attrs={
             'class' : 'autocomplete',
             'choices': ";".join(ref_choices)
-        })
-        self.fields['items__name'].widget = forms.TextInput( attrs={
-            'class' : 'autocomplete',
-            'choices': ";".join(name_choices)
         })
         self.fields['items__origin'].widget = forms.TextInput( attrs={
             'class' : 'autocomplete',
@@ -151,9 +143,8 @@ class BudgetHistoryFilterForm(forms.Form):
         label           = "N°cmde",
         required    = False
     )
-    product__istartswith = forms.CharField(
+    product__icontains = forms.CharField(
         label       = u"Produit",
-        help_text   = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required    = False
     )
     provider = forms.ModelChoiceField(
@@ -162,16 +153,16 @@ class BudgetHistoryFilterForm(forms.Form):
         required = False
     )
     date__gte = forms.DateField( 
-        label                   = "Date d'enregistrement min",
+        label         = "Date d'enregistrement min",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     date__lte = forms.DateField( 
-        label                   = "Date d'enregistrement max",
+        label         = "Date d'enregistrement max",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     
     def __init__(self, user, *args, **kwargs):
@@ -187,17 +178,11 @@ class BudgetHistoryFilterForm(forms.Form):
         name_choices = []
         number_choices = []
         for bl in BudgetLine.objects.filter(is_active = False, team__in = [t.name for t in teams]):
-            if bl.product and not bl.product in name_choices:
-                name_choices.append(bl.product)
             if bl.number and not bl.number in number_choices:
                 number_choices.append(bl.number)
         
         self.fields['team'].queryset = teams
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
-        self.fields['product__istartswith'].widget = forms.TextInput( attrs = {
-            'class' : 'autocomplete',
-            'choices': ";".join(name_choices)
-        })
         self.fields['number'].widget = forms.TextInput( attrs = {
             'class' : 'autocomplete',
             'choices': ";".join(number_choices)
