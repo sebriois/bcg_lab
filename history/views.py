@@ -78,7 +78,7 @@ def search_orders(request):
         objects = objects.order_by('-history__date_delivered')
     else:
         display = "by_order"
-        objects = history_list
+        objects = history_list.distinct()
     
     return display, objects, form
 
@@ -111,17 +111,18 @@ def item(request, item_id):
 def export_orders_to_xls( request ):
     display, objects, form = search_orders( request )
     
-    wb = xlwt.Workbook()
-    ws = wb.add_sheet("export")
-    
     if display == "by_order":
         items = []
         for history in objects:
             for item in history.items.all():
-                items.append( item )
+                if not item in items:
+                    items.append( item )
     else:
         items = objects
     
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet("export")
+
     header = [
     u"DATE RECEPTION",u"EQUIPE",u"COMMANDE PAR",u"RECEPTIONNE PAR",
     u"FOURNISSEUR",u"N°CMDE",u"DESIGNATION",u"CONDITIONNEMENT",u"RÉFÉRENCE",
