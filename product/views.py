@@ -104,7 +104,7 @@ def _django_search( query_dict ):
             num_found = product_list.count()
             
             if 'page' in query_dict:
-                current_page = int(query_dict.pop('page')[0])
+                current_page = int(query_dict['page'])
             else:
                 current_page = 1
             start = (current_page - 1) * settings.PAGINATION_ROWS
