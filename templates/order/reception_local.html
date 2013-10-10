@@ -1,84 +1,94 @@
 {% extends "base_orders.html" %}
 {% load paginator filters static %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/print.css' %}" type="text/css" media="print" />
+{% endblock extra_head %}
+
 {% block menu_reception_local %}active{% endblock %}
 
 {% block header %}
-	<h1>Gestion des commandes</h1>
-	{% if user|has_perm:"order.custom_view_local_provider" %}
-		<h2>Commandes à livrer</h2>
-	{% else %}
-		<h2>Commandes magasin à réceptionner</h2>
-	{% endif %}
+    <div class="btn_wrapper">
+        <a href="#" onClick="window.print()" class="btn_medium">
+            <img src="{% static 'img/icons/printer.png' %}" />Imprimer
+        </a>
+    </div>
+
+    <h1>Gestion des commandes</h1>
+    {% if user|has_perm:"order.custom_view_local_provider" %}
+        <h2>Commandes à livrer</h2>
+    {% else %}
+        <h2>Commandes magasin à réceptionner</h2>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
 {% if orderitems %}
 <form action="{% url 'tab_reception_local_provider' %}" method="POST">{% csrf_token %}
-	
-	{% if user|has_perm:"order.custom_view_local_provider" %}
-	<div style="float:right;margin-bottom:10px">
-		<button type="submit" class="check" url="{% url 'tab_reception' %}">Valider les quantités livrées</button>
-	</div>
-	{% endif %}
-	
-	<table class="list">
-		<thead>
-			<th>Date</th>
-			<th>Equipe</th>
-			<th>Utilisateur</th>
-			<th>Désignation</th>
-			<th>Référence</th>
-			<th>Cond.</th>
-			<th>Prix unitaire</th>
-			<th>Qté attendue</th>
-			<th>Reste à livrer</th>
-			{% if user|has_perm:"order.custom_view_local_provider" %}
-				<th>Qté livrée</th>
-				<th style="text-align:center" class="last"><input type="checkbox" name="select_all" /></th>
-				<th></th>
-			{% endif %}
-		</thead>
-		<tbody>
-			{% for item in orderitems %}
-				{% with item.get_order as order %}
-				<tr class="{% cycle 'even' 'odd' %}">
-					<td>{{ order.date_created|date }}</td>
-					<td>{{ order.get_full_name }}</td>
-					<td>{{ item.get_fullname }}</td>
-					<td>{{ item.name }}</td>
-					<td>{{ item.reference }}</td>
-					<td>{{ item.packaging }}</td>
-					<td>{{ item.price }} €</td>
-					<td>{{ item.quantity }}</td>
-					<td>{{ item.delivered }}</td>
-					
-					{% if user|has_perm:"order.custom_view_local_provider" %}
-						<td>
-							<input type="text" name="delivered_{{item.id}}" style="width: 30px;" value="{{item.delivered}}" />
-						</td>
-						<td style="text-align:center">
-							<input type="checkbox" name="action_{{item.id}}" />
-						</td>
-						<td>
-							<a href="{% url 'orderitem_delete' item.id %}?next=tab_reception_local_provider" class="trash confirmDel no-text"></a>
-						</td>
-					{% endif %}
-				</tr>
-				{% endwith %}
-			{% endfor %}
-		</tbody>
-	</table>
+    
+    {% if user|has_perm:"order.custom_view_local_provider" %}
+    <div style="float:right;margin-bottom:10px">
+        <button type="submit" class="check" url="{% url 'tab_reception' %}">Valider les quantités livrées</button>
+    </div>
+    {% endif %}
+    
+    <table class="list">
+        <thead>
+            <th>Date</th>
+            <th>Equipe</th>
+            <th>Utilisateur</th>
+            <th>Désignation</th>
+            <th>Référence</th>
+            <th>Cond.</th>
+            <th>Prix unitaire</th>
+            <th>Qté attendue</th>
+            <th>Reste à livrer</th>
+            {% if user|has_perm:"order.custom_view_local_provider" %}
+                <th>Qté livrée</th>
+                <th style="text-align:center" class="last"><input type="checkbox" name="select_all" /></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for item in orderitems %}
+                {% with item.get_order as order %}
+                <tr class="{% cycle 'even' 'odd' %}">
+                    <td>{{ order.date_created|date }}</td>
+                    <td>{{ order.get_full_name }}</td>
+                    <td>{{ item.get_fullname }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.reference }}</td>
+                    <td>{{ item.packaging }}</td>
+                    <td>{{ item.price }} €</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.delivered }}</td>
+                    
+                    {% if user|has_perm:"order.custom_view_local_provider" %}
+                        <td>
+                            <input type="text" name="delivered_{{item.id}}" style="width: 30px;" value="{{item.delivered}}" />
+                        </td>
+                        <td style="text-align:center">
+                            <input type="checkbox" name="action_{{item.id}}" />
+                        </td>
+                        <td>
+                            <a href="{% url 'orderitem_delete' item.id %}?next=tab_reception_local_provider" class="trash confirmDel no-text"></a>
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
 </form>
 {% else %}
-	{% if user|has_perm:"order.custom_view_local_provider" %}
-		<p>Aucune commande à livrer</p>
-	{% else %}
-		<p>Aucune commande à réceptionner</p>
-	{% endif %}
+    {% if user|has_perm:"order.custom_view_local_provider" %}
+        <p>Aucune commande à livrer</p>
+    {% else %}
+        <p>Aucune commande à réceptionner</p>
+    {% endif %}
 {% endif %}
 
 <div id="confirmDel" class="dialog" title="Confirmer la suppression">
-	Merci de confirmer la suppression.
+    Merci de confirmer la suppression.
 </div>
 {% endblock %}

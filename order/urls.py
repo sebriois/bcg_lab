@@ -1,13 +1,15 @@
 from django.conf.urls import *
 
 from order.views import order_detail, orderitem_detail, orderitem_disjoin, order_delete, order_export
-from order.views import set_budget, set_next_status
+from order.views import set_budget
 from order.views import add_orderitem, orderitem_delete
 from order.views import add_credit, add_debit
 from order.views import cart_add, set_item_quantity
 from order.views import set_notes, set_number, set_team
 from order.views import set_is_urgent, set_has_problem
 from order.views import tab_cart, tab_orders, tab_validation, tab_reception, tab_reception_local_provider
+
+from order.views_order_status import set_next_status
 
 urlpatterns = patterns('',
   # Order
@@ -37,7 +39,7 @@ urlpatterns = patterns('',
   # Tabs
   url(r'^validation/$', tab_validation, name="tab_validation"),
   url(r'^cart/$', tab_cart, name="tab_cart"),
-	url(r'^reception/$', tab_reception, name="tab_reception"),
-	url(r'^reception-local-provider/$', tab_reception_local_provider, name="tab_reception_local_provider"),
+  url(r'^reception/$', tab_reception, name="tab_reception"),
+  url(r'^reception-local-provider/$', tab_reception_local_provider, name="tab_reception_local_provider"),
   url(r'^$', tab_orders, name="tab_orders")
 )

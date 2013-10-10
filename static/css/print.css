@@ -1,0 +1,26 @@
+body {
+  width: auto!important;
+  margin: auto!important;
+  font-family: serif;
+  font-size: 12pt;
+  background-color: #fff!important;
+  color: #000!important;
+}
+a {
+  color: #000!important;
+}
+
+#header, #footer, h1, h2 {
+    display: none;
+}
+
+table {
+    width: 50%;
+}
+
+table, tr, thead, th, td {
+    background: white;
+    background-color: white!important;
+    border-color: #000!important;
+    color: #000!important;
+}

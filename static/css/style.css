@@ -356,6 +356,9 @@ a.group_edit {
 	background: url('../img/icons/folder_edit.png');
 }
 
+.print{
+	background: url('../img/icons/print.png');
+}
 a.script_error{
 	background: url('../img/icons/script_error.png');
 }
