@@ -19,9 +19,8 @@ class Command(BaseCommand):
         )
         
         for order in orders:
-            if order.items.filter( delivered__gt = 0 ).count() == 0:
-                print u"Commande %s (%s) receptionnee et archivee." % ( order.number, order.provider.name )
-                order.save_to_history()
-                order.delete()
+            print u"Commande %s (%s) receptionnee et archivee." % ( order.number, order.provider.name )
+            order.save_to_history()
+            order.delete()
         
     
