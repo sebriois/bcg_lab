@@ -115,6 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'bcg_lab',
     'attachments',
     'preferences',
     'team',
@@ -126,7 +127,6 @@ INSTALLED_APPS = (
     'infos',
     'issues',
     'utils',
-    'management',
     'solr'
 )
 
