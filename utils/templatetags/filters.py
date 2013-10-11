@@ -8,6 +8,8 @@ register = template.Library()
 
 @register.filter
 def has_perm(user, perm):
+    if not user:
+        return False
 	return user.has_perm(perm)
 
 @register.filter
