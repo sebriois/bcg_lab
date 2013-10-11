@@ -14,12 +14,13 @@ class Command(BaseCommand):
         verbose = options.get('verbosity', 0)
         
         orders = Order.objects.filter(
+            status = 4,
             provider__direct_reception = True, 
             last_change__lte = datetime.now() - timedelta(days = 7)
         )
         
         for order in orders:
-            print u"Commande %s (%s) receptionnee et archivee." % ( order.number, order.provider.name )
+            print u"Commande %s (%s) receptionnee et archivee." % ( order.number, order.provider )
             order.save_to_history()
             order.delete()
         
