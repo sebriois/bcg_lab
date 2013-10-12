@@ -107,7 +107,7 @@ def update_solr(sender, instance, **kwargs):
     instance.post_to_solr()
 
 def update_expiry(sender, instance, **kwargs):
-    if not instance.expiry and not kwargs['expiry']:
+    if not instance.expiry and not 'expiry' in kwargs:
         if instance.last_change:
             year = instance.last_change
         else:
