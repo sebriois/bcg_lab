@@ -103,14 +103,18 @@ ol {
 /* @end */
 
 #header h1 {
-	float: left;
-	height: 64px;
-	display: block;
+    margin-top: 8px;
+    float: left;
 }
 
 #header h1 a {
 	color: #EAE7D2;
-	height: 50px;
+	text-decoration: none;
+}
+
+#header h2 {
+    margin-bottom: 17px;
+    color: #a08d7b;
 }
 
 /* @group Navigation */

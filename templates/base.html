@@ -34,10 +34,9 @@
       <div id="top">
         <a id="top_logout" href="{% url 'logout' %}">{{ user.username }} (déconnexion)</a>
       </div>
+      <h1><a href="{% url 'home' %}">{{ SITE_NAME }}</a></h1>
       <div class="cleaner"></div>
-      
-      <h1><a href="{% url 'home' %}">BCG-Lab {{ SITE_NAME }}</a></h1>
-      <div class="cleaner"></div>
+      <h2>BCG-Lab</h2>
       
       <!-- start: navigation -->
       <ul id="navigation">
