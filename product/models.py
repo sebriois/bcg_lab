@@ -108,10 +108,7 @@ def update_solr(sender, instance, **kwargs):
 
 def update_expiry(sender, instance, **kwargs):
     if not instance.expiry and not 'expiry' in kwargs:
-        if instance.last_change:
-            year = instance.last_change.year
-        else:
-            year = datetime.now().year
+        year = datetime.now().year
         instance.expiry = datetime(year, 12, 31)
     
 
