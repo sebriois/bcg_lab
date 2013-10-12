@@ -106,5 +106,15 @@ class Product(models.Model):
 def update_solr(sender, instance, **kwargs):
     instance.post_to_solr()
 
+def update_expiry(sender, instance, **kwargs):
+    if not instance.expiry and not kwargs['expiry']:
+        if instance.last_change:
+            year = instance.last_change
+        else:
+            year = datetime.now().year
+        instance.expiry = datetime(year, 12, 31)
+    
+
 # register the signal
 post_save.connect(update_solr, sender=Product, dispatch_uid="update_solr")
+pre_save.connect(update_expiry, sender=Product, dispatch_uid="update_expiry")
