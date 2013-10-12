@@ -28,87 +28,75 @@ from utils import *
 @login_required
 @transaction.commit_on_success
 def tab_reception( request ):
-    if request.method == "GET":
-        orderitems = OrderItem.objects.filter(
-            order__status = 4,
-            order__provider__is_local = False
-        ).exclude(
-            product_id__isnull = True,
-            order__provider__is_service = False
-        ).exclude(
-            order__provider__direct_reception = True
-        )
-        
-        if not request.user.has_perm("team.custom_view_teams"):
-            orderitems = orderitems.filter(
-                Q(username = request.user.username) |
-                Q(order__team__in = get_teams(request.user))
-            )
-        
-        return render( request, 'order/reception.html', {
-            'orderitems': orderitems.order_by('order__number', 'name')
-        })
+    orderitems = OrderItem.objects.filter( order__status = 4 )
     
-    elif request.method == "POST":
-        action_ids = filter( lambda key: key.startswith("action_"), request.POST.keys() )
-        order_ids = []
+    # Exclude items from local provider
+    orderitems = orderitems.exclude( order__provider__is_local = True )
+    
+    # Exclude items with direct reception
+    orderitems = orderitems.exclude( order__provider__direct_reception = True )
+    
+    # Exclude orphan products
+    orderitems = orderitems.exclude( product_id__isnull = True, order__provider__is_service = False )
+    
+    # Only keep items ordered by request user or by its team
+    if not request.user.has_perm("team.custom_view_teams"):
+        orderitems = orderitems.filter(
+            Q(username = request.user.username) |
+            Q(order__team__in = get_teams(request.user))
+        )
+    
+    return render( request, 'order/reception.html', {
+        'orderitems': orderitems.order_by('order__number', 'name')
+    })
+
+@login_required
+@transaction.commit_on_success
+def do_reception( request ):
+    if not request.method == "POST":
+        return redirect( 'tab_reception' )
+    
+    action_ids = filter( lambda key: key.startswith("action_"), request.POST.keys() )
+    for action_id in action_ids:
+        item_id = action_id.split("_")[1]
+        item    = OrderItem.objects.get( id = item_id )
+        order   = item.get_order()
         
-        for action_id in action_ids:
-            item_id = action_id.split("_")[1]
-            item = OrderItem.objects.get( id = item_id )
-            order = item.get_order()
-            
-            qty_delivered = int( request.POST["delivered_%s" % item_id] )
-            
-            if item.delivered - qty_delivered < 0 or item.delivered - qty_delivered > item.quantity:
-                if item.delivered - qty_delivered < 0:
-                    error_msg( request, u"Commande %s: %s (%s) - la quantité livrée ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
-                else:
-                    error_msg( request, u"Commande %s: %s (%s) - la quantité à livrer ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
-            else:
-                item.delivered -= qty_delivered
-            
+        qty_delivered = int( request.POST.get("delivered_%s" % item_id, 0) )
+        
+        if item.delivered - qty_delivered < 0:
+            error_msg( request, u"Commande %s: %s (%s) - la quantité livrée ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+        elif item.delivered - qty_delivered > item.quantity:
+            error_msg( request, u"Commande %s: %s (%s) - la quantité à livrer ne doit pas dépasser la quantité attendue." % (order.number, item.name, item.reference) )
+        else:
+            item.delivered -= qty_delivered
             item.username_recept = request.user.username
             item.save()
+    
+    #
+    # From here: select orders to be pushed to history
+    #
+    
+    order_list = Order.objects.filter( status = 4 )
+    order_list = order_list.exclude( provider__is_local = True )
+    order_list = order_list.exclude( provider__direct_reception = True )
+    
+    # If user can't see all teams
+    if not request.user.has_perm("team.custom_view_teams"):
+        order_list = order_list.filter( team__in = get_teams( request.user ) )
+    
+    # Push orders with no delivery left to history
+    for order in order_list:
         
-        #
-        # From here: select orders to be pushed to history
-        #
+        # Only consider items that are related to a product
+        order_items = order.items.exclude( product_id__isnull = True, order__provider__is_service = False )
         
-        order_list = Order.objects.filter( status = 4 )
-        
-        # If user has 'local_provider' permissions
-        if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
-            order_list = order_list.filter( provider__is_local = True )
-        
-        # If user is not an admin, filter on team
-        elif not request.user.has_perm("team.custom_is_admin"):
-            order_list = order_list.filter( team = get_teams( request.user )[0] )
-        
-        # Exclude 'automatic reception' type orders
-        order_list = order_list.exclude(
-            provider__direct_reception = True, 
-            last_change__gte = datetime.now() - timedelta(days = 7)
-        )
-        
-        # Move to history orders having 0 item to receive
-        for order in order_list:
-            
-            # Only consider items that are related to a product OR 
-            # that are a 'service' but not under direct reception
-            order_items = order.items.filter(
-                Q( product_id__isnull = False ) |
-                Q( order__provider__is_service = True, order__provider__direct_reception = False )
-            )
-            
-            # If none of the items has to be delivered
-            if order_items.filter( delivered__gt = 0 ).count() == 0:
-                if ( not request.user.has_perm("order.custom_view_local_provider") or request.user.is_superuser ) and order.provider.direct_reception == False:
-                    info_msg( request, u"La commande %s (%s) a été entièrement réceptionnée et archivée." % (order.number, order.provider.name) )
-                
-                order.save_to_history()
-                order.delete()
-        
+        # If there is no item left to be delivered
+        if order_items.filter( delivered__gt = 0 ).count() == 0:
+            info_msg( request, u"La commande %s (%s) a été entièrement réceptionnée et archivée." % (order.number, order.provider.name) )
+            order.save_to_history()
+            order.delete()
+    
     return redirect("tab_reception")
 
 

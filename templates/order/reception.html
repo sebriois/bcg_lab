@@ -14,7 +14,7 @@
 
 {% block content %}
 {% if orderitems %}
-<form action="{% url 'tab_reception' %}" method="POST">{% csrf_token %}
+<form action="{% url 'do_reception' %}" method="POST">{% csrf_token %}
 	<div style="float:right;margin-bottom:10px">
 		<button type="submit" class="check" url="{% url 'tab_reception' %}">Valider les quantités livrées</button>
 	</div>
