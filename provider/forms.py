@@ -9,7 +9,6 @@ from provider.models import Provider
 class ProviderForm(forms.ModelForm):
 	class Meta:
 		model = Provider
-		exclude = ('is_local','is_service')
 	
 	def __init__( self, provider = None, *args, **kwargs ):
 		super( ProviderForm, self ).__init__( *args, **kwargs )
