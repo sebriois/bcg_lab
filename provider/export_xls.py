@@ -21,6 +21,7 @@ def export_xls( request, provider_id ):
     sheet.write(0,3,u"Conditionnement")
     sheet.write(0,4,u"Offre")
     sheet.write(0,5,u"Nomenclature")
+    sheet.write(0,6,u"Fournisseur d'origine")
     for row, product in enumerate(provider.product_set.all()):
         sheet.write(row+1,0,product.name)
         sheet.write(row+1,1,product.reference)
@@ -28,6 +29,7 @@ def export_xls( request, provider_id ):
         sheet.write(row+1,3,product.packaging)
         sheet.write(row+1,4,product.offer_nb)
         sheet.write(row+1,5,product.nomenclature)
+        sheet.write(row+1,6,product.origin)
     
     response = HttpResponse(mimetype="application/ms-excel")
     response['Content-Disposition'] = 'attachment; filename=%s.xls' % provider.name
