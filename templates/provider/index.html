@@ -45,7 +45,7 @@
 					{% endif %}
 				</td>
 				<td>
-					<button class="comment notesDialog no-text" href="{% url 'set_notes' provider.id %}" content="{{ provider.notes|default:"" }}"></button>
+					<button class="comment notesDialog no-text" href="{% url 'set_notes' provider.id %}" content="{{ provider.notes|default:'' }}"></button>
 				</td>
 				<td>
 					<a href="{% url 'product_new' %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>

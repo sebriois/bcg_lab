@@ -525,7 +525,6 @@ $(document).ready(function(){
         $('.notesDialog').click(function(e){
             $('#notesDialog textarea').show();
             var url = $(this).attr("href");
-            var tr = $(this).parent('td').parent('tr');
             
             $('#notesDialog textarea').val( $(this).attr("content") );
             
@@ -545,7 +544,6 @@ $(document).ready(function(){
                             }
                         });
                         $( this ).dialog( "close" );
-                        $(tr).effect('pulsate');
                     },
                     Fermer: function() {
                         $( this ).dialog( "close" );
