@@ -48,20 +48,20 @@
     {% autopaginate current_page search_count %}
     <table class="list">
         <thead>
-                <th>Fournisseur</th>
-                <th style="max-width:200px">produit</th>
-                <th>Cond.</th>
-                <th>Réf.</th>
-                <th>Prix</th>
-                <th>N° Offre</th>
-                <th>Expiration</th>
-                <th>Nomen.</th>
-                <th>MAJ</th>
-                <th>Action</th>
+            <th>Fournisseur</th>
+            <th style="max-width:200px">produit</th>
+            <th>Cond.</th>
+            <th>Réf.</th>
+            <th>Prix</th>
+            <th>N° Offre</th>
+            <th>Expiration</th>
+            <th>Nomen.</th>
+            <th>MAJ</th>
+            <th>Action</th>
         </thead>
         <tbody>
             {% for product in products %}
-                <tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
+                <tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% elif product.soon_expired %}soon_expired{% endif %}">
                     <td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.packaging|default:"" }}</td>
