@@ -34,7 +34,7 @@
       <div id="top">
         <a id="top_logout" href="{% url 'logout' %}">{{ user.username }} (déconnexion)</a>
       </div>
-      <h1><a href="{% url 'home' %}">{{ SITE_NAME }}</a></h1>
+      <h1><a href="{% url 'home' %}">{{ SITE_NAME|default:' ' }}</a></h1>
       <div class="cleaner"></div>
       <h2>BCG-Lab</h2>
       

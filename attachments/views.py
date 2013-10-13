@@ -26,7 +26,7 @@ def new(request):
 		form = AttachmentForm( data = data, files = request.FILES )
 		if form.is_valid():
 			form.save()
-			info_msg( request, "Pièce jointe ajoutée avec succès." )
+			info_msg( request, u"Pièce jointe ajoutée avec succès." )
 			return redirect( next )
 		else:
 			content_type = data['content_type']
@@ -45,5 +45,5 @@ def delete(request, attachment_id):
 	attachment.attached_file.delete()
 	attachment.delete()
 	
-	info_msg(request, "Pièce jointe supprimée avec succès.")
+	info_msg(request, u"Pièce jointe supprimée avec succès.")
 	return redirect( request.GET['next'] )
