@@ -53,7 +53,9 @@
 					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
 					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
 					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
-					<a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+					{% if provider.order_set.count == 0 %}
+					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+					{% endif %}
 					{% endif %}
 				</td>
 			</tr>
