@@ -139,14 +139,21 @@ def item(request, bl_id):
             bl.update_budget_relation()
             
             bl.is_active = True
-            if data["cost_type"] == "credit":
-                bl.credit = Decimal(data["cost"])
-                bl.debit = 0
-                bl.product_price = bl.credit * bl.quantity
-            elif data["cost_type"] == "debit":
+            
+            if 'cost_type' in data:
+                if data["cost_type"] == "credit":
+                    bl.credit = Decimal(data["cost"])
+                    bl.debit = 0
+                    bl.product_price = bl.credit * bl.quantity
+                elif data["cost_type"] == "debit":
+                    bl.credit = 0
+                    bl.debit = Decimal(data["cost"])
+                    bl.product_price = bl.debit * bl.quantity
+            elif 'cost' in data and data['cost'] == 0:
                 bl.credit = 0
-                bl.debit = Decimal(data["cost"])
-                bl.product_price = bl.debit * bl.quantity
+                bl.debit = 0
+                bl.product_price = 0
+            
             bl.save()
             return redirect( reverse('budgetlines') + "?budget_id=%s&connector=OR" % data['budget_id'] )
     

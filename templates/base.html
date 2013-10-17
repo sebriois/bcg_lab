@@ -19,9 +19,9 @@
   <script type="text/javascript" src="{% static 'js/base.js' %}"></script>
 
   <!--[if !IE 7]>
-  	<style type="text/css">
-  		#wrapper {display:table;height:100%}
-  	</style>
+    <style type="text/css">
+        #wrapper {display:table;height:100%}
+    </style>
   <![endif]-->
 
   {% block extra_head %}{% endblock %}
@@ -41,48 +41,48 @@
       <!-- start: navigation -->
       <ul id="navigation">
         <li class="{% block menu_home %}{% endblock %}">
-          <a href="{% url 'info_index' %}">Accueil</a>
+            <a href="{% url 'info_index' %}">Accueil</a>
         </li>
-				{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
-	        <li class="{% block menu_provider %}{% endblock %}">
-	          <a href="{% url 'provider_index' %}">Fournisseurs</a>
-	        </li>
-				{% endif %}
+        {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
+        <li class="{% block menu_provider %}{% endblock %}">
+            <a href="{% url 'provider_index' %}">Fournisseurs</a>
+        </li>
+        {% endif %}
         <li class="{% block menu_product %}{% endblock %}">
           <a href="{% url 'product_index' %}">Produits</a>
         </li>
-				{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
-	        <li class="{% block menu_services %}{% endblock %}">
-	          <a href="{% url 'tab_services' %}">Services</a>
-	        </li>
-				{% endif %}
-        
-				<li class="{% block tab_orders %}{% endblock %}">
-					{% if user|has_perm:"order.custom_view_local_provider" %}
-	          <a href="{% url 'tab_reception_local_provider' %}">Commandes</a>
-					{% else %}
-	          <a href="{% url 'tab_orders' %}">Commandes</a>
-					{% endif %}	
+        {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
+        <li class="{% block menu_services %}{% endblock %}">
+            <a href="{% url 'tab_services' %}">Services</a>
+        </li>
+        {% endif %}
+
+        <li class="{% block tab_orders %}{% endblock %}">
+        {% if user|has_perm:"order.custom_view_local_provider" %}
+            <a href="{% url 'tab_reception_local_provider' %}">Commandes</a>
+        {% else %}
+            <a href="{% url 'tab_orders' %}">Commandes</a>
+        {% endif %}
         </li>
 
         {% if user|has_perm:"budget.custom_view_budget" %}
-          <li class="{% block tab_budgets %}{% endblock %}">
+        <li class="{% block tab_budgets %}{% endblock %}">
             <a href="{% url 'budgets' %}">Budgets</a>
-          </li>
+        </li>
         {% endif %}
         <li class="{% block menu_history %}{% endblock %}">
-          <a href="{% url 'history_orders' %}">Historique</a>
+            <a href="{% url 'history_orders' %}">Historique</a>
         </li>
         <li class="{% block tab_preferences %}{% endblock %}">
-          <a href="{% url 'preferences' %}">Préférences</a>
+            <a href="{% url 'preferences' %}">Préférences</a>
         </li>
         {% if user|is_admin or user|has_perm:"team.custom_view_teams" or user|has_perm:"team.custom_activate_account" %}
-          <li class="{% block tab_admin %}{% endblock %}">
+        <li class="{% block tab_admin %}{% endblock %}">
             <a href="{% url 'team_index' %}">Admin</a>
-          </li>
+        </li>
         {% endif %}
         <li class="{% block menu_bugs %}{% endblock %}">
-          <a href="{% url 'issue_index' %}">Améliorations</a>
+            <a href="{% url 'issue_index' %}">Améliorations</a>
         </li>
       </ul>
       <!--end: navigation -->

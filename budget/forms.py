@@ -47,6 +47,7 @@ class BudgetLineForm(forms.ModelForm):
         queryset = Budget.objects.filter(is_active=True),
         required = True
     )
+    cost = forms.DecimalField( label = u"Montant unitaire" )
     
     class Meta:
         model = BudgetLine
@@ -63,11 +64,15 @@ class BudgetLineForm(forms.ModelForm):
                 initial_cost = self.instance.debit
             self.fields['budget'].initial = Budget.objects.get(id = self.instance.budget_id)
         
-        self.fields["cost"] = forms.DecimalField(
-            label = u"Montant unitaire",
-            initial = initial_cost
-        )
+        self.fields["cost"].initial = initial_cost
         self.fields["quantity"].required = True
+        
+    def clean_cost(self):
+        cost = self.cleaned_data.get('cost', None)
+        cost_type = self.data.get('cost_type', None)
+        
+        if cost > 0 and not cost_type:
+            raise forms.ValidationError(u"Veuillez préciser si ce montant est en crédit ou débit.")
         
     
 
