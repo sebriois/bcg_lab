@@ -102,17 +102,6 @@ def _django_search( query_dict ):
             
             product_list = Product.objects.filter( Q_obj )
             num_found = product_list.count()
-            
-            if 'page' in query_dict:
-                current_page = int(query_dict['page'])
-            else:
-                current_page = 1
-            start = (current_page - 1) * settings.PAGINATION_ROWS
-            end   = start + settings.PAGINATION_ROWS
-            if end > num_found:
-                end = num_found
-            
-            product_list = product_list[start:end]
         else:
             error_msg(request, "Recherche non valide")
             product_list = Product.objects.none()
@@ -155,6 +144,13 @@ def index(request):
         current_page = int(query_dict.pop('page')[0])
     else:
         current_page = 1
+    
+    if not 'q' in query_dict.keys():
+        start = (current_page - 1) * settings.PAGINATION_ROWS
+        end   = start + settings.PAGINATION_ROWS
+        if end > num_found:
+            end = num_found
+        product_list = product_list[start:end]
     
     return render(request, 'product/index.html', {
         'product_count': product_count,
@@ -207,7 +203,7 @@ def new(request):
             provider = get_object_or_404( Provider, id = provider_id )
             form = ProductForm( provider = provider )
         elif request.user.has_perm("order.custom_view_local_provider"):
-            provider = get_object_or_404( Provider, is_local = True )
+            provider = get_object_or_404( Provider, name = 'MAGASIN', is_local = True )
             form = ProductForm( provider = provider )
         else:
             provider = None
