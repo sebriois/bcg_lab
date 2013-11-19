@@ -269,7 +269,10 @@ def export_xls( request ):
     
     for product in product_list:
         if product.origin:
-            provider = u"%s - %s" % (product.provider.name, product.origin)
+            if request.user.has_perm("order.custom_view_local_provider"):
+                provider = u"%s" % product.origin
+            else:
+                provider = u"%s - %s" % (product.provider.name, product.origin)
         else:
             provider = u"%s" % product.provider.name
         
