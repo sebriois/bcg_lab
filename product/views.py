@@ -131,10 +131,11 @@ def index(request):
     product_list, num_found = _product_search( query_dict )
     
     if request.user.has_perm("order.custom_view_local_provider"):
-        if len( query_dict.keys() ) == 0 or query_dict.keys() == ["page"]:
+        if not 'q' in query_dict.keys():
             product_list = Product.objects.filter( provider__is_local = True )
         else:
             product_list = product_list.filter( provider__is_local = True )
+        num_found = product_list.count()
         product_count = Product.objects.filter( provider__is_local = True ).count()
     else:
         product_count = Product.objects.all().count()
