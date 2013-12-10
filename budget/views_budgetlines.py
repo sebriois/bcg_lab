@@ -85,16 +85,13 @@ def export_to_xls(request):
     
     header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
     u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
-    u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"]
+    u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL"]
     for col, title in enumerate(header): ws.write(0, col, title)
     
-    prev_budget = None
-    row = 1
-    
-    for bl in budget_lines.order_by("budget"):
-        if prev_budget != bl.budget:
-            if prev_budget: row += 1
-            prev_budget = bl.budget
+    row = 1    
+    total = 0
+    for bl in budget_lines.filter( number__isnull = False ):
+        total += bl.get_total()
         
         ws.write( row, 0, bl.team )
         ws.write( row, 1, bl.budget )
@@ -112,8 +109,40 @@ def export_to_xls(request):
             ws.write( row, 12, bl.product_price * -1 )
         else:
             ws.write( row, 12, bl.product_price )
-        ws.write( row, 13, str(bl.get_amount_left()) )
         row += 1
+    ws.write( row, 12, total )
+    
+    if row != 1:
+        row += 2
+    
+    total = 0
+    for bl in budget_lines.filter( number__isnull = True ):
+        total += bl.get_total()
+        
+        ws.write( row, 0, bl.team )
+        ws.write( row, 1, bl.budget )
+        ws.write( row, 2, bl.number )
+        ws.write( row, 3, bl.date.strftime("%d/%m/%Y") )
+        ws.write( row, 4, bl.nature )
+        ws.write( row, 5, bl.get_budget_type_display() )
+        ws.write( row, 6, bl.provider )
+        ws.write( row, 7, bl.offer )
+        ws.write( row, 8, bl.product )
+        ws.write( row, 9, bl.credit )
+        ws.write( row, 10, bl.debit )
+        ws.write( row, 11, bl.quantity )
+        if bl.debit:
+            ws.write( row, 12, bl.product_price * -1 )
+        else:
+            ws.write( row, 12, bl.product_price )
+        row += 1
+    ws.write( row, 12, total )
+    
+    budget_ids = budget_lines.values_list('budget_id', flat = True).distinct()
+    if budget_ids.count() == 1:
+        budget = Budget.objects.get(id = budget_ids[0])
+        ws.write( row + 1, 0, "MONTANT DISPONIBLE:")
+        ws.write( row + 1, 1, budget.get_amount_left())
     
     response = HttpResponse(mimetype="application/ms-excel")
     response['Content-Disposition'] = 'attachment; filename=export_budget.xls'
