@@ -227,7 +227,6 @@ votre navigateur)." )
             product.expiry = datetime.strptime(json_data['expiry'], "%d/%m/%Y")
         
         product.save()
-        product.post_to_solr()
     
     del request.session['import_data']
     
