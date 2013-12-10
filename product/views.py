@@ -261,35 +261,36 @@ def export_xls( request ):
     wb = xlwt.Workbook()
     ws = wb.add_sheet("export")
     
-    header = [u"FOURNISSEUR", u"DESIGNATION", u"CONDITIONNEMENT",u"REFERENCE", u"PRIX", 
-    u"N°OFFRE", u"EXPIRATION", u"NOMENCLATURE", u"DERNIERE MISE A JOUR"]
+    header = [u"FOURNISSEUR", u"DESIGNATION", u"REFERENCE", u"PRIX", u"CONDITIONNEMENT", 
+    u"NOMENCLATURE", u"FOURNISSEUR D'ORIGINE", u"N°OFFRE", u"EXPIRATION", u"MISE A JOUR"]
     for col, title in enumerate(header): ws.write(0, col, title)
     
     row = 1
     
     for product in product_list:
-        if product.origin:
-            if request.user.has_perm("order.custom_view_local_provider"):
-                provider = u"%s" % product.origin
-            else:
-                provider = u"%s - %s" % (product.provider.name, product.origin)
-        else:
-            provider = u"%s" % product.provider.name
+        # if product.origin:
+        #     if request.user.has_perm("order.custom_view_local_provider"):
+        #         provider = u"%s" % product.origin
+        #     else:
+        #         provider = u"%s - %s" % (product.provider.name, product.origin)
+        # else:
+        #     provider = u"%s" % product.provider.name
         
         if product.expiry:
             expiry = product.expiry.strftime("%d/%m/%Y")
         else:
             expiry = u""
         
-        ws.write( row, 0, provider )
+        ws.write( row, 0, product.provider.name )
         ws.write( row, 1, product.name )
-        ws.write( row, 2, product.packaging )
-        ws.write( row, 3, product.reference )
-        ws.write( row, 4, product.price )
-        ws.write( row, 5, product.offer_nb )
-        ws.write( row, 6, expiry )
-        ws.write( row, 7, product.nomenclature )
-        ws.write( row, 8, product.last_change.strftime("%d/%m/%Y") )
+        ws.write( row, 2, product.reference )
+        ws.write( row, 3, product.price )
+        ws.write( row, 4, product.packaging )
+        ws.write( row, 5, product.nomenclature )
+        ws.write( row, 6, product.origin )
+        ws.write( row, 7, product.offer_nb )
+        ws.write( row, 8, expiry )
+        ws.write( row, 9, product.last_change.strftime("%d/%m/%Y") )
         row += 1
     
     response = HttpResponse(mimetype="application/ms-excel")
