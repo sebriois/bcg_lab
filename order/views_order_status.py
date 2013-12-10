@@ -161,7 +161,7 @@ def _move_to_status_4(request, order):
     order.is_urgent = False
     order.save()
     
-    order.create_budget_line()
+    # order.create_budget_line()
     
     for item in order.items.all():
         item.delivered = item.quantity

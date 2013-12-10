@@ -129,7 +129,15 @@ class Order(models.Model):
             history.items.add( item )
         self.items.clear()
     
+def check_budget(sender, instance, **kwargs):
+    if 'budget' in kwargs:
+        if instance.budget:
+            BudgetLine.objects.filter( order_id = instance.id ).delete()
+        instance.create_budget_line()
+    
 
+# register the signal
+post_save.connect(check_budget, sender=Order, dispatch_uid="check_budget")
 
 class OrderItem(models.Model):
     username        = models.CharField( u"Commandé par", max_length = 100 )
@@ -190,21 +198,21 @@ class OrderItem(models.Model):
             return
         order = self.order_set.get()
         bl = BudgetLine.objects.create(
-            team                    = order.budget.team.name,
-            order_id            = order.id,
+            team            = order.budget.team.name,
+            order_id        = order.id,
             orderitem_id    = self.id,
-            budget_id           = order.budget.id,
-            budget              = order.budget.name,
-            number              = order.number,
-            nature              = order.budget.default_nature,
+            budget_id       = order.budget.id,
+            budget          = order.budget.name,
+            number          = order.number,
+            nature          = order.budget.default_nature,
             budget_type     = order.budget.budget_type,
-            origin              = order.budget.default_origin,
-            provider            = order.provider.name,
-            offer                   = self.offer_nb,
-            product             = self.name,
-            product_price = self.total_price(),
-            reference           = self.reference,
-            quantity            = self.quantity
+            origin          = order.budget.default_origin,
+            provider        = order.provider.name,
+            offer           = self.offer_nb,
+            product         = self.name,
+            product_price   = self.total_price(),
+            reference       = self.reference,
+            quantity        = self.quantity
         )
         if self.cost_type == DEBIT:
             bl.credit = 0
