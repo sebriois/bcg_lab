@@ -453,17 +453,21 @@ def set_budget(request, order_id):
     
     order = get_object_or_404( Order, id = order_id )
     budget_id = int(budget_id)
-    
     if budget_id > 0:
         new_budget = get_object_or_404( Budget, id = budget_id )
-        if order.budget and order.budget.id != new_budget.id:
-            for bl in BudgetLine.objects.filter( order_id = order.id ):
-                bl.budget_id = new_budget.id
-                bl.budget = new_budget.name
-                bl.origin = new_budget.default_origin
-                bl.budget_type = new_budget.budget_type
-                bl.nature = new_budget.default_nature
-                bl.save()
+        if not order.budget:
+            order.create_budget_line()
+        elif order.budget.id != new_budget.id:
+            if BudgetLine.objects.filter( order_id = order.id ).count() == 0:
+                order.create_budget_line()
+            else:
+                for bl in BudgetLine.objects.filter( order_id = order.id ):
+                    bl.budget_id = new_budget.id
+                    bl.budget = new_budget.name
+                    bl.origin = new_budget.default_origin
+                    bl.budget_type = new_budget.budget_type
+                    bl.nature = new_budget.default_nature
+                    bl.save()
         
         order.budget = new_budget
     

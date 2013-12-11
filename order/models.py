@@ -129,15 +129,6 @@ class Order(models.Model):
             history.items.add( item )
         self.items.clear()
     
-def check_budget(sender, instance, **kwargs):
-    if 'budget' in kwargs:
-        if instance.budget:
-            BudgetLine.objects.filter( order_id = instance.id ).delete()
-        instance.create_budget_line()
-    
-
-# register the signal
-post_save.connect(check_budget, sender=Order, dispatch_uid="check_budget")
 
 class OrderItem(models.Model):
     username        = models.CharField( u"Commandé par", max_length = 100 )
