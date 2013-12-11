@@ -457,6 +457,7 @@ def set_budget(request, order_id):
         new_budget = get_object_or_404( Budget, id = budget_id )
         if not order.budget:
             order.budget = new_budget
+            order.save()
             order.create_budget_line()
         elif order.budget.id != new_budget.id:
             if BudgetLine.objects.filter( order_id = order.id ).count() == 0:
