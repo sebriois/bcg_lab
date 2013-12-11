@@ -214,7 +214,10 @@ class OrderItem(models.Model):
         bl.save()
     
     def update_budget_line(self):
-        bl = BudgetLine.objects.get( orderitem_id = self.id )
+        try:
+            bl = BudgetLine.objects.get( orderitem_id = self.id )
+        except:
+            return
         
         if self.cost_type == DEBIT:
             bl.credit = 0
