@@ -440,6 +440,8 @@ def set_number(request, order_id):
     order.number = number
     order.save()
     
+    order.update_budget_lines()
+    
     return HttpResponse('ok')
 
 
