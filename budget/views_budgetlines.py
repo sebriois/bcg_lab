@@ -90,7 +90,7 @@ def export_to_xls(request):
     
     row = 1    
     total = 0
-    for bl in budget_lines.filter( number__isnull = False ):
+    for bl in budget_lines.filter( number__isnull = False ).exclude( number = '' ):
         total += bl.get_total()
         
         ws.write( row, 0, bl.team )
@@ -116,7 +116,7 @@ def export_to_xls(request):
         row += 2
     
     total = 0
-    for bl in budget_lines.filter( number__isnull = True ):
+    for bl in budget_lines.filter( Q(number__isnull = True) || Q(number = '') ):
         total += bl.get_total()
         
         ws.write( row, 0, bl.team )
