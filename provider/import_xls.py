@@ -230,7 +230,6 @@ votre navigateur)." )
     
     del request.session['import_data']
     
-    provider.users_in_charge.add( request.user )
     provider.save()
     info_msg(request, u'La mise à jour des produits a bien été effectuée.')
     return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.id )
