@@ -130,7 +130,7 @@ def index(request):
     
     product_list, num_found = _product_search( query_dict )
     
-    if request.user.has_perm("order.custom_view_local_provider"):
+    if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
         if not 'q' in query_dict.keys():
             product_list = Product.objects.filter( provider__is_local = True )
         else:

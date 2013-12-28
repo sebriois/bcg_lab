@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
-from xml.etree.ElementTree import ElementTree, Element, SubElement, tostring
+from xml.etree.ElementTree import Element, SubElement, tostring
+import commands
 
 from django.db import models
 from django.conf import settings
@@ -24,4 +25,45 @@ class Provider(models.Model):
         if self.reseller:
             return u"%s (revendeur: %s)" % ( self.name, self.reseller )
         return self.name
+    
+    def update_solr(self):
+        root = Element('add')
+        
+        for product in self.product_set.all():
+            doc = SubElement( root, 'doc' )
+            id = SubElement( doc, 'id' )
+            id.text = product.id
+            
+            product = SubElement( doc, 'product' )
+            product.text = product.name
+            
+            reference = SubElement( doc, 'reference' )
+            reference.text = product.reference
+            
+            provider = SubElement( doc, 'provider' )
+            provider.text = self.name
+            
+            origin = SubElement( doc, 'origin' )
+            origin.text = product.origin
+            
+            packaging = SubElement( doc, 'packaging' )
+            packaging.text = product.packaging
+            
+            offer = SubElement( doc, 'offer_nb' )
+            offer.text = product.offer_nb
+            
+            nomenclature = SubElement( doc, 'nomenclature' )
+            nomenclature.text = product.nomenclature
+            
+            if product.category:
+                category = SubElement( doc, 'category' )
+                category.text = product.category.name
+            
+            if product.sub_category:
+                sub_category = SubElement( doc, 'sub_category' )
+                sub_category.text = product.sub_category.name
+        
+        xml = tostring( root )
+        command = "curl %s/update -H 'Content-Type: text/xml' --data-binary '%s'" % ( settings.SOLR_URL, xml )
+        commands.getoutput(command)
     

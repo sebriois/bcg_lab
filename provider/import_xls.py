@@ -107,14 +107,16 @@ def read_xls( header, data, input_excel ):
         
         # CHECK EXPIRY
         expiry_idx = header.index(u"expiration")
-        expiry_str = row[expiry_idx].value
         
-        if expiry_str:
-            try:
-                expiry = datetime.strptime(expiry_str, "%d/%m/%Y")
-            except:
-                is_valid = 'false'
-                errors.append( base_error + u"Colonne 'expiration' - date invalide : %s (format accepté: jj/mm/aaaa)" % expiry_str)
+        if len(row) >= expiry_idx + 1:
+            expiry_str = row[expiry_idx].value
+            
+            if expiry_str:
+                try:
+                    expiry = datetime.strptime(expiry_str, "%d/%m/%Y")
+                except:
+                    is_valid = 'false'
+                    errors.append( base_error + u"Colonne 'expiration' - date invalide : %s (format accepté: jj/mm/aaaa)" % expiry_str)
         
         # CHECK PRICE
         price_idx = header.index(u"prix")
@@ -231,5 +233,6 @@ votre navigateur)." )
     del request.session['import_data']
     
     provider.save()
+    provider.update_solr()
     info_msg(request, u'La mise à jour des produits a bien été effectuée.')
     return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.id )

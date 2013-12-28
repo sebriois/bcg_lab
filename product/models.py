@@ -113,5 +113,5 @@ def update_expiry(sender, instance, **kwargs):
     
 
 # register the signal
-post_save.connect(update_solr, sender=Product, dispatch_uid="update_solr")
+# post_save.connect(update_solr, sender=Product, dispatch_uid="update_solr")
 pre_save.connect(update_expiry, sender=Product, dispatch_uid="update_expiry")
