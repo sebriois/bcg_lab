@@ -78,10 +78,11 @@ def export_all_products(request):
 	xls = xlwt.Workbook()
 	
 	for provider in Provider.objects.filter( is_service = False ):
-		if len( provider.name ) >= 32:
-			sheet = xls.add_sheet(u"%s..." % provider.name[0:28] )
+        provider_name = provider.name.replace('*','')
+		if len( provider_name ) >= 32:
+			sheet = xls.add_sheet(u"%s..." % provider_name[0:28] )
 		else:
-			sheet = xls.add_sheet(u"%s" % provider.name )
+			sheet = xls.add_sheet(u"%s" % provider_name )
 		sheet.write(0,0,u"Désignation")
 		sheet.write(0,1,u"Conditionnement")
 		sheet.write(0,2,u"Réference")
@@ -121,14 +122,25 @@ def export_history_orders(request):
 	
 	prev_team = None
 	
+	index = 1 # for duplicate names - no logic here, just working
+    
 	for history in History.objects.all().order_by('team', 'date_delivered'):
 		if prev_team != history.team:
 			prev_team = history.team
-			if len( history.team ) >= 32:
-				sheet = xls.add_sheet( u"%s..." % history.team[0:28] )
+            
+            if len( history.team ) >= 32:
+                sheetname = history.team[0:28]
 			else:
-				sheet = xls.add_sheet( u"%s" % history.team )
-			for col, title in enumerate(header): sheet.write(0, col, title)
+                sheetname = history.team
+			
+            try:
+                sheet = xls.add_sheet( sheetname )
+            except:
+                sheet = xls.add_sheet( sheetname + " (%s)" % index )
+                index += 1
+            
+            for col, title in enumerate(header):
+                sheet.write(0, col, title)
 			row = 1
 		
 		for item in history.items.all():
