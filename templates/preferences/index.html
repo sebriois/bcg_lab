@@ -20,19 +20,20 @@
     
   </form>
   
-  <form action="{% url 'preferences' %}" method="POST">{% csrf_token %}
-    <input type="hidden" name="form_name" value="email_form" />
-    <h3>Préférences sur l'envoi d'emails</h3>
-    <p class="instructions">
-      <em>Envoyer un email automatiquement dans les cas suivants:</em>
-    </p>
-    <fieldset>
-      {% for field in email_form %}
-        {% include "form_snippet.html" %}
-      {% endfor %}
-      <br />
-      <button type="submit" class="check">Valider</button>
-    </fieldset>
-  </form>
-  
+    {% if email_form %}
+      <form action="{% url 'preferences' %}" method="POST">{% csrf_token %}
+        <input type="hidden" name="form_name" value="email_form" />
+        <h3>Préférences sur l'envoi d'emails</h3>
+        <p class="instructions">
+          <em>Envoyer un email automatiquement dans les cas suivants:</em>
+        </p>
+        <fieldset>
+          {% for field in email_form %}
+            {% include "form_snippet.html" %}
+          {% endfor %}
+          <br />
+          <button type="submit" class="check">Valider</button>
+        </fieldset>
+      </form>
+    {% endif %}
 {% endblock %}

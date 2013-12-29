@@ -5,7 +5,7 @@
     <h4>Recherche de commandes réceptionnées</h4>
 </div>
 <div class="bar_content">
-  <form action="{% url 'history_orders' %}" method="GET" class="show_wait">
+  <form id="search_form" action="{% url 'history_orders' %}" method="GET" class="show_wait">
     <strong>Chercher les commandes qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
     <div class="cleaner"></div>
     <table>
@@ -17,8 +17,10 @@
         <td>{{ filter_form.number }}</td>
         <td width="5%"></td>
         <td>Date de réception (min/max):</td>
-        <td>{{ filter_form.date_delivered__gte }}</td>
-        <td>{{ filter_form.date_delivered__lte }}</td>
+        <td>
+            {{ filter_form.date_delivered__gte }}
+            {{ filter_form.date_delivered__lte }}
+        </td>
       </tr>
       <tr>
         <td>Fournisseur:</td>

@@ -306,7 +306,7 @@ def edit_list(request):
     if request.method == 'GET':
         product_list, num_found = _product_search( request.GET.copy() )
         
-        if request.user.has_perm("order.custom_view_local_provider"):
+        if request.user.has_perm("order.custom_view_local_provider") and not request.user.is_superuser:
             product_list = product_list.filter( provider__is_local = True )
         
         return render(request, 'product/edit_list.html',{

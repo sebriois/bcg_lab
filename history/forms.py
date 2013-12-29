@@ -33,12 +33,10 @@ class HistoryFilterForm(forms.Form):
     )
     items__reference = forms.CharField(
         label     = u"Référence",
-        help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required  = False
     )
     items__origin = forms.CharField(
         label     = u"Fournisseur d'origine",
-        help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required  = False
     )
     items__category = forms.ChoiceField(
@@ -47,8 +45,8 @@ class HistoryFilterForm(forms.Form):
         required = False
     )
     items__sub_category = forms.ChoiceField(
-        label       = "Sous-type",
-        choices = EMPTY_SEL,
+        label    = "Sous-type",
+        choices  = EMPTY_SEL,
         required = False
     )
     provider = forms.ModelChoiceField( 
@@ -78,36 +76,16 @@ class HistoryFilterForm(forms.Form):
         
         if user.has_perm('team.custom_view_teams'):
             teams = Team.objects.all()
-            history = History.objects.filter( team__in = [t.name for t in teams] )
         elif user.has_perm("order.custom_view_local_provider"):
             teams = Team.objects.all()
-            history = History.objects.filter( provider__iexact = "magasin" )
         else:
             teams = get_teams(user)
-            history = History.objects.filter( team__in = [t.name for t in teams] )
-        
-        ref_choices = []
-        origin_choices = []
-        for h in history:
-            for i in h.items.all():
-                if i.reference and not i.reference in ref_choices:
-                    ref_choices.append(i.reference)
-                if i.origin and i.origin != '' and not i.origin in origin_choices:
-                    origin_choices.append( i.origin )
-        
         self.fields['team'].queryset = teams
-        self.fields['items__reference'].widget = forms.TextInput( attrs={
-            'class' : 'autocomplete',
-            'choices': ";".join(ref_choices)
-        })
-        self.fields['items__origin'].widget = forms.TextInput( attrs={
-            'class' : 'autocomplete',
-            'choices': ";".join(origin_choices)
-        })
         
         categories = list(set(OrderItem.objects.values_list('category', flat = True).order_by('category')))
-        sub_categories = list(set(OrderItem.objects.values_list('sub_category', flat = True).order_by('sub_category')))
         self.fields['items__category'].choices = EMPTY_SEL + [(c,c) for c in categories]
+        
+        sub_categories = list(set(OrderItem.objects.values_list('sub_category', flat = True).order_by('sub_category')))
         self.fields['items__sub_category'].choices = EMPTY_SEL + [(sc, sc) for sc in sub_categories]
     
 
