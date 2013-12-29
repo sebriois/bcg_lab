@@ -29,39 +29,39 @@ class Provider(models.Model):
     def update_solr(self):
         root = Element('add')
         
-        for product in self.product_set.all():
+        for p in self.product_set.all():
             doc = SubElement( root, 'doc' )
             id = SubElement( doc, 'id' )
-            id.text = product.id
+            id.text = p.id
             
             product = SubElement( doc, 'product' )
-            product.text = product.name
+            product.text = p.name
             
             reference = SubElement( doc, 'reference' )
-            reference.text = product.reference
+            reference.text = p.reference
             
             provider = SubElement( doc, 'provider' )
             provider.text = self.name
             
             origin = SubElement( doc, 'origin' )
-            origin.text = product.origin
+            origin.text = p.origin
             
             packaging = SubElement( doc, 'packaging' )
-            packaging.text = product.packaging
+            packaging.text = p.packaging
             
             offer = SubElement( doc, 'offer_nb' )
-            offer.text = product.offer_nb
+            offer.text = p.offer_nb
             
             nomenclature = SubElement( doc, 'nomenclature' )
-            nomenclature.text = product.nomenclature
+            nomenclature.text = p.nomenclature
             
-            if product.category:
+            if p.category:
                 category = SubElement( doc, 'category' )
-                category.text = product.category.name
+                category.text = p.category.name
             
-            if product.sub_category:
+            if p.sub_category:
                 sub_category = SubElement( doc, 'sub_category' )
-                sub_category.text = product.sub_category.name
+                sub_category.text = p.sub_category.name
         
         xml = tostring( root )
         
