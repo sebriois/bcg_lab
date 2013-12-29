@@ -37,7 +37,7 @@ def _export_budgets(request, is_active):
             prev_budget = None
             
             if len( bl.team ) >= 32:
-                sheetname = bl.team[0:28]
+                sheetname = "%s..." % bl.team[0:28]
             else:
                 sheetname = bl.team
             
@@ -139,7 +139,7 @@ def export_history_orders(request):
             prev_team = history.team
             
             if len( history.team ) >= 32:
-                sheetname = "%s..." history.team[0:28]
+                sheetname = "%s..." % history.team[0:28]
             else:
                 sheetname = history.team
             
