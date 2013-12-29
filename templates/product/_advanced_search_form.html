@@ -23,8 +23,12 @@
     {% with filter_form.sub_category as field %}
       {% include "form_snippet.html" %}
     {% endwith %}
-    <label for="has_expired">Date d'expiration dépassée?</label>
+    <label for="has_expired">Date d'expiration dépassée ?</label>
     <input type="checkbox" id="has_expired" name="has_expired" />
+    <div class="cleaner"></div>
+    
+    <label for="is_valid">Date d'expiration valide ?</label>
+    <input type="checkbox" id="is_valid" name="is_valid" />
     
     <div class="cleaner"></div>
     <button type="submit" class="all">Chercher</button>

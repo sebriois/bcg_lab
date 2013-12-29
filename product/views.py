@@ -96,6 +96,9 @@ def _django_search( query_dict ):
             if 'has_expired' in query_dict:
                 data['expiry__lt'] = datetime.now()
             
+            if 'is_valid' in query_dict:
+                data['expiry__gte'] = datetime.now()
+            
             Q_obj = Q()
             Q_obj.connector = data.pop("connector")
             Q_obj.children  = data.items()
