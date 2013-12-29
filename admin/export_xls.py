@@ -29,14 +29,24 @@ def _export_budgets(request, is_active):
     prev_team = None
     row = 0
     
+    index = 1 # for duplicate worksheet names - no logic here, just working
+    
     for bl in BudgetLine.objects.filter(is_active = is_active).order_by("team","budget","id"):
         if prev_team != bl.team:
             prev_team = bl.team
             prev_budget = None
+            
             if len( bl.team ) >= 32:
-                sheet = xls.add_sheet(u"%s..." % bl.team[0:28])
+                sheetname = bl.team[0:28]
             else:
-                sheet = xls.add_sheet(u"%s" % bl.team)
+                sheetname = bl.team
+            
+            try:
+                sheet = xls.add_sheet( sheetname )
+            except:
+                sheet = xls.add_sheet( sheetname + " (%s)" % index )
+                index += 1
+            
             row = 0
             for col, title in enumerate(header): sheet.write(row, col, title)
         
@@ -129,7 +139,7 @@ def export_history_orders(request):
             prev_team = history.team
             
             if len( history.team ) >= 32:
-                sheetname = history.team[0:28]
+                sheetname = "%s..." history.team[0:28]
             else:
                 sheetname = history.team
             
