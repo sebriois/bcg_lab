@@ -64,6 +64,11 @@ class Provider(models.Model):
                 sub_category.text = product.sub_category.name
         
         xml = tostring( root )
-        command = "curl %s/update -H 'Content-Type: text/xml' --data-binary '%s'" % ( settings.SOLR_URL, xml )
+        
+        update_url = "%s/update" % settings.SOLR_URL
+        command = "curl %s -H 'Content-Type: text/xml' --data-binary '%s'" % ( update_url, xml )
+        commands.getoutput(command)
+        
+        command = "curl %s?commit=true" % update_url
         commands.getoutput(command)
     
