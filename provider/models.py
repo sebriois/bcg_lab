@@ -32,7 +32,7 @@ class Provider(models.Model):
         for p in self.product_set.all():
             doc = SubElement( root, 'doc' )
             id = SubElement( doc, 'id' )
-            id.text = p.id
+            id.text = str(p.id)
             
             product = SubElement( doc, 'product' )
             product.text = p.name
