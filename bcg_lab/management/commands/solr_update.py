@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from __future__ import print_function # python 3 compliant
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -43,8 +44,8 @@ class Command(BaseCommand):
         provider = options.get('provider', None)
         if provider:
             products = products.filter( provider__name = provider )
-        
-        print "%s modified products found after %s." % (products.count(), date_obj.strftime("%d/%m/%Y %H:%M"))
+
+        print( "%s modified products found after %s." % (products.count(), date_obj.strftime("%d/%m/%Y %H:%M"), end = "\n", file = sys.stderr )
         
         for product in products:
             product.post_to_solr()
