@@ -162,6 +162,8 @@ LOGGING = {
 ##    Custom settings
 ##
 
+JENKINS_URL = 'http://localhost:8080/jenkins'
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 LOGIN_URL = '/login/'

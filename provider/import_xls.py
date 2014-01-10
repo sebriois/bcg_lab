@@ -7,8 +7,9 @@ logger = logging.getLogger(__name__)
 from django.utils.encoding import smart_unicode
 
 from datetime import datetime
-import xlrd
 from decimal import Decimal
+import xlrd
+import jenkins
 
 from django.utils import simplejson as json
 from django.shortcuts import render
@@ -16,6 +17,7 @@ from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.conf import settings
 
 from provider.models import Provider
 from product.models import Product
@@ -233,6 +235,17 @@ votre navigateur)." )
     del request.session['import_data']
     
     provider.save()
-    provider.update_solr()
+    
     info_msg(request, u'La mise à jour des produits a bien été effectuée.')
+    
+    # UPDATE SOLR THROUGH JENKINS
+    if settings.JENKINS_URL:
+        try:
+            j = jenkins.Jenkins(settings.JENKINS_URL)
+            j.build_job( "%s - SolR update" % settings.SITE_NAME )
+        except:
+            error_msg( request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
+    else:
+        warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
+    
     return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.id )
