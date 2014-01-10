@@ -72,8 +72,7 @@ class Product(models.Model):
         return (self.expiry - delta <= datetime.now())
     
     def post_to_solr(self):
-        from __future__ import print_function # python 3 compliant
-        print( "POSTing product ID %s to Solr ..." % self.id, end = "\n", file = sys.stderr )
+        print >> sys.stderr, "POSTing product ID %s to Solr ..." % self.id
         data = {
             'id': "%s" % self.id,
             'product': self.name,
