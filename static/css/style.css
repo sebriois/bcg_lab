@@ -12,6 +12,7 @@ body {
 #wrapper {
 	min-height: 100%;
 	width: 1280px;
+	width: 95%;
 	text-align: left;
 	margin: auto;
 }
