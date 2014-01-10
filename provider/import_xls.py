@@ -9,7 +9,7 @@ from django.utils.encoding import smart_unicode
 from datetime import datetime
 from decimal import Decimal
 import xlrd
-import jenkins
+import urllib2
 
 from django.utils import simplejson as json
 from django.shortcuts import render
@@ -240,9 +240,11 @@ votre navigateur)." )
     
     # UPDATE SOLR THROUGH JENKINS
     if settings.JENKINS_URL:
+        job_name = "%s - SolR update" % settings.SITE_NAME
+        build_url = "%s/job/%s/build" % ( settings.JENKINS_URL, job_name.replace(' ', '%20') )
         try:
-            j = jenkins.Jenkins(settings.JENKINS_URL)
-            j.build_job( "%s - SolR update" % settings.SITE_NAME )
+            req = urllib2.Request( build_url )
+            urllib2.urlopen( req ).read()
         except:
             error_msg( request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
     else:
