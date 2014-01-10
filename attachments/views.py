@@ -46,4 +46,4 @@ def delete(request, attachment_id):
 	attachment.delete()
 	
 	info_msg(request, u"Pièce jointe supprimée avec succès.")
-	return redirect( request.GET['next'] )
+	return redirect( request.GET.get('next','home') )
