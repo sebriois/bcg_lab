@@ -515,7 +515,7 @@ def set_item_quantity(request):
     
     quantity = int(quantity)
     if quantity <= 0:
-        return HttpResponseServerError( u"'%s': Veuillez saisir une quantité entière positive." % item.name )
+        return HttpResponseServerError( u"Veuillez saisir une quantité entière positive." )
     
     item = get_object_or_404( OrderItem, id = orderitem_id )
     item.delivered = quantity
