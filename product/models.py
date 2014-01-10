@@ -1,4 +1,5 @@
 # -*- encoding: utf8 -*-
+import sys
 from datetime import datetime, timedelta
 
 from django.db import models
@@ -71,7 +72,8 @@ class Product(models.Model):
         return (self.expiry - delta <= datetime.now())
     
     def post_to_solr(self):
-        print "POSTing product ID %s to Solr ..." % self.id
+        from __future__ import print_function # python 3 compliant
+        print( "POSTing product ID %s to Solr ..." % self.id, end = "\n", file = sys.stderr )
         data = {
             'id': "%s" % self.id,
             'product': self.name,
