@@ -20,15 +20,6 @@ class Command(BaseCommand):
             help = "index products modified after this date",
         ),
     )
-
-    option_list = option_list + (
-        make_option(
-            "-p", 
-            "--provider", 
-            dest = "provider",
-            help = "only index products for this provider", 
-        ),
-    )
     
     def handle(self, *args, **options):
         ref_date = options.get('date', None)
@@ -40,10 +31,6 @@ class Command(BaseCommand):
             except:
                 raise Exception("Date format: dd/mm/yyyy")
         products = Product.objects.filter( last_change__gte = date_obj )
-        
-        provider = options.get('provider', None)
-        if provider:
-            products = products.filter( provider__name = provider )
 
         print >> sys.stderr, "%s modified products found after %s." % (products.count(), date_obj.strftime("%d/%m/%Y %H:%M"))
         

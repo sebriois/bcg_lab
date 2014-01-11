@@ -173,7 +173,7 @@ def item(request, product_id):
     product = get_object_or_404(Product, id = product_id)
     if request.method == 'GET':
         form = ProductForm(instance = product, provider = product.provider)
-        url_args = urlencode(request.GET)
+        url_args = request.GET.urlencode()
     elif request.method == 'POST':
         data = request.POST.copy()
         url_args = data.pop('url_args')
@@ -316,7 +316,7 @@ def edit_list(request):
             'filter_form': ProductFilterForm(),
             'edit_form': EditListForm(),
             'product_list': product_list,
-            'url_args': urlencode(request.GET)
+            'url_args': request.GET.urlencode()
         })
     
     if request.method == 'POST':

@@ -150,7 +150,7 @@ def credit(request, budget_id):
 		return render(request, "budget/form_credit.html",{
 			'budget': budget,
 			'form': CreditBudgetForm( budget ),
-			'prev': request.META.get('HTTP_REFERER','') + urlencode(request.GET)
+			'prev': request.META.get('HTTP_REFERER','') + request.GET.urlencode()
 		})
 	
 	data = request.POST.copy()
@@ -189,7 +189,7 @@ def debit(request, budget_id):
 		return render(request, "budget/form_debit.html",{
 			'budget': budget,
 			'form': DebitBudgetForm( budget ),
-			'prev': request.META.get('HTTP_REFERER','') + urlencode(request.GET)
+			'prev': request.META.get('HTTP_REFERER','') + request.GET.urlencode()
 		})
 	
 	data = request.POST.copy()

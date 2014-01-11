@@ -2,17 +2,14 @@
 from xml.etree.ElementTree import Element, SubElement, tostring
 import commands
 import json
-from urllib import urlencode
+
 from urllib2 import Request, urlopen, HTTPError
 
 from django.conf import settings
+from django.utils.http import urlencode
 
 def send_request( url, args ):
-    encoded_args = {}
-    for k, v in args.iteritems():
-        encoded_args[k] = unicode(v).encode('utf-8')
-    
-    req = Request( url, urlencode(encoded_args) )
+    req = Request( url, urlencode(args) )
     
     try:
         f = urlopen( req )

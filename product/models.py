@@ -79,11 +79,14 @@ class Product(models.Model):
             'reference': self.reference,
             'provider': self.provider.name,
             'origin': self.origin,
+            'price': self.price,
             'packaging': self.packaging,
             'offer_nb': self.offer_nb,
             'nomenclature': self.nomenclature,
             'category': self.category and self.category.name or None,
             'sub_category': self.sub_category and self.sub_category.name or None,
+            'last_change': self.last_change.strftime("%d/%m/%Y"),
+            'expiry': self.expiry and self.expiry.strftime("%d/%m/%Y") or None
         }
         
         solr = Solr()
