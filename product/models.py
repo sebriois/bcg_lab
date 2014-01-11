@@ -79,7 +79,7 @@ class Product(models.Model):
             'reference': self.reference,
             'provider': self.provider.name,
             'origin': self.origin,
-            'price': self.price,
+            'price': str(self.price),
             'packaging': self.packaging,
             'offer_nb': self.offer_nb,
             'nomenclature': self.nomenclature,
