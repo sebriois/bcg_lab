@@ -53,19 +53,21 @@ def search(request):
         })
 
 def autocomplete(request):
+    text_typed = request.GET.get('query', '')
+    
     solr = Solr()
     solr.query({
         'q': '*:*',
         'rows': 0,
         'facet': 'true',
         'facet.field': 'product_auto',
-        'facet.prefix': request.GET.get('query', ''),
+        'facet.prefix': text_typed,
     })
     
     results = solr.facet_fields('product_auto')
     
     output_data = {
-        'query': query,
+        'query': text_typed,
         'suggestions': [results[i] for i in xrange(0, len(results), 2)]
     }
     
