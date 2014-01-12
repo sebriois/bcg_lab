@@ -75,10 +75,12 @@ class Solr(object):
         
         json_doc = json.dumps([ data_dict ])
         
-        update_url = settings.SOLR_URL + '/update/'
-        command = "curl %s -H 'Content-type:application/json' -d '%s'" % ( update_url, json_doc )
-        commands.getoutput(command)
+        update_url = settings.SOLR_URL + '/update/json'
+        args = { 'stream.body': json_doc }
         
+        if not send_request( update_url, args ):
+            print "Failed to update solr with", data_dict
+
         command = "curl %s?commit=true" % update_url
         commands.getoutput(command)
     
