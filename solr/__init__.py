@@ -71,7 +71,7 @@ class Solr(object):
         
     def post( self, data_dict = {} ):
         if not data_dict:
-            raise "doc to post is empty"
+            raise Exception("doc to post is empty")
         
         json_doc = json.dumps([ data_dict ])
         
