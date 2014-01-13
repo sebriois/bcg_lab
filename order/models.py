@@ -242,7 +242,7 @@ class OrderItem(models.Model):
             
             orig_price = product.price
             if orig_price != self.price and product.has_expired():
-                product.expiry = datetime("31/12/%s" % datetime.now().year, "%d/%m/%Y")
+                product.expiry = datetime( datetime.now().year, 12, 31 )
             
             product.name = self.name
             product.packaging = self.packaging
