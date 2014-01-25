@@ -6,6 +6,7 @@ from django.db.models.query import Q
 from django.db import transaction
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
