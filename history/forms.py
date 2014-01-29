@@ -151,7 +151,7 @@ class BudgetHistoryFilterForm(forms.Form):
             budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=False)]
         else:
             teams = get_teams(user)
-            budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=False, team__in = [t.name for t in teams])]
+            budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=False, team__in = [t.id for t in teams])]
         
         name_choices = []
         number_choices = []
