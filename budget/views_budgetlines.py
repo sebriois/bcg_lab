@@ -86,7 +86,9 @@ def export_to_xls(request):
     header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
     u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
     u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL"]
-    for col, title in enumerate(header): ws.write(0, col, title)
+    
+    for col, title in enumerate(header): 
+        ws.write(0, col, title)
     
     row = 1    
     total = 0
@@ -106,13 +108,13 @@ def export_to_xls(request):
         ws.write( row, 10, bl.debit )
         ws.write( row, 11, bl.quantity )
         if bl.debit:
-            ws.write( row, 12, bl.product_price * -1 )
+            ws.write( row, 12, "%s" % (bl.debit * bl.quantity * -1) )
         else:
-            ws.write( row, 12, bl.product_price )
+            ws.write( row, 12, "%s" % (bl.credit * bl.quantity) )
         row += 1
-    ws.write( row, 12, total )
     
     if row != 1:
+        ws.write( row, 12, total )
         row += 2
     
     total = 0
@@ -132,9 +134,9 @@ def export_to_xls(request):
         ws.write( row, 10, bl.debit )
         ws.write( row, 11, bl.quantity )
         if bl.debit:
-            ws.write( row, 12, bl.product_price * -1 )
+            ws.write( row, 12, "%s" % (bl.debit * bl.quantity * -1) )
         else:
-            ws.write( row, 12, bl.product_price )
+            ws.write( row, 12, "%s" % (bl.credit * bl.quantity) )
         row += 1
     ws.write( row, 12, total )
     

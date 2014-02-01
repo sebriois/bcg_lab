@@ -258,7 +258,10 @@ def export_budgetlines( request ):
         ws.write( row, 9, bl.credit )
         ws.write( row, 10, bl.debit )
         ws.write( row, 11, bl.quantity )
-        ws.write( row, 12, bl.product_price )
+        if bl.debit:
+            ws.write( row, 12, "%s" % (bl.debit * bl.quantity * -1) )
+        else:
+            ws.write( row, 12, "%s" % (bl.credit * bl.quantity) )
         ws.write( row, 13, str(bl.get_amount_left()) )
         row += 1
     
