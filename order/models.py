@@ -95,8 +95,9 @@ class Order(models.Model):
         return sum( [item.total_price() for item in self.items.all()] )
     
     def create_budget_line(self):
-        for item in self.items.all():
-            item.create_budget_line()
+        if self.status >= 2:
+            for item in self.items.all():
+                item.create_budget_line()
     
     def update_budget_lines(self):
         for bl in BudgetLine.objects.filter( order_id = self.id ):
