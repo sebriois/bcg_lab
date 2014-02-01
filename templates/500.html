@@ -1,9 +1,59 @@
-{% extends "base_main.html" %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
-{% block content %}
-<h2>Une erreur a été détectée</h2>
-<p>
-    Un email contenant tous les détails de l'erreur a été envoyé aux administrateurs de l'application.
-    Le problème sera résolu dès que possible.
-</p>
-{% endblock %}
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="MSSmartTagsPreventParsing" content="TRUE" />
+    <meta name="robots" content="noindex, nofollow">
+    <title>BCG-Lab - erreur</title>
+    <style>
+        body {
+            background: #fdfdfb;
+            color: #51473d;
+            font-family: Trebuchet MS,Tahoma,Verdana,"Lucida Grande",Helvetica,Arial,sans-serif;
+        }
+        #wrapper {
+            margin: auto;
+            margin-top: 200px;
+            width: 600px;
+        }
+        #content {
+            background: white;
+            height: 220px;
+            border-bottom: 25px solid #51473d;
+            -webkit-box-shadow: 0px 0px 10px 4px rgba(111,111,111, 0.7);
+            -moz-box-shadow:    0px 0px 10px 4px rgba(111,111,111, 0.7);
+            box-shadow:         0px 0px 10px 4px rgba(111,111,111, 0.7);
+        }
+        #header {
+            background: #51473d;
+        }
+        #header h1 {
+            color: #eeecdb;
+            margin: 0;
+            padding: 15px;
+        }
+        #error_msg {
+            padding: 20px;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="content">
+            <div id="header">
+                <h1>BCG-Lab</h1>
+            </div>
+            <div id="error_msg">
+                <h2>Une erreur a été détectée</h2>
+                <p>
+                    Un email contenant tous les détails de l'erreur a été envoyé aux administrateurs de l'application.
+                    Le problème sera résolu dès que possible.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
