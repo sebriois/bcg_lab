@@ -477,6 +477,7 @@ def set_budget(request, order_id):
     if budget_id == 0:
         # bugdet will be set by secretary
         order.budget = None
+        BudgetLine.objects.filter(order_id = order.id).delete()
     
     order.save()
     return HttpResponse('ok')

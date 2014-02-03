@@ -114,7 +114,7 @@ def _move_to_status_2(request, order):
         budget_id = request.GET.get("budget", None)
         if budget_id:
             order.budget = Budget.objects.get( id = budget_id )
-        
+            order.create_budget_line()
         order.status = 2
         order.save()
         
@@ -139,6 +139,10 @@ def _move_to_status_3(request, order):
     if order.budget:
         order.status = 3
         order.save()
+        
+        if BudgetLine.objects.filter(order_id = order.id).count() == 0:
+            order.create_budget_line()
+        
         info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
         return redirect('tab_orders')
     else:
@@ -150,7 +154,6 @@ def _move_to_status_4(request, order):
     if not order.number:
         if order.budget.budget_type == 0: # ie. CNRS
             msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
-            
         else:
             msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
         
