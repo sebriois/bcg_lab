@@ -152,10 +152,13 @@ def _move_to_status_3(request, order):
 
 def _move_to_status_4(request, order):
     if not order.number:
-        if order.budget.budget_type == 0: # ie. CNRS
-            msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
+        if not order.budget:
+            msg = "Veuillez sélectionner un budget."
         else:
-            msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
+            if order.budget.budget_type == 0: # ie. CNRS
+                msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
+            else:
+                msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
         
         error_msg(request, msg)
         return redirect( order.get_absolute_url() )
