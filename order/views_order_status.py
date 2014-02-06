@@ -114,7 +114,10 @@ def _move_to_status_2(request, order):
         budget_id = request.GET.get("budget", None)
         if budget_id:
             order.budget = Budget.objects.get( id = budget_id )
+        
+        if order.budget and BudgetLine.objects.filter( order_id = order.id ).count() == 0:
             order.create_budget_line()
+        
         order.status = 2
         order.save()
         
