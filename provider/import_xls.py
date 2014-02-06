@@ -82,30 +82,39 @@ def read_xls( header, data, input_excel ):
         
         # CHECK NAME
         name_idx = header.index(u"designation")
-        name = row[name_idx].value
-        if not name:
+        if len(row) >= name_idx + 1:
+            name = row[name_idx].value
+            if not name:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
+            if len(name) >= 500:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
+        else:
             is_valid = 'false'
             errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
-        if len(name) >= 500:
-            is_valid = 'false'
-            errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
         
         # CHECK REFERENCE
         ref_idx = header.index(u"reference")
-        ref = unicode(row[ref_idx].value)
-        if not ref:
+        if len(row) >= ref_idx + 1:
+            ref = unicode(row[ref_idx].value)
+            if not ref:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'référence' - valeur est manquante." )
+            if len(ref) >= 100:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'référence' - valeur trop longue (%s/100 charactères)" % len(ref))
+        else:
             is_valid = 'false'
-            errors.append( base_error + u"Colonne 'référence' - valeur est manquante." )
-        if len(ref) >= 100:
-            is_valid = 'false'
-            errors.append( base_error + u"Colonne 'référence' - valeur trop longue (%s/100 charactères)" % len(ref))
+            errors.append( base_error + u"Colonne 'référence' - valeur manquante." )
         
         # CHECK PACKAGING
         pack_idx = header.index(u"conditionnement")
-        pack = unicode(row[pack_idx].value)
-        if len(pack) >= 100:
-            is_valid = 'false'
-            errors.append( base_error + u"Colonne 'conditionnement' - valeur trop longue (%s/100 charactères)" % len(pack))
+        if len(row) >= pack_idx + 1:
+            pack = unicode(row[pack_idx].value)
+            if len(pack) >= 100:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'conditionnement' - valeur trop longue (%s/100 charactères)" % len(pack))
         
         # CHECK EXPIRY
         expiry_idx = header.index(u"expiration")
@@ -122,20 +131,24 @@ def read_xls( header, data, input_excel ):
         
         # CHECK PRICE
         price_idx = header.index(u"prix")
-        price = unicode(row[price_idx].value)
-        price = price.replace(' ','').replace(',','.').replace(u"€",'')
-        if not price:
+        if len(row) >= price_idx + 1:
+            price = unicode(row[price_idx].value)
+            price = price.replace(' ','').replace(',','.').replace(u"€",'')
+            if not price:
+                is_valid = 'false'
+                errors.append( base_error + u"Colonne 'prix' - valeur manquante." )
+            else:
+                try:
+                    price = Decimal(price)
+                    if price <= 0:
+                        is_valid = 'false'
+                        errors.append( base_error + u"Colonne 'prix' - le prix est négatif ou nul, il doit être strictement positif." )
+                except:
+                    is_valid = 'false'
+                    errors.append( base_error + u"Colonne 'prix' - impossible de lire une valeur décimale. Valeur reçue: '%s'." % row[price_idx].value)
+        else:
             is_valid = 'false'
             errors.append( base_error + u"Colonne 'prix' - valeur manquante." )
-        else:
-            try:
-                price = Decimal(price)
-                if price <= 0:
-                    is_valid = 'false'
-                    errors.append( base_error + u"Colonne 'prix' - le prix est négatif ou nul, il doit être strictement positif." )
-            except:
-                is_valid = 'false'
-                errors.append( base_error + u"Colonne 'prix' - impossible de lire une valeur décimale. Valeur reçue: '%s'." % row[price_idx].value)
         
         new_row = [is_valid]
         for colIdx, col in enumerate(row[0:8]): 
