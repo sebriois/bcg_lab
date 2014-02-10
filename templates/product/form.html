@@ -1,22 +1,41 @@
-{% extends "base_products.html" %}
-{% block product_new %}active{% endblock %}
-
-{% block header %}
-<h1>Gestion des produits</h1>
-<h2>Ajout d'un nouveau produit</h2>
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
 {% endblock %}
-
-{% block content %}
-<form action="{% url 'product_new' %}" method="POST">{% csrf_token %}
-	{% if provider %}
-	  <input type="hidden" name="provider" value="{{ provider.id }}" />
-	{% endif %}
-	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
-	<fieldset>
-	  {% for field in form %}{% include "form_snippet.html"%}{% endfor %}
-	</fieldset>
-
-	<button type="submit" class="check">Valider</button>
-	<a href="{% url 'product_index' %}" class="back">Retour</a>
-</form>
-{% endblock %}
+<fieldset>
+    {% with form.provider as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.origin as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.name as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.reference as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.price as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.offer_nb as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.packaging as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.nomenclature as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.category as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.sub_category as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with form.expiry as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+</fieldset>

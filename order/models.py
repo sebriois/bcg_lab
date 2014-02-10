@@ -66,17 +66,17 @@ class Order(models.Model):
         item, created = self.items.get_or_create( 
             product_id = product.id,
             defaults = {
-                'cost_type':         DEBIT,
-                'name':                  product.origin and "%s - %s" % (product.origin,product.name) or product.name,
-                'provider':          product.provider.name,
-                'origin':                product.origin,
-                'packaging':         product.packaging,
-                'reference':         product.reference,
-                'price':                 product.price,
-                'offer_nb':          product.offer_nb,
-                'nomenclature':  product.nomenclature,
-                'quantity':          quantity,
-                'delivered':         quantity
+                'cost_type':    DEBIT,
+                'name':         product.origin and "%s - %s" % (product.origin,product.name) or product.name,
+                'provider':     product.provider.name,
+                'origin':       product.origin,
+                'packaging':    product.packaging,
+                'reference':    product.reference,
+                'price':        product.price,
+                'offer_nb':     product.offer_nb,
+                'nomenclature': product.nomenclature,
+                'quantity':     quantity,
+                'delivered':    quantity
             }
         )
         

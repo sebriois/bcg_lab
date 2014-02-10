@@ -1,0 +1,21 @@
+{% extends "base_products.html" %}
+{% block product_new %}active{% endblock %}
+
+{% block header %}
+<h1>Gestion des produits</h1>
+<h2>Ajout d'un nouveau produit</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'product_new' %}" method="POST">{% csrf_token %}
+	{% if provider %}
+	  <input type="hidden" name="provider" value="{{ provider.id }}" />
+	{% endif %}
+		
+	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
+	{% include 'product/form.html' %}
+
+	<button type="submit" class="check">Valider</button>
+	<a href="{% url 'product_index' %}" class="back">Retour</a>
+</form>
+{% endblock %}

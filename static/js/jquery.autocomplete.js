@@ -139,7 +139,7 @@
             };
 
             // Determine suggestions width:
-            if (!options.width || options.width === 'auto') {
+            if (!options.width) {
                 options.width = that.el.outerWidth();
             }
 

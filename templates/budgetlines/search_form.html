@@ -1,4 +1,10 @@
 {% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
+
 <div class="bar">
     <a href="#" class="expand">Dérouler</a>
     <a href="#" class="hide">Cacher</a>
@@ -33,7 +39,7 @@
         <td>{{ filter_form.nature }}</td>
         <td width="10%"></td>
         <td>Désignation:</td>
-        <td>{{ filter_form.product }}</td>
+        <td colspan="2">{{ filter_form.product }}</td>
       </tr>
       <tr>
         <td>Fournisseur:</td>
@@ -42,8 +48,8 @@
         <td>N°cmde:</td>
         <td>{{ filter_form.number }}</td>
         <td width="10%"></td>
-				<td>Origine (Code)</td>
-				<td>{{ filter_form.origin }}</td>
+        <td>Origine (Code)</td>
+        <td colspan="2">{{ filter_form.origin }}</td>
       </tr>
     </table>
     <div class="cleaner"></div>

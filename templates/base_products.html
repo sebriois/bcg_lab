@@ -12,5 +12,8 @@
   <li class="{% block product_new %}{% endblock %}">
     <a href="{% url 'product_new' %}">Ajouter un produit</a>
   </li>
+  <li class="{% block product_codes %}{% endblock product_codes %}">
+    <a href="{% url 'import_product_codes' %}">Importer des nomenclatures</a>
+  </li>
 </ul>
 {% endblock %}

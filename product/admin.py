@@ -1,13 +1,9 @@
 from django.contrib import admin
-from product.models import Product, ProductType, ProductSubType
+from product.models import Product
+from product.models import ProductCode
+from product.models import ProductType
+from product.models import ProductSubType
 
-class ProductTypeAdmin(admin.ModelAdmin):
-	list_display = ("name",)
-admin.site.register(ProductType, ProductTypeAdmin)
-
-class ProductSubTypeAdmin(admin.ModelAdmin):
-	list_display = ("name","category")
-admin.site.register(ProductSubType, ProductSubTypeAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
   date_hierarchy = 'last_change'
@@ -25,4 +21,13 @@ class ProductAdmin(admin.ModelAdmin):
       'fields': ( 'packaging', 'offer_nb', 'nomenclature' )
     })
   )
+
+class ProductCodeAdmin(admin.ModelAdmin):
+    list_display  = ('code', 'title')
+    list_display_links  = ('code',)
+    search_fields = ('code','title')
+
 admin.site.register(Product, ProductAdmin)
+admin.site.register(ProductCode, ProductCodeAdmin)
+admin.site.register(ProductType)
+admin.site.register(ProductSubType)

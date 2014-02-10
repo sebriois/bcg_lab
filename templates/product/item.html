@@ -29,9 +29,8 @@
 	<input type="hidden" name="url_args" value="{{url_args}}" />
 	<h3>Edition</h3>
 	<p class="instructions">Les champs marqués d'une étoile sont obligatoires</p>
-	<fieldset>
-		{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
-	</fieldset>
+    {% include 'product/form.html' %}
+	
 	<button type="submit" class="check">Valider</button>
 	<a href="{% url 'product_index' %}?{{url_args}}" class="back">Retour</a>
 </form>

@@ -1,5 +1,7 @@
 # coding: utf-8
 from django import forms
+from django.forms import widgets
+from django.core.urlresolvers import reverse_lazy, reverse
 
 from budget.models import Budget, BudgetLine
 from team.models import Team
@@ -124,7 +126,7 @@ class TransferForm(forms.Form):
 
 class BudgetLineFilterForm(forms.Form):
     connector = forms.TypedChoiceField(
-        choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
+        choices = [("AND",u"toutes les"), ("OR", u"l'une des")],
         initial = "AND",
         coerce = str,
         empty_value = None,
@@ -152,12 +154,20 @@ class BudgetLineFilterForm(forms.Form):
     )
     number = forms.CharField(
         label    = "N°cmde",
-        required = False
+        required = False,
+        widget   = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+        })
     )
-    product__istartswith = forms.CharField(
-        label       = u"Produit",
-        help_text   = "Appuyez sur 'esc' pour fermer la liste de choix.",
-        required    = False
+    product = forms.CharField(
+        label     = u"Produit",
+        help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
+        required  = False,
+        widget    = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_products')
+        })
     )
     provider = forms.ModelChoiceField(
         label    = u"Fournisseur",
@@ -166,22 +176,22 @@ class BudgetLineFilterForm(forms.Form):
     )
     
     origin = forms.CharField(
-        label           = "Origine (Code)",
-        required    = False
+        label    = "Origine (Code)",
+        required = False
     )
     
     date__gte = forms.DateField( 
-        label                   = "Date d'enregistrement min",
+        label         = u"Date d'enregistrement min",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     
     date__lte = forms.DateField( 
-        label                   = "Date d'enregistrement max",
+        label         = "Date d'enregistrement max",
         input_formats = ["%d/%m/%Y"],
-        widget              = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
-        required            = False
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        required      = False
     )
     
     def __init__(self, user, *args, **kwargs):
@@ -204,14 +214,7 @@ class BudgetLineFilterForm(forms.Form):
         
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
         self.fields['team'].queryset = teams
-        self.fields['product__istartswith'].widget = forms.TextInput( attrs = {
-            'class' : 'autocomplete',
-            'choices': ";".join(name_choices)
-        })
-        self.fields['number'].widget = forms.TextInput( attrs = {
-            'class' : 'autocomplete',
-            'choices': ";".join(number_choices)
-        })
+        
         NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))
         self.fields['nature'].choices = EMPTY_SEL + [(n,n) for n in NATURE_CHOICES]
 

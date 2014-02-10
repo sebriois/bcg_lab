@@ -6,11 +6,10 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
+
 from provider.models import Provider
 from attachments.models import Attachment
 from solr import Solr
-
-from bcg_lab.constants import CATEGORY_CHOICES, SUBCATEGORY_CHOICES
 
 class ProductType(models.Model):
     name = models.CharField( u"Type", max_length=200 )
@@ -33,6 +32,17 @@ class ProductSubType(models.Model):
     def __unicode__(self):
         return self.name
 
+class ProductCode(models.Model):
+    code = models.CharField( u"Code", max_length = 10 )
+    title = models.CharField( u"Libellé", max_length = 250 )
+    
+    class Meta:
+        verbose_name = u"Nomenclature"
+        ordering = ('code',)
+    
+    def __unicode__(self):
+        return "%s - %s" % (self.code, self.title)
+
 class Product(models.Model):
     provider        = models.ForeignKey( Provider, verbose_name = 'Fournisseur' )
     origin          = models.CharField( u"Fournisseur d'origine", max_length = 100, null = True, blank = True )
@@ -53,6 +63,9 @@ class Product(models.Model):
         verbose_name_plural = "Produits"
         ordering = ('provider', 'name')
         # unique_together = ('provider', 'reference')
+    
+    class Admin:
+        pass
     
     def __unicode__(self):
         return self.name

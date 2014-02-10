@@ -1,5 +1,7 @@
 # coding: utf-8
 from django import forms
+from django.forms import widgets
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from team.models import Team
 from provider.models import Provider
@@ -28,8 +30,12 @@ class HistoryFilterForm(forms.Form):
         required = False
     )
     items__name__icontains = forms.CharField(
-        label       = u"Produit",
-        required    = False
+        label     = u"Produit",
+        required  = False,
+        widget    = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_products')
+        })
     )
     items__reference = forms.CharField(
         label     = u"Référence",
@@ -40,8 +46,8 @@ class HistoryFilterForm(forms.Form):
         required  = False
     )
     items__category = forms.ChoiceField(
-        label       = "Type",
-        choices = EMPTY_SEL,
+        label    = "Type",
+        choices  = EMPTY_SEL,
         required = False
     )
     items__sub_category = forms.ChoiceField(
@@ -55,19 +61,23 @@ class HistoryFilterForm(forms.Form):
         required = False
     )
     number = forms.CharField(
-        label = u"N° de commande",
-        required = False
+        label    = u"N° de commande",
+        required = False,
+        widget   = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+        })
     )
     date_delivered__gte = forms.DateField( 
         label         = "Date d'enregistrement min",
         input_formats = ["%d/%m/%Y"],
-        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
         required      = False
     )
     date_delivered__lte = forms.DateField( 
         label         = "Date d'enregistrement max",
         input_formats = ["%d/%m/%Y"],
-        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
         required      = False
     )
     
@@ -91,7 +101,7 @@ class HistoryFilterForm(forms.Form):
 
 class BudgetHistoryFilterForm(forms.Form):
     connector = forms.TypedChoiceField(
-        choices = [("OR", u"l'une des"), ("AND",u"toutes les")],
+        choices = [("AND", u"toutes les"), ("OR", u"l'une des")],
         initial = "AND",
         coerce = str,
         empty_value = None,
@@ -108,22 +118,30 @@ class BudgetHistoryFilterForm(forms.Form):
         required = False
     )
     budget_id = forms.ChoiceField(
-        label           = "Budget",
-        choices     = EMPTY_SEL,
-        required    = False
+        label    = "Budget",
+        choices  = EMPTY_SEL,
+        required = False
     )
     nature = forms.ChoiceField(
-        label           = "Nature",
-        choices     = EMPTY_SEL,
-        required    = False
+        label    = "Nature",
+        choices  = EMPTY_SEL,
+        required = False
     )
     number = forms.CharField(
-        label           = "N°cmde",
-        required    = False
+        label    = "N°cmde",
+        required = False,
+        widget   = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+        })
     )
     product__icontains = forms.CharField(
-        label       = u"Produit",
-        required    = False
+        label    = u"Produit",
+        required = False,
+        widget   = widgets.TextInput( attrs = {
+            'class' : 'autocomplete',
+            'autocomplete_url': reverse_lazy('autocomplete_products')
+        })
     )
     provider = forms.ModelChoiceField(
         label    = "Fournisseur",
@@ -133,13 +151,13 @@ class BudgetHistoryFilterForm(forms.Form):
     date__gte = forms.DateField( 
         label         = "Date d'enregistrement min",
         input_formats = ["%d/%m/%Y"],
-        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
         required      = False
     )
     date__lte = forms.DateField( 
         label         = "Date d'enregistrement max",
         input_formats = ["%d/%m/%Y"],
-        widget        = forms.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
+        widget        = widgets.TextInput( attrs = { 'class' : 'datepicker maxToday' }),
         required      = False
     )
     
@@ -161,10 +179,7 @@ class BudgetHistoryFilterForm(forms.Form):
         
         self.fields['team'].queryset = teams
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
-        self.fields['number'].widget = forms.TextInput( attrs = {
-            'class' : 'autocomplete',
-            'choices': ";".join(number_choices)
-        })
+        
         NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))
         self.fields['nature'].choices = EMPTY_SEL + [(n,n) for n in NATURE_CHOICES]
     
