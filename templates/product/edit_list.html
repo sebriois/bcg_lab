@@ -7,6 +7,12 @@
 <h2>Editer une liste de produits</h2>
 {% endblock %}
 
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <form action="{% url 'product_edit_list' %}" method="POST" style="margin-bottom:20px">{% csrf_token %}
 	<h3>Appliquer les modifications suivantes à l'ensemble des produits cochés</h3>
