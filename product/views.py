@@ -225,7 +225,7 @@ def new(request):
             info_msg( request, u"Produit ajouté avec succès." )
             return redirect( reverse('product_index') + "?reference=%s&connector=OR" % p.reference )
     
-    return render(request, 'product/form.html', {
+    return render(request, 'product/new.html', {
         'provider': provider,
         'form': form
     })
