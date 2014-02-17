@@ -6,6 +6,12 @@
 <h2>Ajout d'un nouveau produit</h2>
 {% endblock %}
 
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <form action="{% url 'product_new' %}" method="POST">{% csrf_token %}
 	{% if provider %}
