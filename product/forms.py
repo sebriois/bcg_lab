@@ -163,3 +163,14 @@ class EditListForm(forms.Form):
         
         return expiry
     
+    def clean_nomenclature(self):
+        nomenclature = self.cleaned_data.get('nomenclature', None)
+        if not nomenclature:
+            return None
+        
+        product_code = nomenclature.split(' - ')[0]
+        if ProductCode.objects.filter( code = product_code ).count() == 0:
+            raise forms.ValidationError(u"Cette nomenclature (%s) n'est pas reconnue." % product_code)
+        
+        return product_code
+    
