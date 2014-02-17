@@ -1,0 +1,17 @@
+{% extends "base_products.html" %}
+{% block product_codes %}active{% endblock %}
+
+{% block header %}
+<h1>Gestion des produits</h1>
+<h2>Import des nomenclatures</h2>
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'import_product_codes' %}" method="POST" enctype="multipart/form-data" >{% csrf_token %}
+	<fieldset>
+	  {% for field in form %}{% include "form_snippet.html"%}{% endfor %}
+	</fieldset>
+
+	<button type="submit" class="check">Importer</button>
+</form>
+{% endblock %}

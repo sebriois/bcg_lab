@@ -1,5 +1,11 @@
 {% extends "base_products.html" %}
 {% load paginator filters static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
+
 {% block product_list %}active{% endblock %}
 {% block header %}
 	<h1>Liste des produits</h1>
@@ -8,7 +14,8 @@
 {% block content %}
 <form method="GET" action="." class="search container show_wait">
 	<fieldset id="query_container" style="width:400px;margin:auto;">
-		<input type="text" name="q" id="query" value="{{query|default:''}}" /> <input type="submit" value=" " />
+		<input type="text" name="q" class="autocomplete" autocomplete_url="{% url 'autocomplete_products' %}" value="{{query|default:''}}" /> 
+		<input type="submit" value=" " />
 	</fieldset>
 </form>
 <div class="cleaner"></div>
@@ -66,7 +73,7 @@
   <br />
 {% endif %}
 
-{% if product_list %}
+{% if solr_docs %}
 	<table class="list">
 		<thead>
 				<th>Fournisseur</th>
@@ -80,17 +87,17 @@
 				<th>MAJ</th>
 		</thead>
 		<tbody>
-			{% for product in product_list %}
-				<tr class="{% cycle 'even' 'odd' %} {% if product.has_expired %}expired{% else %}{% if product.soon_expired %}soon_expired{% endif %}{% endif %}">
-					<td>{{ product.provider.name }}{% if product.origin %} - {{ product.origin }}{% endif %}</td>
-					<td>{{ product.name }}</td>
-					<td>{{ product.packaging|default:"" }}</td>
-					<td>{{ product.reference }}</td>
-					<td>{{ product.price }}&nbsp;€</td>
-					<td>{{ product.offer_nb|default:"" }}</td>
-					<td>{{ product.expiry|date }}</td>
-					<td>{{ product.nomenclature|default:"" }}</td>
-					<td>{{ product.last_change|date }}</td>
+			{% for solr_doc in solr_docs %}
+				<tr class="{% cycle 'even' 'odd' %}">
+					<td>{{ solr_doc.provider }}{% if solr_doc.origin %} - {{ solr_doc.origin }}{% endif %}</td>
+					<td>{{ solr_doc.product }}</td>
+					<td>{{ solr_doc.packaging }}</td>
+					<td>{{ solr_doc.reference }}</td>
+					<td>{{ solr_doc.price }}&nbsp;€</td>
+					<td>{{ solr_doc.offer_nb|default:"" }}</td>
+					<td>{{ solr_doc.expiry }}</td>
+					<td>{{ solr_doc.nomenclature }}</td>
+					<td>{{ solr_doc.last_change }}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

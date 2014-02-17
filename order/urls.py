@@ -9,6 +9,8 @@ from order.views import set_notes, set_number, set_team
 from order.views import set_is_urgent, set_has_problem
 from order.views import tab_cart, tab_orders, tab_validation
 
+from order.views_ajax import autocomplete_order_number
+
 from order.views_reception import tab_reception, tab_reception_local_provider
 from order.views_reception import do_reception
 
@@ -38,6 +40,9 @@ urlpatterns = patterns('',
   
   # Cart
   url(r'^add-to-cart/$', cart_add, name="cart_add"),
+  
+  # Autocomplete
+  url(r'^autocomplete/number/$', autocomplete_order_number, name="autocomplete_order_number"),
   
   # Tabs
   url(r'^validation/$', tab_validation, name="tab_validation"),

@@ -1,4 +1,9 @@
 {% load filters static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
 
 <div style="float:left;">
 	<h3>Infos:</h3>
@@ -104,8 +109,11 @@
 		<th>Condt</th>
 		<th>Réf</th>
 		<th>N° Offre</th>
+		{% if order.status == 3 %}
+		<th>Nomenclature</th>
+		{% endif %}
 		<th>Prix unitaire</th>
-		<th>Quantité</th>
+		<th>Qté</th>
 		<th>Prix total</th>
 		{% if user|can_edit:order %}
 		<th>Action</th>
@@ -119,6 +127,9 @@
 			<td>{{ order_item.packaging|default:"" }}</td>
 			<td>{{ order_item.reference|default:"" }}</td>
 			<td>{{ order_item.offer_nb|default:"" }}</td>
+			{% if order.status == 3 %}
+			<td>{{ order_item.nomenclature|default:"" }}</td>
+			{% endif %}
 			<td>{{ order_item.price }} €</td>
 			{% if user|can_edit:order %}
 			<td id="setQuantity">

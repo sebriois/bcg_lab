@@ -34,7 +34,8 @@ def search(request):
         solr = Solr()
         solr.query({ 
             'q': query,
-            'fq': facet_query
+            'fq': facet_query,
+            'fl':'*'
         })
         
         suggestion = solr.suggestion()
@@ -45,30 +46,20 @@ def search(request):
             'facet_query': facet_query and facet_query.split(':')[1] or None,
             'facets': solr.facet_fields(),
             'suggestion': suggestion,
-            'product_list': Product.objects.filter( id__in = [doc['id'] for doc in solr.docs()] ),
+            'solr_docs': solr.docs()
         })
     else:
-        return render(request, 'product/search.html', {
-            'product_list': Product.objects.none()
-        })
+        return render(request, 'product/search.html', {})
 
 def autocomplete(request):
-    text_typed = request.GET.get('query', '')
+    q = request.GET.get('query', '')
     
-    solr = Solr()
-    solr.query({
-        'q': '*:*',
-        'rows': 0,
-        'facet': 'true',
-        'facet.field': 'product_auto',
-        'facet.prefix': text_typed,
-    })
-    
-    results = solr.facet_fields('product_auto')
+    suggestions = list(set(Product.objects.filter(name__icontains = q).only('name').values_list('name', flat = True).distinct()))
+    suggestions.sort()
     
     output_data = {
-        'query': text_typed,
-        'suggestions': [results[i] for i in xrange(0, len(results), 2)]
+        'query': q,
+        'suggestions': suggestions
     }
     
     return HttpResponse(json.dumps(output_data))
@@ -273,14 +264,6 @@ def export_xls( request ):
     row = 1
     
     for product in product_list:
-        # if product.origin:
-        #     if request.user.has_perm("order.custom_view_local_provider"):
-        #         provider = u"%s" % product.origin
-        #     else:
-        #         provider = u"%s - %s" % (product.provider.name, product.origin)
-        # else:
-        #     provider = u"%s" % product.provider.name
-        
         if product.expiry:
             expiry = product.expiry.strftime("%d/%m/%Y")
         else:
