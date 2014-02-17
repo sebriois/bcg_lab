@@ -159,7 +159,7 @@ def _move_to_status_4(request, order):
             msg = "Veuillez sélectionner un budget."
         else:
             if order.budget.budget_type == 0: # ie. CNRS
-                msg = "Commande CNRS, veuillez saisir le numéro de commande XLAB."
+                msg = "Commande CNRS, veuillez saisir le numéro de commande SILAB."
             else:
                 msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
         

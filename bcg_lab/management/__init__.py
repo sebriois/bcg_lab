@@ -40,8 +40,8 @@ def create_custom_order_permission(sender, **kwargs):
         ('custom_edit_order', u"Editer une commande"),
         ('custom_edit_number', u"Modifier le n°commande"),
         ('custom_edit_order_budget', u"Modifier l'imputation"),
-        ('custom_goto_status_3', u"Transmettre pour saisie SIFAC/XLAB"),
-        ('custom_goto_status_4', u"Effectuer une saisie SIFAC/XLAB"),
+        ('custom_goto_status_3', u"Transmettre pour saisie SIFAC/SILAB"),
+        ('custom_goto_status_4', u"Effectuer une saisie SIFAC/SILAB"),
         ('custom_order_any_team', u"Commander pour toutes les équipes"),
         ('custom_view_local_provider', u"Gestionnaire magasin")
     ))
