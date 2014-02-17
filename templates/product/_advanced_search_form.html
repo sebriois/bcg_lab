@@ -1,3 +1,10 @@
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
+
 <h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
 <form action="{% url 'product_index' %}" method="GET" class="show_wait hide_on_save">
   <fieldset>
