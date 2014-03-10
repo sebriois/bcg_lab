@@ -99,7 +99,6 @@ def _django_search( query_dict ):
             product_list = Product.objects.filter( Q_obj )
             num_found = product_list.count()
         else:
-            error_msg(request, "Recherche non valide")
             product_list = Product.objects.none()
             num_found = 0
     else:
