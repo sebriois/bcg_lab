@@ -6,92 +6,92 @@
 {% endblock %}
 
 <div style="float:left;">
-	<h3>Infos:</h3>
-	
-	{% if order.status < 2 and user|has_perm:"order.custom_order_any_team" or user|is_admin %}
-		<p>
-			Equipe:
-			<select id="select-team" url="{% url 'order_team' order.id %}">
-				{% for team_id, team_name in team_choices %}
-					{% if team_id == order.team.id %}
-						<option selected="selected" value="{{ team_id }}">{{ team_name }}</option>
-					{% else %}
-						<option value="{{ team_id }}">{{ team_name }}</option>
-					{% endif %}
-				{% endfor %}
-			</select>
-		</p>
-	{% else %}{% if user|has_perms:"order.custom_validate;team.custom_view_teams" %}
-		<p style="font-size:14px;">Equipe: <b>{{ order.team }}</b></p>
-	{% else %}
-		<p>Equipe: {{ order.team }}</p>
-	{% endif %}{% endif %}
-	
-	<p>Date: {{ order.date_created|date }}</p>
-	<p>Statut: {{ order.get_status_display }}</p>
-	{% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
-	<strong>Commande n°</strong>
-	<input type="text" id="order_number"
-		url="{% url 'set_order_number' order.id %}"
-		value="{{ order.number|default:"" }}"
-		style="float:none;display:inline;padding:1px;"
-	/>
-	{% else %}{% if order.number %}
-	<p>Commande n°{{ order.number|default:"" }}</p>
-	{% endif %}{% endif %}
-	
-	{% if order.status >= 1 and user|can_edit:order %}
-		{% if order.status < 5 and not order.provider.is_local %}
-			<p>
-				<strong>Budget à imputer:</strong>
-				<select id="select-budget" url="{% url 'order_budget' order.id %}">
-					<option value="0">A définir par la gestionnaire</option>
-					{% for budget in budgets %}
-					<option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
-						{{budget}}
-					</option>
-					{% endfor %}
-				</select>
-			</p>
-		{% else %}
-			{% if order.number and order.budget %}
-				<p>Budget imputé: {{ order.budget }}</p>
-			{% else %}
-				<p>Budget à imputer:{{ order.budget|default:"A DEFINIR" }}</p>
-			{% endif %}
-		{% endif %}
-	{% endif %}
+    <h3>Infos:</h3>
+    
+    {% if order.status < 2 and user|has_perm:"order.custom_order_any_team" or user|is_admin %}
+        <p>
+            Equipe:
+            <select id="select-team" url="{% url 'order_team' order.id %}">
+                {% for team_id, team_name in team_choices %}
+                    {% if team_id == order.team.id %}
+                        <option selected="selected" value="{{ team_id }}">{{ team_name }}</option>
+                    {% else %}
+                        <option value="{{ team_id }}">{{ team_name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </p>
+    {% else %}{% if user|has_perms:"order.custom_validate;team.custom_view_teams" %}
+        <p style="font-size:14px;">Equipe: <b>{{ order.team }}</b></p>
+    {% else %}
+        <p>Equipe: {{ order.team }}</p>
+    {% endif %}{% endif %}
+    
+    <p>Date: {{ order.date_created|date }}</p>
+    <p>Statut: {{ order.get_status_display }}</p>
+    {% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
+    <strong>Commande n°</strong>
+    <input type="text" id="order_number"
+        url="{% url 'set_order_number' order.id %}"
+        value="{{ order.number|default:"" }}"
+        style="float:none;display:inline;padding:1px;"
+    />
+    {% else %}{% if order.number %}
+    <p>Commande n°{{ order.number|default:"" }}</p>
+    {% endif %}{% endif %}
+    
+    {% if order.status >= 1 and user|has_perm:"budget.custom_view_budget" %}
+        {% if order.status < 5 and not order.provider.is_local %}
+            <p>
+                <strong>Budget à imputer:</strong>
+                <select id="select-budget" url="{% url 'order_budget' order.id %}">
+                    <option value="0">A définir par la gestionnaire</option>
+                    {% for budget in budgets %}
+                    <option value="{{budget.id}}" {% if order.budget == budget %}selected="selected"{% endif %}>
+                        {{budget}}
+                    </option>
+                    {% endfor %}
+                </select>
+            </p>
+        {% else %}
+            {% if order.number and order.budget %}
+                <p>Budget imputé: {{ order.budget }}</p>
+            {% else %}
+                <p>Budget à imputer:{{ order.budget|default:"A DEFINIR" }}</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
 </div>
 
 <div style="float:left;margin-left:20px;margin-right:20px;">
-	<h3>Pièces jointes:</h3>
-	{% with order as object %}
-		{% include "attachments/show.html" %}
-	{% endwith %}
-	{% if order.status == 0 %}
-		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_cart' %}" class="document save-changes">
-			Ajouter une pièce jointe
-		</a>
-	{% else %}{% if order.status == 1 %}
-		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_validation' %}" class="document save-changes">
-			Ajouter une pièce jointe
-		</a>
-	{% else %}{% if order.status > 1 %}
-		<a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
-			Ajouter une pièce jointe
-		</a>
-	{% endif %}{% endif %}{% endif %}
+    <h3>Pièces jointes:</h3>
+    {% with order as object %}
+        {% include "attachments/show.html" %}
+    {% endwith %}
+    {% if order.status == 0 %}
+        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_cart' %}" class="document save-changes">
+            Ajouter une pièce jointe
+        </a>
+    {% else %}{% if order.status == 1 %}
+        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_validation' %}" class="document save-changes">
+            Ajouter une pièce jointe
+        </a>
+    {% else %}{% if order.status > 1 %}
+        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
+            Ajouter une pièce jointe
+        </a>
+    {% endif %}{% endif %}{% endif %}
 </div>
 
 <div style="float:left;">
-	<h3>Commentaires:</h3>
-	<input type="checkbox" id="is_urgent" url="{% url 'set_is_urgent' order.id %}" {% if order.is_urgent %}checked="checked"{% endif %}>
-	<label for="is_urgent">Commande urgente</label>
-	
-	<input type="checkbox" id="has_problem" url="{% url 'set_has_problem' order.id %}"  {% if order.has_problem %}checked="checked"{% endif %} style="margin-left:15px">
-	<label for="has_problem">Problème</label> !<br />
-	
-	<textarea url="{% url 'set_order_notes' order.id %}">{{ order.notes|default:"" }}</textarea>
+    <h3>Commentaires:</h3>
+    <input type="checkbox" id="is_urgent" url="{% url 'set_is_urgent' order.id %}" {% if order.is_urgent %}checked="checked"{% endif %}>
+    <label for="is_urgent">Commande urgente</label>
+    
+    <input type="checkbox" id="has_problem" url="{% url 'set_has_problem' order.id %}"  {% if order.has_problem %}checked="checked"{% endif %} style="margin-left:15px">
+    <label for="has_problem">Problème</label> !<br />
+    
+    <textarea url="{% url 'set_order_notes' order.id %}">{{ order.notes|default:"" }}</textarea>
 </div>
 
 <div class="cleaner" style="margin-bottom:20px;"></div>
@@ -103,163 +103,159 @@
 {# ############### #}
 
 <table class="list">
-	<thead>
-		<th>Utilisateur</th>
-		<th>Produit</th>
-		<th>Condt</th>
-		<th>Réf</th>
-		<th>N° Offre</th>
-		{% if order.status == 3 %}
-		<th>Nomenclature</th>
-		{% endif %}
-		<th>Prix unitaire</th>
-		<th>Qté</th>
-		<th>Prix total</th>
-		{% if user|can_edit:order %}
-		<th>Action</th>
-		{% endif %}
-	</thead>
-	<tbody>
-		{% for order_item in order.items.all %}
-		<tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
-			<td>{{ order_item.get_fullname }}</td>
-			<td>{{ order_item.name }}</td>
-			<td>{{ order_item.packaging|default:"" }}</td>
-			<td>{{ order_item.reference|default:"" }}</td>
-			<td>{{ order_item.offer_nb|default:"" }}</td>
-			{% if order.status == 3 %}
-			<td>{{ order_item.nomenclature|default:"" }}</td>
-			{% endif %}
-			<td>{{ order_item.price }} €</td>
-			{% if user|can_edit:order %}
-			<td id="setQuantity">
-				<input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:40px;" />
-			</td>
-			{% else %}
-			<td>{{ order_item.quantity }}</td>
-			{% endif %}
-			<td>{{ order_item.total_price }} €</td>
-			{% if user|can_edit:order %}
-			<td>
-				<a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
-				<a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
-				{% if order.status == 3 and order.items.all|length > 1 %}
-					<a href="{% url 'orderitem_disjoin' order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
-				{% endif %}
-			</td>
-			{% endif %}
-		</tr>
-		{% endfor %}
-	</tbody>
+    <thead>
+        <th>Utilisateur</th>
+        <th>Produit</th>
+        <th>Condt</th>
+        <th>Réf</th>
+        <th>N° Offre</th>
+        <th>Nomenclature</th>
+        <th>Prix unitaire</th>
+        <th>Qté</th>
+        <th>Prix total</th>
+        {% if user|can_edit:order %}
+        <th>Action</th>
+        {% endif %}
+    </thead>
+    <tbody>
+        {% for order_item in order.items.all %}
+        <tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
+            <td>{{ order_item.get_fullname }}</td>
+            <td>{{ order_item.name }}</td>
+            <td>{{ order_item.packaging|default:"" }}</td>
+            <td>{{ order_item.reference|default:"" }}</td>
+            <td>{{ order_item.offer_nb|default:"" }}</td>
+            <td>{{ order_item.nomenclature|default:"" }}</td>
+            <td>{{ order_item.price }} €</td>
+            {% if user|can_edit:order %}
+            <td id="setQuantity">
+                <input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:40px;" />
+            </td>
+            {% else %}
+            <td>{{ order_item.quantity }}</td>
+            {% endif %}
+            <td>{{ order_item.total_price }} €</td>
+            {% if user|can_edit:order %}
+            <td>
+                <a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+                <a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+                {% if order.status == 3 and order.items.all|length > 1 %}
+                    <a href="{% url 'orderitem_disjoin' order_item.id %}?next={{next}}" class="extlink confirmDisjoin">Disjoindre</a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 <br />
 
 {% if user|can_edit:order %}
 <div style="float:right">
-	<button id="debit" class="plus">Frais annexes</button>
-	<button id="credit" class="minus">Remises</button>
+    <button id="debit" class="plus">Frais annexes</button>
+    <button id="credit" class="minus">Remises</button>
 </div>
 {% endif %}
 
 <p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ order.price }} €</b></p>
 
 <form id="credit_form" action="{% url 'add_credit' order.id %}" method="POST">{% csrf_token %}
-	<h3>Remise</h3>
-	<fieldset>
-	<input type="hidden" name="next" value="{{next}}" />
-	<input type="hidden" name="username" value="{{user.username}}" />
-	{% with credit_form.name as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with credit_form.reference as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with credit_form.offer_nb as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with credit_form.price as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with credit_form.quantity as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with credit_form.cost_type as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	<button type="submit" class="check">Valider</button>
-	<a href="." class="back">Annuler</a>
-	</fieldset>
+    <h3>Remise</h3>
+    <fieldset>
+    <input type="hidden" name="next" value="{{next}}" />
+    <input type="hidden" name="username" value="{{user.username}}" />
+    {% with credit_form.name as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with credit_form.reference as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with credit_form.offer_nb as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with credit_form.price as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with credit_form.quantity as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with credit_form.cost_type as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    <button type="submit" class="check">Valider</button>
+    <a href="." class="back">Annuler</a>
+    </fieldset>
 </form>
 
 <form id="debit_form" action="{% url 'add_debit' order.id %}" method="POST">{% csrf_token %}
-	<h3>Frais annexes</h3>
-	<fieldset>
-	<input type="hidden" name="next" value="{{next}}" />
-	<input type="hidden" name="username" value="{{user.username}}" />
-	{% with debit_form.name as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with debit_form.reference as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with debit_form.offer_nb as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with debit_form.price as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with debit_form.quantity as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	{% with debit_form.cost_type as field %}
-		{% include "form_snippet.html"%}
-	{% endwith %}
-	<button type="submit" class="check">Valider</button>
-	<a href="." class="back">Annuler</a>
-	</fieldset>
+    <h3>Frais annexes</h3>
+    <fieldset>
+    <input type="hidden" name="next" value="{{next}}" />
+    <input type="hidden" name="username" value="{{user.username}}" />
+    {% with debit_form.name as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with debit_form.reference as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with debit_form.offer_nb as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with debit_form.price as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with debit_form.quantity as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    {% with debit_form.cost_type as field %}
+        {% include "form_snippet.html"%}
+    {% endwith %}
+    <button type="submit" class="check">Valider</button>
+    <a href="." class="back">Annuler</a>
+    </fieldset>
 </form>
 
-	{# ############## #}
-	{#                #}
-	{#  SHOW BUTTONS  #}
-	{#                #}
-	{# ############## #}
+    {# ############## #}
+    {#                #}
+    {#  SHOW BUTTONS  #}
+    {#                #}
+    {# ############## #}
 
 <div id="order-buttons">
 {% if order.status == 0 %}
-	<a href="{% url 'tab_cart' %}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url 'set_next_status' order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
-	<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
+    <a href="{% url 'tab_cart' %}" class="disk save-changes">Enregistrer les modifications</a>
+    <a href="{% url 'set_next_status' order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
+    <a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 1 %}
-	{% if user|has_perm:"order.custom_validate" %}
-	<a href="{% url 'tab_validation' %}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url 'set_next_status' order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
-	{% else %}
-	<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
-	<a href="{% url 'tab_orders' %}" class="back">Retour aux commandes</a>
-	{% endif %}
-	<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
+    {% if user|has_perm:"order.custom_validate" %}
+    <a href="{% url 'tab_validation' %}" class="disk save-changes">Enregistrer les modifications</a>
+    <a href="{% url 'set_next_status' order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
+    {% else %}
+    <a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+    <a href="{% url 'tab_orders' %}" class="back">Retour aux commandes</a>
+    {% endif %}
+    <a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 2 %}
-	{% if user|has_perm:"order.custom_goto_status_3" or user|has_perm:"order.custom_validate" %}
-		<a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
-		<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
-	{% endif %}
-	{% if user|has_perm:"order.custom_goto_status_3" %}
-		<a href="{% url 'set_next_status' order.id %}?page={{next_page|default:"1"}}" class="next-status save-changes"><b>Pour saisie</b></a>
-	{% endif %}
+    {% if user|has_perm:"order.custom_goto_status_3" or user|has_perm:"order.custom_validate" %}
+        <a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
+        <a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
+    {% endif %}
+    {% if user|has_perm:"order.custom_goto_status_3" %}
+        <a href="{% url 'set_next_status' order.id %}?page={{next_page|default:"1"}}" class="next-status save-changes"><b>Pour saisie</b></a>
+    {% endif %}
 {% else %}{% if order.status > 2 %}
-	{% if user|has_perm:"order.custom_goto_status_4" %}
-		{% if order.status == 3 %}
-		<a href="{% url 'set_next_status' order.id %}" class="disk save-changes">Enregistrer les modifications</a>
-		{% else %}{% if order.status == 4 and user|has_perm:"order.custom_goto_status_4" %}
-			<a href="{% url 'set_next_status' order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
-		{% endif %}
-		<a href="{{ order.get_absolute_url }}?page={{next_page|default:"1"}}" class="disk save-changes">Enregistrer les modifications</a>
-		{% endif %}
-		<a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
-	{% endif %}
+    {% if user|has_perm:"order.custom_goto_status_4" %}
+        {% if order.status == 3 %}
+        <a href="{% url 'set_next_status' order.id %}" class="disk save-changes">Enregistrer les modifications</a>
+        {% else %}{% if order.status == 4 and user|has_perm:"order.custom_goto_status_4" %}
+            <a href="{% url 'set_next_status' order.id %}" class="check setDeliveryDate save-changes">Réceptionner</a>
+        {% endif %}
+        <a href="{{ order.get_absolute_url }}?page={{next_page|default:"1"}}" class="disk save-changes">Enregistrer les modifications</a>
+        {% endif %}
+        <a href="{% url 'order_delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
+    {% endif %}
 {% endif %}{% endif %}{% endif %}{% endif %}
 {% if order.status > 1 %}
-	<a href="{% url 'tab_orders' %}?page={{next_page|default:1}}" class="back">Retour aux commandes</a>
+    <a href="{% url 'tab_orders' %}?page={{next_page|default:1}}" class="back">Retour aux commandes</a>
 {% endif %}
 </div>
