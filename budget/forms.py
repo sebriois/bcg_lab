@@ -117,12 +117,21 @@ class CreditBudgetForm(forms.ModelForm):
     
 
 class TransferForm(forms.Form):
-    title1 = forms.CharField( label = u"Désignation", max_length = 100, required = False )
-    title2 = forms.CharField( label = u"Désignation", max_length = 100, required = False )
+    title1  = forms.CharField( label = u"Désignation", max_length = 100, required = False )
+    title2  = forms.CharField( label = u"Désignation", max_length = 100, required = False )
     budget1 = forms.ModelChoiceField( label = u"Débiter", queryset = Budget.objects.filter(is_active = True) )
     budget2 = forms.ModelChoiceField( label = u"Créditer", queryset = Budget.objects.filter(is_active = True) )
-    amount = forms.DecimalField( label = u"Montant" )
-
+    amount  = forms.DecimalField( label = u"Montant" )
+    
+    def __init__( self, user, *args, **kwargs ):
+        super( TransferForm, self ).__init__( *args, **kwargs )
+        
+        if not user.has_perm('team.custom_view_teams'):
+            teams = get_teams(user)
+            self.fields['budget1'].queryset = Budget.objects.filter(is_active=True, team__in=teams)
+            self.fields['budget2'].queryset = Budget.objects.filter(is_active=True, team__in=teams)
+        
+    
 
 class BudgetLineFilterForm(forms.Form):
     connector = forms.TypedChoiceField(

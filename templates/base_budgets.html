@@ -14,7 +14,7 @@
     <a href="{% url 'budget_new' %}">Ajouter un budget</a>
   </li>
   {% endif %}
-  {% if user|has_perm:"budget.custom_edit_budget" %}
+  {% if user|has_perm:"budget.custom_can_transfer" %}
   <li class="{% block menu_budget_transfer %}{% endblock %}">
     <a href="{% url 'budget_transfer' %}">Effectuer un virement</a>
   </li>
