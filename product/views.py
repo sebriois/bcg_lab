@@ -99,7 +99,6 @@ def _django_search( query_dict ):
             product_list = Product.objects.filter( Q_obj )
             num_found = product_list.count()
         else:
-            error_msg(request, "Recherche non valide")
             product_list = Product.objects.none()
             num_found = 0
     else:
@@ -111,7 +110,7 @@ def _django_search( query_dict ):
 
 def _product_search( query_dict ):
     if 'q' in query_dict.keys():
-        product_list, num_found = _solr_search( query_dict.dict() )
+        product_list, num_found = _solr_search( query_dict )
     elif len(query_dict.keys()) > 0:
         product_list, num_found = _django_search( query_dict )
     else:

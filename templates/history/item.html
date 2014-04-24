@@ -11,83 +11,85 @@
 {% block content %}
 <h2 class="order-title">Fournisseur: {{ history.provider }} - Réceptionnée le {{ history.date_delivered|date }}</h2>
 <div class="order">
-	<div style="float:left;">
-		<h3>Infos:</h3>
-		<p style="font-size:14px;">Equipe: <b>{{ history.team }}</b></p>
-		<p>Date de réception: {{ history.date_delivered|date }}</p>
-		<p>Commande n°: {{ history.number }}</p>
-		{% if user|has_perm:"order.custom_can_validate" or user|has_perm:"order.custom_goto_status_4" %}
-			<p>Budget imputé: {{ history.budget }}</p>
-		{% endif %}
-	</div>
-	
-	{% if history.attachments.all.count > 0 %}
-	<div style="float:left;margin-left:20px;">
-		<h3>Pièces jointes:</h3>
-		{% with history as object %}
-			{% include "attachments/show.html" %}
-		{% endwith %}
-	</div>	
-	{% endif %}
-	
-	<div style="float:left;margin-left:20px;">
-		<h3>Commentaires:</h3>
-		<textarea>{{ history.comments|default:"" }}</textarea>
-	</div>
-	
-	<div class="cleaner" style="margin-bottom:20px;"></div>
+    <div style="float:left;">
+        <h3>Infos:</h3>
+        <p style="font-size:14px;">Equipe: <b>{{ history.team }}</b></p>
+        <p>Date de réception: {{ history.date_delivered|date }}</p>
+        <p>Commande n°: {{ history.number }}</p>
+        {% if user|has_perm:"order.custom_can_validate" or user|has_perm:"order.custom_goto_status_4" %}
+            <p>Budget imputé: {{ history.budget }}</p>
+        {% endif %}
+    </div>
+    
+    {% if history.attachments.all.count > 0 %}
+    <div style="float:left;margin-left:20px;">
+        <h3>Pièces jointes:</h3>
+        {% with history as object %}
+            {% include "attachments/show.html" %}
+        {% endwith %}
+    </div>  
+    {% endif %}
+    
+    <div style="float:left;margin-left:20px;">
+        <h3>Commentaires:</h3>
+        <textarea>{{ history.comments|default:"" }}</textarea>
+    </div>
+    
+    <div class="cleaner" style="margin-bottom:20px;"></div>
 
-	{# ############### #}
-	{#                 #}
-	{#   ORDER ITEMS   #}
-	{#                 #}
-	{# ############### #}
+    {# ############### #}
+    {#                 #}
+    {#   ORDER ITEMS   #}
+    {#                 #}
+    {# ############### #}
 
-	<table class="list">
-		<thead>
-			<th>Commandé par</th>
-			<th>Réceptionné par</th>
-			<th>Produit</th>
-			<th>Condt</th>
-			<th>Réf</th>
-			<th>N° Offre</th>
-			<th>Prix unitaire</th>
-			<th>Quantité</th>
-			<th>Prix total</th>
-			{% if user|can_edit:order %}
-			<th>Action</th>
-			{% endif %}
-		</thead>
-		<tbody>
-			{% for order_item in history.items.all %}
-			<tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
-				<td>{{ order_item.get_fullname }}</td>
-				<td>{{ order_item.get_fullname_recept|default:"" }}</td>
-				<td>{{ order_item.name }}</td>
-				<td>{{ order_item.packaging|default:"" }}</td>
-				<td>{{ order_item.reference|default:"" }}</td>
-				<td>{{ order_item.offer_nb|default:"" }}</td>
-				<td>{{ order_item.price }} €</td>
-				{% if user|can_edit:order %}
-				<td id="setQuantity">
-					<input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:15px;" />
-				</td>
-				{% else %}
-				<td>{{ order_item.quantity }}</td>
-				{% endif %}
-				<td>{{ order_item.total_price }} €</td>
-				{% if user|can_edit:order %}
-				<td>
-					<a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
-					<a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
-				</td>
-				{% endif %}
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	<br />
-	<p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ history.price }} €</b></p>
+    <table class="list">
+        <thead>
+            <th>Commandé par</th>
+            <th>Réceptionné par</th>
+            <th>Produit</th>
+            <th>Condt</th>
+            <th>Réf</th>
+            <th>N° Offre</th>
+            <th>Nomenclature</th>
+            <th>Prix unitaire</th>
+            <th>Quantité</th>
+            <th>Prix total</th>
+            {% if user|can_edit:order %}
+            <th>Action</th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for order_item in history.items.all %}
+            <tr class="{% cycle 'odd' 'even' %}" id="{{ order_item.id }}">
+                <td>{{ order_item.get_fullname }}</td>
+                <td>{{ order_item.get_fullname_recept|default:"" }}</td>
+                <td>{{ order_item.name }}</td>
+                <td>{{ order_item.packaging|default:"" }}</td>
+                <td>{{ order_item.reference|default:"" }}</td>
+                <td>{{ order_item.offer_nb|default:"" }}</td>
+                <td>{{ order_item.nomenclature|default:"" }}</td>
+                <td>{{ order_item.price }} €</td>
+                {% if user|can_edit:order %}
+                <td id="setQuantity">
+                    <input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:15px;" />
+                </td>
+                {% else %}
+                <td>{{ order_item.quantity }}</td>
+                {% endif %}
+                <td>{{ order_item.total_price }} €</td>
+                {% if user|can_edit:order %}
+                <td>
+                    <a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+                    <a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br />
+    <p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ history.price }} €</b></p>
 </div>
 
 <a href="{% url 'history_orders' %}" class="back">Retour</a>

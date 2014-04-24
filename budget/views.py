@@ -218,9 +218,9 @@ def debit(request, budget_id):
 @transaction.commit_on_success
 def transfer(request):
     if request.method == 'GET':
-        form = TransferForm()
+        form = TransferForm( user = request.user )
     elif request.method == 'POST':
-        form = TransferForm( data = request.POST )
+        form = TransferForm( user = request.user, data = request.POST )
         if form.is_valid():
             data = form.cleaned_data
             title1 = data.get('title1',None)

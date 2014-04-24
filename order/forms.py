@@ -146,6 +146,14 @@ class ServiceForm(forms.Form):
         required = True
     )
     name         = forms.CharField( label = u"Désignation" )
+    nomenclature = forms.CharField(
+        label    = u"Nomenclature",
+        required = False,
+        widget   = widgets.TextInput( attrs = { 
+            'class' : 'autocomplete', 
+            'autocomplete_url': reverse_lazy('autocomplete_product_codes') 
+        }),
+    )
     cost         = forms.CharField( label = u"Montant" )
     quantity     = forms.IntegerField( label = u"Quantité", initial = 1 )
     confidential = forms.BooleanField( label = u"Confidentiel ?", initial = False, required = False )
@@ -169,4 +177,13 @@ class ServiceForm(forms.Form):
         
         return cost
     
-
+    def clean_nomenclature(self):
+        nomenclature = self.cleaned_data.get('nomenclature', None)
+        if not nomenclature:
+            return None
+        
+        product_code = nomenclature.split(' - ')[0]
+        if ProductCode.objects.filter( code = product_code ).count() == 0:
+            raise forms.ValidationError(u"Cette nomenclature (%s) n'est pas reconnue." % product_code)
+        
+        return product_code

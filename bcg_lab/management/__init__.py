@@ -52,6 +52,7 @@ def create_custom_budget_permissions(sender, **kwargs):
         ('custom_view_budget', u"Voir un budget"),
         ('custom_add_budget', u"Ajouter un budget"),
         ('custom_edit_budget', u"Editer un budget"),
+        ('custom_can_transfer', u"Effectuer un virement"),
         ('custom_history_budget', u"Voir l'historique des budgets")
     ))
 
