@@ -49,13 +49,22 @@
 				</td>
 				<td>
 					<a href="{% url 'product_new' %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
-					{% if provider.users_in_charge.all.count == 0 or user in provider.users_in_charge.all or user.is_superuser %}
-					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
-					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
-					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
-					{% if provider.order_set.count == 0 %}
-					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
-					{% endif %}
+					{% if user in provider.users_in_charge.all or user.is_superuser %}
+    					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+    					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+    					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+    					{% if provider.order_set.count == 0 %}
+    					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+    					{% endif %}
+    			    {% else %}
+    			        {% if provider.users_in_charge.all.count == 0 and not provider.is_local %}
+        					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+        					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+        					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+        					{% if provider.order_set.count == 0 %}
+        					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+        					{% endif %}
+    			        {% endif %}
 					{% endif %}
 				</td>
 			</tr>
