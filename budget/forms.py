@@ -169,7 +169,7 @@ class BudgetLineFilterForm(forms.Form):
             'autocomplete_url': reverse_lazy('autocomplete_order_number')
         })
     )
-    product = forms.CharField(
+    product__icontains = forms.CharField(
         label     = u"Produit",
         help_text = "Appuyez sur 'esc' pour fermer la liste de choix.",
         required  = False,
