@@ -10,8 +10,11 @@ class ProviderForm(forms.ModelForm):
 	class Meta:
 		model = Provider
 	
-	def __init__( self, provider = None, *args, **kwargs ):
+	def __init__( self, user, *args, **kwargs ):
 		super( ProviderForm, self ).__init__( *args, **kwargs )
+		
+		if not user.has_perm('team.custom_is_admin'):
+		    del self.fields['is_local']
 		
 		self.fields['reseller'].queryset = Provider.objects.exclude(is_service = True).exclude(is_local = True)
 	

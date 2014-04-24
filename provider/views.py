@@ -19,7 +19,7 @@ def index(request):
 			'provider_list': Provider.objects.filter(is_service = False)
 		})
 	elif request.method == 'POST':
-		form = ProviderForm(data = request.POST)
+		form = ProviderForm( user = request.user, data = request.POST)
 		if form.is_valid():
 			form.save()
 			info_msg( request, u"Fournisseur ajouté avec succès." )
@@ -37,9 +37,9 @@ def item(request, provider_id):
 	
 	provider = get_object_or_404(Provider, id = provider_id)
 	if request.method == 'GET':
-		form = ProviderForm(instance = provider)
+		form = ProviderForm( user = request.user, instance = provider)
 	elif request.method == 'POST':
-		form = ProviderForm(instance = provider, data = request.POST)
+		form = ProviderForm( user = request.user, instance = provider, data = request.POST)
 		if form.is_valid():
 			form.save()
 			
@@ -69,7 +69,7 @@ def item(request, provider_id):
 @login_required
 def new(request):
 	return render(request, 'provider/form.html', {
-		'form': ProviderForm()
+		'form': ProviderForm( user = request.user )
 	})
 
 @login_required
