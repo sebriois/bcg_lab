@@ -87,7 +87,7 @@ def read_xls( header, data, input_excel ):
             if not name:
                 is_valid = 'false'
                 errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
-            if len(name) >= 500:
+            if len(str(name)) >= 500:
                 is_valid = 'false'
                 errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
         else:
