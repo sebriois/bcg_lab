@@ -31,7 +31,7 @@
     <p>Statut: {{ order.get_status_display }}</p>
     {% if order.status > 2 and user|has_perm:"order.custom_edit_number" %}
     <strong>Commande n°</strong>
-    <input type="text" id="order_number"
+    <input type="text" id="order_number" maxlength="20"
         url="{% url 'set_order_number' order.id %}"
         value="{{ order.number|default:"" }}"
         style="float:none;display:inline;padding:1px;"

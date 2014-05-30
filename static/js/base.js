@@ -684,16 +684,20 @@ $(document).ready(function(){
         var number = $('#order_number', parent).val();
         
         if ( url_order_nb && number ) {
-            $.ajax({
-                url: url_order_nb,
-                async: false,
-                data: {
-                    'number': number
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert(jqXHR.responseText);
-                }
-            });
+            if ( number.length <= 20 ) {
+                $.ajax({
+                    url: url_order_nb,
+                    async: false,
+                    data: {
+                        'number': number
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        alert(jqXHR.responseText);
+                    }
+                });
+            } else {
+                alert("N° de commande: max 20 caractères autorisés. (valeur saisie: " + number + ")");
+            }
         }
         
         $(parent).effect('highlight');

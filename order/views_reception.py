@@ -60,8 +60,11 @@ def do_reception( request ):
     for action_id in action_ids:
         item_id = action_id.split("_")[1]
         item    = OrderItem.objects.get( id = item_id )
-        order   = item.get_order()
         
+        if Order.objects.filter( items__id = item.id ).count() == 0:
+            continue
+        
+        order = item.get_order()
         qty_delivered = int( request.POST.get("delivered_%s" % item_id, 0) )
         
         if item.delivered - qty_delivered < 0:
