@@ -4,94 +4,105 @@
 {% block provider_list %}active{% endblock %}
 
 {% block header %}
-	<h1>Gestion des fournisseurs</h1>
-	<h2>Liste des fournisseurs</h2>
+    <h1>Gestion des fournisseurs</h1>
+    <h2>Liste des fournisseurs</h2>
 {% endblock %}
 
 {% block content %}
 <div class="saving">
-	<img src="{% static 'img/layout/wait.gif' %}" />
+    <img src="{% static 'img/layout/wait.gif' %}" />
 </div>
 
 {% if provider_list %}
 <table class="list">
-	<thead>
-		<th>Nom du fournisseur</th>
-		<th>Responsables</th>
-		<th>Notes</th>
-		<th>Action</th>
-	</thead>
-	
-	<tbody>
-		{% for provider in provider_list %}
-			<tr class="{% cycle 'even' 'odd' %}">
-				<td>
-					{% if provider.reseller %}
-						{{ provider.name }} ({{ provider.product_set.all.count }} produits)
-						- Revendeur: 
-						<a href="{% url 'product_index' %}?provider={{provider.reseller.id}}&connector=OR" class="table_go show_wait">
-							{{ provider.reseller.name }}
-						</a>
-					{% else %}
-						<a href="{% url 'product_index' %}?provider={{provider.id}}&connector=OR" class="table_go show_wait">
-							{{ provider.name }}
-						</a>({{ provider.product_set.all.count }} produits)
-					{% endif %}
-				</td>
-				<td>
-					{{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
-					{% if provider.users_in_charge.all.count > 0 %}
-						<button class="mail no-text" to="{{provider.users_in_charge.all|asId|join:","}}"> </button>
-					{% endif %}
-				</td>
-				<td>
-					<button class="comment notesDialog no-text" href="{% url 'set_notes' provider.id %}" content="{{ provider.notes|default:'' }}"></button>
-				</td>
-				<td>
-					<a href="{% url 'product_new' %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
-					{% if user in provider.users_in_charge.all or user.is_superuser %}
-    					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
-    					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
-    					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
-    					{% if provider.order_set.count == 0 %}
-    					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
-    					{% endif %}
-    			    {% else %}
-    			        {% if provider.users_in_charge.all.count == 0 and not provider.is_local %}
-        					<a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
-        					<a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
-        					<a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
-        					{% if provider.order_set.count == 0 %}
-        					    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
-        					{% endif %}
-    			        {% endif %}
-					{% endif %}
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
+    <thead>
+        <th>Nom du fournisseur</th>
+        <th>Responsables</th>
+        <th>Notes</th>
+        <th>Action</th>
+    </thead>
+    
+    <tbody>
+        {% for provider in provider_list %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td>
+                    {% if provider.reseller %}
+                        {{ provider.name }} ({{ provider.product_set.all.count }} produits)
+                        - Revendeur: 
+                        <a href="{% url 'product_index' %}?provider={{provider.reseller.id}}&connector=OR" class="table_go show_wait">
+                            {{ provider.reseller.name }}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'product_index' %}?provider={{provider.id}}&connector=OR" class="table_go show_wait">
+                            {{ provider.name }}
+                        </a>({{ provider.product_set.all.count }} produits)
+                    {% endif %}
+                </td>
+                <td>
+                    {{ provider.users_in_charge.all|join:", "|default:"<strong>Aucun</strong>" }}
+                    {% if provider.users_in_charge.all.count > 0 %}
+                        <button class="mail no-text" to="{{provider.users_in_charge.all|asId|join:","}}"> </button>
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="comment notesDialog no-text" href="{% url 'set_notes' provider.id %}" content="{{ provider.notes|default:'' }}"></button>
+                </td>
+                <td>
+                    <a href="{% url 'product_new' %}?provider_id={{provider.id}}" class="plus">Ajouter&nbsp;un&nbsp;produit</a>
+                    {% if user in provider.users_in_charge.all or user.is_superuser %}
+                        {% if provider.is_local %}
+                             {% if user|has_perm:"order.custom_view_local_provider" %}
+                                <a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+                                <a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+                                <a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+                                {% if provider.order_set.count == 0 %}
+                                    <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+                                {% endif %}
+                             {% endif %}
+                        {% else %}
+                            <a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+                            <a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+                            <a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+                            {% if provider.order_set.count == 0 %}
+                                <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        {% if provider.users_in_charge.all.count == 0 and not provider.is_local %}
+                            <a href="{% url 'import_products' provider.id %}" class="import">Import produits</a>
+                            <a href="{% url 'export_products' provider.id %}" class="export">Export produits</a>
+                            <a href="{% url 'provider_item' provider.id %}" class="pencil">Editer</a>
+                            {% if provider.order_set.count == 0 %}
+                                <a href="{% url 'provider_delete' provider.id %}" class="trash">Supprimer</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% else %}
-	<p>Aucun fournisseur</p>
+    <p>Aucun fournisseur</p>
 {% endif %}
 
 <div id="notesDialog" title="Notes">
-	<textarea>{# text set with js #}</textarea>
+    <textarea>{# text set with js #}</textarea>
 </div>
 
 <div id="mail" class="dialog" title="Envoyer un message au(x) responsable(s)">
-	<form action="{% url 'send_message' %}" method="POST">{% csrf_token %}
-		<input type="hidden" name="to" value="" />
-		<input type="hidden" name="next" value="{% url 'provider_index' %}">
-		<div class="form-row">
-			<label for="subject">Sujet</label>
-			<div class="cleaner"></div>
-			<input type="text" name="subject" />
-			<div class="cleaner"></div>
-			<label for="message">Message</label>
-			<textarea name="message"></textarea>
-			<div class="cleaner"></div>
-		</div>
-	</form>
+    <form action="{% url 'send_message' %}" method="POST">{% csrf_token %}
+        <input type="hidden" name="to" value="" />
+        <input type="hidden" name="next" value="{% url 'provider_index' %}">
+        <div class="form-row">
+            <label for="subject">Sujet</label>
+            <div class="cleaner"></div>
+            <input type="text" name="subject" />
+            <div class="cleaner"></div>
+            <label for="message">Message</label>
+            <textarea name="message"></textarea>
+            <div class="cleaner"></div>
+        </div>
+    </form>
 </div>
 {% endblock %}
