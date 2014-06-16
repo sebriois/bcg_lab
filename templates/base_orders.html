@@ -17,7 +17,7 @@
 	</li>
 	{% endif %}
 	
-	{% if not user|has_perm:"order.custom_view_local_provider" %}
+	{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
 	<li class="{% block menu_order %}{% endblock %}">
 		<a href="{% url 'tab_orders' %}">
 			{% if user|has_perm:"order.custom_goto_status_4" and not user.is_superuser %}

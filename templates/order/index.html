@@ -4,12 +4,12 @@
 {% block menu_order %}active{% endblock %}
 
 {% block header %}
-	<h1>Gestion des commandes</h1>
-	{% if user|has_perm:"order.custom_goto_status_4" and not user.is_superuser %}
-		<h2>Commandes à saisir</h2>
-	{% else %}
-		<h2>Commandes en cours</h2>
-	{% endif %}
+    <h1>Gestion des commandes</h1>
+    {% if user|has_perm:"order.custom_goto_status_4" and not user.is_superuser %}
+        <h2>Commandes à saisir</h2>
+    {% else %}
+        <h2>Commandes en cours</h2>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -17,89 +17,93 @@
 {% include "order/_search_form.html" %}
 
 <div class="hide_on_save">
-	{% if orders.object_list %}
-		<div style="color:#e2350d">
-			<div class="legend_urgent"></div>commandes urgentes
-		</div>
-		<div class="cleaner"></div>
+    {% if orders.object_list %}
+        <div style="color:#e2350d">
+            <div class="legend_urgent"></div>commandes urgentes
+        </div>
+        <div class="cleaner"></div>
 
-		<div style="color:#f9a900">
-			<div class="legend_problem"></div>problème sur la commande
-		</div>
-		<div class="cleaner"></div>
-		
-		{% regroup orders.object_list by status as order_list %}
-		
-		<table class="list">
-			<thead>
-				<th>Date</th>
-				<th>Dernière MAJ</th>
-				<th>Fournisseur</th>
-				{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
-				<th>Equipe</th>
-				{% endif %}
-				{% if user|has_perm:"budget.custom_view_budget" %}
-				<th>Budget</th>
-				{% endif %}
-				<th>Montant</th>
-				<th>Statut</th>
-				<th>Cmde N°</th>
-				<th>Action</th>
-			</thead>
-			
-			<tbody>
-				{% for orders in order_list %}
-					{% if forloop.counter > 1 %}
-						<tr class="empty_row_orders"><td colspan="9"></td></tr>
-					{% endif %}
-					
-					{% for order in orders.list %}
-					<tr class="{% cycle 'even' 'odd' %} {% if order.has_problem %}has_problem{% endif %} {% if order.is_urgent %}is_urgent{% endif %}">
-						<td>{{ order.date_created|date }}</td>
-						<td>{{ order.last_change|date }}</td>
-						<td>{{ order.provider.name }}</td>
-						{% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
-							<td>{{ order.get_full_name }}</td>
-						{% endif %}
-						{% if user|has_perm:"budget.custom_view_budget" %}
-							{% if order.budget %}
-							<td>{{ order.budget.name }}</td>
-							{% else %}
-							<td class="warning" style="background-position:center"></td>
-							{% endif %}
-						{% endif %}
-						<td>{{ order.price }} €</td>
-						<td><b>{{ order.get_status_display }}</b></td>
-						<td>{{ order.number|default:"" }}</td>
-						<td>
-							{% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
-								{% if order.budget.budget_type == 0 %}
-									<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie SILAB</a>
-								{% else %}
-									<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
-								{% endif %}
-							{% else %}
-								<a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
-							{% endif %}
-						</td>
-					</tr>
-					{% endfor %}
-				{% endfor %}
-			</tbody>
-		</table>
-		{% pagination orders %}
-	{% else %}
-		<p>Aucune commande en cours.</p>
-	{% endif %}
+        <div style="color:#f9a900">
+            <div class="legend_problem"></div>problème sur la commande
+        </div>
+        <div class="cleaner"></div>
+        
+        {% regroup orders.object_list by status as order_list %}
+        
+        <table class="list">
+            <thead>
+                <th>Date</th>
+                <th>Dernière MAJ</th>
+                <th>Fournisseur</th>
+                {% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
+                <th>Equipe</th>
+                {% endif %}
+                {% if user|has_perm:"budget.custom_view_budget" %}
+                <th>Budget</th>
+                {% endif %}
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Cmde N°</th>
+                <th>Action</th>
+            </thead>
+            
+            <tbody>
+                {% for orders in order_list %}
+                    {% if forloop.counter > 1 %}
+                        <tr class="empty_row_orders"><td colspan="9"></td></tr>
+                    {% endif %}
+                    
+                    {% for order in orders.list %}
+                    <tr class="{% cycle 'even' 'odd' %} {% if order.has_problem %}has_problem{% endif %} {% if order.is_urgent %}is_urgent{% endif %}">
+                        <td>{{ order.date_created|date }}</td>
+                        <td>{{ order.last_change|date }}</td>
+                        {% if order.provider.is_service %}
+                            <td>{{ order.provider.name }} ({{ order.items.all.0.name|truncatewords:5 }})</td>
+                        {% else %}
+                            <td>{{ order.provider.name }}</td>
+                        {% endif %}
+                        {% if user|has_multiple_teams or user|has_perm:"team.custom_view_teams" %}
+                            <td>{{ order.get_full_name }}</td>
+                        {% endif %}
+                        {% if user|has_perm:"budget.custom_view_budget" %}
+                            {% if order.budget %}
+                            <td>{{ order.budget.name }}</td>
+                            {% else %}
+                            <td class="warning" style="background-position:center"></td>
+                            {% endif %}
+                        {% endif %}
+                        <td>{{ order.price }} €</td>
+                        <td><b>{{ order.get_status_display }}</b></td>
+                        <td>{{ order.number|default:"" }}</td>
+                        <td>
+                            {% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
+                                {% if order.budget.budget_type == 0 %}
+                                    <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie SILAB</a>
+                                {% else %}
+                                    <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% pagination orders %}
+    {% else %}
+        <p>Aucune commande en cours.</p>
+    {% endif %}
 </div>
 
 <div id="setOrderNb" class="dialog" title="Saisie du N° de commande">
-	<div class="form-row">
-		<label for="number">N° de commande:</label>
-		<div class="cleaner"></div>
-		<input type="text" name="number" />
-		<div class="cleaner"></div>
-	</div>
+    <div class="form-row">
+        <label for="number">N° de commande:</label>
+        <div class="cleaner"></div>
+        <input type="text" name="number" />
+        <div class="cleaner"></div>
+    </div>
 </div>
 
 {% endblock %}

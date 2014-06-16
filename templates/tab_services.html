@@ -1,6 +1,13 @@
 {% extends "base_main.html" %}
+{% load static %}
 
 {% block menu_services %}active{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/autocomplete.css' %}" type="text/css" />
+    <script type="text/javascript" src="{% static 'js/jquery.autocomplete.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/autocomplete.js' %}"></script>
+{% endblock %}
 
 {% block header %}
   <h1>Services</h1>
