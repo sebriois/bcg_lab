@@ -87,9 +87,18 @@ def read_xls( header, data, input_excel ):
             if not name:
                 is_valid = 'false'
                 errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
-            if len(str(name)) >= 500:
+            
+            if isinstance(name, int):
+                name = unicode(name)
+            
+            try:
+                if len(name) >= 500:
+                    is_valid = 'false'
+                    errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
+            except:
                 is_valid = 'false'
-                errors.append( base_error + u"Colonne 'désignation' - valeur trop longue (%s/500 charactères)" % len(name))
+                errors.append( base_error + u"Colonne 'désignation' - impossible de lire la désignation (problère d'accent, etc.)")
+                
         else:
             is_valid = 'false'
             errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
