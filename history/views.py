@@ -233,10 +233,13 @@ def export_budgetlines(request):
     wb = xlwt.Workbook()    
     ws = wb.add_sheet("export")
         
-    header = [u"EQUIPE", u"BUDGET", u"N°CMDE",u"DATE", u"NATURE", 
-    u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION", 
-    u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"]
-    for col, title in enumerate(header): ws.write(0, col, title)
+    header = [
+        u"EQUIPE", u"BUDGET", u"N°CMDE", u"DATE", u"NATURE",
+        u"TUTELLE", u"FOURNISSEUR", u"COMMENTAIRE", u"DESIGNATION",
+        u"CREDIT", u"DEBIT", u"QUANTITE", u"TOTAL", u"MONTANT DISPO"
+    ]
+    for col, title in enumerate(header):
+        ws.write(0, col, title)
     
     prev_budget = None
     row = 1

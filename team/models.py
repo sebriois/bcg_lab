@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 
 
 class Team(models.Model):
@@ -10,6 +12,7 @@ class Team(models.Model):
     is_active = models.BooleanField(u"Actif?", default=True)
 
     class Meta:
+        db_table = 'team'
         verbose_name = u'Equipe'
         verbose_name_plural = u'Equipes'
         ordering = ('name',)
@@ -17,10 +20,42 @@ class Team(models.Model):
     def __str__(self):
         return u"%s" % (self.fullname and self.fullname or self.name)
 
-    def get_members(self):
+    @property
+    def members(self):
         return self.teammember_set
 
-    members = property(get_members)
+    @property
+    def names(self):
+        if not hasattr(self, "_name"):
+            self._name = self.name + self.teamnamehistory_set.all().values_list("name", flat = True)
+        return self._name
+
+
+@receiver(pre_save, sender = Team)
+def save_old_name_to_history(sender, instance, **kwargs):
+    if instance.id:
+        try:
+            current_team = Team.objects.get(id = instance.id)
+            if current_team.name != instance.name or current_team.fullname != instance.fullname:
+                TeamNameHistory.objects.get_or_create(
+                    team = instance,
+                    name = current_team.name,
+                    fullname = current_team.fullname
+                )
+        except Team.DoesNotExist:
+            pass
+
+
+class TeamNameHistory(models.Model):
+    team = models.ForeignKey(Team)
+    name = models.CharField(u"Nom", max_length = 100)
+    fullname = models.CharField(u"Nom", max_length = 100)
+
+    class Meta:
+        db_table = 'team_name_history'
+        verbose_name = "Historique nom d'équipe"
+        verbose_name_plural = "Historique nom d'équipe"
+        ordering = ('team', 'name')
 
 
 class TeamMember(models.Model):
@@ -33,6 +68,7 @@ class TeamMember(models.Model):
     send_on_sent = models.BooleanField(u"Email quand commande envoyée ?", default=False)
 
     class Meta:
+        db_table = "team_member"
         verbose_name = u'Membre équipe'
         verbose_name_plural = u'Membres équipe'
         ordering = ('team', 'user__username')

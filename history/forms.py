@@ -89,8 +89,16 @@ class HistoryFilterForm(forms.Form):
             teams = Team.objects.all()
         else:
             teams = get_teams(user)
+        team_choices = []
+        for team in teams:
+            team_choices.append((team.id, team.fullname))
+            for team_name_history in team.teamnamehistory_set.all():
+                team_choice = (team.id, "%s (%s)" % (team_name_history.fullname, team.fullname))
+                if team_choice not in team_choices:
+                    team_choices.append(team_choice)
         self.fields['team'].queryset = teams
-        
+        self.fields['team'].widget = forms.Select(choices = EMPTY_SEL + team_choices)
+
         categories = list(set(OrderItem.objects.values_list('category', flat = True).order_by('category')))
         self.fields['items__category'].choices = EMPTY_SEL + [(c,c) for c in categories]
         
@@ -170,13 +178,20 @@ class BudgetHistoryFilterForm(forms.Form):
             teams = get_teams(user)
             budget_choices = [(b.id,b.name) for b in Budget.objects.filter(is_active=False, team__in = [t.id for t in teams])]
         
-        name_choices = []
         number_choices = []
         for bl in BudgetLine.objects.filter(is_active = False, team__in = [t.name for t in teams]):
             if bl.number and not bl.number in number_choices:
                 number_choices.append(bl.number)
-        
+
+        team_choices = []
+        for team in teams:
+            team_choices.append((team.id, team.fullname))
+            for team_name_history in team.teamnamehistory_set.all():
+                team_choice = (team.id, "%s (%s)" % (team_name_history.fullname, team.fullname))
+                if team_choice not in team_choices:
+                    team_choices.append(team_choice)
         self.fields['team'].queryset = teams
+        self.fields['team'].widget = forms.Select(choices = EMPTY_SEL + team_choices)
         self.fields['budget_id'].choices = EMPTY_SEL + budget_choices
         
         NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))

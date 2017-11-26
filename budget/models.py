@@ -5,6 +5,7 @@ from django.db.models.query import Q
 from team.models import Team
 from bcg_lab.constants import BUDGET_CHOICES
 
+
 class Budget(models.Model):
     team = models.ForeignKey(Team, verbose_name="Equipe")
     name = models.CharField(u"Origine de crédit (Nom)", max_length=100, unique = True)
@@ -34,7 +35,7 @@ class Budget(models.Model):
         return sum([bl.debit * bl.quantity for bl in BudgetLine.objects.filter(budget_id = self.id, debit__isnull = False)])
 
     def update_budgetlines(self):
-        for bl in BudgetLine.objects.filter( budget_id = self.id ):
+        for bl in BudgetLine.objects.filter(budget_id = self.id):
             bl.team = self.team.name
             bl.budget = self.name
             bl.origin = self.default_origin
@@ -97,8 +98,9 @@ class BudgetLine(models.Model):
     is_active     = models.BooleanField(u"Active?", default = True)
 
     class Meta:
+        db_table = "budget_line"
         verbose_name = "Ligne budgétaire"
-        verbose_name = "Lignes budgétaires"
+        verbose_name_plural = "Lignes budgétaires"
         ordering = ("team", "budget", "date", "-order_id")
 
     def get_amount_left(self):
@@ -134,7 +136,8 @@ class BudgetLine(models.Model):
         from order.models import Order
         from history.models import History
 
-        if not self.number: return ""
+        if not self.number:
+            return ""
 
         # From order
         ids = Order.objects.filter( number = self.number ).values_list('team',flat=True)
