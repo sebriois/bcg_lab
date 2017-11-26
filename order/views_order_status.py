@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, loader
 
@@ -24,6 +25,15 @@ def set_next_status(request, order_id):
     order = get_object_or_404(Order, id = order_id)
     
     if order.status == 0:
+        missing_nomenclature = order.items.filter(
+            Q(nomenclature__isnull = True) |
+            Q(nomenclature = '')
+        )
+        if missing_nomenclature.count() > 0:
+            for item in missing_nomenclature:
+                error_msg(request, "Veuillez saisir une nomenclature pour l'item '%s' de la commande." % item.name)
+            return redirect('tab_cart')
+
         return _move_to_status_1(request, order)
     
     elif order.status == 1 and request.user.has_perm('order.custom_validate'):
@@ -137,6 +147,7 @@ def _move_to_status_2(request, order):
         info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
     return redirect(request.GET.get('next','tab_validation'))
 
+
 def _move_to_status_3(request, order):
     if order.budget:
         order.status = 3
@@ -190,6 +201,7 @@ def _move_to_status_4(request, order):
     
     # return redirect(reverse('tab_orders') + "?page=%s" % request.GET.get("page","1"))
     return redirect(order)
+
 
 def _move_to_status_5(request, order):
     try:
