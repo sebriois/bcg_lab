@@ -25,15 +25,6 @@ def set_next_status(request, order_id):
     order = get_object_or_404(Order, id = order_id)
     
     if order.status == 0:
-        missing_nomenclature = order.items.filter(
-            Q(nomenclature__isnull = True) |
-            Q(nomenclature = '')
-        )
-        if missing_nomenclature.count() > 0:
-            for item in missing_nomenclature:
-                error_msg(request, "Veuillez saisir une nomenclature pour l'item '%s' de la commande." % item.name)
-            return redirect('tab_cart')
-
         return _move_to_status_1(request, order)
     
     elif order.status == 1 and request.user.has_perm('order.custom_validate'):
@@ -61,35 +52,40 @@ def set_next_status(request, order_id):
 
 
 def _move_to_status_1(request, order):
-    #
-    # check whether all order items / products have a nomenclature
-    #
-    items_without_nomenclature = order.items.filter(nomenclature__isnull = True)
-
+    missing_nomenclature = order.items.filter(
+        Q(nomenclature__isnull = True) |
+        Q(nomenclature = '')
+    )
+    if missing_nomenclature.count() > 0:
+        for item in missing_nomenclature:
+            error_msg(request, "Veuillez saisir une nomenclature pour l'item '%s' de la commande %s en cliquant sur "
+                               "le bouton 'modifier' de la ligne correspondante." % (item.name, order.provider.name))
+        return redirect('tab_cart')
 
     order.status = 1
     order.save()
     info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
-    
-    emails = []
-    for member in order.team.members.all():
-        user = member.user
-        if user.has_perm('order.custom_validate') and not user.is_superuser and user.email and user.email not in emails:
-            emails.append(user.email)
-    
-    if emails:
-        subject = "[BCG-Lab %s] Validation d'une commande (%s)" % (settings.SITE_NAME, order.get_full_name())
-        template = loader.get_template('order/validation_email.txt')
-        context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
-        message = template.render(context)
-        for email in emails:
-            try:
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
-            except:
-                continue
-    else:
-        warn_msg(request, "Aucun email de validation n'a pu être \
-        envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
+
+    if not settings.DEBUG:
+        emails = []
+        for member in order.team.members.all():
+            user = member.user
+            if user.has_perm('order.custom_validate') and not user.is_superuser and user.email and user.email not in emails:
+                emails.append(user.email)
+
+        if emails:
+            subject = "[BCG-Lab %s] Validation d'une commande (%s)" % (settings.SITE_NAME, order.get_full_name())
+            template = loader.get_template('order/validation_email.txt')
+            context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
+            message = template.render(context)
+            for email in emails:
+                try:
+                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+                except:
+                    continue
+        else:
+            warn_msg(request, "Aucun email de validation n'a pu être \
+            envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
     
     if request.user.has_perm('order.custom_validate'):
         return redirect('tab_validation')
