@@ -4,9 +4,11 @@ from django.forms import widgets
 
 from infos.models import Info
 
+
 class InfoForm(forms.ModelForm):
-	class Meta:
-		model = Info
-		widgets = {
-			'expiry': widgets.DateInput(attrs={'class':'datepicker'})
-		}
+    class Meta:
+        model = Info
+        fields = ['text', 'expiry']
+        widgets = {
+            'expiry': widgets.DateInput(attrs={'class':'datepicker'})
+        }

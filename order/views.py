@@ -1,29 +1,27 @@
 # encoding: utf-8
-from datetime import datetime, date, timedelta
-from decimal import Decimal
 import xlwt
 
 from django.db.models.query import Q
 from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, loader
-from django.utils.http import urlencode
 from django.shortcuts import render
 
-from provider.models import Provider
 from product.models import Product
 from budget.models import Budget, BudgetLine
 from order.models import Order, OrderItem
 from order.forms import OrderItemForm, AddDebitForm, AddCreditForm, FilterForm
 
-from bcg_lab.constants import *
-from utils import *
+from team.models import Team, TeamMember
+from team.utils import get_teams
+from utils import GET_method, paginate, POST_method, AJAX_method
+from utils.request_messages import info_msg, warn_msg, not_allowed_msg, error_msg
+
 
 @login_required
 @GET_method
@@ -118,7 +116,7 @@ def tab_validation( request ):
     elif request.user.has_perm('order.custom_validate'):
         order_list = Order.objects.filter( team__in = teams, status = 1 ).order_by('-date_created')
     else:
-        not_allowed_msg( request )
+        not_allowed_msg(request)
         return redirect('home')
     
     # BUDGETS THAT CAN BE SELECTED
@@ -209,7 +207,7 @@ def order_export(request, order_id):
     
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def orderitem_detail(request, orderitem_id):
     orderitem = get_object_or_404( OrderItem, id = orderitem_id )
     
@@ -233,7 +231,7 @@ def _orderitem_update(request, orderitem):
     data = request.POST.copy()
     data['provider'] = order.provider.name
     
-    form = OrderItemForm( instance = orderitem, data = data )
+    form = OrderItemForm(instance = orderitem, data = data)
     if form.is_valid():
         form.save()
         
@@ -255,11 +253,11 @@ def _orderitem_update(request, orderitem):
 
 @login_required
 @POST_method
-@transaction.commit_on_success
+@transaction.atomic
 def add_orderitem(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     info_msg( request, request.POST.items())
-    form = OrderItemForm( data = request.POST )
+    form = OrderItemForm(data = request.POST)
     if form.is_valid():
         item = form.save( commit = False )
         item.cost_type = request.POST['cost_type']
@@ -276,11 +274,11 @@ def add_orderitem(request, order_id):
     return redirect( request.POST.get('next', order))
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def add_credit(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     next = request.POST.get('next', 'tab_orders')
-    form = AddCreditForm( data = request.POST )
+    form = AddCreditForm(data = request.POST)
     if form.is_valid():
         item = form.save( commit = False )
         item.username = request.POST['username']
@@ -300,11 +298,11 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 
 @login_required
 @POST_method
-@transaction.commit_on_success
+@transaction.atomic
 def add_debit(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     next = request.POST.get('next', 'tab_orders')
-    form = AddDebitForm( data = request.POST )
+    form = AddDebitForm(data = request.POST)
     if form.is_valid():
         item = form.save( commit = False )
         item.username = request.POST['username']
@@ -325,7 +323,7 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 
 @login_required
 @GET_method
-@transaction.commit_on_success
+@transaction.atomic
 def orderitem_delete(request, orderitem_id):
     item = get_object_or_404( OrderItem, id = orderitem_id )
     order = item.order_set.get()
@@ -343,7 +341,11 @@ def orderitem_delete(request, orderitem_id):
     
     # SEND EMAIL TO ITEM OWNER - if set in preferences
     if request.user.username != item.username:
-        tm = TeamMember.objects.filter( user__username = item.username, send_on_edit = True, user__email__isnull = False )
+        tm = TeamMember.objects.filter(
+            user__username = item.username,
+            send_on_edit = True,
+            user__email__isnull = False
+        )
         if tm.count() > 0:
             subject = u"[BCG-Lab %s] Item supprimé (%s)" % (settings.SITE_NAME, item.name)
             template = loader.get_template("email_delete_item.txt")
@@ -353,7 +355,7 @@ def orderitem_delete(request, orderitem_id):
     item.delete()
     
     if order.items.all().count() == 0:
-        warn_msg( request, "La commande ne contenant plus d'article, elle a également été supprimée.")
+        warn_msg(request, "La commande ne contenant plus d'article, elle a également été supprimée.")
         order.delete()
         next_page = 'tab_orders'
     
@@ -361,7 +363,7 @@ def orderitem_delete(request, orderitem_id):
 
 @login_required
 @GET_method
-@transaction.commit_on_success
+@transaction.atomic
 def orderitem_disjoin(request, orderitem_id):
     item = get_object_or_404( OrderItem, id = orderitem_id )
     order = item.get_order()
@@ -377,7 +379,7 @@ def orderitem_disjoin(request, orderitem_id):
 
 @login_required
 @GET_method
-@transaction.commit_on_success
+@transaction.atomic
 def order_delete(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     BudgetLine.objects.filter(order_id = order.id).delete()
@@ -401,7 +403,7 @@ def order_delete(request, order_id):
   #################
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 @AJAX_method
 def set_team(request, order_id):
     team_id = request.GET.get("team_id", None)
@@ -417,7 +419,7 @@ def set_team(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_notes(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     if 'notes' in request.GET:
@@ -429,7 +431,7 @@ def set_notes(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_number(request, order_id):
     number = request.GET.get("number", None)
     if not number:
@@ -446,7 +448,7 @@ def set_number(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_budget(request, order_id):
     budget_id = request.GET.get("budget_id", None)
     if not budget_id:
@@ -485,7 +487,7 @@ def set_budget(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_is_urgent(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     order.is_urgent = request.GET['is_urgent'] == 'true'
@@ -495,7 +497,7 @@ def set_is_urgent(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_has_problem(request, order_id):
     order = get_object_or_404( Order, id = order_id )
     order.has_problem = request.GET['has_problem'] == 'true'
@@ -505,7 +507,7 @@ def set_has_problem(request, order_id):
 
 @login_required
 @AJAX_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_item_quantity(request):
     orderitem_id = request.GET.get('orderitem_id', None)
     quantity = request.GET.get('quantity', None)
@@ -534,16 +536,16 @@ def set_item_quantity(request):
 
 @login_required
 @POST_method
-@transaction.commit_on_success
+@transaction.atomic
 def cart_add(request):
-    member = get_team_member( request )
+    member = request.user.teammember_set.get()
     product = get_object_or_404( Product, id = request.POST.get('product_id') )
     quantity = request.POST.get('quantity')
     
     order, created = Order.objects.get_or_create(
-        team         = member.team,
+        team = member.team,
         provider = product.provider,
-        status   = 0
+        status = 0
     )
     item = order.add( product, quantity )
     item.username = request.user.username

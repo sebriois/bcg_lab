@@ -1,21 +1,21 @@
 # -*- coding : utf8 -*-
-from xml.etree.ElementTree import Element, SubElement, tostring
-import commands
 import json
-
-from urllib2 import Request, urlopen, HTTPError
+import subprocess
+import urllib
+from urllib.error import HTTPError
 
 from django.conf import settings
 from django.utils.http import urlencode
 
+
 def send_request( url, args ):
-    req = Request( url, urlencode(args) )
+    req = urllib.request.Request(url, urlencode(args))
     
     try:
-        f = urlopen( req )
+        f = urllib.request.urlopen(req)
         return f.read()
     except HTTPError as error:
-        print error.code, error.reason
+        print(error.code, error.reason)
         return False
 
 
@@ -69,18 +69,17 @@ class Solr(object):
         else:
             return []
         
-    def post( self, data_dict = {} ):
+    def post(self, data_dict = {}):
         if not data_dict:
             raise Exception("doc to post is empty")
         
-        json_doc = json.dumps([ data_dict ])
+        json_doc = json.dumps([data_dict])
         
         update_url = settings.SOLR_URL + '/update/json'
         args = { 'stream.body': json_doc }
         
         if not send_request( update_url, args ):
-            print "Failed to update solr with", data_dict
+            print("Failed to update solr with", data_dict)
 
         command = "curl %s?commit=true" % update_url
-        commands.getoutput(command)
-    
+        subprocess.check_output(command, shell = True)

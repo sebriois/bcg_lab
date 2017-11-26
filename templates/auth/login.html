@@ -32,7 +32,7 @@
 		</div>
 		<div id="in_login">
 			<div id="login_subhead">Identification</div>
-			<form method="post" action="{% url 'django.contrib.auth.views.login' %}" name="login">{% csrf_token %}
+			<form method="post" action="{% url 'login' %}" name="login">{% csrf_token %}
 				{% for field in form %}{% include "form_snippet.html" %}{% endfor %}
 				<br/>
 				<input type="image" src="{% static 'img/layout/btn-login.png' %}" value="Connexion" class="submit" />

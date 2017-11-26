@@ -1,35 +1,27 @@
 # encoding: utf-8
-from datetime import datetime, date, timedelta
-from decimal import Decimal
-import xlwt
+from datetime import datetime
 
-from django.db.models.query import Q
 from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Context, loader
-from django.utils.http import urlencode
-from django.shortcuts import render
 
-from provider.models import Provider
-from product.models import Product
 from budget.models import Budget, BudgetLine
-from order.models import Order, OrderItem
-from order.forms import OrderItemForm, AddDebitForm, AddCreditForm, FilterForm
+from order.models import Order
+from team.models import TeamMember
+from utils import GET_method
+from utils.request_messages import error_msg, info_msg, warn_msg
 
-from bcg_lab.constants import *
-from utils import *
 
 @login_required
 @GET_method
-@transaction.commit_on_success
+@transaction.atomic
 def set_next_status(request, order_id):
-    order = get_object_or_404( Order, id = order_id )
+    order = get_object_or_404(Order, id = order_id)
     
     if order.status == 0:
         return _move_to_status_1(request, order)
@@ -37,7 +29,7 @@ def set_next_status(request, order_id):
     elif order.status == 1 and request.user.has_perm('order.custom_validate'):
         if request.user.has_perm('team.custom_view_teams'):
             return _move_to_status_2(request, order)
-        elif order.team.members.filter( user = request.user ):
+        elif order.team.members.filter(user = request.user):
             return _move_to_status_2(request, order)
         else:
             error_msg(request, "Vous ne disposez pas des permissions nécessaires pour valider cette commande")
@@ -55,28 +47,34 @@ def set_next_status(request, order_id):
     else:
         error_msg(request, "Vous n'avez pas les permissions nécessaires pour modifier le statut de cette commande")
     
-    return redirect( 'tab_orders' )
+    return redirect('tab_orders')
 
 
 def _move_to_status_1(request, order):
+    #
+    # check whether all order items / products have a nomenclature
+    #
+    items_without_nomenclature = order.items.filter(nomenclature__isnull = True)
+
+
     order.status = 1
     order.save()
-    info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+    info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
     
     emails = []
     for member in order.team.members.all():
         user = member.user
         if user.has_perm('order.custom_validate') and not user.is_superuser and user.email and user.email not in emails:
-            emails.append( user.email )
+            emails.append(user.email)
     
     if emails:
         subject = "[BCG-Lab %s] Validation d'une commande (%s)" % (settings.SITE_NAME, order.get_full_name())
         template = loader.get_template('order/validation_email.txt')
         context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
-        message = template.render( context )
+        message = template.render(context)
         for email in emails:
             try:
-                send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
             except:
                 continue
     else:
@@ -84,21 +82,22 @@ def _move_to_status_1(request, order):
         envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
     
     if request.user.has_perm('order.custom_validate'):
-        return redirect( 'tab_validation' )
+        return redirect('tab_validation')
     
-    return redirect( 'tab_cart' )
+    return redirect('tab_cart')
+
 
 def _move_to_status_2(request, order):
     if order.provider.is_local:
         subject = "[BCG-Lab %s] Nouvelle commande magasin" % settings.SITE_NAME
         template = loader.get_template('email_local_provider.txt')
         url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
-        message = template.render( Context({ 'order': order, 'url': url }) )
+        message = template.render(Context({ 'order': order, 'url': url }))
         emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
         
         for email in emails:
             try:
-                send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [email] )
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
             except:
                 continue
         
@@ -109,13 +108,13 @@ def _move_to_status_2(request, order):
             item.delivered = item.quantity
             item.save()
         
-        info_msg( request, "Un email a été envoyé au magasin pour la livraison de la commande." )
+        info_msg(request, "Un email a été envoyé au magasin pour la livraison de la commande.")
     else:
         budget_id = request.GET.get("budget", None)
         if budget_id:
-            order.budget = Budget.objects.get( id = budget_id )
+            order.budget = Budget.objects.get(id = budget_id)
         
-        if order.budget and BudgetLine.objects.filter( order_id = order.id ).count() == 0:
+        if order.budget and BudgetLine.objects.filter(order_id = order.id).count() == 0:
             order.create_budget_line()
         
         order.status = 2
@@ -124,19 +123,19 @@ def _move_to_status_2(request, order):
         usernames = []
         for item in order.items.all():
             if not item.username in usernames:
-                usernames.append( item.username )
+                usernames.append(item.username)
         
-        for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_validation = True, user__email__isnull = False ):
+        for tm in TeamMember.objects.filter(user__username__in = usernames, send_on_validation = True, user__email__isnull = False):
             subject = u"[BCG-Lab %s] Votre commande %s a été validée" % (settings.SITE_NAME, order.provider.name)
             template = loader.get_template("email_order_detail.txt")
-            message = template.render( Context({ 'order': order }) )
+            message = template.render(Context({ 'order': order }))
             try:
-                send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email])
             except:
                 continue
         
-        info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
-    return redirect( request.GET.get('next','tab_validation') )
+        info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
+    return redirect(request.GET.get('next','tab_validation'))
 
 def _move_to_status_3(request, order):
     if order.budget:
@@ -146,11 +145,11 @@ def _move_to_status_3(request, order):
         if BudgetLine.objects.filter(order_id = order.id).count() == 0:
             order.create_budget_line()
         
-        info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+        info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
         return redirect('tab_orders')
     else:
         error_msg(request, "Veuillez choisir un budget à imputer")
-        return redirect( order.get_absolute_url() )
+        return redirect(order.get_absolute_url())
     
 
 def _move_to_status_4(request, order):
@@ -164,7 +163,7 @@ def _move_to_status_4(request, order):
                 msg = "Commande UPS, veuillez saisir le numéro de commande SIFAC."
         
         error_msg(request, msg)
-        return redirect( order.get_absolute_url() )
+        return redirect(order.get_absolute_url())
     
     order.status = 4
     order.is_urgent = False
@@ -177,35 +176,35 @@ def _move_to_status_4(request, order):
         item.save()
     
     # Prepare emails to be sent
-    usernames = list(set( order.items.values_list("username", flat=True) ))
-    for tm in TeamMember.objects.filter( user__username__in = usernames, send_on_sent = True, user__email__isnull = False ):
+    usernames = list(set(order.items.values_list("username", flat=True)))
+    for tm in TeamMember.objects.filter(user__username__in = usernames, send_on_sent = True, user__email__isnull = False):
         subject = u"[BCG-Lab %s] Votre commande %s a été envoyée" % (settings.SITE_NAME, order.provider.name)
         template = loader.get_template("email_order_detail.txt")
-        message = template.render( Context({ 'order': order }) )
+        message = template.render(Context({ 'order': order }))
         try:
-            send_mail( subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email] )
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email])
         except:
             continue
     
-    info_msg( request, "Nouveau statut: '%s'." % order.get_status_display() )
+    info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
     
-    # return redirect( reverse('tab_orders') + "?page=%s" % request.GET.get("page","1") )
-    return redirect( order )
+    # return redirect(reverse('tab_orders') + "?page=%s" % request.GET.get("page","1"))
+    return redirect(order)
 
 def _move_to_status_5(request, order):
     try:
         delivery_date = request.GET.get('delivery_date', None)
-        delivery_date = datetime.strptime( delivery_date, "%d/%m/%Y" )
+        delivery_date = datetime.strptime(delivery_date, "%d/%m/%Y")
         if delivery_date < order.date_created:
             error_msg(request, u"Veuillez saisir une date de livraison supérieure à la date de création de la commande.")
             return redirect(order)
     except:
         error_msg(request, u"Veuillez saisir une date valide (format jj/mm/aaaa).")
-        return redirect( 'tab_orders' )
+        return redirect('tab_orders')
     
-    order.save_to_history( delivery_date )
+    order.save_to_history(delivery_date)
     order.delete()
     
-    info_msg( request, "La commande a été enregistrée dans l'historique.")
+    info_msg(request, "La commande a été enregistrée dans l'historique.")
     return redirect('tab_orders')
 

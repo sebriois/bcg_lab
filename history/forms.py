@@ -1,16 +1,15 @@
 # coding: utf-8
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 
+from bcg_lab.constants import EMPTY_SEL
 from team.models import Team
 from provider.models import Provider
-from product.models import Product
-from history.models import History
 from budget.models import Budget, BudgetLine
 from order.models import OrderItem
-from utils import *
-from bcg_lab.constants import *
+from team.utils import get_teams
+
 
 class HistoryFilterForm(forms.Form):
     connector = forms.TypedChoiceField(
@@ -182,4 +181,3 @@ class BudgetHistoryFilterForm(forms.Form):
         
         NATURE_CHOICES = list(set(Budget.objects.filter(default_nature__isnull = False).values_list('default_nature',flat=True)))
         self.fields['nature'].choices = EMPTY_SEL + [(n,n) for n in NATURE_CHOICES]
-    

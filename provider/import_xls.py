@@ -1,19 +1,21 @@
 # coding: utf-8
 # import the logging library
+import json
 import logging
 
 # Get an instance of a logger
+import urllib
+
+from utils.request_messages import warn_msg, info_msg, error_msg
+
 logger = logging.getLogger(__name__)
-from django.utils.encoding import smart_unicode
 
 from datetime import datetime
 from decimal import Decimal
 import xlrd
-import urllib2
 
-from django.utils import simplejson as json
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404, redirect, render_to_response
+from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -22,9 +24,6 @@ from django.conf import settings
 from provider.models import Provider
 from product.models import Product
 from provider.forms import ImportForm
-
-from bcg_lab.constants import *
-from utils import *
 
 
 @login_required
@@ -54,9 +53,9 @@ def import_xls( request, provider_id ):
             if errors:
                 msg = u"Les lignes suivantes seront ignorées lors de l'import:<br />"
                 msg += u"<br />".join(errors)
-                warn_msg( request, msg )
+                warn_msg(request, msg)
             else:
-                info_msg( request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
+                info_msg(request, u'Fichier accepté. Veuillez valider la mise à jour des produits.' )
             return render(request, 'provider/import_preview.html', {
                 'header': header,
                 'data': data,
@@ -89,7 +88,7 @@ def read_xls( header, data, input_excel ):
                 errors.append( base_error + u"Colonne 'désignation' - valeur manquante." )
             
             if isinstance(name, int):
-                name = unicode(name)
+                name = str(name)
             
             try:
                 if len(name) >= 500:
@@ -106,7 +105,7 @@ def read_xls( header, data, input_excel ):
         # CHECK REFERENCE
         ref_idx = header.index(u"reference")
         if len(row) >= ref_idx + 1:
-            ref = unicode(row[ref_idx].value)
+            ref = str(row[ref_idx].value)
             if not ref:
                 is_valid = 'false'
                 errors.append( base_error + u"Colonne 'référence' - valeur est manquante." )
@@ -120,7 +119,7 @@ def read_xls( header, data, input_excel ):
         # CHECK PACKAGING
         pack_idx = header.index(u"conditionnement")
         if len(row) >= pack_idx + 1:
-            pack = unicode(row[pack_idx].value)
+            pack = str(row[pack_idx].value)
             if len(pack) >= 100:
                 is_valid = 'false'
                 errors.append( base_error + u"Colonne 'conditionnement' - valeur trop longue (%s/100 charactères)" % len(pack))
@@ -141,7 +140,7 @@ def read_xls( header, data, input_excel ):
         # CHECK PRICE
         price_idx = header.index(u"prix")
         if len(row) >= price_idx + 1:
-            price = unicode(row[price_idx].value)
+            price = str(row[price_idx].value)
             price = price.replace(' ','').replace(',','.').replace(u"€",'')
             if not price:
                 is_valid = 'false'
@@ -164,9 +163,9 @@ def read_xls( header, data, input_excel ):
             col = col.value
             
             if colIdx in (pack_idx, ref_idx):
-                new_row.append( unicode(col).rstrip(",0").rstrip(".") )
+                new_row.append(str(col).rstrip(",0").rstrip(".") )
             elif colIdx == price_idx:
-                price = unicode(col).replace(' ','').replace(',','.').replace(u"€",'')
+                price = str(col).replace(' ','').replace(',','.').replace(u"€",'')
                 new_row.append( price )
             else:
                 new_row.append( col )
@@ -177,7 +176,7 @@ def read_xls( header, data, input_excel ):
 
 
 @login_required
-@transaction.commit_on_success
+@transaction.atomic
 def do_import( request, provider_id ):
     provider = get_object_or_404( Provider, id = provider_id )
     
@@ -186,7 +185,7 @@ def do_import( request, provider_id ):
 d'abord vérifier votre historique pour savoir si l'import Excel a été \
 effectué. Autrement, essayez à nouveau (cette erreur est relative à \
 votre navigateur)." )
-        return redirect( reverse('import_products', args=[provider_id]) )
+        return redirect(reverse('import_products', args=[provider_id]))
     
     # Loads data from cookie - dumped as json when the file was imported
     json_data = json.loads( request.session['import_data'] )
@@ -265,11 +264,11 @@ votre navigateur)." )
         job_name = "%s - SolR update" % settings.SITE_NAME
         build_url = "%s/job/%s/build" % ( settings.JENKINS_URL, job_name.replace(' ', '%20') )
         try:
-            req = urllib2.Request( build_url )
-            urllib2.urlopen( req ).read()
+            req = urllib.request.Request( build_url )
+            urllib.request.urlopen( req ).read()
         except:
-            error_msg( request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
+            error_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
     else:
         warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
     
-    return redirect( reverse('product_index') + "?provider=%s&connector=OR" % provider.id )
+    return redirect(reverse('product_index') + "?provider=%s&connector=OR" % provider.id )

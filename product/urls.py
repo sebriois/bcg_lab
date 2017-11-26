@@ -3,7 +3,7 @@ from django.conf.urls import *
 from product.views import index, item, delete, new, edit_list, search, autocomplete
 from product.views import export_xls
 
-urlpatterns = patterns('',
+urlpatterns = [
   url(r'^new/$', new, name="product_new"),
   url(r'^search/$', search, name="product_search"),
   url(r'^autocomplete/$', autocomplete, name="autocomplete_products"),
@@ -12,4 +12,4 @@ urlpatterns = patterns('',
   url(r'^(?P<product_id>\d+)/delete/$', delete, name="product_delete"),
   url(r'^(?P<product_id>\d+)/$', item, name="product_item"),
   url(r'^$', index, name="product_index")
-)
+]

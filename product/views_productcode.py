@@ -2,18 +2,17 @@
 import xlrd
 import json
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.utils.http import urlencode
+from django.shortcuts import redirect, render
 from django.db import transaction
 from django.db.models.query import Q
 from django.http import HttpResponse
 
 from product.models import ProductCode
 from product.forms import ProductCodeForm
+from utils.request_messages import info_msg
 
-from utils import info_msg
 
-@transaction.commit_on_success
+@transaction.atomic
 def import_product_codes(request):
     if request.method == 'POST':
         form = ProductCodeForm(request.POST, request.FILES)
@@ -25,6 +24,7 @@ def import_product_codes(request):
         form = ProductCodeForm()
     
     return render(request, 'product/import_codes.html', {'form': form})
+
 
 def handle_uploaded_file(f):
     book = xlrd.open_workbook( file_contents = f.read() )
@@ -38,6 +38,7 @@ def handle_uploaded_file(f):
             code = row[0].value,
             title = row[1].value
         )
+
 
 def autocomplete_product_codes(request):
     q = request.GET.get('query', None)

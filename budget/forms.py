@@ -1,14 +1,14 @@
 # coding: utf-8
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 
+from bcg_lab.constants import EMPTY_SEL
 from budget.models import Budget, BudgetLine
 from team.models import Team
 from provider.models import Provider
-from product.models import Product
-from utils import *
-from bcg_lab.constants import *
+from team.utils import get_teams
+
 
 class BudgetForm(forms.ModelForm):
     all_natures = forms.DecimalField(
@@ -152,9 +152,9 @@ class BudgetLineFilterForm(forms.Form):
         required = False
     )
     budget_id = forms.ChoiceField(
-        label           = "Budget",
-        choices     = EMPTY_SEL,
-        required    = False
+        label = "Budget",
+        choices = EMPTY_SEL,
+        required = False
     )
     nature = forms.ChoiceField(
         label           = "Nature",

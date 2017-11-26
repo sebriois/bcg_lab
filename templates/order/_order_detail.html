@@ -69,15 +69,15 @@
         {% include "attachments/show.html" %}
     {% endwith %}
     {% if order.status == 0 %}
-        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_cart' %}" class="document save-changes">
+        <a href="{% url 'attachments:new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_cart' %}" class="document save-changes">
             Ajouter une pièce jointe
         </a>
     {% else %}{% if order.status == 1 %}
-        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_validation' %}" class="document save-changes">
+        <a href="{% url 'attachments:new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={% url 'tab_validation' %}" class="document save-changes">
             Ajouter une pièce jointe
         </a>
     {% else %}{% if order.status > 1 %}
-        <a href="{% url 'attachment_new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
+        <a href="{% url 'attachments:new' %}?object_id={{order.id}}&content_type={{order|get_content_type}}&next={{ order.get_absolute_url }}" class="document save-changes">
             Ajouter une pièce jointe
         </a>
     {% endif %}{% endif %}{% endif %}
@@ -132,7 +132,7 @@
                 <input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:40px;" />
             </td>
             {% else %}
-            <td>{{ order_item.quantity }}</td>
+                <td>{{ order_item.quantity }}</td>
             {% endif %}
             <td>{{ order_item.total_price }} €</td>
             {% if user|can_edit:order %}

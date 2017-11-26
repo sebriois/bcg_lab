@@ -1,25 +1,8 @@
 # coding: utf8
-
-from urllib import quote_plus, urlencode
-from urllib2 import Request, urlopen
-from urllib2 import HTTPError
-
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.contrib import messages
 from django.shortcuts import redirect
-from team.models import Team, TeamMember
+from utils.request_messages import error_msg
 
-def info_msg( request, message ):
-    return messages.add_message( request, messages.INFO, message )
-
-def error_msg( request, message ):
-    return messages.add_message( request, messages.ERROR, message )
-
-def warn_msg( request, message ):
-    return messages.add_message( request, messages.WARNING, message )
-
-def in_team_secretary(user):
-    return user.has_perm('order.custom_goto_status_4') and not user.is_superuser
 
 def GET_method(view):
     """
@@ -33,6 +16,7 @@ def GET_method(view):
     
     return _wrapped_view
 
+
 def POST_method(view):
     """
     Decorator that checks whether the view is called using the POST method
@@ -44,6 +28,7 @@ def POST_method(view):
         return view(request, *args, **kwargs)
     
     return _wrapped_view
+
 
 def AJAX_method(view):
     """
@@ -70,6 +55,7 @@ def superuser_required( view ):
         return view(request, *args, **kwargs)
     return _wrapped_view
 
+
 def paginate( request, object_list, nb_items = 40 ):
     paginator = Paginator(object_list, nb_items ) # Show nb_items per page
     
@@ -84,13 +70,4 @@ def paginate( request, object_list, nb_items = 40 ):
         return paginator.page(page)
     except (EmptyPage, InvalidPage):
         return paginator.page(paginator.num_pages)
-
-def get_team_member( request ):
-    return request.user.teammember_set.get()
-
-def get_teams( user ):
-    return Team.objects.filter( teammember__user = user )
-
-def not_allowed_msg( request ):
-    error_msg(request, "Vous ne disposez pas des permissions nécessaires pour accéder à cette page.")
 

@@ -3,7 +3,7 @@ from django.conf.urls import *
 from budget.views import index, item, new
 from budget.views import credit, debit, transfer, toggle
 
-urlpatterns = patterns('',
+urlpatterns = [
   url(r'^create-budget/$', new, name="budget_new"),
   url(r'^transfer/$', transfer, name="budget_transfer"),
 
@@ -13,4 +13,4 @@ urlpatterns = patterns('',
   url(r'^(?P<budget_id>\d+)/$', item, name="budget_edit"),
 
   url(r'^$', index, name="budgets")
-)
+]

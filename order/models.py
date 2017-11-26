@@ -1,46 +1,48 @@
 # -*- encoding: utf8 -*-
-from datetime import datetime, date
+from datetime import datetime
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
+from django.utils import timezone
 
+from bcg_lab.constants import STATE_CHOICES, DEBIT, COST_TYPE_CHOICES, CREDIT
 from product.models import Product
 from provider.models import Provider
 from budget.models import Budget, BudgetLine
-from team.models import Team, TeamMember
+from team.models import Team
 from attachments.models import Attachment
 
-from bcg_lab.constants import *
 
 class Order(models.Model):
-    number          = models.CharField(u"N° cmde", max_length = 20, null = True, blank = True)
-    budget          = models.ForeignKey(Budget, verbose_name="Ligne budgétaire", blank = True, null = True)
-    team            = models.ForeignKey(Team, verbose_name = u"Equipe", max_length = 20 )
-    provider        = models.ForeignKey(Provider, verbose_name = u"Fournisseur", max_length = 100 )
-    status          = models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
-    items           = models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
-    notes           = models.TextField( u"Commentaires", null = True, blank = True )
+    number = models.CharField(u"N° cmde", max_length = 20, null = True, blank = True)
+    budget = models.ForeignKey(Budget, verbose_name="Ligne budgétaire", blank = True, null = True)
+    team = models.ForeignKey(Team, verbose_name = u"Equipe", max_length = 20 )
+    provider = models.ForeignKey(Provider, verbose_name = u"Fournisseur", max_length = 100 )
+    status = models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
+    items = models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
+    notes = models.TextField( u"Commentaires", null = True, blank = True )
     is_confidential = models.BooleanField( u"Confidentielle?", default = False )
-    is_urgent       = models.BooleanField( u"Urgente?", default = False )
-    has_problem     = models.BooleanField( u"Problème?", default = False )
-    date_created    = models.DateTimeField(u"Date de création", auto_now_add = True)
-    date_delivered  = models.DateTimeField(u"Date de livraison", null = True, blank = True)
-    last_change     = models.DateTimeField(u"Dernière modification", auto_now = True)
-    attachments     = generic.GenericRelation( Attachment )
+    is_urgent = models.BooleanField( u"Urgente?", default = False )
+    has_problem = models.BooleanField( u"Problème?", default = False )
+    date_created = models.DateTimeField(u"Date de création", auto_now_add = True)
+    date_delivered = models.DateTimeField(u"Date de livraison", null = True, blank = True)
+    last_change = models.DateTimeField(u"Dernière modification", auto_now = True)
+    attachments = GenericRelation( Attachment )
     
     class Meta:
+        db_table = 'order'
         verbose_name = "Commande"
         verbose_name_plural = "Commandes"
         ordering = ('status', '-date_created', 'provider')
     
-    def __unicode__(self):
+    def __str__(self):
         d = datetime.strftime( self.date_created, "%d/%m/%Y %Hh%M" )
         return u"%s (%s) - %s" % ( self.provider, self.team, d )
     
     @models.permalink
     def get_absolute_url(self):
-        return ( 'order_item', [self.id] )
+        return ('order_item', [self.id])
     
     def get_full_name(self):
         return u"%s" % self.team
@@ -107,7 +109,7 @@ class Order(models.Model):
         for item in self.items.all():
             item.update_budget_line()
     
-    def save_to_history(self, date_delivered = datetime.now()):
+    def save_to_history(self, date_delivered = timezone.now()):
         from history.models import History
         
         # Create history object that is a copy of this order
@@ -151,6 +153,7 @@ class OrderItem(models.Model):
     is_confidential = models.BooleanField( u"Confidentielle?", default = False )
     
     class Meta:
+        db_table = 'order_item'
         verbose_name = "Item de commande"
         verbose_name_plural = "Items de commande"
         ordering = ('id',)
@@ -243,7 +246,7 @@ class OrderItem(models.Model):
             
             orig_price = product.price
             if orig_price != self.price and product.has_expired():
-                product.expiry = datetime( datetime.now().year, 12, 31 )
+                product.expiry = datetime( timezone.now().year, 12, 31 )
             
             product.name = self.name
             product.packaging = self.packaging
@@ -253,9 +256,10 @@ class OrderItem(models.Model):
             product.price = self.price
             product.save()
         
-    
 
 class OrderComplement(models.Model):
     name = models.CharField( u"Nom du complément", max_length = 50 )
     type_comp = models.IntegerField( u"Type de complément", choices = ((CREDIT, u"Crédit"), (DEBIT, u"Débit")) )
 
+    class Meta:
+        db_table = "order_complement"

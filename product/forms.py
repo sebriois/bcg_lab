@@ -3,20 +3,26 @@ from decimal import Decimal
 
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 
+from bcg_lab.constants import EMPTY_SEL
 from product.models import Product, ProductType, ProductSubType, ProductCode
 from provider.models import Provider
-from bcg_lab.constants import *
+
 
 class ProductCodeForm(forms.Form):
     file = forms.FileField( label = u"Fichier à importer" )
 
+
 class ProductForm(forms.ModelForm):
-    price = forms.CharField( label = "Prix", required = True )
+    price = forms.CharField(label = "Prix", required = True)
     
     class Meta:
             model = Product
+            fields = [
+                'provider', 'origin', 'name', 'packaging', 'reference', 'offer_nb', 'nomenclature',
+                'category', 'sub_category', 'expiry'
+            ]
             widgets = {
                 'expiry': widgets.DateInput(attrs={'class':'datepicker'}),
                 'nomenclature': widgets.TextInput( attrs = {
@@ -66,6 +72,7 @@ class ProductForm(forms.ModelForm):
 
         return product_code
 
+
 class ProductFilterForm(forms.Form):
     connector = forms.TypedChoiceField(
         choices     = [("AND",u"toutes les"),("OR", u"l'une des")],
@@ -93,7 +100,7 @@ class ProductFilterForm(forms.Form):
     )
     origin = forms.ChoiceField(
         label    = u"Fournisseur d'origine",
-        choices  = EMPTY_SEL + [(origin, origin) for origin in sorted(set(Product.objects.filter(origin__isnull = False).exclude(origin = "").values_list("origin",flat=True)), key = lambda i: i.lower())],
+        choices  = EMPTY_SEL,
         required = False
     )
     nomenclature = forms.CharField(
@@ -114,7 +121,17 @@ class ProductFilterForm(forms.Form):
         queryset = ProductSubType.objects.all(),
         required = False
     )
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        origin = Product.objects.filter(
+            origin__isnull = False
+        ).exclude(
+            origin = ""
+        ).only('origin').values_list("origin", flat = True)
+
+        self.fields['origin'].choices = EMPTY_SEL + [(origin, origin) for origin in sorted(set(origin), key = lambda i: i.lower())]
+
 
 class EditListForm(forms.Form):
     category = forms.ModelChoiceField(

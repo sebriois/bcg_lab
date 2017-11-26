@@ -3,15 +3,14 @@ from decimal import Decimal, InvalidOperation
 
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 
+from bcg_lab.constants import CREDIT, DEBIT
 from order.models import OrderItem, OrderComplement
 from team.models import Team
 from provider.models import Provider
-from product.models import Product, ProductCode
+from product.models import ProductCode
 
-from bcg_lab.constants import *
-from utils import in_team_secretary
 
 class OrderItemForm(forms.ModelForm):
     class Meta:
@@ -35,21 +34,22 @@ class OrderItemForm(forms.ModelForm):
 
         return product_code
 
-CREDIT_ORDER_CHOICES=";".join([c.name for c in OrderComplement.objects.filter(type_comp=CREDIT)])
+
 class AddCreditForm(forms.ModelForm):
-    price = forms.CharField( label = u"Montant" )
-    
     class Meta:
         model = OrderItem
-        fields = ("name", "reference", "offer_nb", "price", "quantity", "cost_type")
+        fields = ["name", "reference", "offer_nb", "price", "quantity", "cost_type"]
         widgets = {
-            'name': widgets.TextInput( attrs = {
-                'class' : 'autocomplete',
-                'choices': CREDIT_ORDER_CHOICES
-            }),
-            'cost_type': widgets.HiddenInput( attrs = { 'value': CREDIT } )
+            'cost_type': widgets.HiddenInput(attrs = {'value': CREDIT})
         }
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget = forms.TextInput(attrs = {
+            'class': 'autocomplete',
+            'choices': ";".join([c.name for c in OrderComplement.objects.filter(type_comp = CREDIT)])
+        })
+
     def clean_price(self):
         price = self.cleaned_data.get('price', None)
         try:
@@ -63,8 +63,6 @@ class AddCreditForm(forms.ModelForm):
         return price
     
 
-
-DEBIT_ORDER_CHOICES=";".join([c.name for c in OrderComplement.objects.filter(type_comp=DEBIT)])
 class AddDebitForm(forms.ModelForm):
     price = forms.CharField( label = u"Montant" )
     
@@ -72,13 +70,16 @@ class AddDebitForm(forms.ModelForm):
         model = OrderItem
         fields = ("name", "reference", "offer_nb", "price", "quantity", "cost_type")
         widgets = {
-            'name': widgets.TextInput( attrs = {
-                'class' : 'autocomplete',
-                'choices': DEBIT_ORDER_CHOICES
-            }),
-            'cost_type': widgets.HiddenInput( attrs = { 'value': DEBIT } )
+            'cost_type': widgets.HiddenInput(attrs = {'value': DEBIT})
         }
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget = forms.TextInput(attrs = {
+            'class': 'autocomplete',
+            'choices': ";".join([c.name for c in OrderComplement.objects.filter(type_comp = DEBIT)])
+        })
+
     def clean_price(self):
         price = self.cleaned_data.get('price', None)
         try:
