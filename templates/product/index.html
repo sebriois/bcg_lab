@@ -19,7 +19,7 @@
 
 {# ADVANCED SEARCH FORM - displayed if no products shown #}
 {% if not products %}
-  {% if not user|has_perm:"order.custom_view_local_provider" %}
+  {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
     {% include "product/_advanced_search_form.html" %}
   {% endif %}
 {% endif %}

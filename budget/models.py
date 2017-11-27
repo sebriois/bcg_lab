@@ -2,6 +2,7 @@
 from django.db import models
 from django.db.models.query import Q
 
+from provider.models import Provider
 from team.models import Team
 from bcg_lab.constants import BUDGET_CHOICES
 
@@ -102,6 +103,15 @@ class BudgetLine(models.Model):
         verbose_name = "Ligne budgétaire"
         verbose_name_plural = "Lignes budgétaires"
         ordering = ("team", "budget", "date", "-order_id")
+
+    def get_provider_display(self):
+        try:
+            provider = Provider.objects.get(name = self.provider)
+            if provider.is_service:
+                return "%s (%s)" % (provider.name, self.product)
+            return self.provider
+        except Provider.DoesNotExist:
+            return self.provider
 
     def get_amount_left(self):
         amount_left = 0

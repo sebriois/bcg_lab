@@ -33,18 +33,17 @@ def search_orders(request):
     # Filter history_list depending on received GET data
     form = HistoryFilterForm(user = request.user, data = request.GET)
     if len(request.GET.keys()) > 0 and form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
-        if 'team' in data:
-            data['team'] = data['team'].name
-        
+
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
-        
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children  = []
+        for key, value in form.cleaned_data.items():
+            if value:
+                if key == 'team':
+                    Q_obj.children.append((key, value.name))  # value if of type 'Team' here
+                else:
+                    Q_obj.children.append((key, value))
+
         history_list = history_list.filter(Q_obj)
     
     search_name = request.GET.get("items__name__icontains",None)

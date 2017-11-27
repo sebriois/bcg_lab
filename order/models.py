@@ -114,12 +114,13 @@ class Order(models.Model):
         
         # Create history object that is a copy of this order
         history = History.objects.create(
-            team           = self.team.name,
-            provider       = self.provider.name,
-            budget         = self.budget and self.budget.name or "",
-            number         = self.number,
-            price          = self.price(),
-            comments       = self.notes,
+            team = self.team.name,
+            provider = self.provider.name,
+            budget = self.budget and self.budget.name or "",
+            number = self.number,
+            price = self.price(),
+            comments = self.notes,
+            date_delivered = date_delivered
         )
         
         # Move attachments to history

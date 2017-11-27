@@ -1,5 +1,5 @@
 {% extends "base_history.html" %}
-{% load paginator filters static %}
+{% load paginator filters static humanize %}
 
 {% block history_orders %}active{% endblock %}
 
@@ -23,7 +23,7 @@
 	</div>
 	
 	{% if display == "by_order" %}
-		<p style="font-size:16px">Montant commandes cumulé: {{ total }}€</p>
+		<p style="font-size:16px">Montant commandes cumulé: {{ total|intcomma }}€</p>
 	{% else %}{% if display == "by_product" %}
 		<p style="font-size:16px">Montant total cumulé: {{ total }}€</p>
 	{% endif %}{% endif %}
@@ -47,7 +47,7 @@
 				<tr class="{% cycle 'even' 'odd' %}">
 					<td>{{ order.date_delivered|date }}</td>
 					<td>{{ order.team }}</td>
-					<td>{{ order.provider }}</td>
+					<td>{{ order.get_provider_display }}</td>
 					<td>{{ order.number|default:"" }}</td>
 					<td>{{ order.price }}</td>
 					{% if user|has_perm:"budget.custom_view_budget" %}

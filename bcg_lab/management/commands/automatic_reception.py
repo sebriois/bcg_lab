@@ -19,6 +19,6 @@ class Command(BaseCommand):
         )
         
         for order in orders:
-            print(u"Commande %s receptionnee et archivee." % ( order.number ))
+            print(u"Commande %s (%s) receptionnee et archivee." % (order.number, order.provider.name))
             order.save_to_history()
             order.delete()

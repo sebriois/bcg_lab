@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from order.models import OrderItem
 from attachments.models import Attachment
+from provider.models import Provider
 
 
 class History(models.Model):
@@ -37,3 +38,12 @@ class History(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('history_detail', [self.id])
+
+    def get_provider_display(self):
+        try:
+            provider = Provider.objects.get(name = self.provider)
+            if provider.is_service:
+                return "%s (%s)" % (provider.name, self.items.first().name)
+            return self.provider
+        except Provider.DoesNotExist:
+            return self.provider

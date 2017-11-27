@@ -78,16 +78,15 @@ def tab_orders(request):
     
     # 
     # Filter order depending on received GET data
-    form = FilterForm( data = request.GET )
+    form = FilterForm(data = request.GET)
     if len(request.GET.keys()) > 0 and form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children = []
+
+        for key, value in form.cleaned_data.items():
+            if value:
+                Q_obj.children.append((key, value))
         
         order_list = order_list.filter( Q_obj )
     
