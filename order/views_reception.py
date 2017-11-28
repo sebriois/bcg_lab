@@ -19,10 +19,10 @@ def tab_reception(request):
     
     # Exclude items with direct reception
     orderitems = orderitems.exclude(order__provider__direct_reception = True)
-    
+
     # Exclude orphan products
     orderitems = orderitems.exclude(product_id__isnull = True, order__provider__is_service = False)
-    
+
     # Only keep items ordered by request user or by its team
     if not request.user.has_perm("team.custom_view_teams"):
         orderitems = orderitems.filter(

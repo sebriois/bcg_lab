@@ -43,8 +43,8 @@ class Command(BaseCommand):
                     recipient_list.append(user.email)
 
             subject = email_subject % (settings.SITE_NAME, order.provider.name, days_delta)
-            message = email_content.render(Context({
+            message = email_content.render({
                 'order': order,
                 'days': days_delta
-            }))
+            })
             send_mail(subject, message, email_from, recipient_list)

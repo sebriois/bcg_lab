@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
-from django.template import Context, loader
+from django.template import loader
 
 from budget.models import Budget, BudgetLine
 from order.models import Order
@@ -76,7 +76,10 @@ def _move_to_status_1(request, order):
         if emails:
             subject = "[BCG-Lab %s] Validation d'une commande (%s)" % (settings.SITE_NAME, order.get_full_name())
             template = loader.get_template('order/validation_email.txt')
-            context = Context({ 'order': order, 'url': request.build_absolute_uri(reverse('tab_validation')) })
+            context = {
+                'order': order,
+                'url': request.build_absolute_uri(reverse('tab_validation'))
+            }
             message = template.render(context)
             for email in emails:
                 try:
@@ -98,7 +101,7 @@ def _move_to_status_2(request, order):
         subject = "[BCG-Lab %s] Nouvelle commande magasin" % settings.SITE_NAME
         template = loader.get_template('email_local_provider.txt')
         url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
-        message = template.render(Context({ 'order': order, 'url': url }))
+        message = template.render({'order': order, 'url': url})
         emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
         
         for email in emails:
@@ -130,11 +133,18 @@ def _move_to_status_2(request, order):
         for item in order.items.all():
             if not item.username in usernames:
                 usernames.append(item.username)
-        
-        for tm in TeamMember.objects.filter(user__username__in = usernames, send_on_validation = True, user__email__isnull = False):
+
+        members = TeamMember.objects.filter(
+            user__username__in = usernames,
+            send_on_validation = True,
+            user__email__isnull = False
+        ).exclude(
+            user__email = ''
+        )
+        for tm in members:
             subject = u"[BCG-Lab %s] Votre commande %s a été validée" % (settings.SITE_NAME, order.provider.name)
             template = loader.get_template("email_order_detail.txt")
-            message = template.render(Context({ 'order': order }))
+            message = template.render({ 'order': order })
             try:
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email])
             except:
@@ -187,7 +197,7 @@ def _move_to_status_4(request, order):
     for tm in TeamMember.objects.filter(user__username__in = usernames, send_on_sent = True, user__email__isnull = False):
         subject = u"[BCG-Lab %s] Votre commande %s a été envoyée" % (settings.SITE_NAME, order.provider.name)
         template = loader.get_template("email_order_detail.txt")
-        message = template.render(Context({ 'order': order }))
+        message = template.render({ 'order': order })
         try:
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [tm.user.email])
         except:

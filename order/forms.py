@@ -136,6 +136,7 @@ class FilterForm(forms.Form):
         required = False
     )
 
+
 class ServiceForm(forms.Form):
     team = forms.ModelChoiceField(
         label = u"Equipe",

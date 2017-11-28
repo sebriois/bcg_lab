@@ -35,14 +35,12 @@ def index(request):
     # Filter budget_lines depending on received GET data
     form = BudgetLineFilterForm(user = request.user, data = request.GET)
     if len(request.GET.keys()) > 0 and form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children  = []
+        for key, value in form.cleaned_data.items():
+            if value:
+                Q_obj.children.append((key,value))
         
         budget_lines = budget_lines.filter(Q_obj)
     
@@ -67,15 +65,13 @@ def export_to_xls(request):
     # Filter budget_lines depending on received GET data
     form = BudgetLineFilterForm(user = request.user, data = request.GET)
     if len(request.GET.keys()) > 0 and form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
-        
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children  = []
+        for key, value in form.cleaned_data.items():
+            if value:
+                Q_obj.children.append((key, value))
+
         budget_lines = BudgetLine.objects.filter(Q_obj)
     else:
         budget_lines = BudgetLine.objects.none()

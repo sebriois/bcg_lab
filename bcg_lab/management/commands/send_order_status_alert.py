@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
             default_from = settings.DEFAULT_FROM_EMAIL
             template = loader.get_template('email_order_status.txt')
-            message = template.render(Context({ 'order': order, 'days': 21 }) )
+            message = template.render({'order': order, 'days': 21})
             send_mail( subject, message, default_from, emails )
         
         for order in Order.objects.filter( last_change__lte = n - timedelta(31), last_change__gte = n - timedelta(32) ):
@@ -44,7 +44,7 @@ class Command(BaseCommand):
 
             default_from = settings.DEFAULT_FROM_EMAIL
             template = loader.get_template('email_order_status.txt')
-            message = template.render( Context({ 'order': order, 'days': 31 }) )
+            message = template.render({ 'order': order, 'days': 31 })
             send_mail( subject, message, default_from, emails )
 
 

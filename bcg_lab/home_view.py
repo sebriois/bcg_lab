@@ -45,7 +45,7 @@ def send_message(request):
     default_from = request.user.email and request.user.email or settings.DEFAULT_FROM_EMAIL
 
     template = loader.get_template('email_empty.txt')
-    message = template.render( Context({ 'message': message }) )
+    message = template.render({'message': message})
     send_mail( subject, message, default_from, emails )
     info_msg(request, "Message envoyé avec succès.")
 

@@ -348,7 +348,11 @@ def orderitem_delete(request, orderitem_id):
         if tm.count() > 0:
             subject = u"[BCG-Lab %s] Item supprimé (%s)" % (settings.SITE_NAME, item.name)
             template = loader.get_template("email_delete_item.txt")
-            message = template.render(Context({ 'item': item, 'user': request.user, 'order': item.get_order() }))
+            message = template.render({
+                'item': item,
+                'user': request.user,
+                'order': item.get_order()
+            })
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [tm[0].user.email])
     
     item.delete()

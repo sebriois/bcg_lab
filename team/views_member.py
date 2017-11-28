@@ -93,10 +93,10 @@ def new_member(request):
 
             if emails:
                 template = loader.get_template('email_new_member.txt')
-                message = template.render(Context({
+                message = template.render({
                     'member': member,
                     'url': request.build_absolute_uri(reverse('team_index'))
-                }))
+                })
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
                 info_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
             else:
@@ -117,7 +117,8 @@ def toggle_active(request, user_id):
     user.is_active = not user.is_active
     user.save()
 
-    if not user.email: return redirect('team_index')
+    if not user.email:
+        return redirect('team_index')
 
     if user.is_active:
         subject = "[BCG-Lab %s] Votre compte vient d'être activé" % settings.SITE_NAME
@@ -128,7 +129,7 @@ def toggle_active(request, user_id):
 
     emails = [user.email]
     template = loader.get_template('email_empty.txt')
-    message = template.render(Context({ 'message': content }))
+    message = template.render({ 'message': content })
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
     return redirect('team_index')
 

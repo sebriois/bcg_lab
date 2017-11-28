@@ -171,18 +171,16 @@ def history_budgets(request):
     # Filter history_list depending on received GET data
     form = BudgetHistoryFilterForm(user = request.user, data = request.GET)
     if len(request.GET.keys()) > 0 and form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
-        if 'team' in data:
-            data['team'] = data['team'].name
-        
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
-        
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children  = []
+        for key, value in form.cleaned_data.items():
+            if value:
+                if key == 'team':
+                    Q_obj.children.append((key, value.name))  # value if of type 'Team' here
+                else:
+                    Q_obj.children.append((key, value))
+
         budget_lines = BudgetLine.objects.filter(
             budget_id__in = budgets.values_list("id", flat=True) 
        ).filter(Q_obj)
@@ -212,18 +210,16 @@ def export_budgetlines(request):
     # Filter budget_lines depending on received GET data
     form = BudgetHistoryFilterForm(user = request.user, data = request.GET)
     if form.is_valid():
-        data = form.cleaned_data
-        for key, value in data.items():
-            if not value:
-                del data[key]
-        
-        if 'team' in data:
-            data['team'] = data['team'].name
-                
         Q_obj = Q()
-        Q_obj.connector = data.pop("connector")
-        Q_obj.children  = data.items()
-        
+        Q_obj.connector = form.cleaned_data.pop("connector")
+        Q_obj.children  = []
+        for key, value in form.cleaned_data.items():
+            if value:
+                if key == 'team':
+                    Q_obj.children.append((key, value.name))  # value if of type 'Team' here
+                else:
+                    Q_obj.children.append((key, value))
+
         budget_lines = BudgetLine.objects.filter(is_active = False).filter(Q_obj)
     else:
         error_msg(request, "Impossible d'exporter cette page.")
