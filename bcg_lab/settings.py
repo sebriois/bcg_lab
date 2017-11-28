@@ -37,7 +37,6 @@ INSTALLED_APPS = (
     'infos',
     'issues',
     'utils',
-    'solr'
 )
 
 MIDDLEWARE = [
@@ -165,7 +164,6 @@ LOGGING = {
 ##
 ##    Custom settings
 ##
-SOLR_URL = ''
 JENKINS_URL = 'http://localhost:8080/jenkins'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

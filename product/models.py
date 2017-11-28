@@ -4,13 +4,12 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.utils import timezone
 from elasticsearch import Elasticsearch
 
 from provider.models import Provider
 from attachments.models import Attachment
-from solr import Solr
 
 
 class ProductType(models.Model):
@@ -89,45 +88,6 @@ class Product(models.Model):
     def soon_expired(self):
         delta = timedelta(days = 10)
         return (self.expiry - delta <= timezone.now())
-    
-    def post_to_solr(self):
-        print("POSTing product ID %s to Solr ..." % self.id)
-        data = {
-            'id': "%s" % self.id,
-            'product': self.name,
-            'reference': self.reference,
-            'provider': self.provider.name,
-            'origin': self.origin,
-            'price': str(self.price),
-            'packaging': self.packaging,
-            'offer_nb': self.offer_nb,
-            'nomenclature': self.nomenclature,
-            'category': self.category and self.category.name or None,
-            'sub_category': self.sub_category and self.sub_category.name or None,
-            'last_change': self.last_change.strftime("%d/%m/%Y"),
-            'expiry': self.expiry and self.expiry.strftime("%d/%m/%Y") or None
-        }
-        
-        solr = Solr()
-        solr.post(data)
-
-    def index_into_elasticsearch(self):
-        es = Elasticsearch()
-        es.index(
-            settings.SITE_NAME.lower(),
-            "products",
-            {
-                '_id': "%s" % self.id,
-                'provider': self.provider.name,
-                'origin': self.origin,
-                'name': self.name,
-                'reference': self.reference,
-                'offer_nb': self.offer_nb,
-                'nomenclature': self.nomenclature,
-                'category': self.category and self.category.name or None,
-                'sub_category': self.sub_category and self.sub_category.name or None
-            }
-        )
 
     def clean_packaging(self):
         unit_mapping = {
@@ -143,9 +103,25 @@ class Product(models.Model):
             self.save()
 
 
-# method for updating solr when a product is saved (after creation or after update)
-def update_solr(sender, instance, **kwargs):
-    instance.post_to_solr()
+def post_product_save(sender, instance, **kwargs):
+    print("indexing product id %s into Elasticsearch ... " % instance.id, end = "")
+    es = Elasticsearch()
+    es.index(
+        settings.SITE_NAME.lower(),
+        "products",
+        {
+            '_id': "%s" % instance.id,
+            'provider': instance.provider.name,
+            'origin': instance.origin,
+            'name': instance.name,
+            'reference': instance.reference,
+            'offer_nb': instance.offer_nb,
+            'nomenclature': instance.nomenclature,
+            'category': instance.category and instance.category.name or None,
+            'sub_category': instance.sub_category and instance.sub_category.name or None
+        }
+    )
+    print("ok")
 
 
 def update_expiry(sender, instance, **kwargs):
@@ -155,5 +131,5 @@ def update_expiry(sender, instance, **kwargs):
     
 
 # register the signal
-# post_save.connect(update_solr, sender=Product, dispatch_uid="update_solr")
+post_save.connect(post_product_save, sender=Product, dispatch_uid="post_product_save")
 pre_save.connect(update_expiry, sender=Product, dispatch_uid="update_expiry")

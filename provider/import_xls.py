@@ -258,17 +258,17 @@ votre navigateur)." )
     provider.save()
     
     info_msg(request, u'La mise à jour des produits a bien été effectuée.')
-    
-    # UPDATE SOLR THROUGH JENKINS
-    if settings.JENKINS_URL:
-        job_name = "%s - SolR update" % settings.SITE_NAME
-        build_url = "%s/job/%s/build" % ( settings.JENKINS_URL, job_name.replace(' ', '%20') )
-        try:
-            req = urllib.request.Request( build_url )
-            urllib.request.urlopen( req ).read()
-        except:
-            error_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
-    else:
-        warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
-    
+    #
+    # # UPDATE SOLR THROUGH JENKINS
+    # if settings.JENKINS_URL:
+    #     job_name = "%s - SolR update" % settings.SITE_NAME
+    #     build_url = "%s/job/%s/build" % ( settings.JENKINS_URL, job_name.replace(' ', '%20') )
+    #     try:
+    #         req = urllib.request.Request( build_url )
+    #         urllib.request.urlopen( req ).read()
+    #     except:
+    #         error_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
+    # else:
+    #     warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
+    #
     return redirect(reverse('product_index') + "?provider=%s&connector=OR" % provider.id )

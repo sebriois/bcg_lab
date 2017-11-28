@@ -1,11 +1,10 @@
 from django.conf.urls import *
 
-from product.views import index, item, delete, new, edit_list, search, autocomplete
+from product.views import index, item, delete, new, edit_list, autocomplete
 from product.views import export_xls
 
 urlpatterns = [
   url(r'^new/$', new, name="product_new"),
-  url(r'^search/$', search, name="product_search"),
   url(r'^autocomplete/$', autocomplete, name="autocomplete_products"),
   url(r'^edit-list/$', edit_list, name="product_edit_list"),
   url(r'^export-to-excel/$', export_xls, name="product_export_xls"),

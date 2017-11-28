@@ -19,34 +19,7 @@ from elasticsearch import Elasticsearch
 from provider.models import Provider
 from product.models import Product
 from product.forms import ProductForm, ProductFilterForm, EditListForm
-from solr import Solr
 from utils.request_messages import info_msg
-
-
-def search(request):   
-    query = request.GET.get("q", None)
-    facet_query = request.GET.get("fq", '')
-    
-    if query:
-        solr = Solr()
-        solr.query({ 
-            'q': query,
-            'fq': facet_query,
-            'fl':'*'
-        })
-        
-        suggestion = solr.suggestion()
-        
-        return render(request, 'product/search.html', {
-            'numFound': solr.numFound(),
-            'query': query,
-            'facet_query': facet_query and facet_query.split(':')[1] or None,
-            'facets': solr.facet_fields(),
-            'suggestion': suggestion,
-            'solr_docs': solr.docs()
-        })
-    else:
-        return render(request, 'product/search.html', {})
 
 
 def autocomplete(request):
@@ -61,6 +34,7 @@ def autocomplete(request):
     }
     
     return HttpResponse(json.dumps(output_data))
+
 
 def _elastic_search(query_dict):
     es = Elasticsearch()
@@ -96,14 +70,6 @@ def _elastic_search(query_dict):
 
     return product_list, res['hits']['total']
 
-
-def _solr_search(query_dict):
-    solr = Solr()
-    solr.query(query_dict)
-    
-    product_list = Product.objects.filter(id__in = [doc['id'] for doc in solr.docs()])
-    
-    return product_list, solr.numFound()
 
 def _django_search(query_dict):
     form = ProductFilterForm(data = query_dict)
@@ -142,7 +108,6 @@ def _django_search(query_dict):
 
 def _product_search(query_dict):
     if 'q' in query_dict.keys() and query_dict['q'].strip():
-        # product_list, num_found = _solr_search(query_dict)
         product_list, num_found = _elastic_search(query_dict)
     elif len(query_dict.keys()) > 0:
         product_list, num_found = _django_search(query_dict)
@@ -251,9 +216,7 @@ def new(request):
                 p.origin = p.provider.name
                 p.provider = p.provider.reseller
                 p.save()
-            
-            p.post_to_solr()
-            
+
             info_msg(request, u"Produit ajouté avec succès.")
             return redirect(reverse('product_index') + "?reference=%s&connector=OR" % p.reference)
     

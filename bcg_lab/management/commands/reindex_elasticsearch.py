@@ -31,6 +31,10 @@ class Command(BaseCommand):
                     "type": "string",
                     "index": "not_analyzed"
                 },
+                "suggest":  {
+                    "type": "completion",
+                    "payloads": True
+                }
             }
         }
     }
@@ -41,6 +45,7 @@ class Command(BaseCommand):
         self.index_name = settings.SITE_NAME.lower()
 
         self.es = Elasticsearch()
+        self.delete_index()
         self.create_index()
         self.put_mappings()
         self.before_indexing()
@@ -50,6 +55,10 @@ class Command(BaseCommand):
             stats_only = True
         ))
         self.after_indexing()
+
+    def delete_index(self):
+        print("[%s] Deleting index" % self.index_name)
+        print(self.es.indices.delete(index = self.index_name, ignore = [400, 404]))
 
     def create_index(self):
         # ignore 400 cause by IndexAlreadyExistsException when creating an index
@@ -71,6 +80,10 @@ class Command(BaseCommand):
             product_doc = {
                 "provider": product.provider.name,
                 "name": product.name,
+                "suggest": {
+                    "output": "%s - %s" % (product.provider.name, product.name),
+                    "payload": {"product_id": product.id},
+                }
             }
             if product.origin:
                 product_doc['origin'] = product.origin
@@ -84,7 +97,6 @@ class Command(BaseCommand):
                 product_doc['category'] = product.category.name
 
             yield {
-                '_op_type': 'update',
                 '_index': self.index_name,
                 '_type': 'products',
                 '_id': product.id,
