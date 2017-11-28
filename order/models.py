@@ -189,10 +189,14 @@ class OrderItem(models.Model):
             return self.price * self.quantity * -1
     
     def create_budget_line(self):
-        if self.order_set.all().count() == 0:
-            # TODO: raise error instead
+        try:
+            order = self.order_set.get()
+        except Order.DoesNotExist:
             return
-        order = self.order_set.get()
+
+        if not order.budget:
+            return
+
         bl = BudgetLine.objects.create(
             team            = order.budget.team.name,
             order_id        = order.id,
