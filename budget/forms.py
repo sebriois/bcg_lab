@@ -40,18 +40,26 @@ class BudgetForm(forms.ModelForm):
     
     class Meta:
         model = Budget
-        exclude = ('is_active','default_nature')
+        exclude = ('is_active', 'default_nature')
     
     def clean_name(self):
-        final_name = self.cleaned_data.get('name', None)
-        team = Team.objects.filter( id = self.data.get('team', 0) )
-        default_origin = self.data.get('default_origin', None)
-        if final_name and team and default_origin:
-            final_name = "[%s] %s [%s]" % (team[0].shortname, final_name, default_origin)
-            if Budget.objects.filter( name__startswith = final_name ).count() > 0:
-                raise forms.ValidationError( u"Le budget %s existe déjà." % final_name )
-        return final_name
-    
+        team = self.cleaned_data.get('team', Team.objects.get(id = self.data['team']))
+
+        for nature in ['fo', 'mi', 'sa', 'eq']:
+            value_for_nature = self.data.get(nature, None)
+            if not value_for_nature:
+                continue
+
+            budget_name = "[%s] %s [%s] - %s" % (
+                team.shortname,
+                self.cleaned_data['name'],
+                self.data['default_origin'],
+                nature.upper()
+            )
+            if Budget.objects.filter(name = budget_name).count() > 0:
+                raise forms.ValidationError(u"Le budget %s existe déjà." % budget_name)
+        return self.cleaned_data['name']
+
 
 class BudgetLineForm(forms.ModelForm):
     budget = forms.ModelChoiceField( 

@@ -13,8 +13,8 @@ class Budget(models.Model):
     default_origin = models.CharField(u"Origine de crédit (Code)", max_length=30, null = True, blank = False)
     budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
     default_nature = models.CharField(u"Nature", max_length=20, null = True, blank = True)
-    tva_code = models.CharField(u"Code TVA", max_length=20, null = True, blank = True )
-    domain = models.CharField(u"Domaine fonctionnel", max_length = 100, null = True, blank = True )
+    tva_code = models.CharField(u"Code TVA", max_length=20, null = True, blank = True)
+    domain = models.CharField(u"Domaine fonctionnel", max_length = 100, null = True, blank = True)
     is_active = models.BooleanField(u"Actif?", default = True)
 
     class Meta:
@@ -23,11 +23,11 @@ class Budget(models.Model):
         ordering = ("team", "name")
 
     def __str__(self):
-        return u"%s (dispo: %s)" % ( self.name, self.get_amount_left() )
+        return u"%s (dispo: %s)" % (self.name, self.get_amount_left())
 
     @models.permalink
     def get_absolute_url(self):
-        return ( 'budget_edit', [self.id] )
+        return ('budget_edit', [self.id])
 
     def get_amount_left(self):
         return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])
@@ -47,50 +47,50 @@ class Budget(models.Model):
 
     def credit(self, value):
         bl = BudgetLine.objects.create(
-            team					= self.team.name,
-            budget_id			= self.id,
-            budget				= self.name,
-            nature				= self.default_nature,
-            budget_type 	= self.budget_type,
-            origin				= self.default_origin,
-            product_price	= value,
-            quantity			= 1,
-            credit				= value,
-            debit					= 0
+            team = self.team.name,
+            budget_id = self.id,
+            budget = self.name,
+            nature = self.default_nature,
+            budget_type = self.budget_type,
+            origin = self.default_origin,
+            product_price = value,
+            quantity = 1,
+            credit = value,
+            debit = 0
         )
         return bl
 
     def debit(self, value):
         bl = BudgetLine.objects.create(
-            team					= self.team.name,
-            budget_id			= self.id,
-            budget				= self.name,
-            nature				= self.default_nature,
-            budget_type 	= self.budget_type,
-            origin				= self.default_origin,
-            product_price	= value,
-            quantity			= 1,
-            credit				= 0,
-            debit					= value
+            team = self.team.name,
+            budget_id = self.id,
+            budget = self.name,
+            nature = self.default_nature,
+            budget_type = self.budget_type,
+            origin = self.default_origin,
+            product_price = value,
+            quantity = 1,
+            credit = 0,
+            debit = value
         )
         return bl
 
 
 class BudgetLine(models.Model):
     team          = models.CharField(u"Equipe", max_length = 100)
-    order_id      = models.IntegerField( u"ID de commande", null = True, blank = True )
-    orderitem_id  = models.IntegerField( u"ID d'item de commande", null = True, blank = True )
-    budget_id     = models.IntegerField( u"ID de budget" )
-    budget        = models.CharField(u"Budget", max_length = 100 )
-    number        = models.CharField(u"N° de commande", max_length = 20, null = True, blank = True )
-    date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True )
-    nature        = models.CharField(u"Nature", null = True, blank = True, max_length = 20 )
+    order_id      = models.IntegerField(u"ID de commande", null = True, blank = True)
+    orderitem_id  = models.IntegerField(u"ID d'item de commande", null = True, blank = True)
+    budget_id     = models.IntegerField(u"ID de budget")
+    budget        = models.CharField(u"Budget", max_length = 100)
+    number        = models.CharField(u"N° de commande", max_length = 20, null = True, blank = True)
+    date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True)
+    nature        = models.CharField(u"Nature", null = True, blank = True, max_length = 20)
     budget_type   = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
-    origin        = models.CharField(u"Origine", max_length = 30, null = True, blank = True )
-    provider      = models.CharField(u"Fournisseur", max_length = 100, null = True, blank = True )
-    offer         = models.CharField(u"Offre/Commentaire", max_length = 100, null = True, blank = True )
-    product       = models.CharField(u"Désignation", max_length = 500, null = True, blank = True )
-    reference     = models.CharField(u"Référence", max_length = 100, null = True, blank = True )
+    origin        = models.CharField(u"Origine", max_length = 30, null = True, blank = True)
+    provider      = models.CharField(u"Fournisseur", max_length = 100, null = True, blank = True)
+    offer         = models.CharField(u"Offre/Commentaire", max_length = 100, null = True, blank = True)
+    product       = models.CharField(u"Désignation", max_length = 500, null = True, blank = True)
+    reference     = models.CharField(u"Référence", max_length = 100, null = True, blank = True)
     quantity      = models.IntegerField(u"Quantité", null = True, blank = True, default = 1)
     product_price = models.DecimalField(u"Montant unitaire", max_digits=12, decimal_places=2, null = True, blank = True)
     credit        = models.DecimalField(u"Crédit", max_digits=12, decimal_places=2, null = True, blank = True)
@@ -115,7 +115,7 @@ class BudgetLine(models.Model):
 
     def get_amount_left(self):
         amount_left = 0
-        for line in BudgetLine.objects.filter( budget_id = self.budget_id ):
+        for line in BudgetLine.objects.filter(budget_id = self.budget_id):
             amount_left += line.get_total()
 
             if line == self:
@@ -125,7 +125,7 @@ class BudgetLine(models.Model):
 
     def get_amount_spent(self):
         amount_spent = 0
-        for line in BudgetLine.objects.filter( budget_id = self.budget_id, debit__isnull = False ):
+        for line in BudgetLine.objects.filter(budget_id = self.budget_id, debit__isnull = False):
             amount_spent += (line.debit * line.quantity)
             if line == self: break
 
@@ -150,20 +150,20 @@ class BudgetLine(models.Model):
             return ""
 
         # From order
-        ids = Order.objects.filter( number = self.number ).values_list('team',flat=True)
+        ids = Order.objects.filter(number = self.number).values_list('team',flat=True)
 
         # From history
-        names = History.objects.filter( number = self.number ).values_list('team', flat=True)
+        names = History.objects.filter(number = self.number).values_list('team', flat=True)
 
         # Get team from orders and history
-        teams = Team.objects.filter(Q( name__in = names ) | Q( id__in = ids )).distinct()
+        teams = Team.objects.filter(Q(name__in = names) | Q(id__in = ids)).distinct()
 
         # If budgetline's team is in order/history too
-        if teams.filter( name = self.team ).count() > 0:
+        if teams.filter(name = self.team).count() > 0:
             return ""
 
         # Return team short names
-        return ", ".join( teams.values_list('shortname', flat = True) )
+        return ", ".join(teams.values_list('shortname', flat = True))
 
     def update_budget_relation(self):
         b = Budget.objects.get(id = self.budget_id)
