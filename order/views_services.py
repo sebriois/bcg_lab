@@ -43,7 +43,8 @@ def tab_services(request):
                 price           = data['cost'],
                 cost_type       = DEBIT,
                 quantity        = data['quantity'],
-                is_confidential = data['confidential']
+                is_confidential = data['confidential'],
+                nomenclature = data['nomenclature']
             )
             
             # Add item to order
