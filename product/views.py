@@ -1,4 +1,5 @@
 # coding: utf-8
+from datetime import datetime
 from urllib.parse import parse_qsl
 from decimal import Decimal
 import xlwt
@@ -13,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from django.utils import timezone
+from elasticsearch import Elasticsearch
 
 from provider.models import Provider
 from product.models import Product
@@ -60,6 +62,40 @@ def autocomplete(request):
     
     return HttpResponse(json.dumps(output_data))
 
+def _elastic_search(query_dict):
+    es = Elasticsearch()
+    query = {
+      "query": {
+        "filtered": {
+          "query": {
+            "query_string": {
+              "query": query_dict['q']
+            }
+          }
+        }
+      },
+      "fields": [
+        "reference",
+        "nomenclature",
+        "provider",
+        "offer_nb",
+        "origin",
+        "name",
+        "category"
+      ],
+      "from": 50 * (int(query_dict.get("page", 1)) - 1),
+      "size": 50,
+      "sort": {
+        "_score": {
+          "order": "desc"
+        }
+      }
+    }
+    res = es.search(index = settings.SITE_NAME.lower(), body = query, filter_path=['hits.total', 'hits.hits._id'])
+    product_list = Product.objects.filter(id__in = [hit['_id'] for hit in res['hits']['hits']])
+
+    return product_list, res['hits']['total']
+
 
 def _solr_search(query_dict):
     solr = Solr()
@@ -105,8 +141,9 @@ def _django_search(query_dict):
 
 
 def _product_search(query_dict):
-    if 'q' in query_dict.keys():
-        product_list, num_found = _solr_search(query_dict)
+    if 'q' in query_dict.keys() and query_dict['q'].strip():
+        # product_list, num_found = _solr_search(query_dict)
+        product_list, num_found = _elastic_search(query_dict)
     elif len(query_dict.keys()) > 0:
         product_list, num_found = _django_search(query_dict)
     else:
@@ -159,10 +196,10 @@ def index(request):
 @transaction.atomic
 def item(request, product_id):
     product = get_object_or_404(Product, id = product_id)
-    if request.method == 'GET':
-        form = ProductForm(instance = product, provider = product.provider)
-        url_args = request.GET.urlencode()
-    elif request.method == 'POST':
+    form = ProductForm(instance = product, provider = product.provider)
+    url_args = request.GET.urlencode()
+
+    if request.method == 'POST':
         data = request.POST.copy()
         url_args = data.pop('url_args')
         form = ProductForm(instance = product, data = data)
