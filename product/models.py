@@ -1,11 +1,12 @@
 # -*- encoding: utf8 -*-
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
-
+from elasticsearch import Elasticsearch
 
 from provider.models import Provider
 from attachments.models import Attachment
@@ -109,7 +110,25 @@ class Product(models.Model):
         
         solr = Solr()
         solr.post(data)
-    
+
+    def index_into_elasticsearch(self):
+        es = Elasticsearch()
+        es.index(
+            settings.SITE_NAME.lower(),
+            "products",
+            {
+                '_id': "%s" % self.id,
+                'provider': self.provider.name,
+                'origin': self.origin,
+                'name': self.name,
+                'reference': self.reference,
+                'offer_nb': self.offer_nb,
+                'nomenclature': self.nomenclature,
+                'category': self.category and self.category.name or None,
+                'sub_category': self.sub_category and self.sub_category.name or None
+            }
+        )
+
     def clean_packaging(self):
         unit_mapping = {
             'ul' : 'µL',
