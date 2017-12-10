@@ -9,6 +9,13 @@ STATE_CHOICES = (
 	(5, u"Commande réceptionnée")
 )
 
+ORDERITEM_TYPES = (
+	(0, u"Produit"),
+	(1, u"Frais"),
+	(2, u"Remises"),
+	(3, u"Autre")
+)
+
 ISSUE_CHOICES = (
 	(0, u"Bug"),
 	(1, u"Amélioration")

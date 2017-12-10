@@ -272,6 +272,7 @@ def add_orderitem(request, order_id):
     
     return redirect(request.POST.get('next', order))
 
+
 @login_required
 @transaction.atomic
 def add_credit(request, order_id):
@@ -280,6 +281,7 @@ def add_credit(request, order_id):
     form = AddCreditForm(data = request.POST)
     if form.is_valid():
         item = form.save(commit = False)
+        item.item_type = 2
         item.username = request.POST['username']
         item.provider = order.provider.name
         item.save()
@@ -304,6 +306,7 @@ def add_debit(request, order_id):
     form = AddDebitForm(data = request.POST)
     if form.is_valid():
         item = form.save(commit = False)
+        item.item_type = 1
         item.username = request.POST['username']
         item.provider = order.provider.name
         item.save()

@@ -29,7 +29,7 @@
 	</li>
 	{% endif %}
 	
-	{% if not user|has_perm:"order.custom_view_local_provider" %}
+	{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser%}
 	<li class="{% block menu_reception %}{% endblock %}">
 		<a href="{% url 'tab_reception' %}">Réception</a>
 	</li>

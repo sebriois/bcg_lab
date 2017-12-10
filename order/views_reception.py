@@ -20,8 +20,8 @@ def tab_reception(request):
     # Exclude items with direct reception
     orderitems = orderitems.exclude(order__provider__direct_reception = True)
 
-    # Exclude orphan products
-    orderitems = orderitems.exclude(product_id__isnull = True, order__provider__is_service = False)
+    # Exclude "frais, remises"
+    orderitems = orderitems.exclude(item_type__in = [2, 3])
 
     # Only keep items ordered by request user or by its team
     if not request.user.has_perm("team.custom_view_teams"):
@@ -43,12 +43,12 @@ def do_reception(request):
     action_ids = filter(lambda key: key.startswith("action_"), request.POST.keys())
     for action_id in action_ids:
         item_id = action_id.split("_")[1]
-        item    = OrderItem.objects.get(id = item_id)
-        
-        if Order.objects.filter(items__id = item.id).count() == 0:
+        try:
+            item = OrderItem.objects.get(id = item_id)
+            order = item.order_set.get()
+        except (OrderItem.DoesNotExist, Order.DoesNotExist):
             continue
-        
-        order = item.get_order()
+
         qty_delivered = int(request.POST.get("delivered_%s" % item_id, 0))
         
         if item.delivered - qty_delivered < 0:

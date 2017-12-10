@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from bcg_lab.constants import STATE_CHOICES, DEBIT, COST_TYPE_CHOICES, CREDIT
+from bcg_lab.constants import STATE_CHOICES, DEBIT, COST_TYPE_CHOICES, CREDIT, ORDERITEM_TYPES
 from product.models import Product
 from provider.models import Provider
 from budget.models import Budget, BudgetLine
@@ -135,6 +135,7 @@ class Order(models.Model):
     
 
 class OrderItem(models.Model):
+    item_type = models.IntegerField(u"Type d'item", choices = ORDERITEM_TYPES, default = 0)
     username        = models.CharField( u"Commandé par", max_length = 100 )
     username_recept = models.CharField( u"Réceptionné par", max_length = 100, null = True, blank = True )
     product_id      = models.IntegerField( u'ID produit', blank = True, null = True )
