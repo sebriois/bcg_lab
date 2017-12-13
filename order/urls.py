@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import path
 from django.urls import path
 
 from order.views import order_detail, orderitem_detail, orderitem_disjoin, order_delete, order_export

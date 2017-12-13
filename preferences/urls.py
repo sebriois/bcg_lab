@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import path
 
 from preferences.views import index, change_password
 

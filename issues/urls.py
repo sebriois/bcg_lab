@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import path
 
 from issues.views import index, item, delete, set_status, new
 

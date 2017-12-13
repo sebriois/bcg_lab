@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import path
 
 from team.views_team import index, item, new, add_user_to_team
 

@@ -1,4 +1,4 @@
-from django.conf.urls import *
+from django.urls import path
 
 from infos.views import index, new, delete, item
 
