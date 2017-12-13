@@ -1,4 +1,5 @@
 from django.conf.urls import *
+from django.urls import path
 
 from order.views import order_detail, orderitem_detail, orderitem_disjoin, order_delete, order_export
 from order.views import set_budget
@@ -16,6 +17,7 @@ from order.views_reception import do_reception
 
 from order.views_order_status import set_next_status
 
+app_name = 'order'
 urlpatterns = [
     # Order
     path('<int:order_id>/delete/$', order_delete, name="order_delete"),
