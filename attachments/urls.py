@@ -1,8 +1,9 @@
-from django.conf.urls import *
+from django.urls import path
 
 from attachments.views import new, delete
 
+app_name = "attachments"
 urlpatterns = [
-    url(r'^(?P<attachment_id>\d+)/delete/$', delete, name="delete"),
-    url(r'^new/$', new, name="new")
+    path('<int:attachment_id>/delete/$', delete, name="delete"),
+    path('new/$', new, name="new")
 ]

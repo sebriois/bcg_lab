@@ -1,26 +1,20 @@
 # coding: utf-8
-# import the logging library
-import json
 import logging
 
-# Get an instance of a logger
-import urllib
-
-from utils.request_messages import warn_msg, info_msg, error_msg
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
-
+import json
 from datetime import datetime
 from decimal import Decimal
 import xlrd
 
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.conf import settings
 
+from utils.request_messages import warn_msg, info_msg, error_msg
 from provider.models import Provider
 from product.models import Product
 from provider.forms import ImportForm
@@ -209,7 +203,7 @@ votre navigateur)." )
         
         price = line[price_idx]
         if isinstance(price, str):
-            price = unicode(price).replace(' ','').replace(',','.').replace(u"€",'')
+            price = str(price).replace(' ','').replace(',','.').replace(u"€",'')
         price = Decimal(price)
         
         if len(line) > pack_idx and line[pack_idx]:

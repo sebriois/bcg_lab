@@ -5,12 +5,12 @@ from provider.import_xls import import_xls, do_import
 from provider.export_xls import export_xls
 
 urlpatterns = [
-  url(r'^new/$', new, name="provider_new"),
-  url(r'^(?P<provider_id>\d+)/set-notes/$', set_notes, name="set_notes"),
-  url(r'^(?P<provider_id>\d+)/delete/$', delete, name="provider_delete"),
-  url(r'^(?P<provider_id>\d+)/import-products/$', import_xls, name="import_products"),
-  url(r'^(?P<provider_id>\d+)/perform-import-products/$', do_import, name="perform_import_products"),
-  url(r'^(?P<provider_id>\d+)/export-products/$', export_xls, name="export_products"),
-  url(r'^(?P<provider_id>\d+)/$', item, name="provider_item"),
-  url(r'^$', index, name="provider_index")
+  path('new/$', new, name="provider_new"),
+  path('<int:provider_id>/set-notes/$', set_notes, name="set_notes"),
+  path('<int:provider_id>/delete/$', delete, name="provider_delete"),
+  path('<int:provider_id>/import-products/$', import_xls, name="import_products"),
+  path('<int:provider_id>/perform-import-products/$', do_import, name="perform_import_products"),
+  path('<int:provider_id>/export-products/$', export_xls, name="export_products"),
+  path('<int:provider_id>/$', item, name="provider_item"),
+  path('$', index, name="provider_index")
 ]

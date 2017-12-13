@@ -7,12 +7,12 @@ import json
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models.query import Q
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from elasticsearch import Elasticsearch
 
@@ -117,6 +117,7 @@ def _product_search(query_dict):
     
     return product_list, num_found
 
+
 @login_required
 def index(request):
     query_dict = request.GET.copy()
@@ -191,6 +192,9 @@ def item(request, product_id):
 @login_required
 @transaction.atomic
 def new(request):
+    provider = None
+    form = ProductForm()
+
     if request.method == 'GET':
         provider_id = request.GET.get('provider_id',None)
         if provider_id:
@@ -199,9 +203,6 @@ def new(request):
         elif request.user.has_perm("order.custom_view_local_provider"):
             provider = get_object_or_404(Provider, name = 'MAGASIN', is_local = True)
             form = ProductForm(provider = provider)
-        else:
-            provider = None
-            form = ProductForm()
     elif request.method == 'POST':
         if 'provider' in request.POST and request.POST['provider']:
             provider = get_object_or_404(Provider, id = request.POST['provider'])

@@ -21,9 +21,9 @@ class History(models.Model):
     budget = models.CharField(u"Budget", max_length = 100)
     date_delivered = models.DateTimeField(u"Date de réception", auto_now_add = True)
     date_created = models.DateTimeField(u"Date", auto_now_add = True)
-    items = models.ManyToManyField( OrderItem, verbose_name = "Produits" )
+    items = models.ManyToManyField( OrderItem, verbose_name = "Produits")
     comments = models.TextField(u"Commentaires", null = True, blank = True)
-    attachments = GenericRelation( Attachment )
+    attachments = GenericRelation(Attachment)
 
     class Meta:
         db_table = 'history'

@@ -3,8 +3,8 @@ from django.conf.urls import *
 from infos.views import index, new, delete, item
 
 urlpatterns = [
-	url(r'^(?P<info_id>\d+)/delete$', delete, name="info_delete"),
-	url(r'^(?P<info_id>\d+)/$', item, name="info_item"),
-    url(r'^add-info/$', new, name="info_new"),
-    url(r'^$', index, name="info_index")
+	path('<int:info_id>/delete$', delete, name="info_delete"),
+	path('<int:info_id>/$', item, name="info_item"),
+    path('add-info/$', new, name="info_new"),
+    path('$', index, name="info_index")
 ]
