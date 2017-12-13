@@ -1,7 +1,7 @@
 # coding: utf-8
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from bcg_lab.constants import EMPTY_SEL
 from team.models import Team

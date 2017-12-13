@@ -3,7 +3,7 @@ from decimal import Decimal, InvalidOperation
 
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from bcg_lab.constants import CREDIT, DEBIT
 from order.models import OrderItem, OrderComplement
