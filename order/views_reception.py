@@ -84,7 +84,7 @@ def do_reception(request):
             order.save_to_history()
             order.delete()
     
-    return redirect("tab_reception")
+    return redirect('order:tab_reception')
 
 
 @login_required
@@ -128,5 +128,5 @@ def tab_reception_local_provider(request):
                 order.save_to_history()
                 order.delete()
     
-    return redirect("tab_reception_local_provider")
+    return redirect('order:tab_reception_local_provider')
 

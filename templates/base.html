@@ -51,7 +51,7 @@
         </li>
         {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
         <li class="{% block menu_services %}{% endblock %}">
-            <a href="{% url 'order:tab_services' %}">Services</a>
+            <a href="{% url 'services:tab_services' %}">Services</a>
         </li>
         {% endif %}
 

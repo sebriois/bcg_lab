@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-  <form action="{% url 'order:tab_services' %}" method="POST">{% csrf_token %}
+  <form action="{% url 'services:tab_services' %}" method="POST">{% csrf_token %}
     <fieldset>
       {% for field in form %}
         {% include "form_snippet.html" %}

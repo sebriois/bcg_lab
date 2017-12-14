@@ -93,7 +93,7 @@ def delete(request, provider_id):
 def set_notes(request, provider_id):
     if not request.is_ajax():
         not_allowed_msg(request)
-        return redirect("provider_index")
+        return redirect('provider:index')
 
     provider = get_object_or_404(Provider, id = provider_id)
     provider.notes = request.GET['notes']

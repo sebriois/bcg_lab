@@ -160,7 +160,7 @@ def export_orders_to_xls(request):
 def history_budgets(request):
     if not request.user.has_perm("budget.custom_view_budget"):
         not_allowed_msg(request)
-        return redirect("home")
+        return redirect('home')
     
     budgets = Budget.objects.filter(is_active = False)
     
