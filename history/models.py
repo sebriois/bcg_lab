@@ -37,7 +37,7 @@ class History(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('history_detail', [self.id])
+        return ('history:detail', [self.id])
 
     def get_provider_display(self):
         try:

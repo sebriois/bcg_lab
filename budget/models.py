@@ -28,7 +28,7 @@ class Budget(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('budget_edit', [self.id])
+        return ('budget:edit', [self.id])
 
     def get_amount_left(self):
         return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])

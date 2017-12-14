@@ -42,7 +42,7 @@ class Order(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('order_item', [self.id])
+        return ('order:detail', [self.id])
     
     def get_full_name(self):
         return u"%s" % self.team

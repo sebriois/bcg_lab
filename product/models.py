@@ -83,7 +83,7 @@ class Product(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('product_item', [self.id])
+        return ('product:item', [self.id])
     
     def has_expired(self):
         return (self.expiry and self.expiry < timezone.now())
