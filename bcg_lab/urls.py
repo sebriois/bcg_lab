@@ -1,7 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
-from django.urls import path
 
 from bcg_lab.home_view import error, send_message, home
 
@@ -26,9 +25,9 @@ urlpatterns = [
     path('issues/', include('issues.urls', namespace = 'issues')),
     path('infos/', include('infos.urls', namespace = 'infos')),
     path('preferences/', include('preferences.urls', namespace = 'preferences')),
-    path('login/$', login, {'template_name': 'auth/login.html'}, name = 'login'),
-    path('logout/$', logout_then_login, name = "logout"),
-    path('error/$', error, name="error"),
-    path('send-message/$', send_message, name="send_message"),
-    path('$', home, name="home"),
+    path('login/', login, {'template_name': 'auth/login.html'}, name = 'login'),
+    path('logout/', logout_then_login, name = "logout"),
+    path('error/', error, name="error"),
+    path('send-message/', send_message, name="send_message"),
+    path('', home, name="home"),
 ]

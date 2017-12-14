@@ -20,37 +20,37 @@ from order.views_order_status import set_next_status
 app_name = 'order'
 urlpatterns = [
     # Order
-    path('<int:order_id>/delete/$', order_delete, name="order_delete"),
-    path('<int:order_id>/set-next-status/$', set_next_status, name="set_next_status"),
-    path('<int:order_id>/set-team/$', set_team, name="order_team"),
-    path('<int:order_id>/set-budget/$', set_budget, name="order_budget"),
-    path('<int:order_id>/set-notes/$', set_notes, name="set_order_notes"),
-    path('<int:order_id>/set-number/$', set_number, name="set_order_number"),
-    path('<int:order_id>/toggle-urgent/$', set_is_urgent, name="set_is_urgent"),
-    path('<int:order_id>/toggle-problem/$', set_has_problem, name="set_has_problem"),
-    path('<int:order_id>/view-in-excel/$', order_export, name="order_export_xls"),
-    path('<int:order_id>/add-credit/$', add_credit, name="add_credit"),
-    path('<int:order_id>/add-debit/$', add_debit, name="add_debit"),
-    path('<int:order_id>/add-item/$', add_orderitem, name="add_orderitem"),
-    path('<int:order_id>/$', order_detail, name="order_item"),
+    path('<int:order_id>/delete/', order_delete, name="order_delete"),
+    path('<int:order_id>/set-next-status/', set_next_status, name="set_next_status"),
+    path('<int:order_id>/set-team/', set_team, name="order_team"),
+    path('<int:order_id>/set-budget/', set_budget, name="order_budget"),
+    path('<int:order_id>/set-notes/', set_notes, name="set_order_notes"),
+    path('<int:order_id>/set-number/', set_number, name="set_order_number"),
+    path('<int:order_id>/toggle-urgent/', set_is_urgent, name="set_is_urgent"),
+    path('<int:order_id>/toggle-problem/', set_has_problem, name="set_has_problem"),
+    path('<int:order_id>/view-in-excel/', order_export, name="order_export_xls"),
+    path('<int:order_id>/add-credit/', add_credit, name="add_credit"),
+    path('<int:order_id>/add-debit/', add_debit, name="add_debit"),
+    path('<int:order_id>/add-item/', add_orderitem, name="add_orderitem"),
+    path('<int:order_id>/', order_detail, name="order_item"),
 
     # Order Items
-    path('<int:orderitem_id>/del-item/$', orderitem_delete, name="orderitem_delete"),
-    path('<int:orderitem_id>/disjoin-item/$', orderitem_disjoin, name="orderitem_disjoin"),
-    path('<int:orderitem_id>/edit/$', orderitem_detail, name="orderitem_detail"),
-    path('set-item-quantity/$', set_item_quantity, name="set_item_quantity"),
+    path('<int:orderitem_id>/del-item/', orderitem_delete, name="orderitem_delete"),
+    path('<int:orderitem_id>/disjoin-item/', orderitem_disjoin, name="orderitem_disjoin"),
+    path('<int:orderitem_id>/edit/', orderitem_detail, name="orderitem_detail"),
+    path('set-item-quantity/', set_item_quantity, name="set_item_quantity"),
 
     # Cart
-    path('add-to-cart/$', cart_add, name="cart_add"),
+    path('add-to-cart/', cart_add, name="cart_add"),
 
     # Autocomplete
-    path('autocomplete/number/$', autocomplete_order_number, name="autocomplete_order_number"),
+    path('autocomplete/number/', autocomplete_order_number, name="autocomplete_order_number"),
 
     # Tabs
-    path('validation/$', tab_validation, name="tab_validation"),
-    path('cart/$', tab_cart, name="tab_cart"),
-    path('reception-list/$', tab_reception, name="tab_reception"),
-    path('do-reception/$', do_reception, name="do_reception"),
-    path('reception-local-provider/$', tab_reception_local_provider, name="tab_reception_local_provider"),
-    path('$', tab_orders, name="tab_orders")
+    path('validation/', tab_validation, name="tab_validation"),
+    path('cart/', tab_cart, name="tab_cart"),
+    path('reception-list/', tab_reception, name="tab_reception"),
+    path('do-reception/', do_reception, name="do_reception"),
+    path('reception-local-provider/', tab_reception_local_provider, name="tab_reception_local_provider"),
+    path('', tab_orders, name="tab_orders")
 ]

@@ -5,6 +5,6 @@ from product.views_productcode import import_product_codes
 
 app_name = 'product_code'
 urlpatterns = [
-    path('autocomplete-codes/$', autocomplete_product_codes, name="autocomplete_product_codes"),
-    path('import/$', import_product_codes, name="import_product_codes"),
+    path('autocomplete-codes/', autocomplete_product_codes, name="autocomplete_product_codes"),
+    path('import/', import_product_codes, name="import_product_codes"),
 ]
