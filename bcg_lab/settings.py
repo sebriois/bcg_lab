@@ -9,12 +9,16 @@ SECRET_KEY = 'kmt5emo1+r5v*zwcs-oc92toi*8nhzzh@wvm=eg90-p$w0o&^e'
 SITE_ID = 1
 SITE_NAME = 'LBCMCP'
 
+ELASTICSEARCH_HOSTS = ["localhost"]
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
+
+
 
 INSTALLED_APPS = (
     'django.contrib.auth',

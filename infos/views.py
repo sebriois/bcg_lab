@@ -14,7 +14,7 @@ from team.utils import in_team_secretary
 @login_required
 @transaction.atomic
 def index(request):
-    Info.objects.filter(expiry__lt = timezone.now() ).delete()
+    Info.objects.filter(expiry__lt = timezone.now()).delete()
     return render(request, 'homepage.html', {
         'infos': Info.objects.all()
     })

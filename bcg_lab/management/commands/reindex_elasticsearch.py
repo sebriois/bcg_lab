@@ -31,6 +31,10 @@ class Command(BaseCommand):
                     "type": "string",
                     "index": "not_analyzed"
                 },
+                "sub_category": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
                 "suggest":  {
                     "type": "completion",
                     "payloads": True
@@ -44,7 +48,7 @@ class Command(BaseCommand):
 
         self.index_name = settings.SITE_NAME.lower()
 
-        self.es = Elasticsearch()
+        self.es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
         self.delete_index()
         self.create_index()
         self.put_mappings()
