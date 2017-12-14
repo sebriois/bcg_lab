@@ -165,7 +165,7 @@ def credit(request, budget_id):
         
         info_msg(request, "Ligne de crédit ajoutée avec succès.")
         return redirect('budgets')
-        # return redirect(reverse('budgetlines') + "?budget_name=%s" % budget.name)
+        # return redirect(reverse('budget_line:list') + "?budget_name=%s" % budget.name)
     else:
         return render(request, 'budget/form_credit.html',{
             'budget': budget,
@@ -203,7 +203,7 @@ def debit(request, budget_id):
         
         info_msg(request, "Ligne de débit ajoutée avec succès!")
         return redirect('budgets')
-        # return redirect(reverse('budgetlines') + "?budget_name=%s" % budget.name)
+        # return redirect(reverse('budget_line:list') + "?budget_name=%s" % budget.name)
     else:
         return render(request, 'budget/form_debit.html',{
             'budget': budget,

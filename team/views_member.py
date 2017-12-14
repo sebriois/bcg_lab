@@ -95,7 +95,7 @@ def new_member(request):
                 template = loader.get_template('email_new_member.txt')
                 message = template.render({
                     'member': member,
-                    'url': request.build_absolute_uri(reverse('team_index'))
+                    'url': request.build_absolute_uri(reverse('team:index'))
                 })
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
                 info_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")

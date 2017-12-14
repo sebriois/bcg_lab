@@ -72,7 +72,7 @@
                 <td>{{ order_item.price }} €</td>
                 {% if user|can_edit:order %}
                 <td id="setQuantity">
-                    <input type="text" url="{% url 'set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:15px;" />
+                    <input type="text" url="{% url 'order:set_item_quantity' %}" value="{{ order_item.quantity }}" style="width:15px;" />
                 </td>
                 {% else %}
                 <td>{{ order_item.quantity }}</td>
@@ -80,8 +80,8 @@
                 <td>{{ order_item.total_price }} €</td>
                 {% if user|can_edit:order %}
                 <td>
-                    <a href="{% url 'orderitem_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
-                    <a href="{% url 'orderitem_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
+                    <a href="{% url 'order:item_detail' order_item.id %}?next={{next}}" class="pencil">Modifier</a>
+                    <a href="{% url 'order:item_delete' order_item.id %}?next={{next}}" class="trash confirmDel">Supprimer</a>
                 </td>
                 {% endif %}
             </tr>
@@ -92,5 +92,5 @@
     <p style="font-size:16px;margin-bottom:10px">PRIX TOTAL COMMANDE: <b>{{ history.price }} €</b></p>
 </div>
 
-<a href="{% url 'history_orders' %}" class="back">Retour</a>
+<a href="{% url 'history:orders' %}" class="back">Retour</a>
 {% endblock %}

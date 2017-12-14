@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'team_index' %}" method="post">{% csrf_token %}
+<form action="{% url 'team:index' %}" method="post">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>
@@ -15,6 +15,6 @@
 			{% for field in form %}{% include "form_snippet.html"%}{% endfor %}
 		</fieldset>
     <button type="submit" class="check">Valider</button>
-    <a href="{% url 'team_index' %}" class="back">Retour</a>
+    <a href="{% url 'team:index' %}" class="back">Retour</a>
 </form>
 {% endblock %}

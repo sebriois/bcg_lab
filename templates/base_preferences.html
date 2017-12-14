@@ -7,10 +7,10 @@
 {% block nav_secondary %}
 <ul id="subnav">
   <li class="{% block menu_general %}{% endblock %}">
-    <a href="{% url 'preferences' %}">Général</a>
+    <a href="{% url 'preferences:list' %}">Général</a>
   </li>
   <li class="{% block menu_password %}{% endblock %}">
-    <a href="{% url 'change_password' %}">Changement de mot de passe</a>
+    <a href="{% url 'preferences:change_password' %}">Changement de mot de passe</a>
   </li>
 </ul>
 {% endblock %}

@@ -78,7 +78,7 @@ def _move_to_status_1(request, order):
             template = loader.get_template('order/validation_email.txt')
             context = {
                 'order': order,
-                'url': request.build_absolute_uri(reverse('tab_validation'))
+                'url': request.build_absolute_uri(reverse('order:tab_validation'))
             }
             message = template.render(context)
             for email in emails:
@@ -100,7 +100,7 @@ def _move_to_status_2(request, order):
     if order.provider.is_local:
         subject = "[BCG-Lab %s] Nouvelle commande magasin" % settings.SITE_NAME
         template = loader.get_template('email_local_provider.txt')
-        url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
+        url = request.build_absolute_uri(reverse('order:tab_reception_local_provider'))
         message = template.render({'order': order, 'url': url})
         emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
         
@@ -205,7 +205,7 @@ def _move_to_status_4(request, order):
     
     info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
     
-    # return redirect(reverse('tab_orders') + "?page=%s" % request.GET.get("page","1"))
+    # return redirect(reverse('order:tab_orders') + "?page=%s" % request.GET.get("page","1"))
     return redirect(order)
 
 

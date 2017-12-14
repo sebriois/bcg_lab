@@ -4,7 +4,7 @@
 
 {% block header %}
 <div class="btn_wrapper">
-	<a href="{% url 'group_new' %}" class="btn_medium">
+	<a href="{% url 'bcglab_admin:group_new' %}" class="btn_medium">
 		<img src="{% static 'img/icons/add.png' %}" />Créer un groupe
 	</a>
 </div>
@@ -25,7 +25,7 @@
 			<td>{{ group.name }}</td>
 			<td>{{ group.user_set.all|join:", "|default:"<b>AUCUN</b>" }}</td>
 			<td>
-				<a href="{% url 'group_item' group.id %}" class="pencil">Editer</a>
+				<a href="{% url 'bcglab_admin:group_item' group.id %}" class="pencil">Editer</a>
 				<a href="#" class="trash">Supprimer</a>
 			</td>
 		</tr>

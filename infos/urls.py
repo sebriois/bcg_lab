@@ -4,8 +4,8 @@ from infos.views import index, new, delete, item
 
 app_name = "infos"
 urlpatterns = [
-    path('<int:info_id>/delete', delete, name = "info_delete"),
-    path('<int:info_id>/', item, name = "info_item"),
-    path('add-info/', new, name = "info_new"),
-    path('', index, name = "info_index")
+    path('<int:info_id>/delete', delete, name = "delete"),
+    path('<int:info_id>/', item, name = "item"),
+    path('add-info/', new, name = "new"),
+    path('', index, name = "index")
 ]

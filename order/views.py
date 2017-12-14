@@ -558,7 +558,7 @@ def cart_add(request):
     item.save()
     
     url_arg = request.POST.get('url_params', '')
-    url = reverse('product_index', current_app="product") + "?" + url_arg
+    url = reverse('product:index', current_app="product") + "?" + url_arg
     
     info_msg(request, u"Produit ajouté au panier avec succès.")
     return redirect(url)

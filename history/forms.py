@@ -33,7 +33,7 @@ class HistoryFilterForm(forms.Form):
         required  = False,
         widget    = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_products')
+            'autocomplete_url': reverse_lazy('product:autocomplete')
         })
     )
     items__reference = forms.CharField(
@@ -64,7 +64,7 @@ class HistoryFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+            'autocomplete_url': reverse_lazy('order:autocomplete_number')
         })
     )
     date_delivered__gte = forms.DateField( 
@@ -139,7 +139,7 @@ class BudgetHistoryFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+            'autocomplete_url': reverse_lazy('order:autocomplete_number')
         })
     )
     product__icontains = forms.CharField(
@@ -147,7 +147,7 @@ class BudgetHistoryFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_products')
+            'autocomplete_url': reverse_lazy('product:autocomplete')
         })
     )
     provider = forms.ModelChoiceField(

@@ -12,7 +12,7 @@
 </div>
 
 <div class="bar_content">
-  <form action="{% url 'budgetlines' %}" method="GET" class="show_wait">
+  <form action="{% url 'budget_line:list' %}" method="GET" class="show_wait">
     <strong>
       Chercher les lignes budgétaires qui correspondent à
       {{ filter_form.connector }} conditions suivantes:
@@ -55,7 +55,7 @@
     <div class="cleaner"></div>
     
     <button type="submit" class="all">Chercher</button>
-    <a href="{% url 'budgets' %}" class="refresh">Retour liste des budgets</a>
+    <a href="{% url 'budget:list' %}" class="refresh">Retour liste des budgets</a>
   </form>
 </div>
 <div class="cleaner"></div>

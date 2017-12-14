@@ -6,7 +6,7 @@
 </div>
 
 <div class="bar_content">
-  <form action="{% url 'history_budgets' %}" method="GET" class="show_wait">{% csrf_token %}
+  <form action="{% url 'history:budgets' %}" method="GET" class="show_wait">{% csrf_token %}
     <strong>
       Chercher les lignes budgétaires qui correspondent à
       {{ filter_form.connector }} conditions suivantes:
@@ -47,7 +47,7 @@
     <div class="cleaner"></div>
     
     <button type="submit" class="all">Chercher</button>
-    <a href="{% url 'history_budgets' %}" class="refresh">Liste globale</a>
+    <a href="{% url 'history:budgets' %}" class="refresh">Liste globale</a>
   </form>
 </div>
 <div class="cleaner"></div>

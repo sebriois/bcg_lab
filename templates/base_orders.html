@@ -8,18 +8,18 @@
 <ul id="subnav">
 	{% if not user|has_perm:"order.custom_view_local_provider" %}
 	<li class="{% block menu_cart %}{% endblock %}">
-		<a href="{% url 'tab_cart' %}">Panier</a>
+		<a href="{% url 'order:tab_cart' %}">Panier</a>
 	</li>
 	{% endif %}
 	{% if user|has_perm:"order.custom_validate" %}
 	<li class="{% block menu_validation %}{% endblock %}">
-		<a href="{% url 'tab_validation' %}">Commandes à valider</a>
+		<a href="{% url 'order:tab_validation' %}">Commandes à valider</a>
 	</li>
 	{% endif %}
 	
 	{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
 	<li class="{% block menu_order %}{% endblock %}">
-		<a href="{% url 'tab_orders' %}">
+		<a href="{% url 'order:tab_orders' %}">
 			{% if user|has_perm:"order.custom_goto_status_4" and not user.is_superuser %}
 			Commandes à saisir
 			{% else %}
@@ -31,15 +31,15 @@
 	
 	{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser%}
 	<li class="{% block menu_reception %}{% endblock %}">
-		<a href="{% url 'tab_reception' %}">Réception</a>
+		<a href="{% url 'order:tab_reception' %}">Réception</a>
 	</li>
 	{% endif %}
 	
 	<li class="{% block menu_reception_local %}{% endblock %}">
 		{% if user|has_perm:"order.custom_view_local_provider" %}
-			<a href="{% url 'tab_reception_local_provider' %}">Livraisons</a>
+			<a href="{% url 'order:tab_reception_local_provider' %}">Livraisons</a>
 		{% else %}
-			<a href="{% url 'tab_reception_local_provider' %}">Réception magasin</a>
+			<a href="{% url 'order:tab_reception_local_provider' %}">Réception magasin</a>
 		{% endif %}
 	</li>
 </ul>

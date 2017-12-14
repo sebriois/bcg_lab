@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'import_product_codes' %}" method="POST" enctype="multipart/form-data" >{% csrf_token %}
+<form action="{% url 'product_code:import' %}" method="POST" enctype="multipart/form-data" >{% csrf_token %}
 	<fieldset>
 	  {% for field in form %}{% include "form_snippet.html"%}{% endfor %}
 	</fieldset>

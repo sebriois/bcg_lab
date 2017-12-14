@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'import_products' provider.id %}" method="post" enctype="multipart/form-data" style="padding-top:0">{% csrf_token %}
+<form action="{% url 'provider:import_products' provider.id %}" method="post" enctype="multipart/form-data" style="padding-top:0">{% csrf_token %}
 	<p class="instructions">
 		Un tableau résumant les données importées s'affichera avant la validation finale.
 		<br />Le fichier importé doit être au format <strong>XLS</strong>.
@@ -35,6 +35,6 @@
 	</fieldset>
 	<input type="hidden" name="column_order" value="" />
 	<button type="submit" class="check csv-import">Valider</button>
-	<a href="{% url 'provider_index' %}" class="back">Retour</a>
+	<a href="{% url 'provider:index' %}" class="back">Retour</a>
 </form>
 {% endblock %}

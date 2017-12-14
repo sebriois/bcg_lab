@@ -7,7 +7,7 @@
 <h2>Recherche rapide</h2>
 <form method="GET" action="." class="search">
 	{{form.q }}<input type="submit" value=" " />
-	<a href="{% url 'product_index' %}" class="refresh">Liste globale</a>
+	<a href="{% url 'product:list' %}" class="refresh">Liste globale</a>
 </form>
 <br />
 {% if query and page.object_list|length > 0 %}
@@ -40,7 +40,7 @@
 					<td>{{ product.last_change|date }}</td>
 					<td style="white-space:nowrap">
 						<button id="{{product.id}}" class="plus addToCart">Panier</button>
-						<a href="{% url 'product_item' product.id %}?{{url_args}}" class="pencil">Editer</a>
+						<a href="{% url 'product:item' product.id %}?{{url_args}}" class="pencil">Editer</a>
 					</td>
 				</tr>
 				{% endwith %}
@@ -62,7 +62,7 @@
 {% endif %}
 
 <h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;">Recherche avancée</h2>
-<form action="{% url 'product_index' %}" method="GET" id="history_filter">{% csrf_token %}
+<form action="{% url 'product:list' %}" method="GET" id="history_filter">{% csrf_token %}
 	<strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
 	<table>
 		<tr>
@@ -99,7 +99,7 @@
 		<br /><br />
 	</div>	
 	<div class="cleaner"></div>
-	<form action="{% url 'cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
+	<form action="{% url 'order:cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
 		<input type="hidden" name="url_params" value="{{url_args}}" />
 		<input type="hidden" name="product_id" value="" />
 		<div id="qty-error-msg"></div>

@@ -7,13 +7,13 @@
 {% if user|has_perm:"team.custom_view_teams" %}
 	{% if not see_all_teams %}
 	<div class="btn_wrapper">
-		<a href="{% url 'tab_validation' %}?see_all_teams=1" class="btn_medium">
+		<a href="{% url 'order:tab_validation' %}?see_all_teams=1" class="btn_medium">
 			<img src="{% static 'img/icons/arrow_down.png' %}" />Voir autres équipes
 		</a>
 	</div>
 	{% else %}
 		<div class="btn_wrapper">
-			<a href="{% url 'tab_validation' %}?see_all_teams=0" class="btn_medium">
+			<a href="{% url 'order:tab_validation' %}?see_all_teams=0" class="btn_medium">
 				<img src="{% static 'img/icons/arrow_up.png' %}" />Voir mon équipe
 			</a>
 		</div>

@@ -12,7 +12,7 @@
   Merci de préciser l'adresse URL du problème (http://lbcmcp-orders.ups-tlse.fr/...)
   dans la description pour faciliter la résolution du problème.
 </p>
-<form action="{% url 'issue_index' %}" method="POST">{% csrf_token %}
+<form action="{% url 'issues:index' %}" method="POST">{% csrf_token %}
     <p class="instructions">
       <em>Les champs marqués d'une étoile sont obligatoires</em>
     </p>

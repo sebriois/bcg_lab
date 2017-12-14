@@ -27,7 +27,7 @@ class ProductForm(forms.ModelForm):
                 'expiry': widgets.DateInput(attrs={'class':'datepicker'}),
                 'nomenclature': widgets.TextInput( attrs = {
                     'class': 'autocomplete',
-                    'autocomplete_url': reverse_lazy('autocomplete_product_codes')
+                    'autocomplete_url': reverse_lazy('product_code:autocomplete')
                 })
             }
     
@@ -91,7 +91,7 @@ class ProductFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_products') 
+            'autocomplete_url': reverse_lazy('product:autocomplete')
         }),
     )
     reference = forms.CharField(
@@ -108,7 +108,7 @@ class ProductFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_product_codes') 
+            'autocomplete_url': reverse_lazy('product_code:autocomplete')
         }),
     )
     category = forms.ModelChoiceField(
@@ -151,7 +151,7 @@ class EditListForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_product_codes') 
+            'autocomplete_url': reverse_lazy('product_code:autocomplete')
         }),
     )
     offer_nb = forms.CharField(

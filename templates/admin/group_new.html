@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'group_index' %}" method="POST">{% csrf_token %}
+<form action="{% url 'bcglab_admin:group_index' %}" method="POST">{% csrf_token %}
   <h3>Ajout d'un nouveau groupe</h3>
   <fieldset>
     {% for field in form %}

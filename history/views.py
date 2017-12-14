@@ -223,7 +223,7 @@ def export_budgetlines(request):
         budget_lines = BudgetLine.objects.filter(is_active = False).filter(Q_obj)
     else:
         error_msg(request, "Impossible d'exporter cette page.")
-        return redirect(reverse("history_budgets"))
+        return redirect(reverse('history:budgets'))
     
     wb = xlwt.Workbook()    
     ws = wb.add_sheet("export")

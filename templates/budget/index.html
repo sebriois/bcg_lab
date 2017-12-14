@@ -5,7 +5,7 @@
 
 {% block header %}
 <div class="btn_wrapper">
-	<a href="{% url 'budgetlines' %}" class="btn_big">
+	<a href="{% url 'budget_line:list' %}" class="btn_big">
 		<img src="{% static 'img/icons/magnifier.png' %}" />Détail de tous les budgets
 	</a>
 </div>
@@ -37,14 +37,14 @@
 					<td style="color:red">({{ budget.get_amount_spent }})</td>
 					<td><b>{{ budget.get_amount_left }}</b></td>
 					<td>
-						<a href="{% url 'budgetlines' %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
+						<a href="{% url 'budget_line:list' %}?budget_id={{budget.id}}&connector=OR" class="zoomin">Voir détail</a>
 						{% if user|has_perm:"budget.custom_edit_budget" %}
-						<a href="{% url 'budget_edit' budget.id %}" class="pencil">Editer</a>
-						<a href="{% url 'credit_budget' budget.id %}" class="plus">Créditer</a>
-						<a href="{% url 'debit_budget' budget.id %}" class="minus">Débiter</a>
+						<a href="{% url 'budget:edit' budget.id %}" class="pencil">Editer</a>
+						<a href="{% url 'budget:credit' budget.id %}" class="plus">Créditer</a>
+						<a href="{% url 'budget:debit' budget.id %}" class="minus">Débiter</a>
 						{% endif %}
 						{% if user|has_perm:"budget.custom_edit_budget" %}
-						<a href="{% url 'toggle_budget' budget.id %}" class="folder-collapsed confirm">Archiver</a>
+						<a href="{% url 'budget:toggle' budget.id %}" class="folder-collapsed confirm">Archiver</a>
 						{% endif %}
 					</td>
 				</tr>

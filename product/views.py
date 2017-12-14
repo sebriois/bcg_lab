@@ -178,7 +178,7 @@ def item(request, product_id):
                     product.save()
                     
                 info_msg(request, u"Produit modifié avec succès.")
-            return redirect(reverse('product_index') + '?' + url_args[0])
+            return redirect(reverse('product:index') + '?' + url_args[0])
     
     product_type = ContentType.objects.get_for_model(Product)
     return render(request, 'product/item.html',{
@@ -219,7 +219,7 @@ def new(request):
                 p.save()
 
             info_msg(request, u"Produit ajouté avec succès.")
-            return redirect(reverse('product_index') + "?reference=%s&connector=OR" % p.reference)
+            return redirect(reverse('product:index') + "?reference=%s&connector=OR" % p.reference)
     
     return render(request, 'product/new.html', {
         'provider': provider,
@@ -339,10 +339,10 @@ def edit_list(request):
             
             if request.POST['delete_all'] == "on":
                 info_msg(request, "Produits supprimés avec succès.")
-                return redirect(reverse('product_edit_list') + "?" + request.POST["url_args"])
+                return redirect(reverse('product:edit_list') + "?" + request.POST["url_args"])
             else:
                 info_msg(request, "Liste de produits mise à jour avec succès.")
-                return redirect(reverse('product_edit_list') + "?" + request.POST["url_args"])
+                return redirect(reverse('product:edit_list') + "?" + request.POST["url_args"])
         else:
             url_args = dict(parse_qsl(request.POST["url_args"]))
             product_list, filter_form = _product_search(url_args)

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="MSSmartTagsPreventParsing" content="TRUE" />
     <meta name="robots" content="noindex, nofollow">
 		<title>BCG-Lab {{SITE_NAME}} - création de compte</title>
@@ -27,7 +27,7 @@
 		</div>
 		<div id="in_login">
 			<div id="login_subhead">Création d'un nouveau compte</div>
-			<form action="{% url 'new_member' %}" method="POST" accept-charset="utf-8">{% csrf_token %}
+			<form action="{% url 'team_member:new_member' %}" method="POST" accept-charset="utf-8">{% csrf_token %}
 				<input type="hidden" name="user" value="{{user_id}}" />
 				{% with form.team as field %}
 					{% include "form_snippet.html" %}

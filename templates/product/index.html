@@ -28,20 +28,20 @@
 {% if products %}
     {% if not user|has_perm:"order.custom_view_local_provider" %}
     <div class="btn_wrapper hide_on_save">
-        <a href="{% url 'tab_cart' %}" class="btn_medium">
+        <a href="{% url 'order:tab_cart' %}" class="btn_medium">
             <img src="{% static 'img/icons/cart_go.png' %}" />Voir le panier
         </a>
     </div>
     {% endif %}
     {% if search_count > 0 %}
     <div class="btn_wrapper hide_on_save">
-        <a href="{% url 'product_edit_list' %}?{{url_args}}" class="btn_big">
+        <a href="{% url 'product:edit_list' %}?{{url_args}}" class="btn_big">
             <img src="{% static 'img/icons/pencil.png' %}" />Editer cette liste de produits
         </a>
     </div>
     {% endif %}
     <div class="btn_wrapper hide_on_save">
-        <a href="{% url 'product_export_xls' %}?{{url_args}}" class="btn_big">
+        <a href="{% url 'product:export_xls' %}?{{url_args}}" class="btn_big">
             <img src="{% static 'img/icons/page_excel.png' %}" />Exporter cette liste
         </a>
     </div>
@@ -83,7 +83,7 @@
                             <button id="{{product.id}}" class="plus addToCart">Panier</button>
                             {% endif %}
                         {% endif %}
-                        <a href="{% url 'product_item' product.id %}?{{url_args}}" class="pencil">Editer</a>
+                        <a href="{% url 'product:item' product.id %}?{{url_args}}" class="pencil">Editer</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -97,7 +97,7 @@
         ATTENTION: l'offre sur ce produit a atteint sa date d'expiration
         <br /><br />
     </div>
-    <form action="{% url 'cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
+    <form action="{% url 'order:cart_add' %}" method="POST" style="padding:0">{% csrf_token %}
         <input type="hidden" name="url_params" value="{{url_args}}" />
         <input type="hidden" name="product_id" value="" />
         <div id="qty-error-msg"></div>

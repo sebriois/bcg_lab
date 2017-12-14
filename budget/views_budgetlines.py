@@ -181,7 +181,7 @@ def item(request, bl_id):
                 bl.product_price = 0
             
             bl.save()
-            return redirect(reverse('budgetlines') + "?budget_id=%s&connector=OR" % data['budget_id'])
+            return redirect(reverse('budget_line:list') + "?budget_id=%s&connector=OR" % data['budget_id'])
     
     return render(request, 'budgetlines/item.html', {
         'form': form,
