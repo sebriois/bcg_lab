@@ -36,7 +36,7 @@ def group_index(request):
                     group.permissions.add( permission )
 
             info_msg(request, "Groupe ajouté avec succès")
-            return redirect('group_index')
+            return redirect('bcglab_admin:group_index')
         else:
             error_msg(request, "Impossible de créer le groupe." )
             return render(request, 'group_new', {
@@ -92,7 +92,7 @@ def group_delete(request, group_id):
 
     info_msg( request, "Groupe supprimé avec succès.")
 
-    return redirect('group_index')
+    return redirect('bcglab_admin:group_index')
 
 @login_required
 @transaction.atomic

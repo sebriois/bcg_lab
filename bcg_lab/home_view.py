@@ -14,15 +14,15 @@ from utils.request_messages import warn_msg, info_msg
 @login_required
 def home(request):
     if in_team_secretary( request.user ) and not request.user.is_superuser:
-        return redirect('tab_orders')
+        return redirect('order:tab_orders')
 
     if request.user.has_perm('order.custom_view_local_provider'):
-        return redirect('tab_reception_local_provider')
+        return redirect('order:tab_reception_local_provider')
 
     if request.user.has_perm('order.custom_validate'):
-        return redirect('tab_validation')
+        return redirect('order:tab_validation')
 
-    return redirect('info_index')
+    return redirect('infos:index')
 
 
 def error(request):

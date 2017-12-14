@@ -19,7 +19,7 @@ def import_product_codes(request):
         if form.is_valid():
             handle_uploaded_file(request.FILES['file'])
             info_msg(request, "File imported successfully")
-            return redirect('import_product_codes')
+            return redirect('product_code:import')
     else:
         form = ProductCodeForm()
     

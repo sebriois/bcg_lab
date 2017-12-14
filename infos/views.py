@@ -35,7 +35,7 @@ def new(request):
         form = InfoForm(data = data)
         if form.is_valid():
             form.save()
-        return redirect('info_index')
+        return redirect('infos:index')
 
     return render(request, 'infos/new.html', {
         'form': form
@@ -70,4 +70,4 @@ def delete(request, info_id):
     info = get_object_or_404( Info, id = info_id )
     info.delete()
 
-    return redirect('info_index')
+    return redirect('infos:index')

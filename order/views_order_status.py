@@ -34,7 +34,7 @@ def set_next_status(request, order_id):
             return _move_to_status_2(request, order)
         else:
             error_msg(request, "Vous ne disposez pas des permissions nécessaires pour valider cette commande")
-            return redirect('tab_validation')
+            return redirect('order:tab_validation')
     
     elif order.status == 2 and request.user.has_perm('order.custom_goto_status_3'):
         return _move_to_status_3(request, order)
@@ -48,7 +48,7 @@ def set_next_status(request, order_id):
     else:
         error_msg(request, "Vous n'avez pas les permissions nécessaires pour modifier le statut de cette commande")
     
-    return redirect('tab_orders')
+    return redirect('order:tab_orders')
 
 
 def _move_to_status_1(request, order):
@@ -60,7 +60,7 @@ def _move_to_status_1(request, order):
         for item in missing_nomenclature:
             error_msg(request, "Veuillez saisir une nomenclature pour l'item '%s' de la commande %s en cliquant sur "
                                "le bouton 'modifier' de la ligne correspondante." % (item.name, order.provider.name))
-        return redirect('tab_cart')
+        return redirect('order:tab_cart')
 
     order.status = 1
     order.save()
@@ -91,9 +91,9 @@ def _move_to_status_1(request, order):
             envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
     
     if request.user.has_perm('order.custom_validate'):
-        return redirect('tab_validation')
+        return redirect('order:tab_validation')
     
-    return redirect('tab_cart')
+    return redirect('order:tab_cart')
 
 
 def _move_to_status_2(request, order):
@@ -163,7 +163,7 @@ def _move_to_status_3(request, order):
             order.create_budget_line()
         
         info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
-        return redirect('tab_orders')
+        return redirect('order:tab_orders')
     else:
         error_msg(request, "Veuillez choisir un budget à imputer")
         return redirect(order.get_absolute_url())
@@ -218,11 +218,11 @@ def _move_to_status_5(request, order):
             return redirect(order)
     except:
         error_msg(request, u"Veuillez saisir une date valide (format jj/mm/aaaa).")
-        return redirect('tab_orders')
+        return redirect('order:tab_orders')
     
     order.save_to_history(delivery_date)
     order.delete()
     
     info_msg(request, "La commande a été enregistrée dans l'historique.")
-    return redirect('tab_orders')
+    return redirect('order:tab_orders')
 

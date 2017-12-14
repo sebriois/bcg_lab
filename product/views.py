@@ -238,7 +238,7 @@ def delete(request, product_id):
     elif request.method == 'POST':
         product.delete()
         info_msg(request, u"Produit supprimé avec succès.")
-        return redirect('product_index')
+        return redirect('product:index')
 
 
 @login_required

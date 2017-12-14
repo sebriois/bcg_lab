@@ -38,7 +38,7 @@ def tab_reception(request):
 @transaction.atomic
 def do_reception(request):
     if not request.method == "POST":
-        return redirect('tab_reception')
+        return redirect('order:tab_reception')
     
     action_ids = filter(lambda key: key.startswith("action_"), request.POST.keys())
     for action_id in action_ids:
