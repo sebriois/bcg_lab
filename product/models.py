@@ -110,7 +110,6 @@ def post_product_save(sender, instance, **kwargs):
     print("indexing product id %s into Elasticsearch ... " % instance.id, end = "")
     es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
     product_doc = {
-        '_id': "%s" % instance.id,
         "provider": instance.provider.name,
         "name": instance.name,
         "suggest": {
@@ -140,7 +139,8 @@ def post_product_save(sender, instance, **kwargs):
     es.index(
         settings.SITE_NAME.lower(),
         "products",
-        product_doc
+        product_doc,
+        id = "%s" % instance.id,
     )
     print("ok")
 
