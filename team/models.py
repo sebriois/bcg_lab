@@ -79,10 +79,10 @@ class TeamMember(models.Model):
         ordering = ('team', 'user__username')
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
     def __repr__(self):
-        return self.user
+        return self.user.username
 
     def get_full_name(self):
         if (self.user.get_full_name()):
