@@ -31,6 +31,10 @@ class Command(BaseCommand):
                     "type": "string",
                     "index": "not_analyzed"
                 },
+                "sub_category": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
                 "suggest":  {
                     "type": "completion",
                     "payloads": True
@@ -44,7 +48,7 @@ class Command(BaseCommand):
 
         self.index_name = settings.SITE_NAME.lower()
 
-        self.es = Elasticsearch()
+        self.es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
         self.delete_index()
         self.create_index()
         self.put_mappings()
@@ -95,6 +99,8 @@ class Command(BaseCommand):
                 product_doc['nomenclature'] = product.nomenclature
             if product.category:
                 product_doc['category'] = product.category.name
+            if product.sub_category:
+                product_doc['sub_category'] = product.sub_category.name
 
             yield {
                 '_index': self.index_name,

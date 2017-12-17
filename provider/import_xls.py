@@ -209,7 +209,7 @@ votre navigateur)." )
         
         price = line[price_idx]
         if isinstance(price, str):
-            price = unicode(price).replace(' ','').replace(',','.').replace(u"€",'')
+            price = str(price).replace(' ','').replace(',','.').replace(u"€",'')
         price = Decimal(price)
         
         if len(line) > pack_idx and line[pack_idx]:

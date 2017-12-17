@@ -105,21 +105,34 @@ class Product(models.Model):
 
 def post_product_save(sender, instance, **kwargs):
     print("indexing product id %s into Elasticsearch ... " % instance.id, end = "")
-    es = Elasticsearch()
+    es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
+
+    product_doc = {
+        '_id': "%s" % instance.id,
+        "provider": instance.provider.name,
+        "name": instance.name,
+        "suggest": {
+            "output": "%s - %s" % (instance.provider.name, instance.name),
+            "payload": {"product_id": instance.id},
+        }
+    }
+    if instance.origin:
+        product_doc['origin'] = instance.origin
+    if instance.reference:
+        product_doc['reference'] = instance.reference
+    if instance.offer_nb:
+        product_doc['offer_nb'] = instance.offer_nb
+    if instance.nomenclature:
+        product_doc['nomenclature'] = instance.nomenclature
+    if instance.category:
+        product_doc['category'] = instance.category.name
+    if instance.sub_category:
+        product_doc['sub_category'] = instance.sub_category.name
+
     es.index(
         settings.SITE_NAME.lower(),
         "products",
-        {
-            '_id': "%s" % instance.id,
-            'provider': instance.provider.name,
-            'origin': instance.origin,
-            'name': instance.name,
-            'reference': instance.reference,
-            'offer_nb': instance.offer_nb,
-            'nomenclature': instance.nomenclature,
-            'category': instance.category and instance.category.name or None,
-            'sub_category': instance.sub_category and instance.sub_category.name or None
-        }
+        product_doc
     )
     print("ok")
 
@@ -131,5 +144,5 @@ def update_expiry(sender, instance, **kwargs):
     
 
 # register the signal
-post_save.connect(post_product_save, sender=Product, dispatch_uid="post_product_save")
+# post_save.connect(post_product_save, sender=Product, dispatch_uid="post_product_save")
 pre_save.connect(update_expiry, sender=Product, dispatch_uid="update_expiry")

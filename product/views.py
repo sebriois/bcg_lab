@@ -37,7 +37,7 @@ def autocomplete(request):
 
 
 def _elastic_search(query_dict):
-    es = Elasticsearch()
+    es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
     query = {
       "query": {
         "filtered": {
