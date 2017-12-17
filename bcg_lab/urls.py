@@ -4,7 +4,6 @@ from django.contrib.auth.views import login, logout_then_login
 
 from bcg_lab.home_view import error, send_message, home
 
-admin.autodiscover()
 
 urlpatterns = [
     path("admin/", admin.site.urls),
