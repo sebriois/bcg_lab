@@ -9,7 +9,7 @@ SECRET_KEY = 'kmt5emo1+r5v*zwcs-oc92toi*8nhzzh@wvm=eg90-p$w0o&^e'
 SITE_ID = 1
 SITE_NAME = 'LBCMCP'
 
-ELASTICSEARCH_HOSTS = ['localhost']
+ELASTICSEARCH_HOSTS = ["localhost"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

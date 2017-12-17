@@ -4,7 +4,7 @@ import xlwt
 from django.db.models.query import Q
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 
@@ -160,7 +160,7 @@ def export_orders_to_xls(request):
 def history_budgets(request):
     if not request.user.has_perm("budget.custom_view_budget"):
         not_allowed_msg(request)
-        return redirect("home")
+        return redirect('home')
     
     budgets = Budget.objects.filter(is_active = False)
     
@@ -223,7 +223,7 @@ def export_budgetlines(request):
         budget_lines = BudgetLine.objects.filter(is_active = False).filter(Q_obj)
     else:
         error_msg(request, "Impossible d'exporter cette page.")
-        return redirect(reverse("history_budgets"))
+        return redirect(reverse('history:budgets'))
     
     wb = xlwt.Workbook()    
     ws = wb.add_sheet("export")

@@ -1,10 +1,11 @@
-from django.conf.urls import *
+from django.urls import path
 
 from team.views_team import index, item, new, add_user_to_team
 
+app_name = "team"
 urlpatterns = [
-    url(r'^(?P<team_id>\d+)/$', item, name="team_item"),
-    url(r'^add-user/(?P<user_id>\d+)/$', add_user_to_team, name="add_user_to_team"),
-    url(r'^new/$', new, name="team_new"),
-    url(r'^$', index, name="team_index")
+    path('<int:team_id>/', item, name = "item"),
+    path('add-user/<int:user_id>/', add_user_to_team, name = "add_user"),
+    path('new/', new, name = "new"),
+    path('', index, name = "index")
 ]

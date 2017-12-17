@@ -14,7 +14,7 @@
 {% block content %}
 <form method="GET" action="." class="search container show_wait">
 	<fieldset id="query_container" style="width:400px;margin:auto;">
-		<input type="text" name="q" class="autocomplete" autocomplete_url="{% url 'autocomplete_products' %}" value="{{query|default:''}}" /> 
+		<input type="text" name="q" class="autocomplete" autocomplete_url="{% url 'product:autocomplete' %}" value="{{query|default:''}}" />
 		<input type="submit" value=" " />
 	</fieldset>
 </form>
@@ -34,7 +34,7 @@
     {% for item in facets.provider_facet %}
       {% if forloop.counter0|divisibleby:2 %}
         <li>
-          <a href="{% url 'product_search' %}?q={{query}}&fq=provider_facet:{{item}}">{{ item }}</a>
+          <a href="{% url 'product:search' %}?q={{query}}&fq=provider_facet:{{item}}">{{ item }}</a>
       {% else %}
           ({{ item }})
         </li>
@@ -48,7 +48,7 @@
     {% for item in facets.category_facet %}
       {% if forloop.counter0|divisibleby:2 %}
         <li>
-          <a href="{% url 'product_search' %}?q={{query}}&fq=category_facet:{{item}}">{{ item }}</a>
+          <a href="{% url 'product:search' %}?q={{query}}&fq=category_facet:{{item}}">{{ item }}</a>
       {% else %}
           ({{ item }})
         </li>
@@ -63,13 +63,13 @@
 {% if suggestion %}
   <h3>
       Essayez avec l'orthographe 
-      <a href="{% url 'product_search' %}?q={{suggestion}}">
+      <a href="{% url 'product:search' %}?q={{suggestion}}">
         <b>{{ suggestion }}</b>
       </a>
   </h3>
 {% endif %}
 {% if facet_query %}
-  <p>Filtres: {{ facet_query }} (<a href="{% url 'product_search' %}?q={{query}}">supprimer</a>)</p>
+  <p>Filtres: {{ facet_query }} (<a href="{% url 'product:search' %}?q={{query}}">supprimer</a>)</p>
   <br />
 {% endif %}
 

@@ -3,7 +3,7 @@
 {% block header %}<h1>Préférences</h1>{% endblock %}
 
 {% block content %}
-  <form action="{% url 'preferences' %}" method="POST">{% csrf_token %}
+  <form action="{% url 'preferences:list' %}" method="POST">{% csrf_token %}
     <input type="hidden" name="form_name" value="user_form" />
     
     <h3>Informations générales</h3>
@@ -21,7 +21,7 @@
   </form>
   
     {% if email_form %}
-      <form action="{% url 'preferences' %}" method="POST">{% csrf_token %}
+      <form action="{% url 'preferences:list' %}" method="POST">{% csrf_token %}
         <input type="hidden" name="form_name" value="email_form" />
         <h3>Préférences sur l'envoi d'emails</h3>
         <p class="instructions">

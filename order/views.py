@@ -6,11 +6,11 @@ from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect
-from django.template import Context, loader
+from django.template import loader
 from django.shortcuts import render
+from django.urls import reverse
 
 from product.models import Product
 from budget.models import Budget, BudgetLine
@@ -558,7 +558,7 @@ def cart_add(request):
     item.save()
     
     url_arg = request.POST.get('url_params', '')
-    url = reverse('product_index', current_app="product") + "?" + url_arg
+    url = reverse('product:index', current_app="product") + "?" + url_arg
     
     info_msg(request, u"Produit ajouté au panier avec succès.")
     return redirect(url)

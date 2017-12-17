@@ -1,7 +1,7 @@
 # coding: utf-8
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from bcg_lab.constants import EMPTY_SEL
 from budget.models import Budget, BudgetLine
@@ -174,7 +174,7 @@ class BudgetLineFilterForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_order_number')
+            'autocomplete_url': reverse_lazy('order:autocomplete_number')
         })
     )
     product__icontains = forms.CharField(
@@ -183,7 +183,7 @@ class BudgetLineFilterForm(forms.Form):
         required  = False,
         widget    = widgets.TextInput( attrs = {
             'class' : 'autocomplete',
-            'autocomplete_url': reverse_lazy('autocomplete_products')
+            'autocomplete_url': reverse_lazy('product:autocomplete')
         })
     )
     provider = forms.ModelChoiceField(

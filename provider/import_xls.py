@@ -1,26 +1,20 @@
 # coding: utf-8
-# import the logging library
-import json
 import logging
 
-# Get an instance of a logger
-import urllib
-
-from utils.request_messages import warn_msg, info_msg, error_msg
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
-
+import json
 from datetime import datetime
 from decimal import Decimal
 import xlrd
 
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.conf import settings
 
+from utils.request_messages import warn_msg, info_msg, error_msg
 from provider.models import Provider
 from product.models import Product
 from provider.forms import ImportForm
@@ -185,7 +179,7 @@ def do_import( request, provider_id ):
 d'abord vérifier votre historique pour savoir si l'import Excel a été \
 effectué. Autrement, essayez à nouveau (cette erreur est relative à \
 votre navigateur)." )
-        return redirect(reverse('import_products', args=[provider_id]))
+        return redirect(reverse('provider:import_products', args=[provider_id]))
     
     # Loads data from cookie - dumped as json when the file was imported
     json_data = json.loads( request.session['import_data'] )
@@ -271,4 +265,4 @@ votre navigateur)." )
     # else:
     #     warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
     #
-    return redirect(reverse('product_index') + "?provider=%s&connector=OR" % provider.id )
+    return redirect(reverse('product:index') + "?provider=%s&connector=OR" % provider.id )

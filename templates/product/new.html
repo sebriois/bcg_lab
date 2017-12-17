@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'product_new' %}" method="POST">{% csrf_token %}
+<form action="{% url 'product:new' %}" method="POST">{% csrf_token %}
 	{% if provider %}
 	  <input type="hidden" name="provider" value="{{ provider.id }}" />
 	{% endif %}
@@ -23,6 +23,6 @@
 	{% include 'product/form.html' %}
 
 	<button type="submit" class="check">Valider</button>
-	<a href="{% url 'product_index' %}" class="back">Retour</a>
+	<a href="{% url 'product:list' %}" class="back">Retour</a>
 </form>
 {% endblock %}

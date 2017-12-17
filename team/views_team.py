@@ -43,7 +43,7 @@ def add_user_to_team(request, user_id):
             user = user,
             team = team
         )
-    return redirect('team_index')
+    return redirect('team:index')
 
 
 #--- Private views
@@ -78,7 +78,7 @@ def _team_creation(request):
         form.save()
 
         info_msg(request, u"Equipe ajoutée avec succès.")
-        return redirect('team_index')
+        return redirect('team:index')
     else:
         return render(request, 'team/form.html',{
             'form': form
@@ -95,7 +95,7 @@ def _team_update(request, team):
                 budget.update_budgetlines()  # Will update bl.team
 
         info_msg(request, u"Equipe modifiée avec succès.")
-        return redirect('team_index')
+        return redirect('team:index')
     else:
         return render(request, 'team/item.html',{
             'team': team,

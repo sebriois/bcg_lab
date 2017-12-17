@@ -1,10 +1,11 @@
-from django.conf.urls import *
+from django.urls import path
 
 from budget.views_budgetlines import index, item, delete, export_to_xls
 
+app_name = 'budget_line'
 urlpatterns = [
-	url(r'^(?P<bl_id>\d+)/delete/$', delete, name="budgetline_delete"),
-	url(r'^(?P<bl_id>\d+)/$', item, name="budgetline_item"),
-	url(r'^export-to-xls/$', export_to_xls, name="budgetline_export"),
-	url(r'^$', index, name="budgetlines")
+    path('<int:bl_id>/delete/', delete, name = "delete"),
+    path('<int:bl_id>/', item, name = "item"),
+    path('export-to-xls/', export_to_xls, name = "export"),
+    path('', index, name = "list")
 ]

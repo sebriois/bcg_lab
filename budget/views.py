@@ -82,7 +82,7 @@ def item(request, budget_id):
                 #   info_msg(request, "Budget modifié avec succès. Il a été automatiquement archivé car son montant dispo est égal à 0.")
                 # else:
                 info_msg(request, "Budget modifié avec succès.")
-                return redirect('budgets')
+                return redirect('budget:list')
     else:
         return redirect('error')
     
@@ -125,7 +125,7 @@ def new(request):
                             bl.save()
             
             info_msg(request, "Budget ajouté avec succès.")
-            return redirect('budgets')
+            return redirect('budget:list')
     else:
         return redirect('error')
         
@@ -164,8 +164,8 @@ def credit(request, budget_id):
         bl.save()
         
         info_msg(request, "Ligne de crédit ajoutée avec succès.")
-        return redirect('budgets')
-        # return redirect(reverse('budgetlines') + "?budget_name=%s" % budget.name)
+        return redirect('budget:list')
+        # return redirect(reverse('budget_line:list') + "?budget_name=%s" % budget.name)
     else:
         return render(request, 'budget/form_credit.html',{
             'budget': budget,
@@ -202,8 +202,8 @@ def debit(request, budget_id):
         bl.save()
         
         info_msg(request, "Ligne de débit ajoutée avec succès!")
-        return redirect('budgets')
-        # return redirect(reverse('budgetlines') + "?budget_name=%s" % budget.name)
+        return redirect('budget:list')
+        # return redirect(reverse('budget_line:list') + "?budget_name=%s" % budget.name)
     else:
         return render(request, 'budget/form_debit.html',{
             'budget': budget,
@@ -235,7 +235,7 @@ def transfer(request):
             bl.product = u"Virement reçu de %s" % budget1.name
             if title2: bl.offer = title2
             bl.save()
-            return redirect('budgets')
+            return redirect('budget:list')
             
     return render(request, 'budget/transfer.html', {
         'form': form
@@ -253,5 +253,5 @@ def toggle(request, budget_id):
         bl.is_active = budget.is_active
         bl.save()
     
-    return redirect('budgets')
+    return redirect('budget:list')
 

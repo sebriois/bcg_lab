@@ -22,7 +22,7 @@ def index(request):
         if form.is_valid():
             form.save()
             info_msg(request, u"Fournisseur ajouté avec succès.")
-            return redirect('provider_index')
+            return redirect('provider:index')
         else:
             error_msg(request, "Impossible de créer le fournisseur.")
             return render(request, 'provider/form.html',{
@@ -58,7 +58,7 @@ def item(request, provider_id):
                     product.save()
 
             info_msg(request, u"Fournisseur modifié avec succès.")
-            return redirect('provider_index')
+            return redirect('provider:index')
 
     return render(request, 'provider/item.html', {
         'provider': provider,
@@ -85,7 +85,7 @@ def delete(request, provider_id):
     elif request.method == 'POST':
         provider.delete()
         info_msg(request, u"Fournisseur supprimé avec succès.")
-        return redirect('provider_index')
+        return redirect('provider:index')
 
 
 @login_required
@@ -93,7 +93,7 @@ def delete(request, provider_id):
 def set_notes(request, provider_id):
     if not request.is_ajax():
         not_allowed_msg(request)
-        return redirect("provider_index")
+        return redirect('provider:index')
 
     provider = get_object_or_404(Provider, id = provider_id)
     provider.notes = request.GET['notes']

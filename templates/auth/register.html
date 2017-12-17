@@ -31,7 +31,7 @@
 		</div>
 		<div id="in_login">
 			<div id="login_subhead">Création d'un nouveau compte</div>
-			<form method="POST" action="{% url 'new_user' %}" class="large_labels">{% csrf_token %}
+			<form method="POST" action="{% url 'team_member:new_user' %}" class="large_labels">{% csrf_token %}
 				<fieldset>
 					<label for="username">{{ form.username.label }}*</label>
 					{{ form.username }}

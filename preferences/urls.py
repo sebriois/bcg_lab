@@ -1,8 +1,9 @@
-from django.conf.urls import *
+from django.urls import path
 
 from preferences.views import index, change_password
 
+app_name = "preferences"
 urlpatterns = [
-	url(r'^change_password/$', change_password, name="change_password"),
-	url(r'^$', index, name="preferences")
+    path('change_password/', change_password, name = "change_password"),
+    path('', index, name = "list")
 ]

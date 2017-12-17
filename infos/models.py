@@ -7,7 +7,7 @@ from django.utils import timezone
 
 class Info(models.Model):
     text = models.TextField(u"Information" )
-    expiry = models.DateField(u"Date d'expiration", help_text = 'NE PAS REMPLIR POUR UNE INFO PERMANENTE', null = True, blank = True)
+    expiry = models.DateTimeField(u"Date d'expiration", help_text = 'NE PAS REMPLIR POUR UNE INFO PERMANENTE', null = True, blank = True)
     date_created = models.DateField(u"Date", auto_now_add = True)
 
     class Meta:

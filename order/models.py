@@ -16,19 +16,19 @@ from attachments.models import Attachment
 
 class Order(models.Model):
     number = models.CharField(u"N° cmde", max_length = 20, null = True, blank = True)
-    budget = models.ForeignKey(Budget, verbose_name="Ligne budgétaire", blank = True, null = True)
-    team = models.ForeignKey(Team, verbose_name = u"Equipe", max_length = 20 )
-    provider = models.ForeignKey(Provider, verbose_name = u"Fournisseur", max_length = 100 )
+    budget = models.ForeignKey(Budget, verbose_name="Ligne budgétaire", blank = True, null = True, on_delete = models.SET_NULL)
+    team = models.ForeignKey(Team, verbose_name = u"Equipe", max_length = 20, on_delete = models.CASCADE)
+    provider = models.ForeignKey(Provider, verbose_name = u"Fournisseur", max_length = 100, on_delete = models.CASCADE)
     status = models.IntegerField(u"Etat de la commande", choices = STATE_CHOICES, default = 0)
-    items = models.ManyToManyField( "OrderItem", verbose_name = "Produits" )
-    notes = models.TextField( u"Commentaires", null = True, blank = True )
-    is_confidential = models.BooleanField( u"Confidentielle?", default = False )
-    is_urgent = models.BooleanField( u"Urgente?", default = False )
-    has_problem = models.BooleanField( u"Problème?", default = False )
+    items = models.ManyToManyField( "OrderItem", verbose_name = "Produits")
+    notes = models.TextField( u"Commentaires", null = True, blank = True)
+    is_confidential = models.BooleanField( u"Confidentielle?", default = False)
+    is_urgent = models.BooleanField( u"Urgente?", default = False)
+    has_problem = models.BooleanField( u"Problème?", default = False)
     date_created = models.DateTimeField(u"Date de création", auto_now_add = True)
     date_delivered = models.DateTimeField(u"Date de livraison", null = True, blank = True)
     last_change = models.DateTimeField(u"Dernière modification", auto_now = True)
-    attachments = GenericRelation( Attachment )
+    attachments = GenericRelation(Attachment)
     
     class Meta:
         db_table = 'order'
@@ -42,7 +42,7 @@ class Order(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('order_item', [self.id])
+        return ('order:detail', [self.id])
     
     def get_full_name(self):
         return u"%s" % self.team

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.template import loader
@@ -34,7 +34,7 @@ def set_next_status(request, order_id):
             return _move_to_status_2(request, order)
         else:
             error_msg(request, "Vous ne disposez pas des permissions nécessaires pour valider cette commande")
-            return redirect('tab_validation')
+            return redirect('order:tab_validation')
     
     elif order.status == 2 and request.user.has_perm('order.custom_goto_status_3'):
         return _move_to_status_3(request, order)
@@ -48,7 +48,7 @@ def set_next_status(request, order_id):
     else:
         error_msg(request, "Vous n'avez pas les permissions nécessaires pour modifier le statut de cette commande")
     
-    return redirect('tab_orders')
+    return redirect('order:tab_orders')
 
 
 def _move_to_status_1(request, order):
@@ -60,7 +60,7 @@ def _move_to_status_1(request, order):
         for item in missing_nomenclature:
             error_msg(request, "Veuillez saisir une nomenclature pour l'item '%s' de la commande %s en cliquant sur "
                                "le bouton 'modifier' de la ligne correspondante." % (item.name, order.provider.name))
-        return redirect('tab_cart')
+        return redirect('order:tab_cart')
 
     order.status = 1
     order.save()
@@ -78,7 +78,7 @@ def _move_to_status_1(request, order):
             template = loader.get_template('order/validation_email.txt')
             context = {
                 'order': order,
-                'url': request.build_absolute_uri(reverse('tab_validation'))
+                'url': request.build_absolute_uri(reverse('order:tab_validation'))
             }
             message = template.render(context)
             for email in emails:
@@ -91,16 +91,16 @@ def _move_to_status_1(request, order):
             envoyé puisqu'aucun validateur n'a renseigné d'adresse email.")
     
     if request.user.has_perm('order.custom_validate'):
-        return redirect('tab_validation')
+        return redirect('order:tab_validation')
     
-    return redirect('tab_cart')
+    return redirect('order:tab_cart')
 
 
 def _move_to_status_2(request, order):
     if order.provider.is_local:
         subject = "[BCG-Lab %s] Nouvelle commande magasin" % settings.SITE_NAME
         template = loader.get_template('email_local_provider.txt')
-        url = request.build_absolute_uri(reverse('tab_reception_local_provider'))
+        url = request.build_absolute_uri(reverse('order:tab_reception_local_provider'))
         message = template.render({'order': order, 'url': url})
         emails = Group.objects.filter(permissions__codename="custom_view_local_provider").values_list("user__email", flat=True)
         
@@ -163,7 +163,7 @@ def _move_to_status_3(request, order):
             order.create_budget_line()
         
         info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
-        return redirect('tab_orders')
+        return redirect('order:tab_orders')
     else:
         error_msg(request, "Veuillez choisir un budget à imputer")
         return redirect(order.get_absolute_url())
@@ -205,7 +205,7 @@ def _move_to_status_4(request, order):
     
     info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
     
-    # return redirect(reverse('tab_orders') + "?page=%s" % request.GET.get("page","1"))
+    # return redirect(reverse('order:tab_orders') + "?page=%s" % request.GET.get("page","1"))
     return redirect(order)
 
 
@@ -218,11 +218,11 @@ def _move_to_status_5(request, order):
             return redirect(order)
     except:
         error_msg(request, u"Veuillez saisir une date valide (format jj/mm/aaaa).")
-        return redirect('tab_orders')
+        return redirect('order:tab_orders')
     
     order.save_to_history(delivery_date)
     order.delete()
     
     info_msg(request, "La commande a été enregistrée dans l'historique.")
-    return redirect('tab_orders')
+    return redirect('order:tab_orders')
 

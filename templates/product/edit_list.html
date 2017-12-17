@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'product_edit_list' %}" method="POST" style="margin-bottom:20px">{% csrf_token %}
+<form action="{% url 'product:edit_list' %}" method="POST" style="margin-bottom:20px">{% csrf_token %}
 	<h3>Appliquer les modifications suivantes à l'ensemble des produits cochés</h3>
 	<input type="hidden" name="url_args" value="{{url_args}}" />
 	<input type="hidden" name="delete_all" value="" />
@@ -33,7 +33,7 @@
 		Supprimer les produits sélectionnés
 	</button>
 	
-	<a href="{% url 'product_index' %}" class="back">
+	<a href="{% url 'product:list' %}" class="back">
 		Effectuer une nouvelle recherche
 	</a>
 	<div class="cleaner"></div><br />

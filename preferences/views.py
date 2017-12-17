@@ -58,7 +58,7 @@ def change_password(request):
         if form.is_valid():
             form.save()
             info_msg(request, "Nouveau mot de passe enregistré!")
-            return redirect('change_password')
+            return redirect('preferences:change_password')
     
     return render(request, "preferences/change_password.html", {
         'form': form

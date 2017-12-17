@@ -14,7 +14,7 @@ from team.utils import in_team_secretary
 @login_required
 @transaction.atomic
 def index(request):
-    Info.objects.filter(expiry__lt = timezone.now() ).delete()
+    Info.objects.filter(expiry__lt = timezone.now()).delete()
     return render(request, 'homepage.html', {
         'infos': Info.objects.all()
     })
@@ -35,7 +35,7 @@ def new(request):
         form = InfoForm(data = data)
         if form.is_valid():
             form.save()
-        return redirect('info_index')
+        return redirect('infos:index')
 
     return render(request, 'infos/new.html', {
         'form': form
@@ -70,4 +70,4 @@ def delete(request, info_id):
     info = get_object_or_404( Info, id = info_id )
     info.delete()
 
-    return redirect('info_index')
+    return redirect('infos:index')

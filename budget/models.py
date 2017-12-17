@@ -8,7 +8,7 @@ from bcg_lab.constants import BUDGET_CHOICES
 
 
 class Budget(models.Model):
-    team = models.ForeignKey(Team, verbose_name="Equipe")
+    team = models.ForeignKey(Team, verbose_name="Equipe", on_delete = models.CASCADE)
     name = models.CharField(u"Origine de crédit (Nom)", max_length=100, unique = True)
     default_origin = models.CharField(u"Origine de crédit (Code)", max_length=30, null = True, blank = False)
     budget_type = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
@@ -18,6 +18,7 @@ class Budget(models.Model):
     is_active = models.BooleanField(u"Actif?", default = True)
 
     class Meta:
+        db_table = "budget"
         verbose_name = "Budget"
         verbose_name_plural = "Budgets"
         ordering = ("team", "name")
@@ -27,7 +28,7 @@ class Budget(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('budget_edit', [self.id])
+        return ('budget:edit', [self.id])
 
     def get_amount_left(self):
         return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])

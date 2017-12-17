@@ -1,5 +1,5 @@
 <h2 style="padding-bottom: 3px;border-bottom: 1px solid #e1ddda;" class="hide_on_save">Recherche avancée</h2>
-<form action="{% url 'product_index' %}" method="GET" class="show_wait hide_on_save">
+<form action="{% url 'product:list' %}" method="GET" class="show_wait hide_on_save">
   <fieldset>
     <strong>Chercher les produits qui correspondent à {{ filter_form.connector }} conditions suivantes:</strong>
     {% with filter_form.provider as field %}

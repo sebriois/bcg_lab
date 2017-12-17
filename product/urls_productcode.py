@@ -1,9 +1,10 @@
-from django.conf.urls import *
+from django.urls import path
 
 from product.views_productcode import autocomplete_product_codes
 from product.views_productcode import import_product_codes
 
+app_name = 'product_code'
 urlpatterns = [
-    url(r'^autocomplete-codes/$', autocomplete_product_codes, name="autocomplete_product_codes"),
-    url(r'^import/$', import_product_codes, name="import_product_codes"),
+    path('autocomplete-codes/', autocomplete_product_codes, name="autocomplete"),
+    path('import/', import_product_codes, name="import"),
 ]

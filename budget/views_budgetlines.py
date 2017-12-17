@@ -6,7 +6,7 @@ from django.db import transaction
 from django.db.models.query import Q
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.shortcuts import render
 
@@ -181,7 +181,7 @@ def item(request, bl_id):
                 bl.product_price = 0
             
             bl.save()
-            return redirect(reverse('budgetlines') + "?budget_id=%s&connector=OR" % data['budget_id'])
+            return redirect(reverse('budget_line:list') + "?budget_id=%s&connector=OR" % data['budget_id'])
     
     return render(request, 'budgetlines/item.html', {
         'form': form,
@@ -196,5 +196,5 @@ def delete(request, bl_id):
     bl = get_object_or_404(BudgetLine, id = bl_id)
     budget_name = bl.budget
     bl.delete()
-    return redirect('budgets')
+    return redirect('budget:list')
 

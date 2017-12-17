@@ -38,7 +38,7 @@ def tab_reception(request):
 @transaction.atomic
 def do_reception(request):
     if not request.method == "POST":
-        return redirect('tab_reception')
+        return redirect('order:tab_reception')
     
     action_ids = filter(lambda key: key.startswith("action_"), request.POST.keys())
     for action_id in action_ids:
@@ -84,7 +84,7 @@ def do_reception(request):
             order.save_to_history()
             order.delete()
     
-    return redirect("tab_reception")
+    return redirect('order:tab_reception')
 
 
 @login_required
@@ -128,5 +128,5 @@ def tab_reception_local_provider(request):
                 order.save_to_history()
                 order.delete()
     
-    return redirect("tab_reception_local_provider")
+    return redirect('order:tab_reception_local_provider')
 

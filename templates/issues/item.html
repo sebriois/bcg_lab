@@ -5,22 +5,22 @@
 
 {% block header %}
   <div class="btn_wrapper">
-    <a href="{% url 'issue_delete' issue.id %}" class="btn_small">
+    <a href="{% url 'issues:delete' issue.id %}" class="btn_small">
       <img src="{% static 'img/icons/cross.png' %}" />Supprimer
     </a>
   </div>
   <div class="btn_wrapper">
-    <a href="{% url 'issue_status' issue.id 1 %}" class="btn_small">
+    <a href="{% url 'issues:status' issue.id 1 %}" class="btn_small">
       <img src="{% static 'img/icons/bug_edit.png' %}" />En cours
     </a>
   </div>
   <div class="btn_wrapper">
-    <a href="{% url 'issue_status' issue.id 2 %}" class="btn_small">
+    <a href="{% url 'issues:status' issue.id 2 %}" class="btn_small">
       <img src="{% static 'img/icons/bug_link.png' %}" />Doublon
     </a>
   </div>
   <div class="btn_wrapper">
-    <a href="{% url 'issue_status' issue.id 4 %}" class="btn_small">
+    <a href="{% url 'issues:status' issue.id 4 %}" class="btn_small">
       <img src="{% static 'img/icons/bug_go.png' %}" />Résolu
     </a>
   </div>
@@ -30,7 +30,7 @@
 
 {% block content %}
 <h2>{{ issue.title }}</h2>
-<form action="{% url 'issue_item' issue.id %}" method="post">{% csrf_token %}
+<form action="{% url 'issues:item' issue.id %}" method="post">{% csrf_token %}
   <p class="instructions">
     <em>Les champs marqués d'une étoile sont obligatoires</em>
   </p>
@@ -41,6 +41,6 @@
   </fieldset>
   
   <button type="submit" class="check">Valider</button>
-	<a href="{% url 'issue_index' %}" class="back">Retour</a>
+	<a href="{% url 'issues:index' %}" class="back">Retour</a>
 </form>
 {% endblock %}

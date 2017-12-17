@@ -1,5 +1,4 @@
-from django.conf.urls import *
-from django.conf import settings
+from django.urls import path, include
 from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
 
@@ -8,27 +7,27 @@ from bcg_lab.home_view import error, send_message, home
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    # url(r'^static/(.*)', 'django.views.static.serve', {'show_indexes': settings.DEBUG }),
-    # url(r'^media/(.*)', 'django.views.static.serve', {'document_root' : settings.MEDIA_ROOT, 'show_indexes': settings.DEBUG }),
-    url(r'^attachments/', include('attachments.urls', namespace = 'attachments', app_name = 'attachments')),
-    url(r'^administration/', include('bcglab_admin.urls')),
-    url(r'^products/', include('product.urls')),
-    url(r'^product-codes/', include('product.urls_productcode')),
-    url(r'^providers/', include('provider.urls')),
-    url(r'^orders/', include('order.urls')),
-    url(r'^services/', include('order.urls_services')),
-    url(r'^history/', include('history.urls')),
-    url(r'^budgets/', include('budget.urls')),
-    url(r'^budget-lines/', include('budget.urls_budgetlines')),
-    url(r'^teams/', include('team.urls_team')),
-    url(r'^members/', include('team.urls_member')),
-    url(r'^issues/', include('issues.urls')),
-    url(r'^infos/', include('infos.urls')),
-    url(r'^preferences/', include('preferences.urls')),
-    url(r'^login/$', login, {'template_name': 'auth/login.html'}, name = 'login'),
-    url(r'^logout/$', logout_then_login, name = "logout"),
-    url(r'^error/$', error, name="error"),
-    url(r'^send-message/$', send_message, name="send_message"),
-    url(r'^$', home, name="home"),
+    path("admin/", admin.site.urls),
+    # path('static/(.*)', 'django.views.static.serve', {'show_indexes': settings.DEBUG }),
+    # path('media/(.*)', 'django.views.static.serve', {'document_root' : settings.MEDIA_ROOT, 'show_indexes': settings.DEBUG }),
+    path('attachments/', include('attachments.urls', namespace = 'attachments')),
+    path('administration/', include('bcglab_admin.urls', namespace = 'bcglab_admin')),
+    path('products/', include('product.urls', namespace = 'product')),
+    path('product-codes/', include('product.urls_productcode', namespace = 'product_code')),
+    path('providers/', include('provider.urls', namespace = 'provider')),
+    path('orders/', include('order.urls', namespace = 'order')),
+    path('services/', include('order.urls_services', namespace = 'services')),
+    path('history/', include('history.urls', namespace = 'history')),
+    path('budgets/', include('budget.urls', namespace = 'budget')),
+    path('budget-lines/', include('budget.urls_budgetlines', namespace = 'budget_line')),
+    path('teams/', include('team.urls_team', namespace = 'team')),
+    path('members/', include('team.urls_member', namespace = 'team_member')),
+    path('issues/', include('issues.urls', namespace = 'issues')),
+    path('infos/', include('infos.urls', namespace = 'infos')),
+    path('preferences/', include('preferences.urls', namespace = 'preferences')),
+    path('login/', login, {'template_name': 'auth/login.html'}, name = 'login'),
+    path('logout/', logout_then_login, name = "logout"),
+    path('error/', error, name="error"),
+    path('send-message/', send_message, name="send_message"),
+    path('', home, name="home"),
 ]

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import SetPasswordForm
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.mail import send_mail
 from django.template import Context, loader
 
@@ -54,7 +54,7 @@ def new_user(request):
 @transaction.atomic
 def new_member(request):
     if not 'member_user' in request.session:
-        return redirect('new_user')
+        return redirect('team_member:new_user')
 
     user = request.session.get('member_user')
 
@@ -63,7 +63,7 @@ def new_member(request):
             del request.session['member_user']
         except KeyError:
             pass
-        return redirect('new_user')
+        return redirect('team_member:new_user')
 
     if request.method == 'POST':
         user = request.session.get('member_user')
@@ -95,7 +95,7 @@ def new_member(request):
                 template = loader.get_template('email_new_member.txt')
                 message = template.render({
                     'member': member,
-                    'url': request.build_absolute_uri(reverse('team_index'))
+                    'url': request.build_absolute_uri(reverse('team:index'))
                 })
                 send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
                 info_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
@@ -118,7 +118,7 @@ def toggle_active(request, user_id):
     user.save()
 
     if not user.email:
-        return redirect('team_index')
+        return redirect('team:index')
 
     if user.is_active:
         subject = "[BCG-Lab %s] Votre compte vient d'être activé" % settings.SITE_NAME
@@ -131,7 +131,7 @@ def toggle_active(request, user_id):
     template = loader.get_template('email_empty.txt')
     message = template.render({ 'message': content })
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
-    return redirect('team_index')
+    return redirect('team:index')
 
 
 @login_required
@@ -158,7 +158,7 @@ def set_password(request, user_id):
                 'user_id': user_id
             })
 
-    return redirect('team_index')
+    return redirect('team:index')
 
 @login_required
 @transaction.atomic
@@ -175,7 +175,7 @@ def delete(request, user_id):
     user.delete()
     info_msg(request, u"Utilisateur supprimé avec succès.")
 
-    return redirect('team_index')
+    return redirect('team:index')
 
 
 #--- Private views
@@ -215,7 +215,7 @@ def _member_update(request, member):
         member.save()
 
         info_msg(request, u"Utilisateur modifié avec succès.")
-        return redirect('team_index')
+        return redirect('team:index')
     else:
         return render(request, 'member/item.html',{
                 'member': member,

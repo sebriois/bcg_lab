@@ -29,7 +29,7 @@ def index(request):
             issue = form.save()
             issue.username = request.user.username
             issue.save()
-            return redirect('issue_index')
+            return redirect('issues:index')
         else:
             return render(request, 'issues/new.html', {
                 'form': form
@@ -46,7 +46,7 @@ def item(request, issue_id):
         form = IssueForm(data = request.POST, instance = issue)
         if form.is_valid():
             form.save()
-            return redirect('issue_index')
+            return redirect('issues:index')
 
     return render(request, 'issues/item.html', {
         'form': form,
@@ -67,7 +67,7 @@ def new(request):
 def delete(request, issue_id):
     issue = get_object_or_404(Issue, id = issue_id)
     issue.delete()
-    return redirect('issue_index')
+    return redirect('issues:index')
 
 
 @login_required
@@ -80,4 +80,4 @@ def set_status(request, issue_id, status):
         issue.date_closed = timezone.now()
 
     issue.save()
-    return redirect('issue_index')
+    return redirect('issues:index')

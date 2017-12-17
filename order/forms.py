@@ -3,7 +3,7 @@ from decimal import Decimal, InvalidOperation
 
 from django import forms
 from django.forms import widgets
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from bcg_lab.constants import CREDIT, DEBIT
 from order.models import OrderItem, OrderComplement
@@ -19,7 +19,7 @@ class OrderItemForm(forms.ModelForm):
         widgets = {
             'nomenclature': widgets.TextInput(attrs={
                 'class': 'autocomplete', 
-                'autocomplete_url': reverse_lazy('autocomplete_product_codes') 
+                'autocomplete_url': reverse_lazy('product_code:autocomplete')
             })
         }
     
@@ -112,7 +112,7 @@ class FilterForm(forms.Form):
         label    = u"N°cmde",
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_order_number') 
+            'autocomplete_url': reverse_lazy('order:autocomplete_number')
         }),
         required = False
     )
@@ -131,7 +131,7 @@ class FilterForm(forms.Form):
         label    = u"Produit",
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_products') 
+            'autocomplete_url': reverse_lazy('product:autocomplete')
         }),
         required = False
     )
@@ -153,7 +153,7 @@ class ServiceForm(forms.Form):
         required = False,
         widget   = widgets.TextInput( attrs = { 
             'class' : 'autocomplete', 
-            'autocomplete_url': reverse_lazy('autocomplete_product_codes') 
+            'autocomplete_url': reverse_lazy('product_code:autocomplete')
         }),
     )
     cost         = forms.CharField( label = u"Montant" )

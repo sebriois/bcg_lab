@@ -7,12 +7,12 @@ import json
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models.query import Q
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from elasticsearch import Elasticsearch
 
@@ -117,6 +117,7 @@ def _product_search(query_dict):
     
     return product_list, num_found
 
+
 @login_required
 def index(request):
     query_dict = request.GET.copy()
@@ -177,7 +178,7 @@ def item(request, product_id):
                     product.save()
                     
                 info_msg(request, u"Produit modifié avec succès.")
-            return redirect(reverse('product_index') + '?' + url_args[0])
+            return redirect(reverse('product:index') + '?' + url_args[0])
     
     product_type = ContentType.objects.get_for_model(Product)
     return render(request, 'product/item.html',{
@@ -191,6 +192,9 @@ def item(request, product_id):
 @login_required
 @transaction.atomic
 def new(request):
+    provider = None
+    form = ProductForm()
+
     if request.method == 'GET':
         provider_id = request.GET.get('provider_id',None)
         if provider_id:
@@ -199,9 +203,6 @@ def new(request):
         elif request.user.has_perm("order.custom_view_local_provider"):
             provider = get_object_or_404(Provider, name = 'MAGASIN', is_local = True)
             form = ProductForm(provider = provider)
-        else:
-            provider = None
-            form = ProductForm()
     elif request.method == 'POST':
         if 'provider' in request.POST and request.POST['provider']:
             provider = get_object_or_404(Provider, id = request.POST['provider'])
@@ -218,7 +219,7 @@ def new(request):
                 p.save()
 
             info_msg(request, u"Produit ajouté avec succès.")
-            return redirect(reverse('product_index') + "?reference=%s&connector=OR" % p.reference)
+            return redirect(reverse('product:index') + "?reference=%s&connector=OR" % p.reference)
     
     return render(request, 'product/new.html', {
         'provider': provider,
@@ -237,7 +238,7 @@ def delete(request, product_id):
     elif request.method == 'POST':
         product.delete()
         info_msg(request, u"Produit supprimé avec succès.")
-        return redirect('product_index')
+        return redirect('product:index')
 
 
 @login_required
@@ -338,10 +339,10 @@ def edit_list(request):
             
             if request.POST['delete_all'] == "on":
                 info_msg(request, "Produits supprimés avec succès.")
-                return redirect(reverse('product_edit_list') + "?" + request.POST["url_args"])
+                return redirect(reverse('product:edit_list') + "?" + request.POST["url_args"])
             else:
                 info_msg(request, "Liste de produits mise à jour avec succès.")
-                return redirect(reverse('product_edit_list') + "?" + request.POST["url_args"])
+                return redirect(reverse('product:edit_list') + "?" + request.POST["url_args"])
         else:
             url_args = dict(parse_qsl(request.POST["url_args"]))
             product_list, filter_form = _product_search(url_args)

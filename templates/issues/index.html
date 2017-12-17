@@ -5,17 +5,17 @@
 
 {% block header %}
 <div class="btn_wrapper">
-  <a href="{% url 'issue_index' %}?fixed=True" class="btn_medium">
+  <a href="{% url 'issues:index' %}?fixed=True" class="btn_medium">
     <img src="{% static 'img/icons/flag_green.png' %}" />Voir résolus
   </a>
 </div>
 <div class="btn_wrapper">
-  <a href="{% url 'issue_index' %}" class="btn_medium">
+  <a href="{% url 'issues:index' %}" class="btn_medium">
     <img src="{% static 'img/icons/flag_red.png' %}" />Voir non résolus
   </a>
 </div>
 <div class="btn_wrapper">
-  <a href="{% url 'issue_new' %}" class="btn_small">
+  <a href="{% url 'issues:new' %}" class="btn_small">
     <img src="{% static 'img/icons/bug_add.png' %}" />Ajouter
   </a>
 </div>
@@ -44,7 +44,7 @@
       <tr class="{% cycle 'even' 'odd' %}">
         <td>{{ issue.id }}</td>
         <td>
-          <a href="{% url 'issue_item' issue.id %}">{{ issue.title }}</a>
+          <a href="{% url 'issues:item' issue.id %}">{{ issue.title }}</a>
         </td>
         <td>{{ issue.get_issue_type_display }}</td>
         <td>{{ issue.get_severity_display }}</td>
