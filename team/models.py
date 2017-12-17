@@ -46,6 +46,9 @@ def save_old_name_to_history(sender, instance, **kwargs):
             pass
 
 
+post_save.connect(save_old_name_to_history, sender=Team, dispatch_uid="post_team_save")
+
+
 class TeamNameHistory(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     name = models.CharField(u"Nom", max_length = 100)
