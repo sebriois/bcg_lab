@@ -178,7 +178,7 @@ def item(request, product_id):
                     product.save()
                     
                 info_msg(request, u"Produit modifié avec succès.")
-            return redirect(reverse('product:index') + '?' + url_args[0])
+            return redirect(reverse('product:list') + '?' + url_args[0])
     
     product_type = ContentType.objects.get_for_model(Product)
     return render(request, 'product/item.html',{
@@ -219,7 +219,7 @@ def new(request):
                 p.save()
 
             info_msg(request, u"Produit ajouté avec succès.")
-            return redirect(reverse('product:index') + "?reference=%s&connector=OR" % p.reference)
+            return redirect(reverse('product:list') + "?reference=%s&connector=OR" % p.reference)
     
     return render(request, 'product/new.html', {
         'provider': provider,
@@ -238,7 +238,7 @@ def delete(request, product_id):
     elif request.method == 'POST':
         product.delete()
         info_msg(request, u"Produit supprimé avec succès.")
-        return redirect('product:index')
+        return redirect('product:list')
 
 
 @login_required

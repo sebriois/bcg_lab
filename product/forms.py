@@ -15,12 +15,10 @@ class ProductCodeForm(forms.Form):
 
 
 class ProductForm(forms.ModelForm):
-    price = forms.CharField(label = "Prix", required = True)
-    
     class Meta:
             model = Product
             fields = [
-                'provider', 'origin', 'name', 'packaging', 'reference', 'offer_nb', 'nomenclature',
+                'provider', 'origin', 'name', 'packaging', 'reference', 'price', 'offer_nb', 'nomenclature',
                 'category', 'sub_category', 'expiry'
             ]
             widgets = {
@@ -41,14 +39,9 @@ class ProductForm(forms.ModelForm):
     
     def clean_price(self):
         price = self.cleaned_data.get('price', None)
-        
-        try:
-            price = Decimal(price.replace(",","."))
-        except:
-            raise forms.ValidationError(u"Veuillez saisir un nombre positif.")
-        
+
         if not price > 0:
-            raise forms.ValidationError(u"Veuillez saisir un nombre positif.")
+            raise forms.ValidationError(u"Veuillez saisir un nombre décimal positif.")
         
         return price
     

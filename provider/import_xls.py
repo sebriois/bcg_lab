@@ -265,4 +265,4 @@ votre navigateur)." )
     # else:
     #     warn_msg(request, u"L'indexation des produits dans SolR n'a pas pu être exécutée. Merci de contacter l'administrateur.")
     #
-    return redirect(reverse('product:index') + "?provider=%s&connector=OR" % provider.id )
+    return redirect(reverse('product:list') + "?provider=%s&connector=OR" % provider.id )
