@@ -68,13 +68,16 @@ input.submit {
 }
 
 /* @group Messages */
-.msg_info, .msg_warn, .msg_error {
+ul.messages {
+	list-style-type: none;
+}
+.msg_info, .msg_warn, .msg_error, .info, .error {
 	background-position: 5px 1px;
 	min-height: 28px;
 	padding: 9px 0px 0px 50px;
 	margin: 10px 0px 10px 0px;
 }
-.msg_info {
+.msg_info, .info {
 	background: #ecf7fe url('../img/layout/msg-info.gif') no-repeat;
 	border: 1px solid #caeaff;
 	color: #2288c7;
@@ -84,7 +87,7 @@ input.submit {
 	border: 1px solid #fbdf9c;
 	color: #f9a900;
 }
-.msg_error {
+.msg_error, .error {
 	background: #ffe7dc url('../img/layout/msg-error.gif') no-repeat;
 	border: 1px solid #fa7050;
 	color: #e2350d;

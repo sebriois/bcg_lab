@@ -4,16 +4,15 @@ from django.db import transaction
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import SetPasswordForm
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.template import Context, loader
+from django.template import loader
 
-from team.models import Team, TeamMember
-from team.forms import TeamForm, TeamMemberForm
-from utils.request_messages import info_msg, warn_msg
+from team.models import TeamMember
+from team.forms import TeamMemberForm, SignUpForm
+from utils.request_messages import info_msg, error_msg
 
 
 @login_required
@@ -28,87 +27,43 @@ def item(request, member_id):
 
 @transaction.atomic
 def new_user(request):
-    form = UserCreationForm()
-
-    if 'member_user' in request.session:
-        return render(request, 'member/form.html', {
-            'form': TeamMemberForm(is_admin = request.user.has_perm('team.custom_edit_member'))
-        })
+    form = SignUpForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(data = request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.is_active = False
-            user.save()
+            team = form.cleaned_data.get('team')
+            new_user = form.save(commit = False)
+            new_user.is_active = False
+            new_user.save()
 
-            request.session['member_user'] = user
-            request.session.save()
-            return render(request, 'member/form.html', {
-                'form': TeamMemberForm(is_admin = request.user.has_perm('team.custom_edit_member'))
-            })
+            new_member = TeamMember.objects.create(user = new_user, team = team)
 
-    return render(request, 'auth/register.html', { 'form': form })
+            if not settings.DEBUG:
+                # SEND EMAIL FOR ACTIVATING ACCOUNT...
+                subject = "[BCG-Lab %s] Demande d'ouverture de compte" % settings.SITE_NAME
+                emails = set()
+                for user in User.objects.filter(teammember__team = team).exclude(email__isnull = True):
+                    if user.has_perm('team.custom_activate_account'):
+                        emails.add(user.email)
 
+                if emails:
+                    template = loader.get_template('email_new_member.txt')
+                    message = template.render({
+                        'member': new_member,
+                        'url': request.build_absolute_uri(reverse('team:index'))
+                    })
+                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, list(emails))
+                    info_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
 
-@transaction.atomic
-def new_member(request):
-    if not 'member_user' in request.session:
-        return redirect('team_member:new_user')
+            return redirect('login')
+        else:
+            error_msg(request, u"Impossible de créer votre compte pour le moment")
 
-    user = request.session.get('member_user')
-
-    if TeamMember.objects.filter(user = user).count() > 0:
-        try:
-            del request.session['member_user']
-        except KeyError:
-            pass
-        return redirect('team_member:new_user')
-
-    if request.method == 'POST':
-        user = request.session.get('member_user')
-        data = request.POST.copy()
-        data.update({ 'username': user.username })
-
-        form = TeamMemberForm(data = data)
-        if form.is_valid():
-            data = form.cleaned_data
-            member = TeamMember.objects.create(
-                team = data['team'],
-                user = user
-        )
-            user.first_name = data['first_name']
-            user.last_name = data['last_name']
-            user.email = data['email']
-            user.save()
-
-            del request.session['member_user']
-
-            # SEND EMAIL FOR ACTIVATING ACCOUNT...
-            subject = "[BCG-Lab %s] Demande d'ouverture de compte" % settings.SITE_NAME
-            emails = []
-            for u in User.objects.all():
-                if u.teammember_set.filter(team = member.team) and u.has_perm('team.custom_activate_account') and u.email and u.email not in emails:
-                    emails.append(u.email)
-
-            if emails:
-                template = loader.get_template('email_new_member.txt')
-                message = template.render({
-                    'member': member,
-                    'url': request.build_absolute_uri(reverse('team:index'))
-                })
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
-                info_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
-            else:
-                warn_msg(request, u"Votre demande a bien été prise en compte mais votre compte reste INACTIF en attendant sa validation.")
-            return redirect('home')
-    else:
-        form = TeamMemberForm(is_admin = request.user.has_perm('team.custom_edit_member'))
-
-    return render(request, 'member/form.html',{
-            'form': form,
-            'user_id': user.id
+    return render(request, 'auth/register.html',{
+        'form': form
     })
+
 
 @login_required
 @transaction.atomic
@@ -218,6 +173,6 @@ def _member_update(request, member):
         return redirect('team:index')
     else:
         return render(request, 'member/item.html',{
-                'member': member,
-                'form': form
+            'member': member,
+            'form': form
         })

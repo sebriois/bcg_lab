@@ -18,12 +18,12 @@
 
 <body>
 
-<div id="login-messages">
-	{% include "block_messages.html" %}
-	{{ form.non_field_errors }}
-</div>
-
 <div id="wrapper">
+    <div id="login-messages">
+        {% include "block_messages.html" %}
+        {{ form.non_field_errors }}
+    </div>
+
 	<div id="login">
 		<div id="header">
 		    <h1>{{ SITE_NAME }}</h1>

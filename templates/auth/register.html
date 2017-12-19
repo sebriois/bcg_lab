@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>BCG-Lab {{SITE_NAME}} - login</title>
 		<link rel="stylesheet" href="{% static 'css/login.css' %}" type="text/css" />
-		<link rel="stylesheet" href="{% static 'css/humanity/jquery-ui-1.8.16.custom.css' %}" type="text/css" />
+		<link rel="stylesheet" href="{% static 'css/humanity/jquery-ui-1.10.3.custom.min.css' %}" type="text/css" />
 		
 		<script type="text/javascript" src="{% static 'js/jquery-1.6.4.min.js'%} "></script>
 		<script type="text/javascript" src="{% static 'js/jquery-ui-1.8.16.custom.min.js'%}"></script>
@@ -17,12 +17,12 @@
 
 <body>
 
-<div id="login-messages">
-	{% include "block_messages.html" %}
-	{{ form.non_field_errors }}
-</div>
-
 <div id="wrapper">
+    <div id="login-messages">
+        {% include "block_messages.html" %}
+        {{ form.non_field_errors }}
+    </div>
+
 	<div id="login">
 		<div id="header">
 		    <h1>{{ SITE_NAME }}</h1>
@@ -31,18 +31,18 @@
 		</div>
 		<div id="in_login">
 			<div id="login_subhead">Création d'un nouveau compte</div>
-			<form method="POST" action="{% url 'team_member:new_user' %}" class="large_labels">{% csrf_token %}
+			<form method="POST" action="." class="large_labels">{% csrf_token %}
 				<fieldset>
-					<label for="username">{{ form.username.label }}*</label>
-					{{ form.username }}
-					<div class="cleaner"></div>
-					<label for="password1">{{ form.password1.label }}*</label>
-					{{ form.password1 }}
-					<div class="cleaner"></div>
-					<label for="password2">{{ form.password2.label }}*</label>
-					{{ form.password2 }}
+                    {% for field in form %}
+                        <div class="form-row{% if field.errors %} error {% endif %}">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}{{ field.errors }}{% endif %}
+                            <div class="cleaner"></div>
+                        </div>
+                    {% endfor %}
 				</fieldset>
-				<button type="submit" class="button margin-left">Continuer &rarr;</button>
+				<button type="submit" class="button margin-left">Créer le compte</button>
 			</form>
 		</div>
 		<div id="footer">

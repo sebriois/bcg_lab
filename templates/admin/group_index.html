@@ -21,7 +21,7 @@
 	</thead>
 	<tbody>
 		{% for group in groups %}
-		<tr class="{% cycle even,odd %}">
+		<tr class="{% cycle 'even' 'odd' %}">
 			<td>{{ group.name }}</td>
 			<td>{{ group.user_set.all|join:", "|default:"<b>AUCUN</b>" }}</td>
 			<td>

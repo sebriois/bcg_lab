@@ -1,7 +1,21 @@
 # coding: utf-8
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 from team.models import Team
+
+
+
+class SignUpForm(UserCreationForm):
+    team = forms.ModelChoiceField(label = "Equipe", queryset = Team.objects.all())
+    first_name = forms.CharField(max_length = 30, label = "Prénom", required = False)
+    last_name = forms.CharField(max_length = 150, label = "Nom", required = False)
+    email = forms.EmailField(label = "Email")
+
+    class Meta:
+        model = User
+        fields = ('team', 'username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
 
 class TeamForm(forms.ModelForm):
@@ -11,14 +25,14 @@ class TeamForm(forms.ModelForm):
 
 
 class TeamMemberForm(forms.Form):
-    username = forms.CharField( label = "Identifiant" )
-    team = forms.ModelChoiceField( label = "Equipe", queryset = Team.objects.all() )
-    first_name = forms.CharField( label = "Prénom", required = False )
-    last_name = forms.CharField( label = "Nom", required = False )
-    email = forms.EmailField( label = "Email" )
+    username = forms.CharField(label = "Identifiant")
+    team = forms.ModelChoiceField(label = "Equipe", queryset = Team.objects.all())
+    first_name = forms.CharField(label = "Prénom", required = False)
+    last_name = forms.CharField(label = "Nom", required = False)
+    email = forms.EmailField(label = "Email")
 
-    def __init__( self, instance = None, is_admin = False, *args, **kwargs ):
-        super( TeamMemberForm, self ).__init__( *args, **kwargs )
+    def __init__(self, instance = None, is_admin = False, *args, **kwargs):
+        super(TeamMemberForm, self).__init__(*args, **kwargs)
 
         if instance:
             self.fields['username'].initial = instance.user.username
@@ -28,7 +42,5 @@ class TeamMemberForm(forms.Form):
             self.fields['email'].initial = instance.user.email
 
             if not is_admin:
-                self.fields['team'].widget.attrs.update({'disabled':'disabled'})
-                self.fields['username'].widget.attrs.update({'disabled':'disabled'})
-
-
+                self.fields['team'].widget.attrs.update({'disabled': 'disabled'})
+                self.fields['username'].widget.attrs.update({'disabled': 'disabled'})
