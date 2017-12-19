@@ -79,7 +79,7 @@
                     <td>{{ product.last_change|date }}</td>
                     <td style="white-space:nowrap">
                         {% if not product.has_expired %}
-                            {% if not user|has_perm:"order.custom_view_local_provider" %}
+                            {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
                             <button id="{{product.id}}" class="plus addToCart">Panier</button>
                             {% endif %}
                         {% endif %}
