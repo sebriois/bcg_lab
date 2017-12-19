@@ -26,7 +26,7 @@ class OrderItemForm(forms.ModelForm):
     
     def clean_nomenclature(self):
         nomenclature = self.cleaned_data.get('nomenclature', None)
-        if not nomenclature and self.data.get('item_type', None) == 0:
+        if not nomenclature and self.data.get('item_type', None) == "0":
             raise forms.ValidationError(u"Une nomenclature est requise.")
 
         if nomenclature:

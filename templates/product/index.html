@@ -26,7 +26,7 @@
 
 
 {% if products %}
-    {% if not user|has_perm:"order.custom_view_local_provider" %}
+    {% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser %}
     <div class="btn_wrapper hide_on_save">
         <a href="{% url 'order:tab_cart' %}" class="btn_medium">
             <img src="{% static 'img/icons/cart_go.png' %}" />Voir le panier

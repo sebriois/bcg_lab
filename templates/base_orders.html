@@ -6,7 +6,7 @@
 
 {% block nav_secondary %}
 <ul id="subnav">
-	{% if not user|has_perm:"order.custom_view_local_provider" %}
+	{% if not user|has_perm:"order.custom_view_local_provider" or user.is_superuser  %}
 	<li class="{% block menu_cart %}{% endblock %}">
 		<a href="{% url 'order:tab_cart' %}">Panier</a>
 	</li>
