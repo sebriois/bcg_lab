@@ -149,7 +149,7 @@ def export_orders_to_xls(request):
         ws.write(row, 13, history.price)
         row += 1
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_historique_commandes.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     wb.save(response)
@@ -263,7 +263,7 @@ def export_budgetlines(request):
         ws.write(row, 13, str(bl.get_amount_left()))
         row += 1
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_historique_budget.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     wb.save(response)
@@ -292,7 +292,7 @@ def export_budgets(request):
         ws.write(row, 3, budget.default_nature)
         row += 1
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_historique_budget.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     wb.save(response)

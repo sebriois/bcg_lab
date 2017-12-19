@@ -142,7 +142,7 @@ def export_to_xls(request):
         ws.write(row + 1, 0, "MONTANT DISPONIBLE:")
         ws.write(row + 1, 1, budget.get_amount_left())
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_budget.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     wb.save(response)

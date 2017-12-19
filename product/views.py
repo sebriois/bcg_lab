@@ -277,7 +277,7 @@ def export_xls(request):
         ws.write(row, 9, product.last_change.strftime("%d/%m/%Y"))
         row += 1
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_produit.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     wb.save(response)

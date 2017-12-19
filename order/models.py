@@ -136,12 +136,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     item_type = models.IntegerField(u"Type d'item", choices = ORDERITEM_TYPES, default = 0)
-    username        = models.CharField( u"Commandé par", max_length = 100 )
+    username = models.CharField( u"Commandé par", max_length = 100 )
     username_recept = models.CharField( u"Réceptionné par", max_length = 100, null = True, blank = True )
-    product_id      = models.IntegerField( u'ID produit', blank = True, null = True )
-    name            = models.CharField( u'Désignation', max_length = 500 )
-    provider        = models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
-    origin          = models.CharField( u"Fournisseur d'origine", max_length = 100, blank = True, null = True )
+    product_id = models.IntegerField( u'ID produit', blank = True, null = True )
+    name = models.CharField( u'Désignation', max_length = 500 )
+    provider = models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
+    origin = models.CharField( u"Fournisseur d'origine", max_length = 100, blank = True, null = True )
     packaging       = models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
     reference       = models.CharField( u'Référence', max_length = 100, blank = True, null = True )
     offer_nb        = models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )

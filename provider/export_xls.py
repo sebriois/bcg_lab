@@ -40,7 +40,7 @@ def export_xls( request, provider_id ):
         sheet.write(row+1,8,product.last_change.strftime("%d/%m/%Y"))
         
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = u"attachment; filename=export_produits_%s.xls" % provider.name.lower()
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     xls.save(response)

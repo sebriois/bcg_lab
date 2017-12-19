@@ -115,7 +115,7 @@ def export_all_products(request):
             sheet.write(row+1,5,expiry)
             sheet.write(row+1,6,product.nomenclature)
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_all_products.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     xls.save(response)
@@ -169,7 +169,7 @@ def export_history_orders(request):
             sheet.write( row, 12, history.price )
             row += 1
     
-    response = HttpResponse(mimetype="application/ms-excel")
+    response = HttpResponse()
     response['Content-Disposition'] = 'attachment; filename=export_history_orders.xls'
     response['Content-Type'] = 'application/vnd.ms-excel; charset=utf-8'
     xls.save(response)
