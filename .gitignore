@@ -3,3 +3,4 @@
 *_wsgi.py
 *sqlite*
 *db*
+db.sqlite3
