@@ -71,7 +71,7 @@
                             <input type="checkbox" name="action_{{item.id}}" />
                         </td>
                         <td>
-                            <a href="{% url 'order:item_delete' item.id %}?next=tab_reception_local_provider" class="trash confirmDel no-text"></a>
+                            <a href="{% url 'order:item_delete' item.id %}?next=order:tab_reception_local_provider" class="trash confirmDel no-text"></a>
                         </td>
                     {% endif %}
                 </tr>

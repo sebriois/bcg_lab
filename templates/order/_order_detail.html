@@ -224,12 +224,12 @@
 <div id="order-buttons">
 {% if order.status == 0 %}
     <a href="{% url 'order:tab_cart' %}" class="disk save-changes">Enregistrer les modifications</a>
-    <a href="{% url 'order:set_next_status' order.id %}?next=tab_cart" class="next-status save-changes">Commander</a>
+    <a href="{% url 'order:set_next_status' order.id %}?next=order:tab_cart" class="next-status save-changes">Commander</a>
     <a href="{% url 'order:delete' order.id %}" class="trash confirmDel">Supprimer la commande</a>
 {% else %}{% if order.status == 1 %}
     {% if user|has_perm:"order.custom_validate" %}
     <a href="{% url 'order:tab_validation' %}" class="disk save-changes">Enregistrer les modifications</a>
-    <a href="{% url 'order:set_next_status' order.id %}?next=tab_validation" class="next-status save-changes">Valider la commande</a>
+    <a href="{% url 'order:set_next_status' order.id %}?next=order:tab_validation" class="next-status save-changes">Valider la commande</a>
     {% else %}
     <a href="{{ order.get_absolute_url }}" class="disk save-changes">Enregistrer les modifications</a>
     <a href="{% url 'order:tab_orders' %}" class="back">Retour aux commandes</a>

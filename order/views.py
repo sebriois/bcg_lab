@@ -42,7 +42,7 @@ def tab_cart(request):
         'credit_form': AddCreditForm(),
         'debit_form': AddDebitForm(),
         'team_choices': [(team.id,team.name) for team in Team.objects.all()],
-        'next': 'tab_cart'
+        'next': 'order:tab_cart'
     })
 
 @login_required
@@ -93,7 +93,7 @@ def tab_orders(request):
     return render(request, "order/index.html", {
         'orders': paginate(request, order_list),
         'filter_form': form,
-        'next': 'tab_orders',
+        'next': 'order:tab_orders',
         'next_page': 'page' in request.GET and request.GET['page'] or 1
     })
 
@@ -132,14 +132,14 @@ def tab_validation(request):
     else:
         team_choices = []
     
-    return render(request, 'tab_validation.html', {
+    return render(request, 'order:tab_validation.html', {
         'orders': paginate(request, order_list.distinct()),
         'budgets': budget_list.distinct(),
         'team_choices': team_choices,
         'credit_form': AddCreditForm(),
         'debit_form': AddDebitForm(),
         'see_all_teams': see_all_teams,
-        'next': 'tab_validation'
+        'next': 'order:tab_validation'
     })
 
 @login_required
@@ -277,7 +277,7 @@ def add_orderitem(request, order_id):
 @transaction.atomic
 def add_credit(request, order_id):
     order = get_object_or_404(Order, id = order_id)
-    next = request.POST.get('next', 'tab_orders')
+    next = request.POST.get('next', 'order:tab_orders')
     form = AddCreditForm(data = request.POST)
     if form.is_valid():
         item = form.save(commit = False)
@@ -302,7 +302,7 @@ Merci de vérifier que tous les champs obligatoires ont bien été remplis.")
 @transaction.atomic
 def add_debit(request, order_id):
     order = get_object_or_404(Order, id = order_id)
-    next = request.POST.get('next', 'tab_orders')
+    next = request.POST.get('next', 'order:tab_orders')
     form = AddDebitForm(data = request.POST)
     if form.is_valid():
         item = form.save(commit = False)
@@ -332,12 +332,12 @@ def orderitem_delete(request, orderitem_id):
     info_msg(request, u"'%s' supprimé avec succès." % item.name)
     
     if order.status == 0:
-        next_page = request.GET.get('next', 'tab_cart')
+        next_page = request.GET.get('next', 'order:tab_cart')
     elif order.status == 1 and request.user.has_perm('order.custom_validate'):
-        next_page = request.GET.get('next', 'tab_validation')
+        next_page = request.GET.get('next', 'order:tab_validation')
     elif order.status == 4:
         BudgetLine.objects.filter(orderitem_id = item.id).delete()
-        next_page = request.GET.get('next', 'tab_orders')
+        next_page = request.GET.get('next', 'order:tab_orders')
     else:
         next_page = request.GET.get('next', order)
     
@@ -363,7 +363,7 @@ def orderitem_delete(request, orderitem_id):
     if order.items.all().count() == 0:
         warn_msg(request, "La commande ne contenant plus d'article, elle a également été supprimée.")
         order.delete()
-        next_page = 'tab_orders'
+        next_page = 'order:tab_orders'
     
     return redirect(next_page)
 
@@ -391,11 +391,11 @@ def order_delete(request, order_id):
     BudgetLine.objects.filter(order_id = order.id).delete()
     
     if order.status == 0:
-        next_page = request.GET.get('next', 'tab_cart')
+        next_page = request.GET.get('next', 'order:tab_cart')
     elif order.status == 1 and request.user.has_perm('order.custom_validate'):
-        next_page = request.GET.get('next', 'tab_validation')
+        next_page = request.GET.get('next', 'order:tab_validation')
     else:
-        next_page = 'tab_orders'
+        next_page = 'order:tab_orders'
     
     order.delete()
     

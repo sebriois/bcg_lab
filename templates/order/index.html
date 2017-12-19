@@ -78,12 +78,12 @@
                         <td>
                             {% if order.status == 3 and user|has_perm:"order.custom_goto_status_4"%}
                                 {% if order.budget.budget_type == 0 %}
-                                    <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status xlab">Saisie SILAB</a>
+                                    <a href="{{ order.get_absolute_url }}?next=order:tab_orders&page={{next_page}}" class="next-status xlab">Saisie SILAB</a>
                                 {% else %}
-                                    <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
+                                    <a href="{{ order.get_absolute_url }}?next=order:tab_orders&page={{next_page}}" class="next-status sifac">Saisie SIFAC</a>
                                 {% endif %}
                             {% else %}
-                                <a href="{{ order.get_absolute_url }}?next=tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
+                                <a href="{{ order.get_absolute_url }}?next=order:tab_orders&page={{next_page}}" class="pencil">Voir détail</a>
                             {% endif %}
                         </td>
                     </tr>

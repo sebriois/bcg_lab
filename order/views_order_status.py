@@ -151,7 +151,7 @@ def _move_to_status_2(request, order):
                 continue
         
         info_msg(request, "Nouveau statut: '%s'." % order.get_status_display())
-    return redirect(request.GET.get('next','tab_validation'))
+    return redirect(request.GET.get('next','order:tab_validation'))
 
 
 def _move_to_status_3(request, order):

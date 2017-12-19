@@ -63,6 +63,7 @@ class TeamNameHistory(models.Model):
     def __str__(self):
         return self.name
 
+
 class TeamMember(models.Model):
     team = models.ForeignKey(Team, verbose_name="Equipe", on_delete=models.SET_NULL, null=True, blank=True)
     user = models.ForeignKey(User, verbose_name="Utilisateur", on_delete=models.CASCADE)
