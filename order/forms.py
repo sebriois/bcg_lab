@@ -17,23 +17,24 @@ class OrderItemForm(forms.ModelForm):
         model = OrderItem
         exclude = ('product_id', 'cost_type')
         widgets = {
+            'item_type': widgets.HiddenInput(),
             'nomenclature': widgets.TextInput(attrs={
-                'required': True,
-                'class': 'autocomplete', 
+                'class': 'autocomplete',
                 'autocomplete_url': reverse_lazy('product_code:autocomplete')
             })
         }
     
     def clean_nomenclature(self):
         nomenclature = self.cleaned_data.get('nomenclature', None)
-        if not nomenclature:
+        if not nomenclature and self.data.get('item_type', None) == 0:
             raise forms.ValidationError(u"Une nomenclature est requise.")
-        
-        product_code = nomenclature.split(' - ')[0]
-        if ProductCode.objects.filter( code = product_code ).count() == 0:
-            raise forms.ValidationError(u"Cette nomenclature (%s) n'est pas reconnue." % product_code)
 
-        return product_code
+        if nomenclature:
+            product_code = nomenclature.split(' - ')[0]
+            if ProductCode.objects.filter(code = product_code).count() == 0:
+                raise forms.ValidationError(u"Cette nomenclature (%s) n'est pas reconnue." % product_code)
+
+            return product_code
 
 
 class AddCreditForm(forms.ModelForm):
@@ -62,7 +63,7 @@ class AddCreditForm(forms.ModelForm):
             raise forms.ValidationError(u"Veuillez saisir un montant positif.")
         
         return price
-    
+
 
 class AddDebitForm(forms.ModelForm):
     price = forms.CharField( label = u"Montant" )

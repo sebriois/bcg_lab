@@ -478,7 +478,7 @@ $(document).ready(function(){
         $("#sendChanges.dialog").dialog({
             width: 800,
             buttons: {
-                "Valider la mise à jour du prix": function() {
+                "Valider la mise à jour du produit": function() {
                     $('input[name="sendChanges"]').val("True");
                     $( this ).dialog( "close" );
                     $('#loadingDialog').dialog('open');

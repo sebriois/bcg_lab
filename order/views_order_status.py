@@ -53,6 +53,8 @@ def set_next_status(request, order_id):
 
 def _move_to_status_1(request, order):
     missing_nomenclature = order.items.filter(
+        item_type = 0
+    ).filter(
         Q(nomenclature__isnull = True) |
         Q(nomenclature = '')
     )
