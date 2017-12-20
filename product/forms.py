@@ -24,6 +24,7 @@ class ProductForm(forms.ModelForm):
             widgets = {
                 'expiry': widgets.DateInput(attrs={'class':'datepicker'}),
                 'nomenclature': widgets.TextInput( attrs = {
+                    'required': True,
                     'class': 'autocomplete',
                     'autocomplete_url': reverse_lazy('product_code:autocomplete')
                 })
@@ -57,7 +58,7 @@ class ProductForm(forms.ModelForm):
     def clean_nomenclature(self):
         nomenclature = self.cleaned_data.get('nomenclature', None)
         if not nomenclature:
-            return None
+            raise forms.ValidationError(u"Veuillez saisir une nomenclature.")
 
         product_code = nomenclature.split(' - ')[0]
         if ProductCode.objects.filter( code = product_code ).count() == 0:
