@@ -152,6 +152,5 @@ def update_expiry(sender, instance, **kwargs):
     
 
 # register the signal
-if not settings.DEBUG:
-    post_save.connect(post_product_save, sender=Product, dispatch_uid="post_product_save")
+post_save.connect(post_product_save, sender=Product, dispatch_uid="post_product_save")
 pre_save.connect(update_expiry, sender=Product, dispatch_uid="update_expiry")

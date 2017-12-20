@@ -66,8 +66,8 @@ def _elastic_search(query_dict):
             }
         }
     }
-    res = es.search(index = settings.SITE_NAME.lower(), body = query, filter_path = ['hits.total', 'hits.hits._id'])
-    product_list = Product.objects.filter(id__in = [hit['_id'] for hit in res['hits']['hits']])
+    res = es.search(index = settings.SITE_NAME.lower(), body = query)
+    product_list = Product.objects.filter(id__in = [hit['_id'] for hit in res['hits'].get('hits', [])])
 
     return product_list, res['hits']['total']
 
