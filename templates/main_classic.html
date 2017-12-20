@@ -4,10 +4,10 @@
 <div id="main">
     {% block header %}{% endblock %}
     {% for message in messages %}
-        {{ message|safe|linebreaks }}
+        {{ message|linebreaksbr|safe }}
     {% endfor %}
     {% for message in session_messages %}
-        {{ message|safe|linebreaks }}
+        {{ message|linebreaksbr|safe }}
     {% endfor %}
     <div class="cleaner"></div>
     {% block content %}{% endblock %}
