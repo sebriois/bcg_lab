@@ -63,7 +63,7 @@ def item(request, budget_id):
                             tva_code = budget.tva_code,
                             domain = budget.domain,
                             default_nature = nature.upper()
-                    )
+                        )
                         if data[nature] > 0:
                             bl = sub_budget.credit(data[nature])
                             bl.product = u"Répartition"
@@ -72,15 +72,7 @@ def item(request, budget_id):
                             bl = budget.debit(data[nature])
                             bl.product = u"Répartition vers %s" % nature.upper()
                             bl.save()
-                
-                # if budget.get_amount_left() == 0:
-                #   budget.is_active = False
-                #   budget.save()
-                #   for bl in BudgetLine.objects.filter(budget_id = budget.id):
-                #       bl.is_active = False
-                #       bl.save()
-                #   info_msg(request, "Budget modifié avec succès. Il a été automatiquement archivé car son montant dispo est égal à 0.")
-                # else:
+
                 info_msg(request, "Budget modifié avec succès.")
                 return redirect('budget:list')
     else:
@@ -101,30 +93,43 @@ def new(request):
         form = BudgetForm(data = request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            if data['all_natures'] or data["all_natures"] == 0:
-                budget = form.save()
+
+            if data.get('all_natures', None) and data['all_natures'] >= 0:
+                budget = form.save(commit = False)
+                budget.name = "[%s] %s [%s]" % (
+                    data['team'].shortname,
+                    data['name'],
+                    data['default_origin']
+                )
+                budget.save()
                 if data['all_natures'] > 0:
                     bl = budget.credit(data["all_natures"])
                     bl.product = u"Initial"
                     bl.save()
+                info_msg(request, "Budget '%s' ajouté avec succès." % budget.name)
             else:
                 for nature in ['fo','mi','sa','eq']:
-                    if data[nature] or data[nature] == 0:
+                    if data.get(nature, None) >= 0:
                         budget = Budget.objects.create(
                             team = data['team'],
-                            name = "[%s] %s [%s] - %s" % (data['team'].shortname, data['name'], data['default_origin'], nature.upper()),
+                            name = "[%s] %s - %s [%s]" % (
+                                data['team'].shortname,
+                                data['name'],
+                                nature.upper(),
+                                data['default_origin']
+                            ),
                             default_origin = data['default_origin'],
                             budget_type = data['budget_type'],
                             tva_code = data['tva_code'],
                             domain = data['domain'],
                             default_nature = nature.upper()
                         )
+                        info_msg(request, "Budget '%s' ajouté avec succès." % budget.name)
                         if data[nature] > 0:
                             bl = budget.credit(data[nature])
                             bl.product = u"Initial"
                             bl.save()
-            
-            info_msg(request, "Budget ajouté avec succès.")
+
             return redirect('budget:list')
     else:
         return redirect('error')

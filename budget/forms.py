@@ -45,19 +45,29 @@ class BudgetForm(forms.ModelForm):
     def clean_name(self):
         team = self.cleaned_data.get('team', Team.objects.get(id = self.data['team']))
 
-        for nature in ['fo', 'mi', 'sa', 'eq']:
-            value_for_nature = self.data.get(nature, None)
-            if not value_for_nature:
-                continue
-
-            budget_name = "[%s] %s [%s] - %s" % (
+        if self.data.get('all_natures', None) and float(self.data['all_natures']) >= 0:
+            budget_name = "[%s] %s [%s]" % (
                 team.shortname,
                 self.cleaned_data['name'],
-                self.data['default_origin'],
-                nature.upper()
+                self.data['default_origin']
             )
             if Budget.objects.filter(name = budget_name).count() > 0:
                 raise forms.ValidationError(u"Le budget %s existe déjà." % budget_name)
+        else:
+            for nature in ['fo', 'mi', 'sa', 'eq']:
+                value_for_nature = self.data.get(nature, None)
+                if not value_for_nature:
+                    continue
+
+                budget_name = "[%s] %s - %s [%s]" % (
+                    team.shortname,
+                    self.cleaned_data['name'],
+                    nature.upper(),
+                    self.data['default_origin']
+                )
+                if Budget.objects.filter(name = budget_name).count() > 0:
+                    raise forms.ValidationError(u"Le budget %s existe déjà." % budget_name)
+
         return self.cleaned_data['name']
 
 
