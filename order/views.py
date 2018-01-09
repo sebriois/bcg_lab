@@ -31,6 +31,7 @@ def tab_cart(request):
         Q(items__username = request.user.username) |
         Q(team__in = get_teams(request.user))
     ).distinct()
+
     if not request.user.has_perm('budget.custom_view_budget'):
         orders = orders.filter(
             Q(items__is_confidential = False) |

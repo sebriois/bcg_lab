@@ -52,14 +52,6 @@ class AddCreditForm(forms.ModelForm):
             'choices': ";".join([c.name for c in OrderComplement.objects.filter(type_comp = CREDIT)])
         })
 
-    def clean_price(self):
-        price = self.cleaned_data.get('price', None)
-
-        if not price > 0:
-            raise forms.ValidationError(u"Veuillez saisir un nombre décimal positif.")
-
-        return price
-
 
 class AddDebitForm(forms.ModelForm):
     price = forms.CharField(label = u"Montant")
@@ -77,14 +69,6 @@ class AddDebitForm(forms.ModelForm):
             'class': 'autocomplete',
             'choices': ";".join([c.name for c in OrderComplement.objects.filter(type_comp = DEBIT)])
         })
-
-    def clean_price(self):
-        price = self.cleaned_data.get('price', None)
-
-        if not price > 0:
-            raise forms.ValidationError(u"Veuillez saisir un nombre décimal positif.")
-
-        return price
 
 
 class FilterForm(forms.Form):

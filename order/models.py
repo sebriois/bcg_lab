@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from django.contrib.contenttypes.fields import GenericRelation
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -142,16 +143,37 @@ class OrderItem(models.Model):
     name = models.CharField( u'Désignation', max_length = 500 )
     provider = models.CharField( u'Fournisseur', max_length = 100, blank = True, null = True )
     origin = models.CharField( u"Fournisseur d'origine", max_length = 100, blank = True, null = True )
-    packaging       = models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
-    reference       = models.CharField( u'Référence', max_length = 100, blank = True, null = True )
-    offer_nb        = models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
-    category        = models.CharField( u'Type', max_length = 100, blank = True, null = True )
-    sub_category    = models.CharField( u'Sous-type', max_length = 100, blank = True, null = True )
-    nomenclature    = models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
-    price           = models.DecimalField( u'Montant', max_digits = 12, decimal_places = 2 )
-    cost_type       = models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
-    quantity        = models.IntegerField( u'Quantité', default = 1 )
-    delivered       = models.IntegerField( u'Quantité à livrer', default = 0 )
+    packaging = models.CharField( u'Conditionnement', max_length = 100, blank = True, null = True)
+    reference = models.CharField( u'Référence', max_length = 100, blank = True, null = True )
+    offer_nb = models.CharField( u'N° Offre', max_length = 100, blank = True, null = True )
+    category = models.CharField( u'Type', max_length = 100, blank = True, null = True )
+    sub_category = models.CharField( u'Sous-type', max_length = 100, blank = True, null = True )
+    nomenclature = models.CharField( u'Nomenclature', max_length = 100, blank = True, null = True )
+    price = models.DecimalField(
+        u'Montant',
+        max_digits = 12, decimal_places = 2,
+        validators = [
+            MinValueValidator(0, message = 'Veuillez saisir un nombre décimal positif')
+        ],
+        error_messages = {
+            'invalid': 'Nombre invalide (utiliser le point comme séparateur)',
+        }
+    )
+    cost_type = models.IntegerField( u'Type de coût', choices = COST_TYPE_CHOICES )
+    quantity = models.IntegerField(
+        u'Quantité',
+        default = 1,
+        validators = [
+            MinValueValidator(0, message = 'Veuillez saisir une quantité > 1')
+        ],
+    )
+    delivered = models.IntegerField(
+        u'Quantité à livrer',
+        default = 0,
+        validators = [
+            MinValueValidator(0, message = 'Veuillez saisir une quantité > 0')
+        ]
+    )
     is_confidential = models.BooleanField( u"Confidentielle?", default = False )
     
     class Meta:
