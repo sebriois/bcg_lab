@@ -43,22 +43,40 @@ class Command(BaseCommand):
         }
     }
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '--create_index',
+            action='store_true',
+            dest='create_index',
+            help='Create index using settings.SITE_NAME value',
+        )
+        parser.add_argument(
+            '--index_data',
+            action='store_true',
+            dest='index_data',
+            help='Index product data',
+        )
+
     def handle(self, *args, **options):
         verbose = options.get('verbosity', 0)
 
         self.index_name = settings.SITE_NAME.lower()
 
         self.es = Elasticsearch(hosts = settings.ELASTICSEARCH_HOSTS)
-        self.delete_index()
-        self.create_index()
-        self.put_mappings()
-        self.before_indexing()
-        print(helpers.bulk(
-            client = self.es,
-            actions = self.iter_products_to_index(),
-            stats_only = True
-        ))
-        self.after_indexing()
+        if options['create_index']:
+            self.delete_index()
+            self.create_index()
+            self.put_mappings()
+
+        if options['index_data']:
+            self.before_indexing()
+            print(helpers.bulk(
+                client = self.es,
+                actions = self.iter_products_to_index(),
+                stats_only = True
+            ))
+            self.after_indexing()
 
     def delete_index(self):
         print("[%s] Deleting index" % self.index_name)
