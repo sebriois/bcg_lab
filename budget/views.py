@@ -20,13 +20,13 @@ def index(request):
         budget_list = Budget.objects.filter(
             is_active = True,
             team__in = get_teams(request.user)
-    )
+        )
     else:
         not_allowed_msg(request)
         return redirect('home')
     
     return render(request, 'budget/index.html',{
-        'budgets': budget_list,
+        'budgets': budget_list.select_related('team').distinct(),
         'filter_form': BudgetLineFilterForm(user = request.user, data = request.GET)
     })
 

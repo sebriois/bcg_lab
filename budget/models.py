@@ -34,7 +34,12 @@ class Budget(models.Model):
         return sum([bl.get_total() for bl in BudgetLine.objects.filter(budget_id = self.id)])
 
     def get_amount_spent(self):
-        return sum([bl.debit * bl.quantity for bl in BudgetLine.objects.filter(budget_id = self.id, debit__isnull = False)])
+        lines = BudgetLine.objects.filter(
+            budget_id = self.id,
+            debit__isnull = False
+        ).only('debit', 'quantity')
+
+        return sum(line.debit * line.quantity for line in lines)
 
     def update_budgetlines(self):
         for bl in BudgetLine.objects.filter(budget_id = self.id):
@@ -84,7 +89,6 @@ class BudgetLine(models.Model):
     budget_id     = models.IntegerField(u"ID de budget")
     budget        = models.CharField(u"Budget", max_length = 100)
     number        = models.CharField(u"N° de commande", max_length = 20, null = True, blank = True)
-    date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True)
     nature        = models.CharField(u"Nature", null = True, blank = True, max_length = 20)
     budget_type   = models.IntegerField(u"Tutelle", choices = BUDGET_CHOICES)
     origin        = models.CharField(u"Origine", max_length = 30, null = True, blank = True)
@@ -98,6 +102,7 @@ class BudgetLine(models.Model):
     debit         = models.DecimalField(u"Débit", max_digits=12, decimal_places=2, null = True, blank = True)
     confidential  = models.BooleanField(u"Ligne confidentielle", default = False)
     is_active     = models.BooleanField(u"Active?", default = True)
+    date          = models.DateTimeField(u"Date de l'acte", auto_now_add = True)
 
     class Meta:
         db_table = "budget_line"
@@ -128,7 +133,8 @@ class BudgetLine(models.Model):
         amount_spent = 0
         for line in BudgetLine.objects.filter(budget_id = self.budget_id, debit__isnull = False):
             amount_spent += (line.debit * line.quantity)
-            if line == self: break
+            if line == self:
+                break
 
         return amount_spent
 
