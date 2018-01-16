@@ -36,22 +36,22 @@ class Command(BaseCommand):
             if days_delta % 7 != 0:
                 continue
 
-            recipient_list = []
+            recipient_list = set()
             for username in order.orderitem_set.values_list('username',flat = True).distinct():
                 try:
                     user = User.objects.get(username = username)
                     if user.email:
-                        recipient_list.append(user.email)
+                        recipient_list.add(user.email)
                 except User.DoesNotExist:
                     continue
 
             print("--- commande %s #%s (last modification: %s) ---" % (order.provider.name, order.number, order.last_change))
             print(order.get_absolute_url())
-            print("To: %s" % ", ".join(recipient_list))
+            print("To: %s" % ", ".join(list(recipient_list)))
 
             subject = email_subject % (settings.SITE_NAME, order.provider.name, days_delta)
             message = email_content.render({
                 'order': order,
                 'days': days_delta
             })
-            send_mail(subject, message, email_from, recipient_list)
+            send_mail(subject, message, email_from, list(recipient_list))
