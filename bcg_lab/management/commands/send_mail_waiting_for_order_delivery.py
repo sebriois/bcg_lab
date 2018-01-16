@@ -45,6 +45,10 @@ class Command(BaseCommand):
                 except User.DoesNotExist:
                     continue
 
+            print("--- commande %s #%s (last modification: %s) ---" % (order.provider.name, order.number, order.last_change))
+            print(order.get_absolute_url())
+            print("To: %s" % ", ".join(recipient_list))
+
             subject = email_subject % (settings.SITE_NAME, order.provider.name, days_delta)
             message = email_content.render({
                 'order': order,
