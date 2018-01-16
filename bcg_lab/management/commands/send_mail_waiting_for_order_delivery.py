@@ -38,9 +38,12 @@ class Command(BaseCommand):
 
             recipient_list = []
             for username in order.orderitem_set.values_list('username',flat = True).distinct():
-                user = User.objects.get(username = username)
-                if user.email:
-                    recipient_list.append(user.email)
+                try:
+                    user = User.objects.get(username = username)
+                    if user.email:
+                        recipient_list.append(user.email)
+                except User.DoesNotExist:
+                    continue
 
             subject = email_subject % (settings.SITE_NAME, order.provider.name, days_delta)
             message = email_content.render({
