@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 except User.DoesNotExist:
                     continue
 
-            print("--- commande %s #%s (last modification: %s) ---" % (order.provider.name, order.number, order.last_change))
+            print("--- commande #%s (last modification: %s) ---" % (order.number, order.last_change))
             print(order.get_absolute_url())
             print("To: %s" % ", ".join(list(recipient_list)))
 
