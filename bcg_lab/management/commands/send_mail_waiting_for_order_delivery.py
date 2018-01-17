@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 continue
 
             recipient_list = set()
-            for username in order.orderitem_set.values_list('username',flat = True).distinct():
+            for username in order.items.values_list('username',flat = True).distinct():
                 try:
                     user = User.objects.get(username = username)
                     if user.email:
