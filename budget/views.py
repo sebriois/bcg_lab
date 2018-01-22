@@ -109,7 +109,7 @@ def new(request):
                 info_msg(request, "Budget '%s' ajouté avec succès." % budget.name)
             else:
                 for nature in ['fo','mi','sa','eq']:
-                    if data.get(nature, None) >= 0:
+                    if data.get(nature, None) and data[nature] >= 0:
                         budget = Budget.objects.create(
                             team = data['team'],
                             name = "[%s] %s - %s [%s]" % (
