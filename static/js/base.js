@@ -7,10 +7,11 @@ $(document).ready(function(){
     
     // Datepicker widget
     $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
-    
+    var today = new Date();
     $( ".datepicker.minDate" ).datepicker({
         dateFormat: 'dd/mm/yy',
-        minDate: $('.minDate').attr('min-date')
+        minDate: $('.minDate').attr('min-date'),
+        defaultDate: today.toLocaleDateString()
     });
     $( ".datepicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
     $( ".datepicker.maxToday" ).datepicker({ maxDate: 'today' });
@@ -340,7 +341,7 @@ $(document).ready(function(){
         e.preventDefault();
         var targetUrl = $(this).attr('href');
         
-        $( "#setDeliveryDate" ).dialog({
+        $("#setDeliveryDate").dialog({
             width: 430,
             buttons: {
                 Valider: function() {
@@ -355,7 +356,7 @@ $(document).ready(function(){
             }
         });
         
-        $( "#setDeliveryDate" ).dialog("open");
+        $("#setDeliveryDate").dialog("open");
     });
     
     $( '.setOrderNb' ).click(function(e){
