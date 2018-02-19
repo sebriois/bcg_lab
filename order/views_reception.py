@@ -95,11 +95,11 @@ def tab_reception_local_provider(request):
             order__status = 4,
             order__provider__is_local = True,
             product_id__isnull = False
-    )
+        )
         if not request.user.has_perm("team.custom_view_teams") and not request.user.has_perm("order.custom_view_local_provider"):
             orderitems = orderitems.filter(
                 order__team = get_teams(request.user)[0]
-        )
+            )
         
         return render(request, 'order/reception_local.html', {
             'orderitems': orderitems.order_by('order__team')

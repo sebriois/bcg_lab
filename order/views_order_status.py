@@ -214,7 +214,11 @@ def _move_to_status_4(request, order):
 def _move_to_status_5(request, order):
     try:
         delivery_date = request.GET.get('delivery_date', None)
-        delivery_date = datetime.strptime(delivery_date, "%d/%m/%Y")
+        if not delivery_date:
+            error_msg(request, "Veuillez saisir une date de réception")
+            return redirect('order:tab_orders')
+
+        delivery_date = datetime.strptime(delivery_date, "%d/%m/%Y").astimezone()
         if delivery_date < order.date_created:
             error_msg(request, u"Veuillez saisir une date de livraison supérieure à la date de création de la commande.")
             return redirect(order)
