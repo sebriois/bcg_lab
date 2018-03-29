@@ -20,7 +20,7 @@ class History(models.Model):
     price = models.DecimalField(u"Montant total", max_digits=12, decimal_places=2)
     budget = models.CharField(u"Budget", max_length = 100)
     date_delivered = models.DateTimeField(u"Date de réception")
-    date_created = models.DateTimeField(u"Date", auto_now_add = True)
+    date_created = models.DateTimeField(u"Date de création", auto_now_add = True)
     items = models.ManyToManyField( OrderItem, verbose_name = "Produits")
     comments = models.TextField(u"Commentaires", null = True, blank = True)
     attachments = GenericRelation(Attachment)

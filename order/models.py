@@ -110,9 +110,12 @@ class Order(models.Model):
         for item in self.items.all():
             item.update_budget_line()
     
-    def save_to_history(self, date_delivered = timezone.now()):
+    def save_to_history(self, date_delivered = None):
         from history.models import History
-        
+
+        if not date_delivered:
+            date_delivered = timezone.now()
+
         # Create history object that is a copy of this order
         history = History.objects.create(
             team = self.team.name,
