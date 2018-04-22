@@ -20,5 +20,5 @@ class Provider(models.Model):
     
     def __str__(self):
         if self.reseller:
-            return u"%s (revendeur: %s)" % (self.name, self.reseller)
+            return u"%s (revendeur: %s)" % (self.name, self.reseller.name)
         return self.name
